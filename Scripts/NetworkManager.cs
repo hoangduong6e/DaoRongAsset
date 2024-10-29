@@ -2328,9 +2328,9 @@ public class NetworkManager : MonoBehaviour
                     string assetBundleDirectory;
 
 #if UNITY_EDITOR_WIN
-                    assetBundleDirectory = @"C:\DRUNITY2021\AssetsBundles\Android";
+                    assetBundleDirectory = @"C:\Dao Rong Mobile Asset GitHub\AssetsBundles\Android";
 #elif UNITY_EDITOR_OSX
-    assetBundleDirectory = "/Users/nguyenngochoangduong/DRUNITY2021/AssetsBundles/IOS";
+    assetBundleDirectory = "/Users/nguyenngochoangduong/DRUnityIOS/AssetsBundles/IOS";
 #else
     assetBundleDirectory = "Unknown OS";///
 #endif
