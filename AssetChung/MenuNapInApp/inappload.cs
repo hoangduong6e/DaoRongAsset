@@ -1,0 +1,110 @@
+﻿#if UNITY_IOS
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Purchasing;
+using UnityEngine.UI;
+
+public class inappload : MonoBehaviour, IStoreListener
+{
+    CrGame crgame; public GameObject RestoreButton; NetworkManager net;
+    public string[] skimcuong = new string[] { "com.memobi.studio.300kimcuong", "com.memobi.studio.1500kimcuong", "com.memobi.studio.3500kimcuong" };
+    public string[] sokimcuong = new string[] { "300", "1500", "3500" };
+    public string[] sotien = new string[] { "19.000Đ", "99.000Đ", "199.000Đ"};
+    IStoreController m_StoreController;
+    void Awake()
+    {
+        crgame = GetComponent<CrGame>();
+        //if(Application.platform != RuntimePlatform.IPhonePlayer)
+        //{
+        //    RestoreButton.SetActive(false);
+        //}    
+        net = GetComponent<NetworkManager>();
+        InitializePurchasing();
+    }
+    //void Start()
+    //{
+    //    Debug.Log("Startttttttttttttttttttttttt");
+    //}    
+    public void InitializePurchasing()
+    {
+        var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
+        //Add products that will be purchasable and indicate its type.
+        for (int i = 0; i < skimcuong.Length; i++)
+        {
+            builder.AddProduct(skimcuong[i], ProductType.Consumable);
+        }
+        UnityPurchasing.Initialize(this, builder);
+    }
+    public void MuaKimCuong(string id)
+    {
+        crgame.OnThongBaoNhanh("Đang khởi tạo giao dịch...", 2);
+        crgame.panelLoadDao.SetActive(true);
+        m_StoreController.InitiatePurchase(id);
+    }
+    public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
+    {
+        Debug.Log("Mua hàng trong ứng dụng đã khởi tạo thành công!");
+        
+        m_StoreController = controller;
+    }
+    public void OnInitializeFailed(InitializationFailureReason error, string? message = null)
+    {
+        crgame.OnThongBaoNhanh("Không thể khởi tạo giao dịch mua");
+        var errorMessage = $"Không thể khởi tạo giao dịch mua. Lý do: {error}.";
+
+        if (message != null)
+        {
+            errorMessage += $" Thêm chi tiết: {message}";
+        }
+
+        Debug.Log(errorMessage);
+    }
+    public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args)
+    {
+        //Truy xuất sản phẩm đã mua
+        crgame.panelLoadDao.SetActive(false);
+        var product = args.purchasedProduct;
+
+        //Thêm sản phẩm đã mua vào kho của người chơi
+        string kc = "300";
+        //product.definition.payout.
+        if (product.definition.id == skimcuong[0])
+        {
+            Debug.Log("Mua 300kc thành công");
+        }
+        else if (product.definition.id == skimcuong[1])
+        {
+            Debug.Log("Mua 1500kc thành công"); kc = "1500";
+        }
+        else if (product.definition.id == skimcuong[2])
+        {
+            Debug.Log("Mua 3500kc thành công"); kc = "3500";
+        }
+        net.socket.Emit("NapInApp", JSONObject.CreateStringObject(kc));
+
+        Debug.Log($"Purchase Complete - Product: {product.definition.id}");
+
+        //We return Complete, informing IAP that the processing on our side is done and the transaction can be closed.
+        return PurchaseProcessingResult.Complete;
+    }
+    public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
+    {
+        crgame.panelLoadDao.SetActive(false);
+        crgame.OnThongBaoNhanh("Giao dịch thất bại");
+        Debug.Log($"Giao dịch thất bại - Product: '{product.definition.id}', Mua hàngThất bại Lý do: { failureReason}");
+    }
+    public void OnInitializeFailed(InitializationFailureReason error)
+    {
+        crgame.OnThongBaoNhanh("Lỗi khi khởi tạo");
+        Debug.Log("Lỗi OnInitializeFailed " + error);
+        //throw new NotImplementedException();
+    }
+    public void MuaKimCuongThatBai(Product product, PurchaseFailureReason failureReason)
+    {
+        crgame.panelLoadDao.SetActive(false);
+        crgame.OnThongBaoNhanh("Giao dịch thất bại..");
+        Debug.Log(product.definition.id + " nạp thất bại vì " + failureReason);
+    }
+}
+#endif
