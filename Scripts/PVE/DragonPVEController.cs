@@ -650,7 +650,7 @@ public abstract class DragonPVEController : MonoBehaviour
             {
                 VienChinh.vienchinh.soloWin("win");
             }
-            else if (VienChinh.vienchinh.TeamXanh.transform.childCount == 2) VienChinh.vienchinh.soloWin("thua");
+            else if (team == Team.TeamXanh && VienChinh.vienchinh.TeamXanh.transform.childCount == 2) VienChinh.vienchinh.soloWin("thua");
         }
         if (VienChinh.vienchinh.chedodau == CheDoDau.ThuThach)
         {

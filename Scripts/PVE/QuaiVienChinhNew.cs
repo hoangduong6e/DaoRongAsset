@@ -30,6 +30,7 @@ public class QuaiVienChinhNew : DragonPVEController
     protected override void ABSAwake()
     {
     //    anim = transform.parent.GetComponent<Animator>();
+         nameobj = "";
         transform.parent.GetComponent<DraUpdateAnimator>().DragonPVEControllerr = this;
         PVEManager.GetUpdateMove(transform, "TeamDo");
 

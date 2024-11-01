@@ -21,6 +21,7 @@ public class MenuTTNguoichoi : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "Main";
         datasend["method"] = "GetTTNguoiChoi";
+        datasend["data"]["id"] = ID;
         NetworkManager.ins.SendServer(datasend.ToString(), Ok);
         void Ok(JSONNode json)
         {

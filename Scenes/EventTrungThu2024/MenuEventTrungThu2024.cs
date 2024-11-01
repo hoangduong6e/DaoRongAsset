@@ -20,6 +20,7 @@ public class MenuEventTrungThu2024 : EventManager
     public GameObject BuomXanh, ObjFriend, allObjThis;
     string[] MaubuomArray = Enum.GetNames(typeof(_mauBuom));
     public static MenuEventTrungThu2024 inss;
+    public Transform trencay,duoicay,traicay,phaicay;
     void Start()
     {
         //GameObject g = transform.GetChild(1).gameObject;
@@ -37,13 +38,10 @@ public class MenuEventTrungThu2024 : EventManager
     {
         inss = this;
     }
-    private string SetLongDenThuThap
+    private void SetLongDenThuThap(string longden,string longdenfriend)
     {
-        set
-        {
-            txtLongDenThuThap.text = "-Tổng số Lồng đèn đã thu thập từ đầu Event đến giờ: <color=lime>" + value + "</color>";
-        }
-    }
+        txtLongDenThuThap.text = "-Tổng số Lồng đèn đã thu thập từ đầu Event đến giờ: <color=lime>" + longden + "</color> <color=yellow>(+" +longdenfriend + ")</color>";
+     }
     public Transform allVitriBuom;
     private void TaoBuomBuom()
     {
@@ -179,7 +177,7 @@ public class MenuEventTrungThu2024 : EventManager
         {
             SetTxtLongDen(allLongDen[i], json["data"]["allItem"][allLongDen[i]].AsString);
         }
-        SetLongDenThuThap = json["data"]["TongSoLongDenThuThap"].AsString;
+        SetLongDenThuThap(json["data"]["TongSoLongDenThuThap"].AsString,json["data"]["TongSoLongDenBanGiup"].AsString);
         for (int i = 0; i < json["data"]["allItem"]["BuomXanh"].AsInt; i++)
         {
             TaoBuomBuom();
@@ -269,7 +267,7 @@ public class MenuEventTrungThu2024 : EventManager
                         {
                             KhoiTaoLongDen(json["alllongden"]);
                         }
-                        SetLongDenThuThap = json["TongSoLongDenThuThap"].AsString;
+                           SetLongDenThuThap(json["TongSoLongDenThuThap"].AsString,json["TongSoLongDenBanGiup"].AsString);
                         TaoBuomBuom();
                     }
                     else if (Friend.ins.nameFriend != "")
@@ -366,7 +364,7 @@ public class MenuEventTrungThu2024 : EventManager
                 {
                     KhoiTaoLongDen(json["alllongden"]);
                 }
-                SetLongDenThuThap = json["TongSoLongDenThuThap"].AsString;
+                SetLongDenThuThap(json["TongSoLongDenThuThap"].AsString,json["TongSoLongDenBanGiup"].AsString);
             }
             else
             {
@@ -480,6 +478,9 @@ public class MenuEventTrungThu2024 : EventManager
                 LoadMocQuaGD2(json["QuaTichLuyGD2"], json["allMocDiemGD2"], json["solanthaplongden"].AsInt);
                 gd2.SetActive(true);
                 btnHopQua.transform.SetParent(gd2.transform);
+                Transform allvitriBuomFriend = ObjFriend.transform.Find("allBuom");
+                allvitriBuomFriend.gameObject.SetActive(false);
+                allVitriBuom.gameObject.SetActive(false);
             }
             else
             {
@@ -528,7 +529,9 @@ public class MenuEventTrungThu2024 : EventManager
             debug.Log(array[i]);
             DestroyMenu(array[i]);
         }
-
+          Transform allvitriBuomFriend = ObjFriend.transform.Find("allBuom");
+                allvitriBuomFriend.gameObject.SetActive(true);
+                allVitriBuom.gameObject.SetActive(true);
     }
     private int soluongchon = 0;
     string ThiepChon = "BanhTrungThuThuongHang";

@@ -96,11 +96,11 @@ public class Butterfly : MonoBehaviour
     void SetNewTargetPosition()
     {
         // Chọn vị trí ngẫu nhiên với giới hạn x và y từ -3.5 đến 3.5
-        float randomX = Random.Range(-10f, 10f);
-        float randomY = Random.Range(-7f, 7f);
-        speed += Random.Range(-0.5f,-0.5f);
-        if(speed < 2.5f) speed = 2.5f;
-        else if(speed > 3.5f) speed = 3.5f;
+        float randomX = Random.Range(MenuEventTrungThu2024.inss.traicay.transform.position.x, MenuEventTrungThu2024.inss.phaicay.transform.position.x);
+        float randomY = Random.Range(MenuEventTrungThu2024.inss.duoicay.transform.position.y, MenuEventTrungThu2024.inss.trencay.transform.position.y);
+        speed += Random.Range(-0.5f,0.5f);
+        if(speed < 1.3f) speed = 1.3f;
+        else if(speed > 1.6f) speed = 1.6f;
         // Đặt vị trí mục tiêu mới cho bướm với trục z luôn bằng 0
         targetPosition = new Vector3(randomX, randomY, 0);
     }

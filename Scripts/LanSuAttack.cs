@@ -28,6 +28,7 @@ public class LanSuAttack : DragonPVEController
                 actionUpdate = null;
             }
         };
+        thongke = false;
     }
     public override void ChoangABS(float giay = 0.2f)
     {
