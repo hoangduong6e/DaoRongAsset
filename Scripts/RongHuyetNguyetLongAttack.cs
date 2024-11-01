@@ -95,7 +95,7 @@ public class RongHuyetNguyetLongAttack : DragonPVEController
     }
     public override void SkillMoveOk()
     {
-         List<Transform> ronggan = new List<Transform>(PVEManager.GetDraDungTruoc(3, Target.transform.parent.transform, new Vector2(4, 4)));
+         List<Transform> ronggan = new List<Transform>(PVEManager.GetDraDungTruoc(4, Target.transform.parent.transform, new Vector2(4, 4)));
         float damee = dame;
         bool chimanggg = false;
         for (int i = 0; i < ronggan.Count; i++)
