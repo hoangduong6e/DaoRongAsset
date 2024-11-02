@@ -33,7 +33,11 @@ public class MenuEventTrungThu2024 : EventManager
     }
     protected override void DiemDanhOk(JSONNode json)
     {
-
+        foreach (KeyValuePair<string, JSONNode> key in json["data"].AsObject)
+        {
+            debug.Log("key diem danh " + key.Key + " value " + json["data"][key.Key].ToString());
+            SetTxtNguyenLieu(key.Key, json["data"][key.Key].AsInt);
+        }
     }
     protected override void ABSAwake()
     {
@@ -42,6 +46,11 @@ public class MenuEventTrungThu2024 : EventManager
     private void SetLongDenThuThap(string longden,string longdenfriend)
     {
         txtLongDenThuThap.text = "-Tổng số Lồng đèn đã thu thập từ đầu Event đến giờ: <color=lime>" + longden + "</color> <color=yellow>(+" +longdenfriend + ")</color>";
+     }
+     private void SetGiupBanBe(int solangiup)
+    {
+        Text txt = transform.Find("Khung").transform.Find("txtgiupbanbe").GetComponent<Text>();
+        txt.text = "-Bạn sẽ nhận được <color=lime>1 bánh trung thu miẽn phí</color> khi giúp bạn bè lấy thêm lồng đèn <color=yellow>" +(5 - solangiup) + " lần nữa</color>";
      }
     public Transform allVitriBuom;
     private void TaoBuomBuom()
@@ -179,10 +188,12 @@ public class MenuEventTrungThu2024 : EventManager
             SetTxtLongDen(allLongDen[i], json["data"]["allItem"][allLongDen[i]].AsString);
         }
         SetLongDenThuThap(json["data"]["TongSoLongDenThuThap"].AsString,json["data"]["TongSoLongDenBanGiup"].AsString);
+        SetGiupBanBe(json["data"]["TongSoLanGiupBanBe"].AsInt);
         for (int i = 0; i < json["data"]["allItem"]["BuomXanh"].AsInt; i++)
         {
             TaoBuomBuom();
         }
+
     }
     public void SetTxtNguyenLieu(string name, int soluong)
     {
@@ -279,6 +290,7 @@ public class MenuEventTrungThu2024 : EventManager
                         longden.transform.LeanScale(Vector3.zero, 0.5f).setOnComplete(() => {
                             longden.SetActive(false);
                         });
+                         SetGiupBanBe(json["TongSoLanGiupBanBe"].AsInt);
                     }
                     SetTxtNguyenLieu("BanhTrungThu", json["BanhTrungThu"].AsInt);
                 }, 2.7f);
@@ -1214,7 +1226,9 @@ public class MenuEventTrungThu2024 : EventManager
     {
         switch (s)
         {
-            case "TuiLuongThuc": return "Túi lương thực";
+            case "TrungMuoi": return "Trứng Muối";
+            case "BotBanh": return "Bột Bánh";
+            case "NhanThuongHang": return "Nhân Thượng Hạng";
         }
         return "";
     }
@@ -1224,9 +1238,10 @@ public class MenuEventTrungThu2024 : EventManager
     {
         AudioManager.SoundClick();
         GameObject btnchon = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+ 
         txtupdate = btnchon.transform.parent.GetComponentsInChildren<Text>()[0];
         nameitemmua = btnchon.transform.parent.name;
-
+               debug.Log("Xem itemmua " + nameitemmua);
         GameObject menu = Instantiate(Inventory.LoadObjectResource("GameData/" + nameEvent + "/MenuMuaItem"), transform.position, Quaternion.identity);
         menumuaitem = menu;
         menu.transform.SetParent(CrGame.ins.trencung.transform, false);
@@ -1333,12 +1348,13 @@ public class MenuEventTrungThu2024 : EventManager
                     ExitMenuQueThu();
                     //  SetXeng(json["soxeng"].AsString);
                     CrGame.ins.OnThongBaoNhanh("Mua thành công!");
-                    txtupdate.text = json["soitem"].AsString;
-                    if (txtupdate.transform.parent.transform.parent.name == "Item")
-                    {
-                        string s = json["soitem"].AsString;
-                        txtupdate.text = s;
-                    }
+                    
+                     SetTxtNguyenLieu(nameitemmua, json["soitem"].AsInt);
+                 //   if (txtupdate.transform.parent.transform.parent.name == "Item")
+                   // {
+                     //   string s = json["soitem"].AsString;
+                     //   txtupdate.text = s;
+                  //  }
                     //SetsucXac(json["sucxac"].AsString);
                 }
             }
@@ -1351,5 +1367,50 @@ public class MenuEventTrungThu2024 : EventManager
     private void ExitMenuQueThu()
     {
         Destroy(menumuaitem); soluongMuaQueThu = 1;
+    }
+        public void OpenMenuNhiemvu()
+    {
+        AudioManager.SoundClick();
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = nameEvent;
+        datasend["method"] = "GetNhiemVu";
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
+        {
+            debug.Log(json.ToString());
+            if (json["status"].AsString == "0")
+            {
+                GameObject MenuNhiemVu = GetCreateMenu("MenuNhiemVu", CrGame.ins.trencung, true);
+                GameObject AllNhiemVu = MenuNhiemVu.transform.GetChild(1).transform.GetChild(0).transform.GetChild(0).gameObject;
+                GameObject obj = AllNhiemVu.transform.GetChild(0).gameObject;
+                for (int i = 0; i < json["allNhiemvu"].Count; i++)
+                {
+                    //debug.Log(json["allNhiemvu"][i].ToString());
+                    GameObject instan = Instantiate(obj, transform.position, Quaternion.identity);
+                    instan.transform.SetParent(AllNhiemVu.transform, false);
+                    Text txtnv = instan.transform.GetChild(0).GetComponent<Text>();
+                    txtnv.text = json["allNhiemvu"][i]["namenhiemvu"].Value;
+
+                    Text txttiendo = instan.transform.GetChild(1).GetComponent<Text>();
+                    Text txtphanthuong = instan.transform.GetChild(2).GetComponent<Text>();
+                    if (int.Parse(json["allNhiemvu"][i]["dalam"].Value) >= int.Parse(json["allNhiemvu"][i]["maxnhiemvu"].Value))
+                    {
+                        txttiendo.text = "<color=#00ff00ff>" + GamIns.FormatCash(json["allNhiemvu"][i]["dalam"].AsInt) + "/" + GamIns.FormatCash(json["allNhiemvu"][i]["maxnhiemvu"].AsInt) + "</color>";
+                    }
+                    else
+                    {
+                        txttiendo.text = "<color=#ff0000ff>" + GamIns.FormatCash(json["allNhiemvu"][i]["dalam"].AsInt) + "/" + GamIns.FormatCash(json["allNhiemvu"][i]["maxnhiemvu"].AsInt) + "</color>";
+                    }
+                    txtphanthuong.text = json["allNhiemvu"][i]["qua"]["soluong"].AsString;
+                    Image img = instan.transform.GetChild(3).GetComponent<Image>();
+                    img.sprite = GetSprite(json["allNhiemvu"][i]["qua"]["name"].AsString);
+
+                    img.SetNativeSize();
+                    instan.SetActive(true);
+                }
+                MenuNhiemVu.transform.GetChild(0).transform.Find("btnExit").GetComponent<Button>().onClick.AddListener(delegate { DestroyMenu("MenuNhiemVu"); });
+
+            }
+        }
     }
 }
