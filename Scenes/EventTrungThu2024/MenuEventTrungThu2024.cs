@@ -18,7 +18,7 @@ public class MenuEventTrungThu2024 : EventManager
     public Transform allvitri, allvitriFriend, Khung;
     JSONNode NguyenLieuYeuCau;
     public Text txtLongDenThuThap;
-    public GameObject BuomXanh, ObjFriend, allObjThis;
+    public GameObject BuomXanh, ObjFriend, allObjThis,animLamBanh;
     string[] MaubuomArray = Enum.GetNames(typeof(_mauBuom));
     public static MenuEventTrungThu2024 inss;
     public Transform trencay,duoicay,traicay,phaicay;
@@ -216,6 +216,12 @@ public class MenuEventTrungThu2024 : EventManager
             debug.Log(json);
             if (json["status"].AsString == "0")
             {
+                if(!animLamBanh.activeSelf)
+                {
+                    animLamBanh.SetActive(true);
+                    StartDelay(() => { animLamBanh.SetActive(false); },0.6f);
+                }    
+               
                 foreach (KeyValuePair<string, JSONNode> key in json["item"].AsObject)
                 {
                     SetTxtNguyenLieu(key.Key, json["item"][key.Key].AsInt);

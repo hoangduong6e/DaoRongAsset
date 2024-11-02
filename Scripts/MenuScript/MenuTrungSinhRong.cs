@@ -122,7 +122,7 @@ public class MenuTrungSinhRong : MonoBehaviour
                                 SetRong();
                             }
                         }
-                        else if (itemdra.nameObjectDragon == "RongRua" && nameimg == "RongRua2" || itemdra.nameObjectDragon == "RongNguSac" && nameimg == "RongNguSac2")
+                        else if (itemdra.nameObjectDragon == "RongRua" && nameimg == "RongRua2")
                         {
                             if (int.Parse(itemdra.txtSao.text) >= 10 && int.Parse(itemdra.txtSao.text) <= 22)
                             {
