@@ -11,6 +11,7 @@ public class RongNguSacAttack : DragonPVEController
     float[] timesong = new float[] {0,0};
     public Transform[] NamNguSac;
     byte solantrieuhoi = 0;
+    string namenam = "NamNguSac1";
     protected override void ABSAwake()
     {
 
@@ -21,7 +22,6 @@ public class RongNguSacAttack : DragonPVEController
     }
     private void TrieuHoiNamNguSac()
     {
-        string namenam = "NamNguSac1";
         float hpnam = 0;
         float satthuongnam = 0;
         if (saorong <= 20)
@@ -141,6 +141,7 @@ public class RongNguSacAttack : DragonPVEController
                 if (timesong[i] > maxtimesong)
                 {
                     NamNguSac[i].transform.Find("SkillDra").GetComponent<DragonPVEController>().MatMau(99999999, null);
+                    GiaoDienPVP.ins.AddHienRong(namenam, -1);
                     timesong[i] = 0;
                 }
 

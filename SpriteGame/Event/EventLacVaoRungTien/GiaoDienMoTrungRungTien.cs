@@ -87,7 +87,7 @@ public class GiaoDienMoTrungRungTien : MonoBehaviour
     public void MoTrung(string x)
     {
         GameObject btnchon = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
-          debug.Log(btnchon.transform.GetChild(3).gameObject.name);
+         // debug.Log(btnchon.transform.GetChild(3).gameObject.name);
         if (HienXacnhanmotrung && btnchon.transform.GetChild(3).gameObject.activeSelf)
         {
             EventManager.OpenThongBaoChon("<color=red>Lượt quay này sẽ tốn</color> <color=magenta>Kim cương</color>\n<color=yellow>(chỉ nhắc lần đầu)</color>", delegate { Quay(); HienXacnhanmotrung = false; });

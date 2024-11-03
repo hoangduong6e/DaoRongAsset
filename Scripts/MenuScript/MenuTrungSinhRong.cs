@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -66,6 +67,8 @@ public class MenuTrungSinhRong : MonoBehaviour
                               itemdra.nameObjectDragon == "RongKyLanDo" && nameimg == "RongKyLanDo2" || itemdra.nameObjectDragon == "RongMaTroiGiapThin" && nameimg == "RongMaTroi2"
                               || itemdra.nameObjectDragon == "RongRua" && nameimg == "RongRua2" || itemdra.nameObjectDragon == "RongNguSac" && nameimg == "RongNguSac2"
                               || itemdra.nameObjectDragon == "RongPhuongHoangDungNham" && nameimg == "RongPhuongHoangDungNham2"
+                              || itemdra.nameObjectDragon == "RongMatXe" && nameimg == "RongMatXe2"
+                              || itemdra.nameObjectDragon == "RongHuyetNguyetLong" && nameimg == "RongHuyetNguyetLong2"
                              ) 
                     {
 
@@ -87,7 +90,7 @@ public class MenuTrungSinhRong : MonoBehaviour
                         }
                         else if (itemdra.nameObjectDragon == "RongNguyetLong" && nameimg == "RongNguyetLong2")
                         {
-                            if (int.Parse(itemdra.txtSao.text) >= 10 && int.Parse(itemdra.txtSao.text) <= 17)
+                            if (int.Parse(itemdra.txtSao.text) >= 10 && int.Parse(itemdra.txtSao.text) <= 22)
                             {
                                 SetRong();
                             }
@@ -136,7 +139,20 @@ public class MenuTrungSinhRong : MonoBehaviour
                                 SetRong();
                             }
                         }
-                     
+                        else if (itemdra.nameObjectDragon == "RongMatXe" && nameimg == "RongMatXe2")
+                        {
+                            if (int.Parse(itemdra.txtSao.text) >= 16 && int.Parse(itemdra.txtSao.text) <= 20)
+                            {
+                                SetRong();
+                            }
+                        }
+                        else if (itemdra.nameObjectDragon == "RongHuyetNguyetLong" && nameimg == "RongHuyetNguyetLong2")
+                        {
+                            if (int.Parse(itemdra.txtSao.text) >= 23 && int.Parse(itemdra.txtSao.text) <= 24)
+                            {
+                                SetRong();
+                            }
+                        }
                         else
                         {
                             if (int.Parse(itemdra.txtSao.text) >= 2 && int.Parse(itemdra.txtSao.text) < 22)
@@ -266,7 +282,56 @@ public class MenuTrungSinhRong : MonoBehaviour
             }
         }
     }
-
+    public void OpenChuyenHoaRongNguyetLong()
+    {
+        GameObject contentRong = transform.GetChild(1).transform.GetChild(1).transform.GetChild(0).transform.GetChild(0).gameObject;
+        GameObject allitemcan = transform.GetChild(0).transform.Find("allitemcan").gameObject;
+        Image item1 = allitemcan.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>();
+        item1.sprite = Inventory.LoadSprite("SungMaTroi");
+        transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text = "Chuyển hóa Rồng Huyết Nguyệt Long";
+        transform.GetChild(0).transform.GetChild(1).GetComponent<Text>().text = "Yêu cầu vật phẩm <color=#00ff00ff>Trăng Tròn</color> để <color=#ffa500ff>Chuyển hóa</color> <color=#ffff00ff>Rồng Nguyệt Long</color> <color=#ff0000ff>trường thành</color> 23 sao thành <color=#ffff00ff>Rồng Huyết Nguyệt Long</color> ";
+        for (int i = 1; i < contentRong.transform.childCount; i++)
+        {
+            Destroy(contentRong.transform.GetChild(i).gameObject);
+        }
+        GameObject g = transform.GetChild(0).gameObject;
+        //SpriteRenderer spriteRongChon = g.transform.Find("SpriteRongChon").GetComponent<SpriteRenderer>();
+        // Text txtQuaThong = transform.GetChild(0).transform.GetChild(3).GetComponent<Text>();
+        //SpriteRenderer SpriteRongNang = g.transform.Find("SpriteRongNangCap").GetComponent<SpriteRenderer>();
+        // txtQuaThong.gameObject.SetActive(false);
+        ClearRongGd();
+        for (int i = 0; i < allitemcan.transform.childCount; i++)
+        {
+            allitemcan.transform.GetChild(i).gameObject.SetActive(false);
+        }
+        if (Inventory.ins.TuiRong.transform.childCount > 1)
+        {
+            for (int i = 0; i < Inventory.ins.TuiRong.transform.childCount - 1; i++)
+            {
+                if (Inventory.ins.TuiRong.transform.GetChild(i).transform.childCount > 0)
+                {
+                    ItemDragon itemdra = Inventory.ins.TuiRong.transform.GetChild(i).transform.GetChild(0).GetComponent<ItemDragon>();
+                    string nameimg = itemdra.transform.GetChild(0).GetComponent<Image>().sprite.name;
+                    if (int.Parse(itemdra.txtSao.text) == 23)
+                    {
+                        if (itemdra.nameObjectDragon == "RongNguyetLong" && nameimg == "RongNguyetLong2")
+                        {
+                            GameObject rong = Instantiate(contentRong.transform.GetChild(0).gameObject, transform.position, Quaternion.identity);
+                            rong.transform.SetParent(contentRong.transform, false);
+                            // ite
+                            rong.name = itemdra.name;
+                            Image imgRong = rong.transform.GetChild(0).GetComponent<Image>();
+                            imgRong.sprite = Inventory.LoadSpriteRong(itemdra.nameObjectDragon + "2"); imgRong.SetNativeSize();
+                            rong.transform.GetChild(1).GetComponent<Text>().text = itemdra.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text;
+                            rong.transform.GetChild(2).GetComponent<Text>().text = itemdra.txtSao.text;
+                            // AddSlotRong(item.name, item.nameObjectDragon, ""); //item.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text
+                            rong.SetActive(true);
+                        }
+                    }
+                }
+            }
+        }
+    }
     public void ChonRongNangSao()
     {
         CrGame.ins.panelLoadDao.SetActive(true) ;
@@ -348,8 +413,13 @@ public class MenuTrungSinhRong : MonoBehaviour
                 }    
                 else
                 {
+                    
                     txtsaotruoc.text = saorong.ToString() + " sao";
                     txtsaosau.text = saorong.ToString() + " sao";
+                    if(namerong == "RongNguyetLong")
+                    {
+                        txtsaosau.text = (int.Parse(saorong.ToString())-1) + " sao";
+                    }
                     //animrongnang.runtimeAnimatorController = Inventory.LoadAnimator(json["namechuyenhoa"].AsString);
                     //animrongnang.SetInteger("TienHoa", 2);
                     SetRongGd(namerong + "2", json["namechuyenhoa"].AsString + "1");
@@ -364,6 +434,8 @@ public class MenuTrungSinhRong : MonoBehaviour
                     int itemcan = json["allitem"][i]["soluong"].AsInt;
                     imgitem.sprite = Inventory.LoadSprite(json["allitem"][i]["nameitem"].AsString);
                     txtyeucau.text = json["allitem"][i]["txtyeucau"].AsString;
+                    imgitem.SetNativeSize();
+                    GamIns.ResizeItem(imgitem);
                     //if (itemco >= itemcan)
                     //{
                     //    txtyeucau.text = "<color=#00ff00ff>" + itemco + "/" + itemcan + "</color>";
@@ -517,8 +589,11 @@ public class MenuTrungSinhRong : MonoBehaviour
         Button btndoi = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
         btndoi.interactable = false;
         CrGame.ins.panelLoadDao.SetActive(true);
-        string load = "TrungSinh";
-        if (transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text == "Chuyển hóa Rồng Lửa Mắt Xanh" || transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text == "Chuyển hóa Rồng Ma Trơi") load = "ChuyenHoa";
+        string load = "TrungSinh"; 
+        if (transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text == "Chuyển hóa Rồng Lửa Mắt Xanh" 
+            || transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text == "Chuyển hóa Rồng Ma Trơi"
+            || transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text == "Chuyển hóa Rồng Huyết Nguyệt Long"
+            ) load = "ChuyenHoa";
 
         AudioManager.PlaySound("soundClick");
        // Transform tf = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.transform.parent;
@@ -552,7 +627,13 @@ public class MenuTrungSinhRong : MonoBehaviour
                             }
                             else
                             {
-                                img.sprite = Inventory.LoadSpriteRong(json["namerongchuyenhoa"].AsString + "2");
+                                if(json["namerongchuyenhoa"].AsString == "RongHuyetNguyetLong")
+                                {
+                                    img.sprite = Inventory.LoadSpriteRong(json["namerongchuyenhoa"].AsString + "1");
+                                    itemdra.txtSao.text = "22";
+                                }
+                                else img.sprite = Inventory.LoadSpriteRong(json["namerongchuyenhoa"].AsString + "2");
+
                                 CrGame.ins.OnThongBaoNhanh("Chuyển hóa thành công");
                             }
                             img.SetNativeSize();

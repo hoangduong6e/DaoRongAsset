@@ -507,28 +507,43 @@ public class MenuEventTrungThu2024 : EventManager
             }
         }
     }
+    private bool hienxacnhan = true;
     public void ThapLongDen(byte solanquay)
     {
-        AudioManager.PlaySound("soundClick");
-        JSONClass datasend = new JSONClass();
-        datasend["class"] = nameEvent;
-        datasend["method"] = "ThapLongDen";
-        datasend["data"]["solanquay"] = solanquay.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
-        void Ok(JSONNode json)
+        GameObject btnchon = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+
+        if (hienxacnhan && btnchon.transform.GetChild(3).gameObject.activeSelf)
         {
-            if (json["status"].AsString == "0")
+            EventManager.OpenThongBaoChon("<color=red>Lượt thắp Lồng Đèn này sẽ tốn</color> <color=magenta>Kim cương</color>\n<color=yellow>(chỉ nhắc lần đầu)</color>", delegate { Thap(); hienxacnhan = false; });
+        }
+        else
+        {
+            Thap();
+        }
+        void Thap()
+        {
+            AudioManager.PlaySound("soundClick");
+            JSONClass datasend = new JSONClass();
+            datasend["class"] = nameEvent;
+            datasend["method"] = "ThapLongDen";
+            datasend["data"]["solanquay"] = solanquay.ToString();
+            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+            void Ok(JSONNode json)
             {
-                StartCoroutine(DelayHienQua(json["allqua"]));
-                SetYeuCau(json["YeuCau"]);
-                menuevent["GiaoDien2"].transform.Find("itemLongDen").GetChild(1).GetComponent<Text>().text = json["LongDenGiay"].AsString;
-                LoadMocQuaGD2(json["QuaTichLuyGD2"], json["allMocDiemGD2"], json["solanthaplongden"].AsInt);
-            }
-            else
-            {
-                CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+                if (json["status"].AsString == "0")
+                {
+                    StartCoroutine(DelayHienQua(json["allqua"]));
+                    SetYeuCau(json["YeuCau"]);
+                    menuevent["GiaoDien2"].transform.Find("itemLongDen").GetChild(1).GetComponent<Text>().text = json["LongDenGiay"].AsString;
+                    LoadMocQuaGD2(json["QuaTichLuyGD2"], json["allMocDiemGD2"], json["solanthaplongden"].AsInt);
+                }
+                else
+                {
+                    CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+                }
             }
         }
+     
     }
     public void CloseGD2()
     {
@@ -1419,7 +1434,6 @@ public class MenuEventTrungThu2024 : EventManager
             }
         }
     }
-
 
     public void OpenMenuDoiManh2()
     {
