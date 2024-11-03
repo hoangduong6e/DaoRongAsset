@@ -251,7 +251,7 @@ public abstract class DragonIslandController : MonoBehaviour
             }
         }
     }
-    protected void scale(float x)
+    protected virtual void scale(float x)
     {
         Vector3 scale = transform.localScale;
         scale.x = Mathf.Abs(scale.x) * x;

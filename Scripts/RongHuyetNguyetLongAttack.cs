@@ -5,10 +5,24 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 public class RongHuyetNguyetLongAttack : DragonPVEController
 {
+    public ParticleSystem scaleduoi;
     protected override void ABSAwake()
     {
-      
+
     }
+ //   private void flipduoi(float x)
+//{
+      //  var shape = scaleduoi.shape;
+        //if(x < 0)
+      //  {
+            
+       // }
+      //  else
+     //   {
+        
+      //      shape.alignToDirection = false;
+      //  }
+ //   }
     public override void ChoangABS(float giay = 0.2f)
     {
        // ChoangDefault(giay);
@@ -22,6 +36,13 @@ public class RongHuyetNguyetLongAttack : DragonPVEController
         //    actionUpdateAnimAttack += AbsUpdateAnimAttackRongCay;
         //    actionMoveSkillok += SkillMoveOkRongDat;
         //}
+        scaleduoi = transform.parent.transform.GetChild(1).transform.GetChild(0).transform.Find("Tail").transform.GetChild(0).GetComponent<ParticleSystem>();
+        if(team == Team.TeamXanh)
+        {
+            var shape = scaleduoi.shape;
+            shape.alignToDirection = true;
+        }
+        
         
     }
     protected override void Updatee()

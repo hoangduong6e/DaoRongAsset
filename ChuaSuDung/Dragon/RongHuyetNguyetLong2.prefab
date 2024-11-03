@@ -129,7 +129,7 @@ GameObject:
   - component: {fileID: 543884909016620782}
   - component: {fileID: 543884909016620781}
   - component: {fileID: 543884909016620780}
-  - component: {fileID: 543884909016620783}
+  - component: {fileID: 3776886261200748853}
   - component: {fileID: 543884907626295754}
   m_Layer: 0
   m_Name: RongHuyetNguyetLong2
@@ -234,7 +234,7 @@ SortingGroup:
   m_SortingLayerID: -1681552639
   m_SortingLayer: 2
   m_SortingOrder: 0
---- !u!114 &543884909016620783
+--- !u!114 &3776886261200748853
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -243,11 +243,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 543884909016620778}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 858c43bf5f7cd7f4fa4aa8937e14c8be, type: 3}
+  m_Script: {fileID: 11500000, guid: f447f34f2a05648a4ae0cfd4c9637771, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   nameSkill: RongHuyetNguyetLong
   Idlle: Idlle
+  effduoi: {fileID: 5606520165555769147}
 --- !u!114 &543884907626295754
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1697,7 +1698,7 @@ ParticleSystem:
       m_RotationOrder: 4
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
-  scalingMode: 1
+  scalingMode: 0
   randomSeed: 0
   InitialModule:
     serializedVersion: 3
