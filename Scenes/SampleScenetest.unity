@@ -16148,6 +16148,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90912338900b06d469867304da316bbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  RestoreButton: {fileID: 0}
+  skimcuong:
+  - com.memobi.studio.300kimcuong
+  - com.memobi.studio.1500kimcuong
+  - com.memobi.studio.3500kimcuong
+  sokimcuong:
+  - 300
+  - 1500
+  - 3500
+  sotien:
+  - "19.000\u0110"
+  - "99.000\u0110"
+  - "199.000\u0110"
 --- !u!1 &526063580
 GameObject:
   m_ObjectHideFlags: 0
@@ -16446,10 +16459,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1850188105}
     m_Modifications:
-    - target: {fileID: 471651552, guid: 19eaa786bee8b463a84ea3e4935e7a02, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -142.90002
-      objectReference: {fileID: 0}
     - target: {fileID: 4062284100517395188, guid: 19eaa786bee8b463a84ea3e4935e7a02, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

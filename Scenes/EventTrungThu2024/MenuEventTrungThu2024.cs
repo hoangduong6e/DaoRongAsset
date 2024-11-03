@@ -193,6 +193,7 @@ public class MenuEventTrungThu2024 : EventManager
         {
             TaoBuomBuom();
         }
+        transform.Find("txtTime").GetComponent<Text>().text = json["timeketthuc"].AsString;
 
     }
     public void SetTxtNguyenLieu(string name, int soluong)
