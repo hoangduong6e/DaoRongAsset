@@ -294,7 +294,7 @@ public abstract class EventManager : MonoBehaviour
     }
     public void OpenMenuDoiManh()
     {
-        return;
+        //return;
         AudioManager.PlaySound("soundClick");
         JSONClass datasend = new JSONClass();
         datasend["class"] = EventManager.ins.nameEvent;
