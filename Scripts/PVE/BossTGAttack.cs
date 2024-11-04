@@ -125,6 +125,7 @@ public class BossTGAttack : DragonPVEController
     }
     private void SkillMoveOkk()
     {
+       // debug.Log("Target.name " + Target.name);
         if (Target.name != "trudo" && Target.name != "truxanh")
         {
             DragonPVEController dra = Target.transform.Find("SkillDra").GetComponent<DragonPVEController>();
@@ -133,6 +134,7 @@ public class BossTGAttack : DragonPVEController
         else
         {
             KillTru();
+            debug.Log("kill tru");
         }
         //List<Transform> ronggan = new List<Transform>(PVEManager.GetDraDungTruoc(3, Target.transform.parent.transform, new Vector2(3, 2)));
         //float damee = dame;

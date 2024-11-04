@@ -695,6 +695,7 @@ public abstract class DragonPVEController : MonoBehaviour
     }
     public void KillTru(float hp = 3000)
     {
+       // debug.Log("killl tru");
         TruVienChinh truvienchinh = null;
         if (team == Team.TeamXanh)
         {
@@ -705,7 +706,7 @@ public abstract class DragonPVEController : MonoBehaviour
             truvienchinh = VienChinh.vienchinh.TeamXanh.transform.GetChild(0).GetComponent<TruVienChinh>();
 
         }
-
+        //   debug.Log("killl tru2");
         truvienchinh.MatMau(hp);
         ReplayData.AddKillTru(transform.parent.name);
     }
