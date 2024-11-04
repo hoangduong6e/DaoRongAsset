@@ -819,10 +819,17 @@ public class LoginFacebook : MonoBehaviour
     {
         //NameServer = GameObject.Find("InputNameServer").GetComponent<InputField>().text;
         yield return id != "";
-        postLogin p = new postLogin(id,nameNv,matkhau,"android");
+
+        string hedieuhanh = "khac";
+#if UNITY_IOS
+      hedieuhanh = "ios";
+#elif UNITY_ANDROID
+        hedieuhanh = "android";
+#endif
+          postLogin p = new postLogin(id,nameNv,matkhau, hedieuhanh);
         string data = JsonUtility.ToJson(p);
         //var request = new UnityWebRequest(LoginFacebook.http + "://"+NameServer+"/dangnhapfbk1.7", "POST");
-        var request = new UnityWebRequest(LoginFacebook.http + "://"+NameServer+"/dangnhapfbk3.7", "POST");
+        var request = new UnityWebRequest(LoginFacebook.http + "://"+NameServer+"/dangnhapfbk3.8", "POST");
       //  debug.Log(crgame.ServerName + "dangnhapfbk");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(data);
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);

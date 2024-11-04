@@ -154,7 +154,6 @@ public class CrGame : MonoBehaviour
         giaodien.transform.Find("GameObjecttat").transform.Find("btnNap").GetComponent<Button>().onClick.AddListener(delegate { AllMenu.ins.OpenMenu("MenuNapThe"); });
 #endif
     }
-
     DateTime ConvertToVietnamTime(DateTime currentTime)
     {
         // Lấy thông tin về múi giờ của Việt Nam

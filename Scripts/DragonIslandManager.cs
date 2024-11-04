@@ -251,8 +251,14 @@ public class DragonIslandManager : MonoBehaviour
                 
                 AllMenu.ins.LoadRongGiaoDien(json["data"]["nameobject"].AsString, khamngoc.animRong.transform,1,false);
 
-                imgngoc.SetNativeSize();
-                GamIns.ResizeItem(imgngoc, 120);
+                if(imgngoc != null)
+                {
+
+                    imgngoc.SetNativeSize();
+                    GamIns.ResizeItem(imgngoc, 120);
+
+                }
+
                 //
                 //DragonController dra = CrGame.ins.TfrongInfo.GetComponent<DragonController>();
                 // khamngoc.animRong.runtimeAnimatorController = CrGame.ins.TfrongInfo.GetComponent<Animator>().runtimeAnimatorController;

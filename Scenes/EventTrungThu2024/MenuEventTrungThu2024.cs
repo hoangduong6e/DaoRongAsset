@@ -858,6 +858,11 @@ public class MenuEventTrungThu2024 : EventManager
                     LoadMocQuaBXH(json["quatichluythiep"], json["allMocDiemquatichluythiep"], json["duoctangthiep"].AsInt);
                 }
 
+
+                if (LoginFacebook.ins.NameServer.Split(':')[1] == "4567") //sv2 sv3
+                {
+                    menu.transform.GetChild(0).transform.Find("MenuPhanThuong").transform.GetChild(0).GetComponent<Image>().sprite = EventManager.ins.GetSprite("bxhtop20");
+                }
                 GameObject mntop = menu.transform.GetChild(0).transform.GetChild(4).gameObject;
                 menu.transform.GetChild(0).transform.Find("btnExit").GetComponent<Button>().onClick.AddListener(delegate { DestroyMenu("MenuTop"); sangtrang = false; trang = 1; trangg = 1; top = 0; topcuoi = 0; });
                 Button btn = mntop.transform.GetChild(1).GetComponent<Button>();

@@ -161,8 +161,13 @@ public class KhamNgoc : MonoBehaviour
                 txthuthp.text = "+" + json["chisongoc"]["hutmau"].Value + "%";
                 AddTuiNgoc(namengoc, -1);
                 Inventory.ins.AddNgoc(namengoc, -1);
-                imgngoc.SetNativeSize();
-                GamIns.ResizeItem(imgngoc,120);
+                //debug.Log("imgngoc "+imgngoc);
+                if(imgngoc != null)
+                {
+                    imgngoc.SetNativeSize();
+                    GamIns.ResizeItem(imgngoc, 120);
+                }    
+           
             }
             else
             {
