@@ -199,6 +199,7 @@ public class DragonIslandManager : MonoBehaviour
             {
                 AllMenu.ins.OpenMenu("MenuKhamNgoc");
                 KhamNgoc khamngoc = AllMenu.ins.menu["MenuKhamNgoc"].GetComponent<KhamNgoc>();
+                Image imgngoc = null;
                 for (int i = 0; i < json["data"]["allngoc"].Count; i++)
                 {
                     // debug.Log(json["data"]["allngoc"][i]["namengoc"].Value);
@@ -207,7 +208,7 @@ public class DragonIslandManager : MonoBehaviour
                 if (json["data"]["ngocrong"]["ngoc1"]["name"].Value != "")
                 {
                     khamngoc.oNgoc.transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(true);
-                    Image imgngoc = khamngoc.oNgoc.transform.GetChild(0).transform.GetChild(1).GetComponent<Image>();
+                     imgngoc = khamngoc.oNgoc.transform.GetChild(0).transform.GetChild(1).GetComponent<Image>();
                     imgngoc.gameObject.SetActive(true);
                     imgngoc.sprite = Inventory.LoadSprite(json["data"]["ngocrong"]["ngoc1"]["name"].Value);
                     imgngoc.name = json["data"]["ngocrong"]["ngoc1"]["name"].Value;
@@ -218,7 +219,7 @@ public class DragonIslandManager : MonoBehaviour
                     if (json["data"]["ngocrong"]["ngoc2"]["name"].Value != "")
                     {
                         khamngoc.oNgoc.transform.GetChild(1).transform.GetChild(0).gameObject.SetActive(true);
-                        Image imgngoc = khamngoc.oNgoc.transform.GetChild(1).transform.GetChild(1).GetComponent<Image>();
+                         imgngoc = khamngoc.oNgoc.transform.GetChild(1).transform.GetChild(1).GetComponent<Image>();
                         imgngoc.gameObject.SetActive(true);
                         imgngoc.sprite = Inventory.LoadSprite(json["data"]["ngocrong"]["ngoc2"]["name"].Value);
                         imgngoc.name = json["data"]["ngocrong"]["ngoc2"]["name"].Value;
@@ -230,7 +231,7 @@ public class DragonIslandManager : MonoBehaviour
                     if (json["data"]["ngocrong"]["ngoc3"]["name"].Value != "")
                     {
                         khamngoc.oNgoc.transform.GetChild(2).transform.GetChild(0).gameObject.SetActive(true);
-                        Image imgngoc = khamngoc.oNgoc.transform.GetChild(2).transform.GetChild(1).GetComponent<Image>();
+                         imgngoc = khamngoc.oNgoc.transform.GetChild(2).transform.GetChild(1).GetComponent<Image>();
                         imgngoc.gameObject.SetActive(true);
                         imgngoc.sprite = Inventory.LoadSprite(json["data"]["ngocrong"]["ngoc3"]["name"].Value);
                         imgngoc.name = json["data"]["ngocrong"]["ngoc3"]["name"].Value;
@@ -249,6 +250,9 @@ public class DragonIslandManager : MonoBehaviour
                 khamngoc.txthuthp.text = "+" + json["data"]["chisongoc"]["hutmau"].Value + "%";
                 
                 AllMenu.ins.LoadRongGiaoDien(json["data"]["nameobject"].AsString, khamngoc.animRong.transform,1,false);
+
+                imgngoc.SetNativeSize();
+                GamIns.ResizeItem(imgngoc, 120);
                 //
                 //DragonController dra = CrGame.ins.TfrongInfo.GetComponent<DragonController>();
                 // khamngoc.animRong.runtimeAnimatorController = CrGame.ins.TfrongInfo.GetComponent<Animator>().runtimeAnimatorController;

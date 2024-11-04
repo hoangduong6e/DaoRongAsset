@@ -492,7 +492,7 @@ public class MenuEventTrungThu2024 : EventManager
                 btnBXH.onClick.RemoveAllListeners();
                 btnBXH.onClick.AddListener(XemBXH);
                 btnDoiQua.onClick.RemoveAllListeners();
-                btnDoiQua.onClick.AddListener(OpenMenuDoiManh);
+                btnDoiQua.onClick.AddListener(OpenMenuDoiManh2);
 
                 SetYeuCau(json["YeuCau"]);
                 LoadMocQuaGD2(json["QuaTichLuyGD2"], json["allMocDiemGD2"], json["solanthaplongden"].AsInt);
@@ -758,6 +758,7 @@ public class MenuEventTrungThu2024 : EventManager
     bool sangtrang = false; int trang = 1, trangg = 1; float top, topcuoi;
     private void XemBXH()
     {
+       
         AudioManager.PlaySound("soundClick");
         JSONClass datasend = new JSONClass();
         datasend["class"] = nameEvent;
@@ -858,8 +859,10 @@ public class MenuEventTrungThu2024 : EventManager
                 }
 
                 GameObject mntop = menu.transform.GetChild(0).transform.GetChild(4).gameObject;
-                menu.transform.GetChild(0).transform.Find("btnExit").GetComponent<Button>().onClick.AddListener(delegate { DestroyMenu("MenuTop"); });
-                mntop.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(delegate { sangtrangtop(1); });
+                menu.transform.GetChild(0).transform.Find("btnExit").GetComponent<Button>().onClick.AddListener(delegate { DestroyMenu("MenuTop"); sangtrang = false; trang = 1; trangg = 1; top = 0; topcuoi = 0; });
+                Button btn = mntop.transform.GetChild(1).GetComponent<Button>();
+                btn.onClick.RemoveAllListeners();
+                btn.onClick.AddListener(delegate { sangtrangtop(1); });
                 menu.SetActive(true);
             }
         }
@@ -1349,7 +1352,6 @@ public class MenuEventTrungThu2024 : EventManager
             }
         }
     }
-
     public void MuaQueThu()
     {
         AudioManager.SoundClick();
@@ -1443,6 +1445,7 @@ public class MenuEventTrungThu2024 : EventManager
         JSONClass datasend = new JSONClass();
         datasend["class"] = EventManager.ins.nameEvent;
         datasend["method"] = "MenuDoiManh";
+        if (menuevent.ContainsKey("GiaoDien2")) datasend["method"] = "MenuDoiManh2";
         NetworkManager.ins.SendServer(datasend.ToString(), Ok);
 
         void Ok(JSONNode json)
@@ -1506,10 +1509,12 @@ public class MenuEventTrungThu2024 : EventManager
         JSONClass datasend = new JSONClass();
         datasend["class"] = EventManager.ins.nameEvent;
         datasend["method"] = "XemManhDoi";
+        if (menuevent.ContainsKey("GiaoDien2")) datasend["method"] = "XemManhDoi2";
         datasend["data"]["namemanh"] = namemanhchon;
         NetworkManager.ins.SendServer(datasend.ToString(), Ok);
         void Ok(JSONNode json)
         {
+            Debug.Log(json.ToString());
             for (int i = 1; i < yeucau.transform.childCount; i++)
             {
                 Destroy(yeucau.transform.GetChild(i).gameObject);
@@ -1517,7 +1522,7 @@ public class MenuEventTrungThu2024 : EventManager
             int sonvok = 0;
             for (int i = 0; i < json["manhdoi"]["itemcan"].Count; i++)
             {
-                Debug.Log(json["manhdoi"]["itemcan"].ToString());
+          
                 GameObject g = yeucau.transform.GetChild(0).gameObject;
                 GameObject instan = Instantiate(g, transform.position, Quaternion.identity);
                 instan.transform.SetParent(yeucau.transform, false);
@@ -1586,7 +1591,9 @@ public class MenuEventTrungThu2024 : EventManager
         JSONClass datasend = new JSONClass();
         datasend["class"] = EventManager.ins.nameEvent;
         datasend["method"] = "DoiQua";
+        if (menuevent.ContainsKey("GiaoDien2")) datasend["method"] = "DoiQua2";
         datasend["data"]["namemanh"] = namemanhchon;
+     
         NetworkManager.ins.SendServer(datasend.ToString(), Ok);
         void Ok(JSONNode json)
         {

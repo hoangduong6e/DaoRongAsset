@@ -363,6 +363,7 @@ public abstract class EventManager : MonoBehaviour
         NetworkManager.ins.SendServer(datasend.ToString(), Ok);
         void Ok(JSONNode json)
         {
+            debug.Log(json.ToString());
             for (int i = 0; i < yeucau.transform.childCount; i++)
             {
                 yeucau.transform.GetChild(i).gameObject.SetActive(false);

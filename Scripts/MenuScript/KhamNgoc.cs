@@ -125,10 +125,11 @@ public class KhamNgoc : MonoBehaviour
         {
             if (json["tb"].Value == "thành công")
             {
+                Image imgngoc = null;
                 if (json["ngocrong"]["ngoc1"]["name"].Value != "lock" && json["ngocrong"]["ngoc1"]["name"].Value != "")
                 {
                     oNgoc.transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(true);
-                    Image imgngoc = oNgoc.transform.GetChild(0).transform.GetChild(1).GetComponent<Image>();
+                     imgngoc = oNgoc.transform.GetChild(0).transform.GetChild(1).GetComponent<Image>();
                     imgngoc.gameObject.SetActive(true);
                     imgngoc.sprite = Inventory.LoadSprite(json["ngocrong"]["ngoc1"]["name"].Value);
                     imgngoc.name = json["ngocrong"]["ngoc1"]["name"].Value;
@@ -136,15 +137,16 @@ public class KhamNgoc : MonoBehaviour
                 if (json["ngocrong"]["ngoc2"]["name"].Value != "lock" && json["ngocrong"]["ngoc2"]["name"].Value != "")
                 {
                     oNgoc.transform.GetChild(1).transform.GetChild(0).gameObject.SetActive(true);
-                    Image imgngoc = oNgoc.transform.GetChild(1).transform.GetChild(1).GetComponent<Image>();
+                     imgngoc = oNgoc.transform.GetChild(1).transform.GetChild(1).GetComponent<Image>();
                     imgngoc.gameObject.SetActive(true);
                     imgngoc.sprite = Inventory.LoadSprite(json["ngocrong"]["ngoc2"]["name"].Value);
                     imgngoc.name = json["ngocrong"]["ngoc2"]["name"].Value;
+
                 }
                 if (json["ngocrong"]["ngoc3"]["name"].Value != "lock" && json["ngocrong"]["ngoc3"]["name"].Value != "")
                 {
                     oNgoc.transform.GetChild(2).transform.GetChild(0).gameObject.SetActive(true);
-                    Image imgngoc = oNgoc.transform.GetChild(2).transform.GetChild(1).GetComponent<Image>();
+                     imgngoc = oNgoc.transform.GetChild(2).transform.GetChild(1).GetComponent<Image>();
                     imgngoc.gameObject.SetActive(true);
                     imgngoc.sprite = Inventory.LoadSprite(json["ngocrong"]["ngoc3"]["name"].Value);
                     imgngoc.name = json["ngocrong"]["ngoc3"]["name"].Value;
@@ -159,6 +161,8 @@ public class KhamNgoc : MonoBehaviour
                 txthuthp.text = "+" + json["chisongoc"]["hutmau"].Value + "%";
                 AddTuiNgoc(namengoc, -1);
                 Inventory.ins.AddNgoc(namengoc, -1);
+                imgngoc.SetNativeSize();
+                GamIns.ResizeItem(imgngoc,120);
             }
             else
             {
