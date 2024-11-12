@@ -208,7 +208,13 @@ public class CrGame : MonoBehaviour
         if(timeNuiThanBi > 0)
         {
             timeNuiThanBi -= Time.deltaTime;
-        }    
+        }
+        #if UNITY_EDITOR
+        if(Input.GetKeyUp(KeyCode.L))
+        {
+            Time.timeScale = (Time.timeScale == 1)?Time.timeScale=2:Time.timeScale=1;
+        }
+        #endif
     }
     public void PointerDownNhatItemRoi(PointerEventData p)
     {

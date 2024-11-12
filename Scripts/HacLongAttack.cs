@@ -141,7 +141,9 @@ public class HacLongAttack : DragonPVEController
                 {
                     if (Target == null) return;
                     ReplayData.AddAttackTarget(transform.parent.name, i.ToString(), "dungdau");
-                 //   skillObj[i].transform.position = transform.position;
+                    //Vector3 newvec = transform.position;
+                 //   newvec.y += 1;
+                   // skillObj[i].transform.position = newvec;
                     skillObj[i].SetActive(true);
                     break;
                 }
