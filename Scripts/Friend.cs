@@ -218,7 +218,7 @@ public class Friend : MonoBehaviour
         StartCoroutine(DownloadImage());
         IEnumerator DownloadImage()
         {
-            UnityWebRequest request = UnityWebRequestTexture.GetTexture("http://" + LoginFacebook.ins.ServerChinh + "/LoadImage/namefolder/" + namefolder + "/name/" + namefile);
+            UnityWebRequest request = UnityWebRequestTexture.GetTexture(LoginFacebook.http + "://" + LoginFacebook.ins.ServerChinh + "/LoadImage/namefolder/" + namefolder + "/name/" + namefile);
             yield return request.SendWebRequest();
             if (request.isNetworkError || request.isHttpError)
                 debug.Log(request.error);

@@ -94,8 +94,8 @@ namespace SocketIO
 		{
             fb = GameObject.Find("facebookManager").GetComponent<LoginFacebook>();
             crgame = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CrGame>();
-            url = "ws://"+ fb.NameServer + "/socket.io/?EIO=4&transport=websocket";
-            crgame.ServerName = "http://" + fb.NameServer + "/";
+            url = LoginFacebook.ws + "://"+ fb.NameServer + "/socket.io/?EIO=4&transport=websocket";
+            crgame.ServerName = LoginFacebook.http + "://" + fb.NameServer + "/";
             encoder = new Encoder();
 			decoder = new Decoder();
 			parser = new Parser();

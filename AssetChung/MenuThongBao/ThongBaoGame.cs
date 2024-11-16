@@ -60,7 +60,7 @@ public class ThongBaoGame : MonoBehaviour
             panelLoadDao = GameObject.Find("facebookManager").GetComponent<LoginFacebook>().panelloaddao;
         }
         id = fb.id;
-        ServerName = "http://" + fb.ServerChinh + "/"; ;
+        ServerName = LoginFacebook.http + "://" + fb.ServerChinh + "/"; ;
         LoadThongBao();
 
     }

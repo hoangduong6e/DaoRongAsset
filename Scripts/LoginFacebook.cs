@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using SimpleJSON;
 using System;
+using System.Net;
 //using SIDGIN.Patcher.SceneManagment;
 //using SIDGIN.Patcher.Client;
 
@@ -27,7 +28,8 @@ public class LoginFacebook : MonoBehaviour
     public GameObject loginthuong,allloginthuong,panelloaddao;
     public string ServerChinh;
     public static LoginFacebook ins;
-    public static string http = "http";
+    public static string http = "https";
+    public static string ws = "wss";
     private void Awake()
     {
         //  LoadAllServer();
@@ -62,8 +64,26 @@ public class LoginFacebook : MonoBehaviour
 
     private void Start()
     {
+        // Bỏ qua kiểm tra chứng chỉ SSL
+        ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
         LoadAllServer();
         Application.targetFrameRate = 90;
+        StartCoroutine(delay());
+
+        IEnumerator delay()
+        {
+            UnityWebRequest request = UnityWebRequest.Get("https://napthedr.shop/");
+            yield return request.SendWebRequest();
+
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError("Error: " + request.error);
+            }
+            else
+            {
+                Debug.Log("Response: " + request.downloadHandler.text);
+            }
+        }
     }
     void PanelLoadDao(bool active)
     {
@@ -485,6 +505,7 @@ public class LoginFacebook : MonoBehaviour
             postLogin p = new postLogin(objdangnhap.transform.GetChild(0).GetComponent<InputField>().text,"", objdangnhap.transform.GetChild(1).GetComponent<InputField>().text, hedieuhanh);
             string data = JsonUtility.ToJson(p);
             //var request = new UnityWebRequest(LoginFacebook.http + "://"+NameServer+"/dangnhapfbk1.7", "POST");
+            debug.Log("test2 " + http + "://" + ServerChinh + "/DangNhapp");
             var request = new UnityWebRequest(http + "://" + ServerChinh + "/DangNhapp", "POST");
             //  debug.Log(crgame.ServerName + "dangnhapfbk");
             byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(data);
@@ -654,6 +675,7 @@ public class LoginFacebook : MonoBehaviour
         StartCoroutine(Load());
         IEnumerator Load()
         {
+            debug.Log("test " + LoginFacebook.http + "://" + ServerChinh + "/GetAllServerr");
             UnityWebRequest www = new UnityWebRequest(LoginFacebook.http + "://" + ServerChinh + "/GetAllServerr");
             www.downloadHandler = new DownloadHandlerBuffer();
             yield return www.SendWebRequest();
