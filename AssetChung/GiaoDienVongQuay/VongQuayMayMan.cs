@@ -49,72 +49,97 @@ public class VongQuayMayMan : MonoBehaviour
     }
     public void NhanVeQuayVip()
     {
-        CrGame.ins.panelLoadDao.SetActive(true);
-        StartCoroutine(Load());
-        IEnumerator Load()
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "VongQuayMayMan";
+        datasend["method"] = "NhanVeQuayVipTichLuy";
+        datasend["data"]["id"] = LoginFacebook.ins.id;
+        NetworkManager.ins.SendServer(datasend.ToString(), oK);
+        void oK(JSONNode json)
         {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "NhanVeQuayVipTichLuy/id/" + LoginFacebook.ins.id);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                debug.Log(www.error);
-                CrGame.ins.panelLoadDao.SetActive(false);
-                CrGame.ins.OnThongBaoNhanh("Lỗi khi tải dữ liệu.");
-            }
-            else
-            {
-                // Show results as text
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-
-                debug.Log(www.downloadHandler.text);
-                if (json["status"].Value == "ok")
-                {
-                    GameObject g = transform.GetChild(0).transform.GetChild(0).gameObject;
+             GameObject g = transform.GetChild(0).transform.GetChild(0).gameObject;
                     GameObject objluottichluy = g.transform.GetChild(1).gameObject;
                     GameObject objallvequay = g.transform.GetChild(2).gameObject;
                     objluottichluy.transform.GetChild(3).GetComponent<Button>().interactable = false;
                     objallvequay.transform.GetChild(3).GetComponent<Text>().text = int.Parse(objluottichluy.transform.GetChild(2).GetComponent<Text>().text) + int.Parse(objallvequay.transform.GetChild(3).GetComponent<Text>().text) + "";
                     objluottichluy.transform.GetChild(2).GetComponent<Text>().text = "0";
-                }
-                else CrGame.ins.OnThongBaoNhanh(json["status"].Value);
-                CrGame.ins.panelLoadDao.SetActive(false);
-            }
         }
+        //CrGame.ins.panelLoadDao.SetActive(true);
+        //StartCoroutine(Load());
+        //IEnumerator Load()
+        //{
+        //    UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "NhanVeQuayVipTichLuy/id/" + LoginFacebook.ins.id);
+        //    www.downloadHandler = new DownloadHandlerBuffer();
+        //    yield return www.SendWebRequest();
+
+        //    if (www.result != UnityWebRequest.Result.Success)
+        //    {
+        //        debug.Log(www.error);
+        //        CrGame.ins.panelLoadDao.SetActive(false);
+        //        CrGame.ins.OnThongBaoNhanh("Lỗi khi tải dữ liệu.");
+        //    }
+        //    else
+        //    {
+        //        // Show results as text
+        //        JSONNode json = JSON.Parse(www.downloadHandler.text);
+
+        //        debug.Log(www.downloadHandler.text);
+        //        if (json["status"].Value == "ok")
+        //        {
+        //            GameObject g = transform.GetChild(0).transform.GetChild(0).gameObject;
+        //            GameObject objluottichluy = g.transform.GetChild(1).gameObject;
+        //            GameObject objallvequay = g.transform.GetChild(2).gameObject;
+        //            objluottichluy.transform.GetChild(3).GetComponent<Button>().interactable = false;
+        //            objallvequay.transform.GetChild(3).GetComponent<Text>().text = int.Parse(objluottichluy.transform.GetChild(2).GetComponent<Text>().text) + int.Parse(objallvequay.transform.GetChild(3).GetComponent<Text>().text) + "";
+        //            objluottichluy.transform.GetChild(2).GetComponent<Text>().text = "0";
+        //        }
+        //        else CrGame.ins.OnThongBaoNhanh(json["status"].Value);
+        //        CrGame.ins.panelLoadDao.SetActive(false);
+        //    }
+        //}
     }
     public void ResetVongQuay()
     {
-        CrGame.ins.panelLoadDao.SetActive(true);
-        StartCoroutine(Load());
-        IEnumerator Load()
+
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "VongQuayMayMan";
+        datasend["method"] = "ResetVongQuay";
+        datasend["data"]["id"] = LoginFacebook.ins.id;
+        datasend["data"]["vongquay"] = vongquayy;
+        NetworkManager.ins.SendServer(datasend.ToString(), oK);
+        void oK(JSONNode json)
         {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "ResetVongQuay/id/" + LoginFacebook.ins.id + "/vongquay/" + vongquayy);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                debug.Log(www.error);
-                CrGame.ins.panelLoadDao.SetActive(false);
-                CrGame.ins.OnThongBaoNhanh("Lỗi khi tải dữ liệu.");
-            }
-            else
-            {
-                // Show results as text
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-
-                debug.Log(www.downloadHandler.text);
-                if (json["status"].Value == "ok")
+                            if (json["status"].Value == "0")
                 {
                     GameObject g = transform.GetChild(0).transform.GetChild(0).gameObject;
                     LoadVq(json["vongquay"]);
                     g.transform.GetChild(4).transform.GetChild(1).GetComponent<Text>().text = json["thongtinreset"].Value;
                 }
-                else CrGame.ins.OnThongBaoNhanh(json["status"].Value);
-                CrGame.ins.panelLoadDao.SetActive(false);
-            }
+                else CrGame.ins.OnThongBaoNhanh(json["message"].Value);
         }
+        //CrGame.ins.panelLoadDao.SetActive(true);
+        //StartCoroutine(Load());
+        //IEnumerator Load()
+        //{
+        //    UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "ResetVongQuay/id/" + LoginFacebook.ins.id + "/vongquay/" + vongquayy);
+        //    www.downloadHandler = new DownloadHandlerBuffer();
+        //    yield return www.SendWebRequest();
+
+        //    if (www.result != UnityWebRequest.Result.Success)
+        //    {
+        //        debug.Log(www.error);
+        //        CrGame.ins.panelLoadDao.SetActive(false);
+        //        CrGame.ins.OnThongBaoNhanh("Lỗi khi tải dữ liệu.");
+        //    }
+        //    else
+        //    {
+        //        // Show results as text
+        //        JSONNode json = JSON.Parse(www.downloadHandler.text);
+
+        //        debug.Log(www.downloadHandler.text);
+
+        //        CrGame.ins.panelLoadDao.SetActive(false);
+        //    }
+        //}
     }
     void LoadVq(JSONNode json)
     {
@@ -184,28 +209,16 @@ public class VongQuayMayMan : MonoBehaviour
         vongquayy = vongquay;
         GameObject g = transform.GetChild(0).transform.GetChild(0).gameObject;
         CrGame.ins.panelLoadDao.SetActive(true);
-        StartCoroutine(Get());
-        IEnumerator Get()
-        {
-            //  CrGame.ins.OnThongBao(true, "Đang tải...", false);
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "GetVongQuayMayMan/id/" + LoginFacebook.ins.id + "/vongquay/" + vongquay);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
 
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                debug.Log(www.error);
-                CrGame.ins.panelLoadDao.SetActive(false);
-                //gameObject.SetActive(true);
-                CrGame.ins.OnThongBaoNhanh("Lỗi khi tải dữ liệu!");
-                AllMenu.ins.DestroyMenu("MenuVongQuayMayMan");
-            }
-            else
-            {
-                // Show results as text 
-                debug.Log(www.downloadHandler.text);
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-                if (json["status"].Value == "ok")
+         JSONClass datasend = new JSONClass();
+        datasend["class"] = "VongQuayMayMan";
+        datasend["method"] = "GetVongQuayMayMan";
+        datasend["data"]["id"] = LoginFacebook.ins.id;
+        datasend["data"]["vongquay"] = vongquay;
+        NetworkManager.ins.SendServer(datasend.ToString(), oK);
+        void oK(JSONNode json)
+        {
+             if (json["status"].Value == "0")
                 {
                     LoadVq(json["data"]["vongquay"][vongquay]);
                     GameObject objluottichluy = g.transform.GetChild(1).gameObject;
@@ -256,40 +269,104 @@ public class VongQuayMayMan : MonoBehaviour
                 }
                 else
                 {
-                    CrGame.ins.OnThongBaoNhanh(json["status"].Value);
+                    CrGame.ins.OnThongBaoNhanh(json["message"].Value);
                 }
-                CrGame.ins.panelLoadDao.SetActive(false);
-            }
         }
- 
+        //StartCoroutine(Get());
+        //IEnumerator Get()
+        //{
+        //    //  CrGame.ins.OnThongBao(true, "Đang tải...", false);
+        //    UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "GetVongQuayMayMan/id/" + LoginFacebook.ins.id + "/vongquay/" + vongquay);
+        //    www.downloadHandler = new DownloadHandlerBuffer();
+        //    yield return www.SendWebRequest();
+
+        //    if (www.result != UnityWebRequest.Result.Success)
+        //    {
+        //        debug.Log(www.error);
+        //        CrGame.ins.panelLoadDao.SetActive(false);
+        //        //gameObject.SetActive(true);
+        //        CrGame.ins.OnThongBaoNhanh("Lỗi khi tải dữ liệu!");
+        //        AllMenu.ins.DestroyMenu("MenuVongQuayMayMan");
+        //    }
+        //    else
+        //    {
+        //        // Show results as text 
+        //        debug.Log(www.downloadHandler.text);
+        //        JSONNode json = JSON.Parse(www.downloadHandler.text);
+        //        if (json["status"].Value == "ok")
+        //        {
+        //            LoadVq(json["data"]["vongquay"][vongquay]);
+        //            GameObject objluottichluy = g.transform.GetChild(1).gameObject;
+        //            objluottichluy.transform.GetChild(0).GetComponent<Text>().text = "Lượt tích lũy\n" + json["data"]["demnhanvequay"].Value + "/50";
+
+        //            objluottichluy.transform.GetChild(2).GetComponent<Text>().text = json["data"]["VeQuayVipChuaNhan"].Value;
+        //            //debug.Log("okkkkkkk");
+        //            if (json["data"]["VeQuayVipChuaNhan"].Value == "0")
+        //            {
+        //                objluottichluy.transform.GetChild(3).GetComponent<Button>().interactable = false;
+        //            }
+        //            else objluottichluy.transform.GetChild(3).GetComponent<Button>().interactable = true;
+
+        //            GameObject objallvequay = g.transform.GetChild(2).gameObject;
+
+
+        //            if (Inventory.ins.ListItemThuong.ContainsKey("itemVeQuayThuong"))
+        //            {
+        //                objallvequay.transform.GetChild(1).GetComponent<Text>().text = Inventory.ins.ListItemThuong["itemVeQuayThuong"].transform.GetChild(0).GetComponent<Text>().text;
+        //            }
+        //            else objallvequay.transform.GetChild(1).GetComponent<Text>().text = "0";
+
+        //            if (Inventory.ins.ListItemThuong.ContainsKey("itemVeQuayVip"))
+        //            {
+        //                objallvequay.transform.GetChild(3).GetComponent<Text>().text = Inventory.ins.ListItemThuong["itemVeQuayVip"].transform.GetChild(0).GetComponent<Text>().text;
+        //            }
+        //            else objallvequay.transform.GetChild(3).GetComponent<Text>().text = "0";
+
+        //            g.transform.GetChild(4).transform.GetChild(1).GetComponent<Text>().text = json["data"]["thongtinreset"].Value;
+
+        //            Image imgvongquay = g.GetComponent<Image>();
+        //            if (vongquay == "vongquaythuong")
+        //            {
+        //                imgvongquay.sprite = spriteVongQuayThuong;
+        //                g.transform.GetChild(5).transform.GetChild(0).GetComponent<Text>().text = json["data"]["luottichluy"].Value;
+        //                objluottichluy.transform.GetChild(7).GetComponent<Image>().sprite = objallvequay.transform.GetChild(0).GetComponent<Image>().sprite;
+        //                objluottichluy.transform.GetChild(8).GetComponent<Image>().sprite = objallvequay.transform.GetChild(0).GetComponent<Image>().sprite;
+        //            }
+        //            else
+        //            {
+        //                imgvongquay.sprite = spriteVongQuayVip;
+        //                g.transform.GetChild(5).transform.GetChild(0).GetComponent<Text>().text = json["data"]["luottichluyvip"].Value;
+        //                objluottichluy.transform.GetChild(7).GetComponent<Image>().sprite = objallvequay.transform.GetChild(2).GetComponent<Image>().sprite;
+        //                objluottichluy.transform.GetChild(8).GetComponent<Image>().sprite = objallvequay.transform.GetChild(2).GetComponent<Image>().sprite;
+        //            }
+        //            transform.GetChild(0).gameObject.SetActive(true);
+        //            load = false;
+        //        }
+        //        else
+        //        {
+        //            CrGame.ins.OnThongBaoNhanh(json["status"].Value);
+        //        }
+        //        CrGame.ins.panelLoadDao.SetActive(false);
+        //    }
+        //}
+
     }
     bool duocquay = true;
     public void Quay(string solanquay)
     {
         if (!duocquay) return;
         duocquay = false;
-        CrGame.ins.panelLoadDao.SetActive(true);
-        StartCoroutine(Load());
-        IEnumerator Load()
+
+          JSONClass datasend = new JSONClass();
+        datasend["class"] = "VongQuayMayMan";
+        datasend["method"] = "QuayVongQuayMayMan";
+        datasend["data"]["id"] = LoginFacebook.ins.id;
+        datasend["data"]["vongquay"] = vongquayy;
+        datasend["data"]["quayx"] = solanquay;
+        NetworkManager.ins.SendServer(datasend.ToString(), oK);
+        void oK(JSONNode json)
         {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "QuayVongQuayMayMan/id/" + LoginFacebook.ins.id + "/vongquay/" + vongquayy + "/quayx/" + solanquay);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                debug.Log(www.error);
-                CrGame.ins.panelLoadDao.SetActive(false);
-                CrGame.ins.OnThongBaoNhanh("Lỗi khi tải dữ liệu!");
-                duocquay = true;
-            }
-            else
-            {
-                // Show results as text
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-
-                debug.Log(www.downloadHandler.text);
-                if (json["status"].Value == "ok")
+              if (json["status"].Value == "0")
                 {
                     GameObject g = transform.GetChild(0).transform.GetChild(0).gameObject;
                     GameObject objluottichluy = g.transform.GetChild(1).gameObject;
@@ -391,11 +468,9 @@ public class VongQuayMayMan : MonoBehaviour
                 }
                 else
                 {
-                    CrGame.ins.OnThongBaoNhanh(json["status"].Value);
+                    CrGame.ins.OnThongBaoNhanh(json[""].Value);
                     duocquay = true;
                 }
-                CrGame.ins.panelLoadDao.SetActive(false);
-            }
         }
         IEnumerator delayhienqua(JSONNode allqua)
         {

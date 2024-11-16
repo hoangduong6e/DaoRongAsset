@@ -28,8 +28,14 @@ public class LoginFacebook : MonoBehaviour
     public GameObject loginthuong,allloginthuong,panelloaddao;
     public string ServerChinh;
     public static LoginFacebook ins;
-    public static string http = "https";
+ 
+#if UNITY_EDITOR_OSX
+      public static string http = "http";
+      public static string ws = "ws";
+#elif UNITY_EDITOR_WIN
+         public static string http = "https";
     public static string ws = "wss";
+#endif
     private void Awake()
     {
         //  LoadAllServer();
