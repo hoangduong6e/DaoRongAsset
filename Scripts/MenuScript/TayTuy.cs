@@ -35,61 +35,48 @@ public class TayTuy : MonoBehaviour
     void HoaBuiRong()
     {
         btnHoabui.interactable = false;
-        StartCoroutine(Load());
-        IEnumerator Load()
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "TayTuy";
+        datasend["method"] = "HoaBuiRong";
+        datasend["data"]["id"] = idrong;
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
         {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "HoaBuiRong/id/" + idrong + "/taikhoan/" + LoginFacebook.ins.id);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
+            if (json["status"].AsString == "0")
             {
-                debug.Log(www.error);
-                CrGame.ins.OnThongBaoNhanh("Lỗi mạng", 1.5f);
-                AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
-                btnHoabui.interactable = true;
-            }
-            else
-            {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                if(www.downloadHandler.text == "ok")
+                for (int i = 0; i < contentRong.transform.childCount; i++)
                 {
-                    for (int i = 0; i < contentRong.transform.childCount; i++)
+                    if (contentRong.transform.GetChild(i).name == idrong)
                     {
-                        if(contentRong.transform.GetChild(i).name == idrong)
+                        Destroy(contentRong.transform.GetChild(i).gameObject);
+                        break;
+                    }
+                }
+                for (int i = 0; i < Inventory.ins.TuiRong.transform.childCount - 1; i++)
+                {
+                    if (Inventory.ins.TuiRong.transform.GetChild(i).transform.childCount > 0)
+                    {
+                        if (Inventory.ins.TuiRong.transform.GetChild(i).transform.GetChild(0).name == idrong)
                         {
-                            Destroy(contentRong.transform.GetChild(i).gameObject);
+                            Destroy(Inventory.ins.TuiRong.transform.GetChild(i).transform.GetChild(0).gameObject);
                             break;
                         }
                     }
-                    for (int i = 0; i < Inventory.ins.TuiRong.transform.childCount - 1; i++)
-                    {
-                        if( Inventory.ins.TuiRong.transform.GetChild(i).transform.childCount > 0)
-                        {
-                            if( Inventory.ins.TuiRong.transform.GetChild(i).transform.GetChild(0).name == idrong)
-                            {
-                                Destroy( Inventory.ins.TuiRong.transform.GetChild(i).transform.GetChild(0).gameObject);
-                                break;
-                            }    
-                        }
-                    }
-                    oRongHoaBui.transform.GetChild(0).gameObject.SetActive(false);
-                    oRongHoaBui.transform.GetChild(1).gameObject.SetActive(true);
-                    CrGame.ins.OnThongBaoNhanh("Hóa bụi thành công",1.5f);
-                     Inventory.ins.AddItem("BuiRong",int.Parse(txtGiaBan.text));
-                    LoadBuiRong();
-                    txtGiaBan.text = "0";
-                    if(AllMenu.ins.menu.ContainsKey("MenuXacNhan")) AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
                 }
-                else
-                {
-                    CrGame.ins.OnThongBaoNhanh(www.downloadHandler.text, 1.5f);
-                    if (AllMenu.ins.menu.ContainsKey("MenuXacNhan")) AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
-                }
-                btnHoabui.interactable = true;
+                oRongHoaBui.transform.GetChild(0).gameObject.SetActive(false);
+                oRongHoaBui.transform.GetChild(1).gameObject.SetActive(true);
+                CrGame.ins.OnThongBaoNhanh("Hóa bụi thành công", 1.5f);
+                Inventory.ins.AddItem("BuiRong", int.Parse(txtGiaBan.text));
+                LoadBuiRong();
+                txtGiaBan.text = "0";
+                if (AllMenu.ins.menu.ContainsKey("MenuXacNhan")) AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
             }
-         
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+                if (AllMenu.ins.menu.ContainsKey("MenuXacNhan")) AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
+            }
+            btnHoabui.interactable = true;
         }
     }
     public void OpenMenuHoaBui()
@@ -144,23 +131,14 @@ public class TayTuy : MonoBehaviour
     {
         menuTayTuy.SetActive(true);menuHoaBui.SetActive(false);
         LoadGia(0, 0);
-        CrGame.ins.panelLoadDao.SetActive(true);
-        StartCoroutine(LoadTuiRong()) ;
-        IEnumerator LoadTuiRong()
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "TayTuy";
+        datasend["method"] = "XemRongTayTuy";
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
         {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "XemRongTayTuy/taikhoan/" + LoginFacebook.ins.id);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
+            if (json["status"].AsString == "0")
             {
-                debug.Log(www.error);
-            }
-            else
-            {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
                 for (int i = 0; i < json["rongdao"].Count; i++)
                 {
                     string[] Dohiemcuarong = json["rongdao"][i]["nameitem"].Value.Split('-');
@@ -168,7 +146,7 @@ public class TayTuy : MonoBehaviour
                     string id = json["rongdao"][i]["id"].Value;
                     string tienhoa = json["rongdao"][i]["tienhoa"].Value;
                     string sao = json["rongdao"][i]["sao"].Value;
-                    AddItem(namerong + tienhoa,id,sao,Inventory.DoHiemCuaRong(Dohiemcuarong[1]));
+                    AddItem(namerong + tienhoa, id, sao, Inventory.DoHiemCuaRong(Dohiemcuarong[1]));
                 }
                 //for (int i = 1; i < json["rongtui"].Count; i++)
                 //{
@@ -195,8 +173,8 @@ public class TayTuy : MonoBehaviour
                         //}
                     }
                 }
-                CrGame.ins.panelLoadDao.SetActive(false);
             }
+            else CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
         }
         void AddItem(string namer,string id,string sao,string hiem,bool khoa = false)
         {
@@ -234,23 +212,15 @@ public class TayTuy : MonoBehaviour
                 thuoctinhmoi.transform.GetChild(i).gameObject.SetActive(false);
                 thuoctinhmoi.transform.GetChild(i).transform.GetChild(5).gameObject.SetActive(false);
             }
-            CrGame.ins.panelLoadDao.SetActive(true);
-            StartCoroutine(Load());
-            IEnumerator Load()
+            JSONClass datasend = new JSONClass();
+            datasend["class"] = "TayTuy";
+            datasend["method"] = "ChonRongTayTuy";
+            datasend["data"]["id"] = id;
+            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+            void Ok(JSONNode json)
             {
-                UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "ChonRongTayTuy/id/" + id + "/taikhoan/" + LoginFacebook.ins.id);
-                www.downloadHandler = new DownloadHandlerBuffer();
-                yield return www.SendWebRequest();
-
-                if (www.result != UnityWebRequest.Result.Success)
+                if (json["status"].AsString == "0")
                 {
-                    debug.Log(www.error);
-                }
-                else
-                {
-                    // Show results as text
-                    debug.Log(www.downloadHandler.text);
-                    JSONNode json = JSON.Parse(www.downloadHandler.text);
                     listcsKhoa = new List<string>();
                     saorong = int.Parse(json["rong"]["sao"].Value);
                     LoadGia(0, saorong * 2);
@@ -308,84 +278,56 @@ public class TayTuy : MonoBehaviour
                     }
                     btnTayTuy.interactable = true;
                 }
+                else
+                {
+                    CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+                }
             }
         }
         else
         {
-            StartCoroutine(Load());
-            IEnumerator Load()
+            JSONClass datasend = new JSONClass();
+            datasend["class"] = "TayTuy";
+            datasend["method"] = "XemHoaBuiRong";
+            datasend["data"]["id"] = id;
+            datasend["data"]["dao"] = "false";
+            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+            void Ok(JSONNode json)
             {
-                UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "XemHoaBuiRong/id/" + id + "/taikhoan/" + LoginFacebook.ins.id + "/dao/false");
-                www.downloadHandler = new DownloadHandlerBuffer();
-                yield return www.SendWebRequest();
-
-                if (www.result != UnityWebRequest.Result.Success)
+                if (json["status"].AsString == "0")
                 {
-                    debug.Log(www.error);
-                }
-                else
-                {
-                    // Show results as text
-                    debug.Log(www.downloadHandler.text);
-                    JSONNode json = JSON.Parse(www.downloadHandler.text);
-                    if(json != null)
-                    {
-                        for (int j = 0; j < ThuocTinhHoaBui.transform.childCount; j++) ThuocTinhHoaBui.transform.GetChild(j).gameObject.SetActive(false);
-                        GameObject animRong = oRongHoaBui.transform.GetChild(0).gameObject;
-                        AllMenu.ins.LoadRongGiaoDien(json["rong"]["nameobject"].AsString + json["rong"]["tienhoa"].AsString, animRong.transform);
+                    for (int j = 0; j < ThuocTinhHoaBui.transform.childCount; j++) ThuocTinhHoaBui.transform.GetChild(j).gameObject.SetActive(false);
+                    GameObject animRong = oRongHoaBui.transform.GetChild(0).gameObject;
+                    AllMenu.ins.LoadRongGiaoDien(json["rong"]["nameobject"].AsString + json["rong"]["tienhoa"].AsString, animRong.transform);
                     //    animRong.runtimeAnimatorController = Inventory.LoadAnimator(json["rong"]["nameobject"].Value);
-                        animRong.gameObject.SetActive(true);
-                       // animRong.SetInteger("TienHoa", int.Parse(json["rong"]["tienhoa"].Value));
-                        oRongHoaBui.transform.GetChild(1).gameObject.SetActive(false);
+                    animRong.gameObject.SetActive(true);
+                    // animRong.SetInteger("TienHoa", int.Parse(json["rong"]["tienhoa"].Value));
+                    oRongHoaBui.transform.GetChild(1).gameObject.SetActive(false);
 
-                        for (int i = 0; i < json["chisogoc"].Count; i++)
+                    for (int i = 0; i < json["chisogoc"].Count; i++)
+                    {
+                        //debug.Log(json["chisogoc"][i]["name"].Value);
+                        for (int j = 0; j < ThuocTinhHoaBui.transform.childCount; j++)
                         {
-                            //debug.Log(json["chisogoc"][i]["name"].Value);
-                            for (int j = 0; j < ThuocTinhHoaBui.transform.childCount; j++)
+                            if (json["chisogoc"][i]["name"].Value == ThuocTinhHoaBui.transform.GetChild(j).name)
                             {
-                                if (json["chisogoc"][i]["name"].Value == ThuocTinhHoaBui.transform.GetChild(j).name)
-                                {
-                                    ThuocTinhHoaBui.transform.GetChild(j).gameObject.SetActive(true);
-                                    ThuocTinhHoaBui.transform.GetChild(j).transform.GetChild(3).GetComponent<Text>().text = json["chisogoc"][i]["sao"].Value;
-                                    ThuocTinhHoaBui.transform.GetChild(j).transform.GetChild(4).GetComponent<Text>().text = json["chisogoc"][i]["cong"].Value;
-                                    break;
-                                }
+                                ThuocTinhHoaBui.transform.GetChild(j).gameObject.SetActive(true);
+                                ThuocTinhHoaBui.transform.GetChild(j).transform.GetChild(3).GetComponent<Text>().text = json["chisogoc"][i]["sao"].Value;
+                                ThuocTinhHoaBui.transform.GetChild(j).transform.GetChild(4).GetComponent<Text>().text = json["chisogoc"][i]["cong"].Value;
+                                break;
                             }
                         }
-                        string hiem = json["rong"]["nameitem"].Value.Split('-')[1];
-                        debug.Log(json["rong"]["sao"].Value);
-                        if (hiem == "") txtGiaBan.text = json["rong"]["sao"].Value;
-                        else if (hiem == "Hiem") txtGiaBan.text = (int.Parse(json["rong"]["sao"].Value) * 2) + "";
-                        else txtGiaBan.text = (int.Parse(json["rong"]["sao"].Value) * 3) + "";
-                        btnHoabui.interactable = true;
                     }
-                    else
-                    {
-                        CrGame.ins.OnThongBaoNhanh(www.downloadHandler.text, 1.5f);
-                    }
+                    string hiem = json["rong"]["nameitem"].Value.Split('-')[1];
+                    debug.Log(json["rong"]["sao"].Value);
+                    if (hiem == "") txtGiaBan.text = json["rong"]["sao"].Value;
+                    else if (hiem == "Hiem") txtGiaBan.text = (int.Parse(json["rong"]["sao"].Value) * 2) + "";
+                    else txtGiaBan.text = (int.Parse(json["rong"]["sao"].Value) * 3) + "";
+                    btnHoabui.interactable = true;
                 }
+                else CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+
             }
-            //for (int i = 0; i < inventory.TuiRong.transform.childCount - 1; i++)
-            //{
-            //    ItemDragon itemdra = inventory.TuiRong.transform.GetChild(i).transform.GetChild(0).GetComponent<ItemDragon>();
-            //    if (id == itemdra.name)
-            //    {
-            //        if(itemdra.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text == "")
-            //        {
-            //            txtGiaBuiRong.text = itemdra.txtSao.text;
-            //        }
-            //        else if(itemdra.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text == "Hiếm")
-            //        {
-            //            txtGiaBuiRong.text = (int.Parse(itemdra.txtSao.text) * 2 ) + "";
-            //        }    
-            //        else
-            //        {
-            //            txtGiaBuiRong.text = (int.Parse(itemdra.txtSao.text) * 3) + "";
-            //        }
-            //        //oRongHoaBui.transform.GetChild(0).GetComponent<Animator>().runtimeAnimatorController = itemdra.
-            //        break;
-            //    }
-            //}
         }
     }
     public void Khoa()
@@ -495,26 +437,21 @@ public class TayTuy : MonoBehaviour
         {
             thuoctinhmoi.transform.GetChild(i).transform.GetChild(5).gameObject.SetActive(false);
         }
-        StartCoroutine(Load());
-        IEnumerator Load()
-        {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "TayTuy/id/" + idrong + "/taikhoan/" + LoginFacebook.ins.id + "/khoa/" + khoa);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
 
-            if (www.result != UnityWebRequest.Result.Success)
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "TayTuy";
+        datasend["method"] = "TayTuy";
+        datasend["data"]["id"] = idrong;
+        datasend["data"]["khoa"] = khoa;
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode jsonn)
+        {
+            if (AllMenu.ins.menu.ContainsKey("MenuXacNhan")) AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
+            if (jsonn["status"].AsString == "0")
             {
-                debug.Log(www.error);
-                btnTayTuy.interactable = true;
-                btnNhanThuocTinhMoi.interactable = true;
-            }
-            else
-            {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                if(AllMenu.ins.menu.ContainsKey("MenuXacNhan")) AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-                if(json != null)
+                JSONNode json = jsonn["data"];
+                StartCoroutine(delay());
+                IEnumerator delay()
                 {
                     ORong.transform.GetChild(2).gameObject.SetActive(true);//hieuung taytuy
                     yield return new WaitForSeconds(2);
@@ -539,15 +476,20 @@ public class TayTuy : MonoBehaviour
                             }
                         }
                     }
+                    btnTayTuy.interactable = true;
+                    btnNhanThuocTinhMoi.interactable = true;
+                    LoadGia(-1, saorong * 2);
                 }
-                else
-                {
-                    CrGame.ins.OnThongBaoNhanh(www.downloadHandler.text,1.5f);
-                }
+               
+            }
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(jsonn["message"].AsString);
                 btnTayTuy.interactable = true;
                 btnNhanThuocTinhMoi.interactable = true;
                 LoadGia(-1, saorong * 2);
             }
+           
         }
     }
     public void BtnTayTuy()
@@ -560,25 +502,18 @@ public class TayTuy : MonoBehaviour
     {
         btnTayTuy.interactable = false;
         btnNhanThuocTinhMoi.interactable = false;
-        StartCoroutine(Load());
-        IEnumerator Load()
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "TayTuy";
+        datasend["method"] = "NhanThuocTinhMoi";
+        datasend["data"]["id"] = idrong;
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode jsonn)
         {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "NhanThuocTinhMoi/id/" + idrong + "/taikhoan/" + LoginFacebook.ins.id);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
+            if (jsonn["status"].AsString == "0")
             {
-                debug.Log(www.error);
-                btnTayTuy.interactable = true;
-                btnNhanThuocTinhMoi.interactable = true;
-            }
-            else
-            {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-                if (json != null)
+                JSONNode json = jsonn["data"];
+                StartCoroutine(delay());
+                IEnumerator delay()
                 {
                     ORong.transform.GetChild(2).gameObject.SetActive(true);//hieuung taytuy
                     yield return new WaitForSeconds(2);
@@ -596,7 +531,7 @@ public class TayTuy : MonoBehaviour
                     {
                         //debug.Log(json["chisogoc"][i]["name"].Value);
                         for (int j = 0; j < thuoctinhgoc.transform.childCount; j++)
-                        { 
+                        {
                             if (json[i]["name"].Value == thuoctinhgoc.transform.GetChild(j).name)
                             {
                                 thuoctinhgoc.transform.GetChild(j).gameObject.SetActive(true);
@@ -607,13 +542,14 @@ public class TayTuy : MonoBehaviour
                         }
                     }
                 }
-                else
-                {
-                    CrGame.ins.OnThongBaoNhanh(www.downloadHandler.text, 1.5f);
-                }
-                btnTayTuy.interactable = true;
-                btnNhanThuocTinhMoi.interactable = false;
+              
             }
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(jsonn["message"].AsString);
+            }
+            btnTayTuy.interactable = true;
+            btnNhanThuocTinhMoi.interactable = false;
         }
     }
     public void BtnTangSao()
@@ -633,25 +569,20 @@ public class TayTuy : MonoBehaviour
         }
         btnTayTuy.interactable = false;
         btnNhanThuocTinhMoi.interactable = false;
-        StartCoroutine(Load());
-        IEnumerator Load()
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "TayTuy";
+        datasend["method"] = "TangSaoTayTuy";
+        datasend["data"]["id"] = idrong;
+        datasend["data"]["namechiso"] = namechiso;
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode jsonn)
         {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "TangSaoTayTuy/id/" + idrong + "/namechiso/" + namechiso + "/taikhoan/" + LoginFacebook.ins.id);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
+            if (jsonn["status"].AsString == "0")
             {
-                debug.Log(www.error);
-                if (AllMenu.ins.menu.ContainsKey("MenuXacNhan")) AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
-            }
-            else
-            {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-                if (json != null)
+                StartCoroutine(delay());
+                IEnumerator delay()
                 {
+                    JSONNode json = jsonn["data"];
                     ORong.transform.GetChild(2).gameObject.SetActive(true);//hieuung taytuy
                     if (AllMenu.ins.menu.ContainsKey("MenuXacNhan")) AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
                     yield return new WaitForSeconds(2);
@@ -677,13 +608,15 @@ public class TayTuy : MonoBehaviour
                         }
                     }
                 }
-                else
-                {
-                    CrGame.ins.OnThongBaoNhanh(www.downloadHandler.text, 1.5f);
-                }
-                btnTayTuy.interactable = true;
-                btnNhanThuocTinhMoi.interactable = true;
+              
+            }    
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(jsonn["message"].AsString);
             }
+
+            btnTayTuy.interactable = true;
+            btnNhanThuocTinhMoi.interactable = true;
         }
     }
 }

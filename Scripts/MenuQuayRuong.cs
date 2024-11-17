@@ -1,6 +1,7 @@
 ﻿using SimpleJSON;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -15,40 +16,23 @@ public class MenuQuayRuong : MonoBehaviour
     public Button btnquay;
     public void NhanQuaRuong()
     {
-        CrGame.ins.panelLoadDao.SetActive(true);
+        
         Button btnnhan = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
-        StartCoroutine(Load());
-        IEnumerator Load()
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "NhanQuaRuong";
+        datasend["data"]["ruong"] = btnnhan.transform.parent.GetSiblingIndex().ToString();
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode jsonn)
         {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "NhanQuaRuong/taikhoan/" + LoginFacebook.ins.id + "/ruong/" + btnnhan.transform.parent.GetSiblingIndex());
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
+            if (jsonn["status"].AsString == "0")
             {
-                debug.Log(www.error);
-                CrGame.ins.panelLoadDao.SetActive(false);
-                CrGame.ins.OnThongBao(true, "Lỗi", true);
+                Image imgQua = Qua.transform.GetChild(btnnhan.transform.parent.GetSiblingIndex()).GetChild(0).GetComponent<Image>();
+                imgQua.sprite = spdanhan;
+                btnnhan.gameObject.SetActive(false);
             }
-            else
-            {
-                // Show results as text
-
-                debug.Log(www.downloadHandler.text);
-                if (www.downloadHandler.text == "0")
-                {
-                    Image imgQua = Qua.transform.GetChild(btnnhan.transform.parent.GetSiblingIndex()).GetChild(0).GetComponent<Image>();
-                    imgQua.sprite = spdanhan;
-                    btnnhan.gameObject.SetActive(false);
-                }
-                else
-                {
-                    CrGame.ins.OnThongBaoNhanh(www.downloadHandler.text,2);
-                }    
-                CrGame.ins.panelLoadDao.SetActive(false);
-            }
+            else CrGame.ins.OnThongBaoNhanh(jsonn["message"].AsString);
         }
-       
        
     }    
     public void LoadSoLanQuay(float solanquay)
@@ -59,34 +43,20 @@ public class MenuQuayRuong : MonoBehaviour
     }
     public void QuayRuong()
     {
-        CrGame.ins.panelLoadDao.SetActive(true);
-        StartCoroutine(Load());
-        IEnumerator Load()
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "QuayRuong";
+        datasend["data"]["nameRuong"] = nameRuong;
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode jsonn)
         {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "QuayRuong/taikhoan/" + LoginFacebook.ins.id + "/nameRuong/" + nameRuong);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
+            if (jsonn["status"].AsString == "0")
             {
-                debug.Log(www.error);
-                CrGame.ins.panelLoadDao.SetActive(false);
-                CrGame.ins.OnThongBao(true, "Lỗi", true);
-            }
-            else
-            {
-
-                CrGame.ins.panelLoadDao.SetActive(false);
+                JSONNode json = jsonn["data"];
                 btnquay.interactable = false;
                 btnexit.SetActive(false);
-               // debug.Log(www.downloadHandler.text);
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-                if (json["thongbao"].Value != "")
-                {
-                    CrGame.ins.OnThongBao(true, json["thongbao"].Value, true);
-                    CrGame.ins.panelLoadDao.SetActive(false);
-                }
-                else
+                StartCoroutine(delay());
+                IEnumerator delay()
                 {
                     VienXanh.SetActive(true);
                     for (int i = 0; i < 40; i++)
@@ -123,7 +93,7 @@ public class MenuQuayRuong : MonoBehaviour
                                 bool hoangkim = false;
                                 if (json["hoangkim"].ToString() != "") hoangkim = true;
                                 Inventory.ins.AddItemRong(json["id"].Value, json["nameitem"].Value, byte.Parse(json["sao"].Value), int.Parse(json["level"].Value), int.Parse(json["exp"].Value), int.Parse(json["maxexp"].Value),
-                                    byte.Parse(json["tienhoa"].Value), 0, json["namerong"].Value, json["nameobject"].Value, hoangkim, json["ngoc"].Value,false);
+                                    byte.Parse(json["tienhoa"].Value), 0, json["namerong"].Value, json["nameobject"].Value, hoangkim, json["ngoc"].Value, false);
                             }
                             Oquay.transform.GetChild(i).transform.GetChild(0).gameObject.SetActive(false);
                             hieuungbay.SetActive(true);
@@ -144,6 +114,10 @@ public class MenuQuayRuong : MonoBehaviour
                         }
                     }
                 }
+            }
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(jsonn["message"].AsString);
             }
         }
     }

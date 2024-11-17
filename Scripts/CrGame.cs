@@ -9,6 +9,8 @@ using System.Security.Cryptography;
 using System.Globalization;
 using System.Threading;
 using System;
+using UnityEditor.PackageManager.Requests;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class CrGame : MonoBehaviour
 {
@@ -212,6 +214,11 @@ public class CrGame : MonoBehaviour
         #if UNITY_EDITOR
         if(Input.GetKeyUp(KeyCode.L))
         {
+            if (Time.timeScale == 2)
+            {
+                Time.timeScale = 3;
+                return;
+            }
             Time.timeScale = (Time.timeScale == 1)?Time.timeScale=2:Time.timeScale=1;
         }
         #endif
@@ -537,27 +544,17 @@ public class CrGame : MonoBehaviour
     public void NangCapThanLong()
     {
         Button btnNangCap = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
-        panelLoadDao.SetActive(true);
-        StartCoroutine(Load());
-        IEnumerator Load()
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "NangCapThanLong";
+        datasend["data"]["name"] = btnNangCap.name;
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        void Ok(JSONNode json)
         {
-            UnityWebRequest www = new UnityWebRequest(ServerName + "NangCapThanLong/taikhoan/" + LoginFacebook.ins.id + "/name/" + btnNangCap.name);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
+            if (json["status"].Value == "ok")
             {
-                debug.Log(www.error);
-                OnThongBaoNhanh("Lỗi!", 2);
-                panelLoadDao.SetActive(false);
-                //crgame.AllMenu.ins.DestroyMenu("VongTronThanLong");
-            }
-            else
-            {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-                if (json["status"].Value == "ok")
+                StartCoroutine(delay());
+                IEnumerator delay()
                 {
                     GameObject BeThanLong = AllDao.transform.GetChild(2).transform.Find("Be" + btnNangCap.name).gameObject;
                     AllMenu.ins.DestroyMenu("MenuNangCapItem");
@@ -567,21 +564,20 @@ public class CrGame : MonoBehaviour
                     Scale.x = 1; Scale.y = 1.1f; hieuung.transform.localScale = Scale;
 
                     hieuung.SetActive(true);
-               
+
                     yield return new WaitForSeconds(1.5f);
                     Destroy(hieuung);
+                }
+            
 
-                    //Animator anim = BeThanLong.transform.GetChild(0).GetComponent<Animator>();
-                    //  anim.SetBool("Doi", false);
-                    //BeThanLong.transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
-                }
-                else
-                {
-                    OnThongBaoNhanh(json["status"].Value, 2);
-                    panelLoadDao.SetActive(false);
-                }
-               
-                //crgame.AllMenu.ins.DestroyMenu("VongTronThanLong");
+                //Animator anim = BeThanLong.transform.GetChild(0).GetComponent<Animator>();
+                //  anim.SetBool("Doi", false);
+                //BeThanLong.transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
+            }
+            else
+            {
+                OnThongBaoNhanh(json["status"].Value, 2);
+                panelLoadDao.SetActive(false);
             }
         }
     }
@@ -590,35 +586,16 @@ public class CrGame : MonoBehaviour
         if(ok)
         {
             Button btnNangCap = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
-            panelLoadDao.SetActive(true);
-            StartCoroutine(Load());
-            IEnumerator Load()
+            JSONClass datasend = new JSONClass();
+            datasend["class"] = "Main";
+            datasend["method"] = "XemChiSoThanLong";
+            datasend["data"]["name"] = btnNangCap.name;
+            NetworkManager.ins.SendServer(datasend.ToString(), Ok,true);
+            void Ok(JSONNode json)
             {
-                UnityWebRequest www = new UnityWebRequest(ServerName + "XemChiSoThanLong/taikhoan/" + LoginFacebook.ins.id + "/name/" + btnNangCap.name);
-                www.downloadHandler = new DownloadHandlerBuffer();
-                yield return www.SendWebRequest();
-
-                if (www.result != UnityWebRequest.Result.Success)
-                {
-                    debug.Log(www.error);
-                    OnThongBaoNhanh("Lỗi!", 2);
-                    panelLoadDao.SetActive(false);
-                    //crgame.AllMenu.ins.DestroyMenu("VongTronThanLong");
-                }
-                else
-                {
-                    JSONNode json = JSON.Parse(www.downloadHandler.text);
-                    OnThongBaoNhanh(json["thongtin"].Value,3f);
-
-                  //  AllMenu.ins.OpenCreateMenu("infoitem", trencung.gameObject);
-                  //  AllMenu.ins.menu["infoitem"].transform.GetChild(0).GetComponent<Text>().text = json["thongtin"].Value;
-                   // menuinfoitem ifitem = AllMenu.ins.menu["infoitem"].GetComponent<menuinfoitem>();
-                 //   ifitem.Disnable(10f);
-                    debug.Log(www.downloadHandler.text);
-                    //crgame.AllMenu.ins.DestroyMenu("VongTronThanLong");
-                }
-                panelLoadDao.SetActive(false);
+                OnThongBaoNhanh(json["thongtin"].Value, 3f);
             }
+           
         }    
         else
         {
@@ -711,21 +688,16 @@ public class CrGame : MonoBehaviour
 
     public void XemQuaOnline()
     {
-        StartCoroutine(Load());
-        IEnumerator Load()
-        {
-            UnityWebRequest www = new UnityWebRequest(ServerName + "XemQuaOnline/taikhoan/" + LoginFacebook.ins.id);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
 
-            if (www.result != UnityWebRequest.Result.Success)
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "XemQuaOnline";
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode jsonn)
+        {
+            if (jsonn["status"].AsString == "0")
             {
-                debug.Log(www.error);
-            }
-            else
-            {
-                // Show results as text
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
+                JSONNode json = jsonn["data"];
                 AllMenu.ins.OpenCreateMenu("MenuNhanQuaOnline");
                 QuaOnline qua = AllMenu.ins.menu["MenuNhanQuaOnline"].GetComponent<QuaOnline>();
                 qua.txtsoluong.text = "";
@@ -749,55 +721,47 @@ public class CrGame : MonoBehaviour
                     }
                     //  imgitem.SetNativeSize();
                 }
-                debug.Log(www.downloadHandler.text);
+            }
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(jsonn["message"].Value, 2);
+                // AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
             }
         }
     }
     public void ChiSoRong(string id)
     {
-        StartCoroutine(Load());
-        IEnumerator Load()
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "TayTuy";
+        datasend["method"] = "XemHoaBuiRong";
+        datasend["data"]["id"] = id;
+        datasend["data"]["dao"] = "true";
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
         {
-            UnityWebRequest www = new UnityWebRequest(ServerName + "XemHoaBuiRong/id/" + id + "/taikhoan/" + LoginFacebook.ins.id + "/dao/true");
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
+            if (json["status"].AsString == "0")
             {
-                debug.Log(www.error);
-            }
-            else
-            {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-                if (json != null)
+                GameObject trncung = GameObject.FindGameObjectWithTag("trencung");
+                GameObject menucs = AllMenu.ins.GetCreateMenu("MenuChiSoRong", trncung, true, trncung.transform.childCount - 1);
+                menucs.transform.GetChild(1).GetComponent<Text>().text = json["rong"]["namerong"].Value + "(" + json["rong"]["sao"] + "sao)";
+                GameObject thuoctinh = menucs.transform.GetChild(2).gameObject;
+                for (int j = 0; j < thuoctinh.transform.childCount; j++) thuoctinh.transform.GetChild(j).gameObject.SetActive(false);
+                for (int i = 0; i < json["chisogoc"].Count; i++)
                 {
-                    GameObject trncung = GameObject.FindGameObjectWithTag("trencung");
-                    GameObject menucs = AllMenu.ins.GetCreateMenu("MenuChiSoRong", trncung, true, trncung.transform.childCount - 1);
-                    menucs.transform.GetChild(1).GetComponent<Text>().text = json["rong"]["namerong"].Value + "(" + json["rong"]["sao"] + "sao)";
-                    GameObject thuoctinh = menucs.transform.GetChild(2).gameObject;
-                    for (int j = 0; j < thuoctinh.transform.childCount; j++) thuoctinh.transform.GetChild(j).gameObject.SetActive(false);
-                    for (int i = 0; i < json["chisogoc"].Count; i++)
+                    //debug.Log(json["chisogoc"][i]["name"].Value);
+                    for (int j = 0; j < thuoctinh.transform.childCount; j++)
                     {
-                        //debug.Log(json["chisogoc"][i]["name"].Value);
-                        for (int j = 0; j < thuoctinh.transform.childCount; j++)
+                        if (json["chisogoc"][i]["name"].Value == thuoctinh.transform.GetChild(j).name)
                         {
-                            if (json["chisogoc"][i]["name"].Value == thuoctinh.transform.GetChild(j).name)
-                            {
-                                thuoctinh.transform.GetChild(j).gameObject.SetActive(true);
-                                thuoctinh.transform.GetChild(j).transform.GetChild(3).GetComponent<Text>().text = json["chisogoc"][i]["sao"].Value;
-                                thuoctinh.transform.GetChild(j).transform.GetChild(4).GetComponent<Text>().text = json["chisogoc"][i]["cong"].Value;
-                                break;
-                            }
+                            thuoctinh.transform.GetChild(j).gameObject.SetActive(true);
+                            thuoctinh.transform.GetChild(j).transform.GetChild(3).GetComponent<Text>().text = json["chisogoc"][i]["sao"].Value;
+                            thuoctinh.transform.GetChild(j).transform.GetChild(4).GetComponent<Text>().text = json["chisogoc"][i]["cong"].Value;
+                            break;
                         }
                     }
                 }
-                else
-                {
-                    OnThongBaoNhanh(www.downloadHandler.text, 1.5f);
-                }
             }
+            else CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
         }
     }
 
@@ -1071,29 +1035,18 @@ public class CrGame : MonoBehaviour
     {
         if (leveldao[DangODao] < 3)
         {
-            StartCoroutine(NangCapDao());
-            debug.Log("Xem gia nang cap dao");
-            IEnumerator NangCapDao() // xem dấu chấm hỏi công trình
+            JSONClass datasend = new JSONClass();
+            datasend["class"] = "Main";
+            datasend["method"] = "xemGiaNangCapDao";
+            datasend["data"]["name"] = "dao";
+            datasend["data"]["cap"] = leveldao[DangODao].ToString();
+            datasend["data"]["idcongtrinh"] = DangODao.ToString();
+            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+            void Ok(JSONNode jsonn)
             {
-                XacNhanMuaCongTrinh xn = new XacNhanMuaCongTrinh("dao", leveldao[DangODao], DangODao);
-                string data = JsonUtility.ToJson(xn);
-                var request = new UnityWebRequest(ServerName + "xemGiaNangCapDao", "POST");
-                byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(data);
-                request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
-                request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-                request.SetRequestHeader("Content-Type", "application/json");
-                yield return request.SendWebRequest();
-                if (request.isNetworkError || request.isHttpError)
+                if (jsonn["status"].AsString == "0")
                 {
-                    debug.Log(request.error);
-                    OnThongBao(true, "Lỗi", true);
-                }
-                else
-                {
-                    debug.Log(request.downloadHandler.text);
-                    JSONNode json = JSON.Parse(request.downloadHandler.text);
-                    //MenuNangCapItem.SetActive(true);
-                    //  AllMenu.ins.OpenMenu("MenuNangCapItem");
+                    JSONNode json = jsonn["data"];
                     UI = AllMenu.ins.GetCreateMenu("MenuNangCapItem", null, true).GetComponent<Ui>();
                     UI.SpriteItem[0].sprite = Inventory.LoadSprite("Dao" + leveldao[DangODao]);
                     UI.SpriteItem[0].SetNativeSize();
@@ -1125,38 +1078,44 @@ public class CrGame : MonoBehaviour
                     GameObject objThanLong = UI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(3).gameObject;
                     objThanLong.SetActive(false);
                 }
+                else
+                {
+                    CrGame.ins.OnThongBaoNhanh(jsonn["message"].Value, 2);
+                    // AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
+                }
             }
         }
     }
-    public IEnumerator InfoCongTrinh(string name, int cap) // xem dấu chấm hỏi công trình
+    public void InfoCongTrinh(string name, int cap) // xem dấu chấm hỏi công trình
     {
-        XacNhanMuaCongTrinh xn = new XacNhanMuaCongTrinh(name, cap, 0);
-        string data = JsonUtility.ToJson(xn);
-        var request = new UnityWebRequest(ServerName + "infocongtrinh", "POST");
-        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(data);
-        request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
-        request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-        request.SetRequestHeader("Content-Type", "application/json");
-        yield return request.SendWebRequest();
-        if (request.isNetworkError || request.isHttpError)
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "infocongtrinh";
+        datasend["data"]["name"] = name;
+        datasend["data"]["cap"] = cap.ToString();
+        datasend["data"]["id"] = "0";
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode jsonn)
         {
-            debug.Log(request.error);
-            OnThongBao(true, "Lỗi", true);
-        }
-        else
-        {
-            debug.Log(request.downloadHandler.text);
-            JSONNode json = JSON.Parse(request.downloadHandler.text);
-            GameObject menuinfoCongtrinh = AllMenu.ins.GetCreateMenu("MenuInfoCongtrinh");
-            Image imagecongtrinh = menuinfoCongtrinh.transform.GetChild(0).transform.GetChild(0).transform.GetChild(1).GetComponent<Image>();
-            imagecongtrinh.sprite = VungCongTrinh.GetComponent<SpriteRenderer>().sprite; imagecongtrinh.SetNativeSize();
-            Text txtname = menuinfoCongtrinh.transform.GetChild(0).transform.GetChild(0).transform.GetChild(2).GetComponent<Text>();
-            Text TextThongTin = menuinfoCongtrinh.transform.GetChild(0).transform.GetChild(0).transform.GetChild(3).GetComponent<Text>();
-            txtname.text = NetworkManager.ins.CatDauNgoacKep(json["ten"].ToString());
-            TextThongTin.text = NetworkManager.ins.CatDauNgoacKep(json["infosanxuat"].ToString());
-            //AllMenu.ins.menu["VongTronCongtrinh"].SetActive(false);
-            AllMenu.ins.DestroyMenu("VongTronCongtrinh");
-            menuinfoCongtrinh.SetActive(true);
+            if (jsonn["status"].AsString == "0")
+            {
+                JSONNode json = jsonn["data"];
+                GameObject menuinfoCongtrinh = AllMenu.ins.GetCreateMenu("MenuInfoCongtrinh");
+                Image imagecongtrinh = menuinfoCongtrinh.transform.GetChild(0).transform.GetChild(0).transform.GetChild(1).GetComponent<Image>();
+                imagecongtrinh.sprite = VungCongTrinh.GetComponent<SpriteRenderer>().sprite; imagecongtrinh.SetNativeSize();
+                Text txtname = menuinfoCongtrinh.transform.GetChild(0).transform.GetChild(0).transform.GetChild(2).GetComponent<Text>();
+                Text TextThongTin = menuinfoCongtrinh.transform.GetChild(0).transform.GetChild(0).transform.GetChild(3).GetComponent<Text>();
+                txtname.text = NetworkManager.ins.CatDauNgoacKep(json["ten"].ToString());
+                TextThongTin.text = NetworkManager.ins.CatDauNgoacKep(json["infosanxuat"].ToString());
+                //AllMenu.ins.menu["VongTronCongtrinh"].SetActive(false);
+                AllMenu.ins.DestroyMenu("VongTronCongtrinh");
+                menuinfoCongtrinh.SetActive(true);
+            }
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(jsonn["message"].Value, 2);
+                // AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
+            }
         }
     }
     public void OpenmenuUpcongtrinh()// ô vòng tròn 
@@ -1164,19 +1123,19 @@ public class CrGame : MonoBehaviour
         //VongtronCongtrinh.SetActive(false);
         AllMenu.ins.DestroyMenu("VongTronCongtrinh");
         CongTrinh congtrinh = VungCongTrinh.GetComponent<CongTrinh>();
-        StartCoroutine(XemNangCapCongTrinh(congtrinh.nameCongtrinh, congtrinh.levelCongtrinh));
+        XemNangCapCongTrinh(congtrinh.nameCongtrinh, congtrinh.levelCongtrinh);
     }
     public void XeminfoCongtrinh()// dấu chấm hỏi
     {
         CongTrinh congtrinh = VungCongTrinh.GetComponent<CongTrinh>();
-        StartCoroutine(InfoCongTrinh(congtrinh.nameCongtrinh, congtrinh.levelCongtrinh));
+        InfoCongTrinh(congtrinh.nameCongtrinh, congtrinh.levelCongtrinh);
     }
     byte choncongtrinh;
     public void ChonCongTrinhNang(string nameCt)
     {
         CongTrinh congTrinh = VungCongTrinh.GetComponent<CongTrinh>();
         debug.Log(nameCt + " " + congTrinh.levelCongtrinh);
-        StartCoroutine(Xemct(nameCt, congTrinh.levelCongtrinh, congTrinh.idCongtrinh, false));
+        Xemct(nameCt, congTrinh.levelCongtrinh, congTrinh.idCongtrinh, false);
         congTrinh.nameCongtrinh = nameCt;
         //  SpriteRong spritect = GameObject.Find("SpriteCongTrinh" + nameCt).GetComponent<SpriteRong>();
         // imgMuaCongTrinh.sprite = spritect.spriteTienHoa[0];
@@ -1185,145 +1144,133 @@ public class CrGame : MonoBehaviour
         AllMenu.ins.menu["menuMuaCongtrinh"].transform.SetAsLastSibling();
         //menuMuaCongtrinh.SetActive(true);
     }
-    public IEnumerator XemNangCapCongTrinh(string name, int cap,string nameThanLong = "")
+    public void XemNangCapCongTrinh(string name, int cap,string nameThanLong = "")
     {
         if(nameThanLong == "")
         {
-            XacNhanMuaCongTrinh xn = new XacNhanMuaCongTrinh(name, cap, 0);
-            string data = JsonUtility.ToJson(xn);
-            var request = new UnityWebRequest(ServerName + "xemnangcapcongtrinh", "POST");
-            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(data);
-            request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
-            request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-            request.SetRequestHeader("Content-Type", "application/json");
-            yield return request.SendWebRequest();
-            if (request.isNetworkError || request.isHttpError)
+            JSONClass datasend = new JSONClass();
+            datasend["class"] = "Main";
+            datasend["method"] = "xemnangcapcongtrinh";
+            datasend["data"]["name"] = name;
+            datasend["data"]["cap"] = cap.ToString();
+            datasend["data"]["id"] = "0";
+            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+            void Ok(JSONNode jsonn)
             {
-                debug.Log(request.error);
-                OnThongBao(true, "Lỗi", true);
-            }
-            else
-            {
-                JSONNode json = JSON.Parse(request.downloadHandler.text);
-                debug.Log(request.downloadHandler.text);
-                //MenuNangCapItem.SetActive(true);
-                UI = AllMenu.ins.GetCreateMenu("MenuNangCapItem", null, true).GetComponent<Ui>();
-                CongTrinh congtrinh = VungCongTrinh.GetComponent<CongTrinh>();
-                //   SpriteRong spritect = GameObject.Find("SpriteCongTrinh" + congtrinh.nameCongtrinh).GetComponent<SpriteRong>();
-                StartCoroutine(LoadSpriteWeb(UI.SpriteItem[0], congtrinh.nameCongtrinh, congtrinh.levelCongtrinh));// spritect.spriteTienHoa[congtrinh.levelCongtrinh];
-                                                                                                                   //  UI.SpriteItem[0].SetNativeSize();
-                StartCoroutine(LoadSpriteWeb(UI.SpriteItem[1], congtrinh.nameCongtrinh, congtrinh.levelCongtrinh + 1));
-                // UI.SpriteItem[1].sprite = spritect.spriteTienHoa[congtrinh.levelCongtrinh + 1]; UI.SpriteItem[1].SetNativeSize();
-                UI.txtlevel[0].text = NetworkManager.ins.CatDauNgoacKep(json["levelhientai"].ToString());
-
-                UI.txtlevel[1].text = NetworkManager.ins.CatDauNgoacKep(json["leveltieptheo"].ToString());
-                string[] chiso1 = NetworkManager.ins.CatDauNgoacKep(json["chiso1"].ToString()).Split('|');
-                string[] chiso2 = NetworkManager.ins.CatDauNgoacKep(json["chiso2"].ToString()).Split('|');
-                UI.txtChiSo[0].text = chiso1[0] + "\n" + chiso1[1];
-                UI.txtChiSo[1].text = chiso2[0] + "\n" + chiso2[1];
-                UI.tilethanhcong.SetActive(true);
-                UI.nangcapDao.SetActive(false);
-                UI.txtTileThanhCong[0].text = NetworkManager.ins.CatDauNgoacKep(json["tilethanhcongvang"].ToString() + "%");
-                UI.txtTileThanhCong[1].text = NetworkManager.ins.CatDauNgoacKep(json["tilethanhcongkimcuong"].ToString() + "%");
-                UI.tilethanhcong.GetComponent<Text>().text = "Tỉ lệ thành công";
-                UI.tilethanhcong.transform.GetChild(0).GetComponent<Text>().text = "Tỉ lệ thành công";
-                UI.btnNangCap[0].gameObject.SetActive(true);
-                UI.btnNangCap[1].gameObject.SetActive(true);
-                UI.btnNangCapNhaApTrung[0].gameObject.SetActive(false);
-                UI.btnNangCapNhaApTrung[1].gameObject.SetActive(false);
-                UI.btnNangCapThucAn[0].gameObject.SetActive(false);
-                UI.btnNangCapThucAn[1].gameObject.SetActive(false);
-                UI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(2).gameObject.SetActive(true);
-                UI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(2).gameObject.SetActive(true);
-                GameObject objThanLong = UI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(3).gameObject;
-               
-                objThanLong.SetActive(false);
-                if (int.Parse(txtLevel.text) >= int.Parse(NetworkManager.ins.CatDauNgoacKep(json["levelnang"].ToString())))
+                if (jsonn["status"].AsString == "0")
                 {
-                    UI.btnNangCap[0].interactable = true;
-                    UI.btnNangCap[1].interactable = true;
-                    UI.txtGia[0].text = NetworkManager.ins.CatDauNgoacKep(json["giavang"].ToString());
-                    UI.txtGia[1].text = NetworkManager.ins.CatDauNgoacKep(json["giakimcuong"].ToString());
+                    JSONNode json = jsonn["data"];
+                    UI = AllMenu.ins.GetCreateMenu("MenuNangCapItem", null, true).GetComponent<Ui>();
+                    CongTrinh congtrinh = VungCongTrinh.GetComponent<CongTrinh>();
+                    //   SpriteRong spritect = GameObject.Find("SpriteCongTrinh" + congtrinh.nameCongtrinh).GetComponent<SpriteRong>();
+                    StartCoroutine(LoadSpriteWeb(UI.SpriteItem[0], congtrinh.nameCongtrinh, congtrinh.levelCongtrinh));// spritect.spriteTienHoa[congtrinh.levelCongtrinh];
+                                                                                                                       //  UI.SpriteItem[0].SetNativeSize();
+                    StartCoroutine(LoadSpriteWeb(UI.SpriteItem[1], congtrinh.nameCongtrinh, congtrinh.levelCongtrinh + 1));
+                    // UI.SpriteItem[1].sprite = spritect.spriteTienHoa[congtrinh.levelCongtrinh + 1]; UI.SpriteItem[1].SetNativeSize();
+                    UI.txtlevel[0].text = NetworkManager.ins.CatDauNgoacKep(json["levelhientai"].ToString());
+
+                    UI.txtlevel[1].text = NetworkManager.ins.CatDauNgoacKep(json["leveltieptheo"].ToString());
+                    string[] chiso1 = NetworkManager.ins.CatDauNgoacKep(json["chiso1"].ToString()).Split('|');
+                    string[] chiso2 = NetworkManager.ins.CatDauNgoacKep(json["chiso2"].ToString()).Split('|');
+                    UI.txtChiSo[0].text = chiso1[0] + "\n" + chiso1[1];
+                    UI.txtChiSo[1].text = chiso2[0] + "\n" + chiso2[1];
+                    UI.tilethanhcong.SetActive(true);
+                    UI.nangcapDao.SetActive(false);
+                    UI.txtTileThanhCong[0].text = NetworkManager.ins.CatDauNgoacKep(json["tilethanhcongvang"].ToString() + "%");
+                    UI.txtTileThanhCong[1].text = NetworkManager.ins.CatDauNgoacKep(json["tilethanhcongkimcuong"].ToString() + "%");
+                    UI.tilethanhcong.GetComponent<Text>().text = "Tỉ lệ thành công";
+                    UI.tilethanhcong.transform.GetChild(0).GetComponent<Text>().text = "Tỉ lệ thành công";
+                    UI.btnNangCap[0].gameObject.SetActive(true);
+                    UI.btnNangCap[1].gameObject.SetActive(true);
+                    UI.btnNangCapNhaApTrung[0].gameObject.SetActive(false);
+                    UI.btnNangCapNhaApTrung[1].gameObject.SetActive(false);
+                    UI.btnNangCapThucAn[0].gameObject.SetActive(false);
+                    UI.btnNangCapThucAn[1].gameObject.SetActive(false);
+                    UI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(2).gameObject.SetActive(true);
+                    UI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(2).gameObject.SetActive(true);
+                    GameObject objThanLong = UI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(3).gameObject;
+
+                    objThanLong.SetActive(false);
+                    if (int.Parse(txtLevel.text) >= int.Parse(NetworkManager.ins.CatDauNgoacKep(json["levelnang"].ToString())))
+                    {
+                        UI.btnNangCap[0].interactable = true;
+                        UI.btnNangCap[1].interactable = true;
+                        UI.txtGia[0].text = NetworkManager.ins.CatDauNgoacKep(json["giavang"].ToString());
+                        UI.txtGia[1].text = NetworkManager.ins.CatDauNgoacKep(json["giakimcuong"].ToString());
+                    }
+                    else
+                    {
+                        UI.btnNangCap[0].interactable = false;
+                        UI.btnNangCap[1].interactable = false;
+                        UI.txtGia[0].text = "<color=#ff0000ff>" + "Cấp " + NetworkManager.ins.CatDauNgoacKep(json["levelnang"].ToString()) + "</color>";
+                        UI.txtGia[1].text = "<color=#ff0000ff>" + "Cấp " + NetworkManager.ins.CatDauNgoacKep(json["levelnang"].ToString()) + "</color>";
+                    }
                 }
                 else
                 {
-                    UI.btnNangCap[0].interactable = false;
-                    UI.btnNangCap[1].interactable = false;
-                    UI.txtGia[0].text = "<color=#ff0000ff>" + "Cấp " + NetworkManager.ins.CatDauNgoacKep(json["levelnang"].ToString()) + "</color>";
-                    UI.txtGia[1].text = "<color=#ff0000ff>" + "Cấp " + NetworkManager.ins.CatDauNgoacKep(json["levelnang"].ToString()) + "</color>";
+                    CrGame.ins.OnThongBaoNhanh(jsonn["message"].Value, 2);
+                    // AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
                 }
             }
         }    
         else
         {
-            StartCoroutine(Load());
-            IEnumerator Load()
+           
+            JSONClass datasend = new JSONClass();
+            datasend["class"] = "Main";
+            datasend["method"] = "XemNangCapThanLong";
+            datasend["data"]["name"] = nameThanLong;
+            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+            void Ok(JSONNode json)
             {
-                UnityWebRequest www = new UnityWebRequest(ServerName + "XemNangCapThanLong/taikhoan/" + LoginFacebook.ins.id + "/name/" + nameThanLong);
-                www.downloadHandler = new DownloadHandlerBuffer();
-                yield return www.SendWebRequest();
+                UI = AllMenu.ins.GetCreateMenu("MenuNangCapItem", null, true).GetComponent<Ui>();
+                //   SpriteRong spritect = GameObject.Find("SpriteCongTrinh" + congtrinh.nameCongtrinh).GetComponent<SpriteRong>();
+                StartCoroutine(LoadSpriteWeb(UI.SpriteItem[0], nameThanLong, 0));// spritect.spriteTienHoa[congtrinh.levelCongtrinh];
+                                                                                 //  UI.SpriteItem[0].SetNativeSize();
+                StartCoroutine(LoadSpriteWeb(UI.SpriteItem[1], nameThanLong, 0));
+                //  UI.SpriteItem[1].sprite = spritect.spriteTienHoa[congtrinh.levelCongtrinh + 1]; UI.SpriteItem[1].SetNativeSize();
+                UI.txtlevel[0].text = NetworkManager.ins.CatDauNgoacKep(json["levelhientai"].ToString());
 
-                if (www.result != UnityWebRequest.Result.Success)
+                UI.txtlevel[1].text = NetworkManager.ins.CatDauNgoacKep(json["leveltieptheo"].ToString());
+                UI.txtChiSo[0].text = json["chiso1"].Value;
+                UI.txtChiSo[1].text = json["chiso2"].Value;
+                UI.tilethanhcong.SetActive(false);
+                UI.nangcapDao.SetActive(false);
+
+                UI.btnNangCap[0].gameObject.SetActive(false);
+                UI.btnNangCap[1].gameObject.SetActive(false);
+                UI.btnNangCapNhaApTrung[0].gameObject.SetActive(false);
+                UI.btnNangCapNhaApTrung[1].gameObject.SetActive(false);
+                UI.btnNangCapThucAn[0].gameObject.SetActive(false);
+                UI.btnNangCapThucAn[1].gameObject.SetActive(false);
+
+                UI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(2).gameObject.SetActive(false);
+                GameObject objThanLong = UI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(3).gameObject;
+                objThanLong.SetActive(true);
+                objThanLong.transform.GetChild(0).gameObject.name = nameThanLong;
+                objThanLong.transform.GetChild(0).transform.GetChild(1).GetComponent<Text>().text = json["giakimcuong"].Value;
+                objThanLong.transform.GetChild(5).transform.GetChild(0).GetComponent<Text>().text = json["tilethanhcong"].Value + "%";
+                objThanLong.transform.GetChild(2).GetComponent<Text>().text = json["soitemyeucau"].Value;
+                Image imgItemYeuCau = objThanLong.transform.GetChild(4).GetComponent<Image>();
+                imgItemYeuCau.sprite = Inventory.LoadSprite(json["itemyeucau"].Value);
+                imgItemYeuCau.name = json["itemyeucau"].AsString;
+                if (NetworkManager.ins.inventory.ListItemThuong.ContainsKey("item" + json["itemyeucau"].Value))
                 {
-                    debug.Log(www.error);
-                    OnThongBaoNhanh("Lỗi!", 2);
-                    AllMenu.ins.DestroyMenu("VongTronThanLong");
+                    int soyeucau = int.Parse(json["soitemyeucau"].Value);
+                    int soitemco = int.Parse(NetworkManager.ins.inventory.ListItemThuong["item" + json["itemyeucau"].Value].transform.GetChild(0).GetComponent<Text>().text);
+                    objThanLong.transform.GetChild(3).GetComponent<Text>().text = "(Đang có: " + NetworkManager.ins.inventory.ListItemThuong["item" + json["itemyeucau"].Value].transform.GetChild(0).GetComponent<Text>().text + ")";
+                    if (soitemco >= soyeucau)
+                    {
+                        objThanLong.transform.GetChild(0).GetComponent<Button>().interactable = true;
+                    }
+                    else objThanLong.transform.GetChild(0).GetComponent<Button>().interactable = false;
                 }
                 else
                 {
-                    // Show results as text
-                    JSONNode json = JSON.Parse(www.downloadHandler.text);
-                    debug.Log(www.downloadHandler.text);
-                    //MenuNangCapItem.SetActive(true);
-                    UI = AllMenu.ins.GetCreateMenu("MenuNangCapItem", null, true).GetComponent<Ui>();
-                    //   SpriteRong spritect = GameObject.Find("SpriteCongTrinh" + congtrinh.nameCongtrinh).GetComponent<SpriteRong>();
-                      StartCoroutine(LoadSpriteWeb(UI.SpriteItem[0], nameThanLong,0));// spritect.spriteTienHoa[congtrinh.levelCongtrinh];
-                    //  UI.SpriteItem[0].SetNativeSize();
-                     StartCoroutine(LoadSpriteWeb(UI.SpriteItem[1], nameThanLong, 0));
-                   //  UI.SpriteItem[1].sprite = spritect.spriteTienHoa[congtrinh.levelCongtrinh + 1]; UI.SpriteItem[1].SetNativeSize();
-                    UI.txtlevel[0].text = NetworkManager.ins.CatDauNgoacKep(json["levelhientai"].ToString());
-
-                    UI.txtlevel[1].text = NetworkManager.ins.CatDauNgoacKep(json["leveltieptheo"].ToString());
-                    UI.txtChiSo[0].text = json["chiso1"].Value;
-                    UI.txtChiSo[1].text = json["chiso2"].Value;
-                    UI.tilethanhcong.SetActive(false);
-                    UI.nangcapDao.SetActive(false);
-                   
-                    UI.btnNangCap[0].gameObject.SetActive(false);
-                    UI.btnNangCap[1].gameObject.SetActive(false);
-                    UI.btnNangCapNhaApTrung[0].gameObject.SetActive(false);
-                    UI.btnNangCapNhaApTrung[1].gameObject.SetActive(false);
-                    UI.btnNangCapThucAn[0].gameObject.SetActive(false);
-                    UI.btnNangCapThucAn[1].gameObject.SetActive(false);
-
-                    UI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(2).gameObject.SetActive(false);
-                    GameObject objThanLong = UI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(3).gameObject;
-                    objThanLong.SetActive(true);
-                    objThanLong.transform.GetChild(0).gameObject.name = nameThanLong;
-                    objThanLong.transform.GetChild(0).transform.GetChild(1).GetComponent<Text>().text = json["giakimcuong"].Value;
-                    objThanLong.transform.GetChild(5).transform.GetChild(0).GetComponent<Text>().text = json["tilethanhcong"].Value + "%";
-                    objThanLong.transform.GetChild(2).GetComponent<Text>().text = json["soitemyeucau"].Value;
-                    Image imgItemYeuCau = objThanLong.transform.GetChild(4).GetComponent<Image>();
-                    imgItemYeuCau.sprite = Inventory.LoadSprite(json["itemyeucau"].Value);
-                    imgItemYeuCau.name = json["itemyeucau"].AsString;
-                    if (NetworkManager.ins.inventory.ListItemThuong.ContainsKey("item"+json["itemyeucau"].Value))
-                    {
-                        int soyeucau = int.Parse(json["soitemyeucau"].Value);
-                        int soitemco = int.Parse(NetworkManager.ins.inventory.ListItemThuong["item" + json["itemyeucau"].Value].transform.GetChild(0).GetComponent<Text>().text);
-                        objThanLong.transform.GetChild(3).GetComponent<Text>().text = "(Đang có: " + NetworkManager.ins.inventory.ListItemThuong["item" + json["itemyeucau"].Value].transform.GetChild(0).GetComponent<Text>().text + ")";
-                        if(soitemco >= soyeucau)
-                        {
-                            objThanLong.transform.GetChild(0).GetComponent<Button>().interactable = true;
-                        }
-                        else objThanLong.transform.GetChild(0).GetComponent<Button>().interactable = false;
-                    }
-                    else
-                    {
-                        objThanLong.transform.GetChild(3).GetComponent<Text>().text = "(Đang có: 0)";
-                        objThanLong.transform.GetChild(0).GetComponent<Button>().interactable = false;
-                    }
-                    AllMenu.ins.DestroyMenu("VongTronThanLong");
+                    objThanLong.transform.GetChild(3).GetComponent<Text>().text = "(Đang có: 0)";
+                    objThanLong.transform.GetChild(0).GetComponent<Button>().interactable = false;
                 }
+                AllMenu.ins.DestroyMenu("VongTronThanLong");
             }
         }
     }
@@ -1428,27 +1375,29 @@ public class CrGame : MonoBehaviour
             AllMenu.ins.DestroyMenu("MenuNangCapItem");
         }
     }
-    public IEnumerator Xemct(string name, int cap, int id, bool b)
+    public void Xemct(string name, int cap, int id, bool b)
     {
-        XacNhanMuaCongTrinh xn = new XacNhanMuaCongTrinh(name, cap, id);
-        string data = JsonUtility.ToJson(xn);
-        debug.Log(data);
-        var request = new UnityWebRequest(ServerName + "xemcongtrinh", "POST");
-        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(data);
-        request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
-        request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-        request.SetRequestHeader("Content-Type", "application/json");
-        yield return request.SendWebRequest();
-        if (request.isNetworkError || request.isHttpError)
+
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "xemcongtrinh";
+        datasend["data"]["name"] = name;
+        datasend["data"]["cap"] = cap.ToString();
+        datasend["data"]["id"] = id.ToString();
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode jsonn)
         {
-            debug.Log(request.error);
-            OnThongBao(true, "Lỗi", true);
-        }
-        else
-        {
-            debug.Log(request.downloadHandler.text);
-            string[] status = request.downloadHandler.text.Split(',');
-            InfoCongTrinh(status[3], status[0], status[1], status[2], b);
+            if (jsonn["status"].AsString == "0")
+            {
+                JSONNode json = jsonn["data"];
+                string[] status = json.AsString.Split(',');
+                InfoCongTrinh(status[3], status[0], status[1], status[2], b);
+            }
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(jsonn["message"].Value, 2);
+                // AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
+            }
         }
     }
     public void QuaDao(int i)
@@ -1960,39 +1909,25 @@ public class CrGame : MonoBehaviour
 
     public void MuaDao(string tienmua)
     {
-        panelLoadDao.SetActive(true);
-        StartCoroutine(Load());
-        IEnumerator Load()
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "MuaDao";
+        datasend["data"]["dao"] = DangODao.ToString();
+        datasend["data"]["tienmua"] = tienmua;
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
         {
-            UnityWebRequest www = new UnityWebRequest(ServerName + "MuaDao/taikhoan/" + LoginFacebook.ins.id+ "/dao/"+DangODao+"/tienmua/"+tienmua);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
+            if (json["status"].Value == "ok")
             {
-                debug.Log(www.error);
-                panelLoadDao.SetActive(false);
-                OnThongBaoNhanh("Lỗi..");
+                if (AllMenu.ins.transform.Find("BtnSangDao"))
+                {
+                    AllMenu.ins.transform.Find("BtnSangDao").transform.SetParent(giaodien.transform);
+                }
+                MenuMoDao.SetActive(false);
             }
             else
             {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-                if (json["status"].Value == "ok")
-                {
-                    if (AllMenu.ins.transform.Find("BtnSangDao"))
-                    {
-                        AllMenu.ins.transform.Find("BtnSangDao").transform.SetParent(giaodien.transform);
-                    }
-                    MenuMoDao.SetActive(false);
-                }
-                else
-                {
-                    OnThongBaoNhanh(json["status"].Value,2.5f);
-                }
-
-                panelLoadDao.SetActive(false);
+                OnThongBaoNhanh(json["status"].Value, 2.5f);
             }
         }
     }

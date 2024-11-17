@@ -184,7 +184,7 @@ namespace SocketIO
 			pingThread = new Thread(RunPingThread);
 			pingThread.Start(ws);
 		}
-
+		
 		public void Close()
 		{
 			EmitClose();

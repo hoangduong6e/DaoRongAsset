@@ -67,25 +67,19 @@ public class infoitem2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
     private void OnHoldComplete()
     {
         string nameitem = gameObject.name;
-        StartCoroutine(Load());
-
-        IEnumerator Load()
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "XemShop";
+        datasend["data"]["nameitem"] = nameitem;
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok,true);
+        void Ok(JSONNode json)
         {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "XemShop/taikhoan/" + LoginFacebook.ins.id + "/nameitem/" + nameitem);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
+            if (json["status"].AsString == "0")
             {
-                debug.Log(www.error);
-            }
-            else
-            {
-                // Xử lý kết quả từ server
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
                 id = (short)json["thongtin"].AsString.Length;
                 CrGame.ins.OnThongBaoNhanh(json["thongtin"].AsString, 2, false);
             }
+            else CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
         }
     }
 }

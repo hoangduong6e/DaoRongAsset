@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using UnityEngine.UI.Extensions;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class VongQuayRong : MonoBehaviour
 {
@@ -49,27 +50,18 @@ public class VongQuayRong : MonoBehaviour
     {
         nameTrung = nametrung;
         btnQuay.interactable = false;
-        StartCoroutine(InfoTrungRong());
-         IEnumerator InfoTrungRong() // xem dấu chấm hỏi công trình
-         {
-            XemTrung xn = new XemTrung(nametrung);
-            string data = JsonUtility.ToJson(xn);
-            var request = new UnityWebRequest(crgame.ServerName + "xemTrungRong", "POST");
-            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(data);
-            request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
-            request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-            request.SetRequestHeader("Content-Type", "application/json");
-            yield return request.SendWebRequest();
-            if (request.isNetworkError || request.isHttpError)
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "xemTrungRong";
+        datasend["data"]["nametrung"] = nametrung;
+   
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode jsonn)
+        {
+            if (jsonn["status"].AsString == "0")
             {
-                debug.Log(request.error);
-                crgame.OnThongBao(true, "Lỗi", true);
-            }
-            else
-            {
-                debug.Log(request.downloadHandler.text);
-                JSONNode json = JSON.Parse(request.downloadHandler.text);
-                if(json["OQuay0"] != null)
+                JSONNode json = jsonn["data"];
+                if (json["OQuay0"] != null)
                 {
                     ORong[0].SetActive(true);
                     for (int i = 0; i < json["OQuay0"].Count; i++)
@@ -137,17 +129,13 @@ public class VongQuayRong : MonoBehaviour
                 }
                 //menuQuay.SetActive(true);
                 btnQuay.interactable = true;
-                // menuQuay.SetActive(true);
+
+            }
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(jsonn["message"].Value, 2);
+                // AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
             }
         }
-    }
-}
-[SerializeField]
-public class XemTrung
-{
-    public string nametrung;
-    public XemTrung(string Name)
-    {
-        nametrung = Name;
     }
 }

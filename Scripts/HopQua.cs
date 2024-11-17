@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using SimpleJSON;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -120,49 +121,35 @@ public class HopQua : MonoBehaviour
     }
     public void XoaQua()
     {
-        StartCoroutine(Xoa());
-        IEnumerator Xoa()
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "XoaQuaFriend";
+        datasend["data"]["indexqua"] = indexqua.ToString();
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
         {
-            crgame.OnThongBao(true,"Đang Hủy...",false);
-            UnityWebRequest www = new UnityWebRequest(crgame.ServerName + "XoaQuaFriend/indexqua/" + indexqua + "/taikhoan/" + LoginFacebook.ins.id);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
+            if (json["status"].AsString == "0")
             {
-                debug.Log(www.error);
-            }
-            else
-            {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                if (www.downloadHandler.text == "0")
+                boolqua[friend.quaxem] = "";
+                imgQua[friend.quaxem].sprite = ImgquaKhongDuocNhan;
+                imgQua[friend.quaxem].GetComponent<Button>().enabled = false;
+                //imgQua[friend.quaxem].transform.GetChild(0).gameObject.SetActive(true);
+                // imgQua[friend.quaxem].transform.GetChild(0).GetComponent<Image>().sprite = hopqua.thedanhan;
+                SoquaFriend -= 1;
+                if (SoquaFriend > 0)
                 {
-
-                    boolqua[friend.quaxem] = "";
-                    imgQua[friend.quaxem].sprite = ImgquaKhongDuocNhan;
-                    imgQua[friend.quaxem].GetComponent<Button>().enabled = false;
-                    //imgQua[friend.quaxem].transform.GetChild(0).gameObject.SetActive(true);
-                   // imgQua[friend.quaxem].transform.GetChild(0).GetComponent<Image>().sprite = hopqua.thedanhan;
-                    SoquaFriend -= 1;
-                    if (SoquaFriend > 0)
-                    {
-                        coquafriend.SetActive(true);
-                        Text txtsoqua = coquafriend.transform.GetChild(0).GetComponent<Text>();
-                        txtsoqua.text = SoquaFriend.ToString();
-                    }
-                    else
-                    {
-                        coquafriend.SetActive(false);
-                    }
-                    crgame.OnThongBao(false);
+                    coquafriend.SetActive(true);
+                    Text txtsoqua = coquafriend.transform.GetChild(0).GetComponent<Text>();
+                    txtsoqua.text = SoquaFriend.ToString();
                 }
                 else
                 {
-                    crgame.OnThongBao(true,"Lỗi",true);
+                    coquafriend.SetActive(false);
                 }
-                menuQua.SetActive(false);
+                crgame.OnThongBao(false);
             }
+            else crgame.OnThongBao(true, "Lỗi", true);
+            menuQua.SetActive(false);
         }
     }
     public void CloseMenu()

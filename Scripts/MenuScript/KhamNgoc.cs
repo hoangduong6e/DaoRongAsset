@@ -300,27 +300,19 @@ public class KhamNgoc : MonoBehaviour
     public void Unlock()
     {
         string idRong = CrGame.ins.TfrongInfo.name;
-        StartCoroutine(unlock());
-        IEnumerator unlock()
+
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "unlockNgoc";
+        datasend["data"]["idrong"] = idRong;
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
         {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "unlockNgoc/idrong/" + idRong + "/taikhoan/" + LoginFacebook.ins.id);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-            if (www.result != UnityWebRequest.Result.Success) debug.Log(www.error);
-            else
+            if (json["status"].AsString == "0")
             {
-                if (AllMenu.ins.menu.ContainsKey("MenuXacNhan")) AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-                if (json["tb"].Value == "thành công")
-                {
-                    oNgoc.transform.GetChild(2).transform.GetChild(2).gameObject.SetActive(false);
-                }
-                else
-                {
-                    CrGame.ins.OnThongBao(true, json["tb"].Value, true);
-                }
-                debug.Log(www.downloadHandler.text);
+                oNgoc.transform.GetChild(2).transform.GetChild(2).gameObject.SetActive(false);
             }
+            else CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
         }
     } 
 }

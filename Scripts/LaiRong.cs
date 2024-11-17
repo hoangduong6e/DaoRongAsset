@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using SimpleJSON;
 using UnityEngine.UI;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class LaiRong : MonoBehaviour
 {
@@ -280,83 +281,83 @@ public class LaiRong : MonoBehaviour
         Scale.x = x; Scale.y = y;
         g.transform.localScale = Scale;
     }
-    public IEnumerator XemRonglai(string herong)
+    public void XemRonglai(string herong)
     {
-        Herong he = new Herong(herong);
-        string data = JsonUtility.ToJson(he);
-        var request = new UnityWebRequest(CrGame.ins.ServerName + "xemRonglai", "POST");
-        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(data);
-        request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
-        request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-        request.SetRequestHeader("Content-Type", "application/json");
-        yield return request.SendWebRequest();
-        if (request.isNetworkError || request.isHttpError)
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "xemRonglai";
+        datasend["data"]["herong"] = herong;
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode jsonn)
         {
-            debug.Log(request.error);
-        }
-        else
-        {
-            //debug.Log(request.downloadHandler.text);
-            JSONNode jsondata = JSON.Parse(request.downloadHandler.text);
-            if(jsondata["ronglai"].Count > 0)
+            if (jsonn["status"].AsString == "0")
             {
-                for (int i = 0; i < jsondata["ronglai"].Count; i++)
+                JSONNode jsondata = jsonn["data"];
+                if (jsondata["ronglai"].Count > 0)
                 {
-                    if (jsondata["ronglai"][i].AsString != "null" && jsondata["ronglai"][i].AsString != "")
+                    for (int i = 0; i < jsondata["ronglai"].Count; i++)
                     {
-                        string rong = jsondata["ronglai"][i].AsString;
-                        string[] rongthongtin = rong.Split('-');
-                        for (int j = 0; j < OcotheLaira.transform.childCount; j++)
+                        if (jsondata["ronglai"][i].AsString != "null" && jsondata["ronglai"][i].AsString != "")
                         {
-                            if (OcotheLaira.transform.GetChild(j).name == rongthongtin[0])
+                            string rong = jsondata["ronglai"][i].AsString;
+                            string[] rongthongtin = rong.Split('-');
+                            for (int j = 0; j < OcotheLaira.transform.childCount; j++)
                             {
-                                break;
-                            }
-                            else
-                            {
-                                if (j + 1 == OcotheLaira.transform.childCount)
+                                if (OcotheLaira.transform.GetChild(j).name == rongthongtin[0])
                                 {
-                                    if (rongthongtin.Length > 1)
+                                    break;
+                                }
+                                else
+                                {
+                                    if (j + 1 == OcotheLaira.transform.childCount)
                                     {
-                                        CreateItem(rongthongtin[0], rongthongtin[1]);
-                                    }
-                                    else
-                                    {
-                                        CreateItem(rongthongtin[0], "");
+                                        if (rongthongtin.Length > 1)
+                                        {
+                                            CreateItem(rongthongtin[0], rongthongtin[1]);
+                                        }
+                                        else
+                                        {
+                                            CreateItem(rongthongtin[0], "");
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-                }
-                int soitem = 0;
-                txtSoitemCo.text = "0" + "/" + jsondata["canitem"]["gia"].AsString;
-                // imgitemGiaLai.sprite = GameObject.Find("Sprite"+ ItemGiaLai[1]).GetComponent<SpriteRenderer>().sprite;
-                imgitemGiaLai.sprite = Inventory.LoadSprite(jsondata["canitem"]["nameitemcan"].AsString);//GameObject.Find(ItemGiaLai[1]).GetComponent<Image>().sprite;
+                    int soitem = 0;
+                    txtSoitemCo.text = "0" + "/" + jsondata["canitem"]["gia"].AsString;
+                    // imgitemGiaLai.sprite = GameObject.Find("Sprite"+ ItemGiaLai[1]).GetComponent<SpriteRenderer>().sprite;
+                    imgitemGiaLai.sprite = Inventory.LoadSprite(jsondata["canitem"]["nameitemcan"].AsString);//GameObject.Find(ItemGiaLai[1]).GetComponent<Image>().sprite;
 
-                imgitemGiaLai.gameObject.SetActive(true);
-                if (Inventory.ins.ListItemThuong.ContainsKey("item" + jsondata["canitem"]["nameitemcan"].AsString))
-                {
-                    GameObject item = Inventory.ins.ListItemThuong["item" + jsondata["canitem"]["nameitemcan"].AsString] as GameObject;
-                    Text soitemco = item.transform.GetChild(0).GetComponent<Text>();
-                    soitem = int.Parse(soitemco.text);
-                    txtSoitemCo.text = soitemco.text + "/" + jsondata["canitem"]["gia"].AsString;
-                }
+                    imgitemGiaLai.gameObject.SetActive(true);
+                    if (Inventory.ins.ListItemThuong.ContainsKey("item" + jsondata["canitem"]["nameitemcan"].AsString))
+                    {
+                        GameObject item = Inventory.ins.ListItemThuong["item" + jsondata["canitem"]["nameitemcan"].AsString] as GameObject;
+                        Text soitemco = item.transform.GetChild(0).GetComponent<Text>();
+                        soitem = int.Parse(soitemco.text);
+                        txtSoitemCo.text = soitemco.text + "/" + jsondata["canitem"]["gia"].AsString;
+                    }
 
-                //for (int j = 0; j < Inventory.ins.ListItemThuong.Count; j++)
-                //{
-                //    if (Inventory.ins.ListItemThuong[j].gameObject.name == "item" + ItemGiaLai[1])
-                //    {
-                //        Text soitemco = Inventory.ins.ListItemThuong[j].transform.GetChild(0).GetComponent<Text>();
-                //        soitem = int.Parse(soitemco.text);
-                //        txtSoitemCo.text = soitemco.text + "/" + jsondata["canitem"]["gia"].AsString;
-                //        break;
-                //    }
-                //}
-                if (soitem >= int.Parse(jsondata["canitem"]["gia"].AsString) && OcotheLaira.transform.childCount > 0)
-                {
-                    btnlai.interactable = true;
+                    //for (int j = 0; j < Inventory.ins.ListItemThuong.Count; j++)
+                    //{
+                    //    if (Inventory.ins.ListItemThuong[j].gameObject.name == "item" + ItemGiaLai[1])
+                    //    {
+                    //        Text soitemco = Inventory.ins.ListItemThuong[j].transform.GetChild(0).GetComponent<Text>();
+                    //        soitem = int.Parse(soitemco.text);
+                    //        txtSoitemCo.text = soitemco.text + "/" + jsondata["canitem"]["gia"].AsString;
+                    //        break;
+                    //    }
+                    //}
+                    if (soitem >= int.Parse(jsondata["canitem"]["gia"].AsString) && OcotheLaira.transform.childCount > 0)
+                    {
+                        btnlai.interactable = true;
+                    }
                 }
+            }
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(jsonn["message"].Value, 2);
+                // AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
             }
         }
     }
@@ -379,76 +380,78 @@ public class LaiRong : MonoBehaviour
     {
         if(NetworkManager.ins.LevelNhaAp < 14 && hieuunglai.activeSelf == false)
         {
-            StartCoroutine(XemGiaNangCapLai(NetworkManager.ins.LevelNhaAp));
+            XemGiaNangCapLai(NetworkManager.ins.LevelNhaAp);
         }
     }
-    public IEnumerator XemGiaNangCapLai(int cap)
+    public void XemGiaNangCapLai(int cap)
     {
-        XacNhanMuaCongTrinh xn = new XacNhanMuaCongTrinh("", cap, 0);
-        string data = JsonUtility.ToJson(xn);
-        var request = new UnityWebRequest(CrGame.ins.ServerName + "xemGiaNangCapNhaApTrung", "POST");
-        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(data);
-        request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
-        request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-        request.SetRequestHeader("Content-Type", "application/json");
-        yield return request.SendWebRequest();
-        if (request.isNetworkError || request.isHttpError)
-        {
-            debug.Log(request.error);
-            CrGame.ins.OnThongBao(true, "Lỗi", true);
-        }
-        else
-        {
-            JSONNode json = JSON.Parse(request.downloadHandler.text);
-            debug.Log(request.downloadHandler.text);
-            AllMenu.ins.OpenMenu("MenuNangCapItem");
 
-         //   SpriteRong spritect = GameObject.Find("SpriteNhaApTrung").GetComponent<SpriteRong>();
-            CrGame.ins.UI = AllMenu.ins.GetCreateMenu("MenuNangCapItem", null, true,transform.GetSiblingIndex() + 1).GetComponent<Ui>();
-          //  CrGame.ins.UI.SpriteItem[0].sprite = spritect.spriteTienHoa[net.LevelNhaAp / 5]; CrGame.ins.UI.SpriteItem[0].SetNativeSize();
-            StartCoroutine(LoadSpriteWeb(CrGame.ins.UI.SpriteItem[0], NetworkManager.ins.LevelNhaAp / 5));
-            if ((NetworkManager.ins.LevelNhaAp + 1) / 5 < 3)
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "xemGiaNangCapNhaApTrung";
+        datasend["data"]["name"] = "";
+        datasend["data"]["cap"] = cap.ToString();
+        datasend["data"]["idcongtrinh"] = "0";
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode jsonn)
+        {
+            if (jsonn["status"].AsString == "0")
             {
-                //  CrGame.ins.UI.SpriteItem[1].sprite = CrGame.ins//spritect.spriteTienHoa[(net.LevelNhaAp + 1) / 5];
-                StartCoroutine(LoadSpriteWeb(CrGame.ins.UI.SpriteItem[1], (NetworkManager.ins.LevelNhaAp + 1) / 5));
+                JSONNode json = jsonn["data"];
+                AllMenu.ins.OpenMenu("MenuNangCapItem");
+
+                //   SpriteRong spritect = GameObject.Find("SpriteNhaApTrung").GetComponent<SpriteRong>();
+                CrGame.ins.UI = AllMenu.ins.GetCreateMenu("MenuNangCapItem", null, true, transform.GetSiblingIndex() + 1).GetComponent<Ui>();
+                //  CrGame.ins.UI.SpriteItem[0].sprite = spritect.spriteTienHoa[net.LevelNhaAp / 5]; CrGame.ins.UI.SpriteItem[0].SetNativeSize();
+                StartCoroutine(LoadSpriteWeb(CrGame.ins.UI.SpriteItem[0], NetworkManager.ins.LevelNhaAp / 5));
+                if ((NetworkManager.ins.LevelNhaAp + 1) / 5 < 3)
+                {
+                    //  CrGame.ins.UI.SpriteItem[1].sprite = CrGame.ins//spritect.spriteTienHoa[(net.LevelNhaAp + 1) / 5];
+                    StartCoroutine(LoadSpriteWeb(CrGame.ins.UI.SpriteItem[1], (NetworkManager.ins.LevelNhaAp + 1) / 5));
+                }
+                else
+                {
+                    //  CrGame.ins.UI.SpriteItem[1].sprite = spritect.spriteTienHoa[spritect.spriteTienHoa.Length - 1]; 
+                    StartCoroutine(LoadSpriteWeb(CrGame.ins.UI.SpriteItem[1], 2));
+                }
+                CrGame.ins.UI.SpriteItem[1].SetNativeSize();
+                CrGame.ins.UI.txtlevel[0].text = NetworkManager.ins.CatDauNgoacKep(json["levelhientai"].AsString);
+                CrGame.ins.UI.txtlevel[1].text = NetworkManager.ins.CatDauNgoacKep(json["leveltieptheo"].AsString);
+                string chiso1 = NetworkManager.ins.CatDauNgoacKep(json["chiso1"].AsString);
+                string chiso2 = NetworkManager.ins.CatDauNgoacKep(json["chiso2"].AsString);
+                CrGame.ins.UI.txtChiSo[0].text = chiso1;
+                CrGame.ins.UI.txtChiSo[1].text = chiso2;
+                CrGame.ins.UI.tilethanhcong.SetActive(true);
+                CrGame.ins.UI.nangcapDao.SetActive(false);
+                CrGame.ins.UI.txtTileThanhCong[0].text = NetworkManager.ins.CatDauNgoacKep(json["tilethanhcongvang"].AsString + "%");
+                CrGame.ins.UI.txtTileThanhCong[1].text = NetworkManager.ins.CatDauNgoacKep(json["tilethanhcongkimcuong"].AsString + "%");
+                CrGame.ins.UI.btnNangCap[0].gameObject.SetActive(false);
+                CrGame.ins.UI.btnNangCap[1].gameObject.SetActive(false);
+                CrGame.ins.UI.btnNangCapNhaApTrung[0].gameObject.SetActive(true);
+                CrGame.ins.UI.btnNangCapNhaApTrung[1].gameObject.SetActive(true);
+                CrGame.ins.UI.btnNangCapThucAn[0].gameObject.SetActive(false); CrGame.ins.UI.btnNangCapThucAn[1].gameObject.SetActive(false);
+                CrGame.ins.UI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(2).gameObject.SetActive(true);
+                GameObject objThanLong = CrGame.ins.UI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(3).gameObject;
+                objThanLong.SetActive(false);
+                if (int.Parse(CrGame.ins.txtLevel.text) >= int.Parse(NetworkManager.ins.CatDauNgoacKep(json["levelnang"].AsString)))
+                {
+                    CrGame.ins.UI.btnNangCapNhaApTrung[0].interactable = true;
+                    CrGame.ins.UI.btnNangCapNhaApTrung[1].interactable = true;
+                    CrGame.ins.UI.txtGiaNhaAptrung[0].text = NetworkManager.ins.CatDauNgoacKep(json["giavang"].AsString);
+                    CrGame.ins.UI.txtGiaNhaAptrung[1].text = NetworkManager.ins.CatDauNgoacKep(json["giakimcuong"].AsString);
+                }
+                else
+                {
+                    CrGame.ins.UI.btnNangCapNhaApTrung[0].interactable = false;
+                    CrGame.ins.UI.btnNangCapNhaApTrung[1].interactable = false;
+                    CrGame.ins.UI.txtGiaNhaAptrung[0].text = "<color=#ff0000ff>" + "Cấp " + NetworkManager.ins.CatDauNgoacKep(json["levelnang"].AsString) + "</color>";
+                    CrGame.ins.UI.txtGiaNhaAptrung[1].text = "<color=#ff0000ff>" + "Cấp " + NetworkManager.ins.CatDauNgoacKep(json["levelnang"].AsString) + "</color>";
+                }
             }
             else
             {
-                //  CrGame.ins.UI.SpriteItem[1].sprite = spritect.spriteTienHoa[spritect.spriteTienHoa.Length - 1]; 
-                StartCoroutine(LoadSpriteWeb(CrGame.ins.UI.SpriteItem[1], 2));
-            }
-            CrGame.ins.UI.SpriteItem[1].SetNativeSize();
-            CrGame.ins.UI.txtlevel[0].text = NetworkManager.ins.CatDauNgoacKep(json["levelhientai"].AsString);
-            CrGame.ins.UI.txtlevel[1].text = NetworkManager.ins.CatDauNgoacKep(json["leveltieptheo"].AsString);
-            string chiso1 = NetworkManager.ins.CatDauNgoacKep(json["chiso1"].AsString);
-            string chiso2 = NetworkManager.ins.CatDauNgoacKep(json["chiso2"].AsString);
-            CrGame.ins.UI.txtChiSo[0].text = chiso1;
-            CrGame.ins.UI.txtChiSo[1].text = chiso2;
-            CrGame.ins.UI.tilethanhcong.SetActive(true);
-            CrGame.ins.UI.nangcapDao.SetActive(false);
-            CrGame.ins.UI.txtTileThanhCong[0].text = NetworkManager.ins.CatDauNgoacKep(json["tilethanhcongvang"].AsString + "%");
-            CrGame.ins.UI.txtTileThanhCong[1].text = NetworkManager.ins.CatDauNgoacKep(json["tilethanhcongkimcuong"].AsString + "%");
-            CrGame.ins.UI.btnNangCap[0].gameObject.SetActive(false);
-            CrGame.ins.UI.btnNangCap[1].gameObject.SetActive(false);
-            CrGame.ins.UI.btnNangCapNhaApTrung[0].gameObject.SetActive(true);
-            CrGame.ins.UI.btnNangCapNhaApTrung[1].gameObject.SetActive(true);
-            CrGame.ins.UI.btnNangCapThucAn[0].gameObject.SetActive(false); CrGame.ins.UI.btnNangCapThucAn[1].gameObject.SetActive(false);
-            CrGame.ins.UI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(2).gameObject.SetActive(true);
-            GameObject objThanLong = CrGame.ins.UI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(3).gameObject;
-            objThanLong.SetActive(false);
-            if (int.Parse(CrGame.ins.txtLevel.text) >= int.Parse(NetworkManager.ins.CatDauNgoacKep(json["levelnang"].AsString)))
-            {
-                CrGame.ins.UI.btnNangCapNhaApTrung[0].interactable = true;
-                CrGame.ins.UI.btnNangCapNhaApTrung[1].interactable = true;
-                CrGame.ins.UI.txtGiaNhaAptrung[0].text = NetworkManager.ins.CatDauNgoacKep(json["giavang"].AsString);
-                CrGame.ins.UI.txtGiaNhaAptrung[1].text = NetworkManager.ins.CatDauNgoacKep(json["giakimcuong"].AsString);
-            }
-            else
-            {
-                CrGame.ins.UI.btnNangCapNhaApTrung[0].interactable = false;
-                CrGame.ins.UI.btnNangCapNhaApTrung[1].interactable = false;
-                CrGame.ins.UI.txtGiaNhaAptrung[0].text = "<color=#ff0000ff>" + "Cấp " + NetworkManager.ins.CatDauNgoacKep(json["levelnang"].AsString) + "</color>";
-                CrGame.ins.UI.txtGiaNhaAptrung[1].text = "<color=#ff0000ff>" + "Cấp " + NetworkManager.ins.CatDauNgoacKep(json["levelnang"].AsString) + "</color>";
+                CrGame.ins.OnThongBaoNhanh(jsonn["message"].Value, 2);
+                // AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
             }
         }
     }
@@ -483,15 +486,5 @@ public class LaiRong : MonoBehaviour
             CloseMenu();
         }    
   
-    }
-}
-
-[SerializeField]
-public class Herong
-{
-    public string herong;
-    public Herong(string he)
-    {
-        herong = he;
     }
 }

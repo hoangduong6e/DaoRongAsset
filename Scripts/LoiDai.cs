@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 public class LoiDai : MonoBehaviour
 {
@@ -63,63 +64,63 @@ public class LoiDai : MonoBehaviour
         if(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.transform.parent.transform.parent.transform.GetSiblingIndex() > 0)
         {
             nameDau = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.transform.parent.name;
-            StartCoroutine(XemDau());
+            XemDau();
         }
-        IEnumerator XemDau()
+        void XemDau()
         {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "xemdauloidai/taikhoan/" + LoginFacebook.ins.id);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
 
-            if (www.result != UnityWebRequest.Result.Success)
+            JSONClass datasend = new JSONClass();
+            datasend["class"] = "Main";
+            datasend["method"] = "xemdauloidai";
+
+            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+            void Ok(JSONNode json)
             {
-                debug.Log(www.error);
-                CrGame.ins.OnThongBaoNhanh("Lỗi!");
-            }
-            else
-            {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-                ThongBaoChon tbc =  AllMenu.ins.GetCreateMenu("MenuXacNhan",GameObject.Find("CanvasTrenCung"),true, ChuaRongTop.transform.GetSiblingIndex() + 1).GetComponent<ThongBaoChon>();
-                tbc.btnChon.onClick.RemoveAllListeners();
-                if (json["status"].AsString == "0")
+                if (json["status"].AsInt <= 2)
                 {
-                    tbc.txtThongBao.text = "Bạn muốn thách đấu với người chơi " + "<color=#ffff00ff>" + nameDau + "</color> ?";
-                    tbc.btnChon.onClick.AddListener(VaoDau);
+                    ThongBaoChon tbc = AllMenu.ins.GetCreateMenu("MenuXacNhan", GameObject.Find("CanvasTrenCung"), true, ChuaRongTop.transform.GetSiblingIndex() + 1).GetComponent<ThongBaoChon>();
+                    tbc.btnChon.onClick.RemoveAllListeners();
+                    if (json["status"].AsString == "0")
+                    {
+                        tbc.txtThongBao.text = "Bạn muốn thách đấu với người chơi " + "<color=#ffff00ff>" + nameDau + "</color> ?";
+                        tbc.btnChon.onClick.AddListener(VaoDau);
+                    }
+                    else if (json["status"].AsString == "1")
+                    {
+                        tbc.txtThongBao.text = json["message"].Value;
+                        tbc.btnChon.onClick.AddListener(MoDauBangkimcuong);
+                    }
+                    else if (json["status"].AsString == "2")
+                    {
+                        tbc.txtThongBao.text = json["message"].Value;
+                        tbc.btnChon.onClick.AddListener(MoDauBangkimcuong);
+                    }
+
                 }
-                else if (json["status"].AsString == "1")
+                else
                 {
-                    tbc.txtThongBao.text = json["message"].Value;
-                    tbc.btnChon.onClick.AddListener(MoDauBangkimcuong);
-                }
-                else if (json["status"].AsString == "2")
-                {
-                    tbc.txtThongBao.text = json["message"].Value;
-                    tbc.btnChon.onClick.AddListener(MoDauBangkimcuong);
+                    CrGame.ins.OnThongBaoNhanh(json["message"].Value, 2);
+                    // AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
                 }
             }
         }
     }    
     void MoDauBangkimcuong()
     {
-        StartCoroutine(Muabangkc());
-        IEnumerator Muabangkc()
-        {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "MuaLuotDau2kc/taikhoan/" + LoginFacebook.ins.id);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "MuaLuotDau2kc";
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
 
-            if (www.result != UnityWebRequest.Result.Success) debug.Log(www.error);
+        void Ok(JSONNode jsonn)
+        {
+            if (jsonn["status"].AsString == "0")
+            {
+                VaoDau();
+            }
             else
             {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-                if (json["status"].AsString == "0")
-                {
-                    VaoDau();
-                }
+                CrGame.ins.OnThongBaoNhanh(jsonn["message"].AsString);
             }
         }
     }

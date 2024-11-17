@@ -24,79 +24,59 @@ public class VongTronCongTrinh : MonoBehaviour
     }
     public void BanCongTrinh()
     {
-        StartCoroutine(BanCt());
-        IEnumerator BanCt()
+        CongTrinh congtrinh = CrGame.ins.VungCongTrinh.GetComponent<CongTrinh>();
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "BanCongTrinh";
+        datasend["data"]["idcongtrinh"] = congtrinh.idCongtrinh.ToString();
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
         {
-            CongTrinh congtrinh = CrGame.ins.VungCongTrinh.GetComponent<CongTrinh>();
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "BanCongTrinh/idcongtrinh/"+ congtrinh.idCongtrinh + "/taikhoan/" + LoginFacebook.ins.id);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
+            if (json["status"].AsString == "0")
             {
-                debug.Log(www.error);
+                congtrinh.ResetCongTrinh();
+                //   AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
+                AllMenu.ins.menu["VongTronCongtrinh"].SetActive(false);
             }
             else
             {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                if(www.downloadHandler.text == "0")
-                {
-                    congtrinh.ResetCongTrinh();
-                 //   AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
-                    AllMenu.ins.menu["VongTronCongtrinh"].SetActive(false);
-                }
-                else
-                {
-                    CrGame.ins.OnThongBao(true, www.downloadHandler.text,true);
-                   // AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
-                }
+                CrGame.ins.OnThongBaoNhanh(json["message"].Value, 2);
+                // AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
             }
         }
+        
     }
     bool busua = true;
     public void BuSua(string nameThanLong)
     {
         if (!busua) return;
         busua = false;
-        StartCoroutine(Load());
-        IEnumerator Load()
-        {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "ThanLongBuSua/taikhoan/" + LoginFacebook.ins.id + "/name/" + nameThanLong);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
 
-            if (www.result != UnityWebRequest.Result.Success)
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "ThanLongBuSua";
+        datasend["data"]["name"] = nameThanLong;
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
+        {
+            if (json["status"].Value == "ok")
             {
-                debug.Log(www.error);
-                CrGame.ins.OnThongBaoNhanh("Lỗi!", 2);
-                AllMenu.ins.DestroyMenu("VongTronThanLong");
-                busua = true;
+                GameObject BeThanLong = CrGame.ins.AllDao.transform.GetChild(2).transform.Find("Be" + nameThanLong).gameObject;
+                Animator anim = BeThanLong.transform.GetChild(0).GetComponent<Animator>();
+                anim.SetBool("Doi", false);
+                BeThanLong.transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
             }
             else
             {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-                if (json["status"].Value == "ok")
-                {
-                    GameObject BeThanLong = CrGame.ins.AllDao.transform.GetChild(2).transform.Find("Be"+ nameThanLong).gameObject;
-                    Animator anim = BeThanLong.transform.GetChild(0).GetComponent<Animator>();
-                    anim.SetBool("Doi", false);
-                    BeThanLong.transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
-                }
-                else
-                {
-                    CrGame.ins.OnThongBaoNhanh(json["status"].Value, 2);
-                }
-                AllMenu.ins.DestroyMenu("VongTronThanLong");
-                busua = true;
+                CrGame.ins.OnThongBaoNhanh(json["status"].Value, 2);
             }
+            AllMenu.ins.DestroyMenu("VongTronThanLong");
+            busua = true;
         }
     }    
     public void XemNangCapThanLong(string nameThanLong)
     {
-        StartCoroutine(CrGame.ins.XemNangCapCongTrinh("",0, nameThanLong));
+        CrGame.ins.XemNangCapCongTrinh("",0, nameThanLong);
     }
    public void DestroyGD()
     {

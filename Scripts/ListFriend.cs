@@ -13,61 +13,45 @@ public class ListFriend : MonoBehaviour
     private void Start()
     {
         //load
-        CrGame.ins.panelLoadDao.SetActive(true);
-        StartCoroutine(Load());
-        IEnumerator Load()
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "GetListFriend";
+        datasend["data"]["id"] = LoginFacebook.ins.id;
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
         {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "GetListFriend/id/" + LoginFacebook.ins.id);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-            if (www.result != UnityWebRequest.Result.Success)
+            if (json["status"].Value == "0")
             {
-                debug.Log(www.error);
-                CrGame.ins.panelLoadDao.SetActive(false);
-                CrGame.ins.OnThongBaoNhanh("Lỗi khi tải dữ liệu.");
-                AllMenu.ins.DestroyMenu("menuFriend");
+                JSONNode allfriend = json["data"]["allfriend"];
+                for (int i = 1; i < allfriend.Count; i++)
+                {
+                    GameObject Offriend = Instantiate(Ofriend, ContentFriend.transform.position, Quaternion.identity) as GameObject;
+                    Offriend.transform.SetParent(ContentFriend.transform, false);
+                    Image Avatar = Offriend.transform.GetChild(0).GetComponent<Image>();
+                    //  btnFriend btnfr = Offriend.GetComponent<btnFriend>();
+                    //btnfr.idfb = allfriend[i]["idfb"].Value;
+                    // btnfr.idObjectFriend = allfriend[i]["name"].Value;
+                    Offriend.name = allfriend[i]["name"].AsString;
+                    Offriend.transform.GetChild(0).name = allfriend[i]["idfb"].AsString;
+                    Text txtname = Offriend.transform.GetChild(2).GetComponent<Text>();
+                    txtname.text = allfriend[i]["name"].AsString;
+                    if (txtname.text.Length > 8)
+                    {
+                        string newname = txtname.text.Substring(0, 8) + "...";
+                        txtname.text = newname;
+                    }
+                    // friend.GetAvatarFriend(CatDauNgoacKep(allfriend[i]["idfb"].ToString()), Avatar);
+
+                    Image Khung = Offriend.transform.GetChild(1).GetComponent<Image>();
+                    //  Khung.sprite = Inventory.LoadSprite("Avatar" + CatDauNgoacKep(allfriend[i]["toc"].ToString()));
+                    Friend.ins.LoadAvtFriend(allfriend[i]["objectId"].Value, Avatar, Khung);
+                    Offriend.SetActive(true);
+                }
             }
             else
             {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-                if (json["status"].Value == "ok")
-                {
-                    JSONNode allfriend = json["data"]["allfriend"];
-                    for (int i = 1; i < allfriend.Count; i++)
-                    {
-                        GameObject Offriend = Instantiate(Ofriend, ContentFriend.transform.position, Quaternion.identity) as GameObject;
-                        Offriend.transform.SetParent(ContentFriend.transform, false);
-                        Image Avatar = Offriend.transform.GetChild(0).GetComponent<Image>();
-                      //  btnFriend btnfr = Offriend.GetComponent<btnFriend>();
-                        //btnfr.idfb = allfriend[i]["idfb"].Value;
-                       // btnfr.idObjectFriend = allfriend[i]["name"].Value;
-                        Offriend.name = allfriend[i]["name"].AsString;
-                        Offriend.transform.GetChild(0).name = allfriend[i]["idfb"].AsString;
-                        Text txtname = Offriend.transform.GetChild(2).GetComponent<Text>();
-                        txtname.text = allfriend[i]["name"].AsString;
-                        if (txtname.text.Length > 8)
-                        {
-                            string newname = txtname.text.Substring(0, 8) + "...";
-                            txtname.text = newname;
-                        }
-                        // friend.GetAvatarFriend(CatDauNgoacKep(allfriend[i]["idfb"].ToString()), Avatar);
-
-                         Image Khung = Offriend.transform.GetChild(1).GetComponent<Image>();
-                        //  Khung.sprite = Inventory.LoadSprite("Avatar" + CatDauNgoacKep(allfriend[i]["toc"].ToString()));
-                        Friend.ins.LoadAvtFriend(allfriend[i]["objectId"].Value, Avatar, Khung);
-                        Offriend.SetActive(true);
-                    }
-                }
-                else
-                {
-                    CrGame.ins.OnThongBaoNhanh(json["status"].Value);
-                    AllMenu.ins.DestroyMenu("menuFriend");
-                }
-                CrGame.ins.panelLoadDao.SetActive(false);
-                //transform.GetChild(4).transform.GetChild(2).transform.GetChild(1).transform.GetChild(0).GetComponent<Image>().fillAmount = 5 / 15;
+                CrGame.ins.OnThongBaoNhanh(json["message"].Value);
+                AllMenu.ins.DestroyMenu("menuFriend");
             }
         }
     }

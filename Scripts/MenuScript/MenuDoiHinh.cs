@@ -185,161 +185,106 @@ public class MenuDoiHinh : MonoBehaviour
     }
     public void OpenSkill()
     {
-        CrGame.ins.panelLoadDao.SetActive(true);
-        StartCoroutine(Load());
-        IEnumerator Load()
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Skill";
+        datasend["method"] = "XemSkill";
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
         {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "XemSkill/taikhoan/" + LoginFacebook.ins.id);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
+            if (json["status"].AsString == "chuacoskill")
             {
-                debug.Log(www.error);
-                CrGame.ins.OnThongBaoNhanh("Lỗi");
-                CrGame.ins.panelLoadDao.SetActive(false);
-                gameObject.SetActive(false);
+
+            }
+            else if (json["status"].AsString == "ok")
+            {
+               
+                for (int i = 0; i < json["allskill"].Count; i++)
+                {
+                    for (int j = 0; j < ObjectSkill.transform.childCount; j++)
+                    {
+                        if (json["allskill"][i]["nameskill"].Value == ObjectSkill.transform.GetChild(j).name)
+                        {
+                            GameObject objtext = ObjectSkill.transform.GetChild(j).transform.GetChild(2).gameObject;
+                            objtext.SetActive(true);
+                            objtext.GetComponent<Text>().text = json["allskill"][i]["level"].Value;
+                            ObjectSkill.transform.GetChild(j).transform.GetChild(1).gameObject.SetActive(false);
+                            break;
+                        }
+                    }
+                }
+                LoadSkillChon(json["skillchon"]["skill1"].Value, json["skillchon"]["skill2"].Value, json["skillchon"]["skill3"].Value);
             }
             else
             {
-                // Show results as text
-                if (www.downloadHandler.text == "chuacoskill")
-                {
-
-                }
-                else
-                {
-                    JSONNode json = JSON.Parse(www.downloadHandler.text);
-                    for (int i = 0; i < json["allskill"].Count; i++)
-                    {
-                        for (int j = 0; j < ObjectSkill.transform.childCount; j++)
-                        {
-                            if (json["allskill"][i]["nameskill"].Value == ObjectSkill.transform.GetChild(j).name)
-                            {
-                                GameObject objtext = ObjectSkill.transform.GetChild(j).transform.GetChild(2).gameObject;
-                                objtext.SetActive(true);
-                                objtext.GetComponent<Text>().text = json["allskill"][i]["level"].Value;
-                                ObjectSkill.transform.GetChild(j).transform.GetChild(1).gameObject.SetActive(false);
-                                break;
-                            }
-                        }
-                    }
-                    LoadSkillChon(json["skillchon"]["skill1"].Value, json["skillchon"]["skill2"].Value, json["skillchon"]["skill3"].Value);
-                }
-                gameObject.transform.GetChild(0).gameObject.SetActive(true);
-                CrGame.ins.panelLoadDao.SetActive(false);
-                transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().sprite = spriteGdSkill;
-                menuskill.SetActive(true);
-                menuDH.SetActive(false);
+                gameObject.SetActive(false);
             }
+            gameObject.transform.GetChild(0).gameObject.SetActive(true);
+            CrGame.ins.panelLoadDao.SetActive(false);
+            transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().sprite = spriteGdSkill;
+            menuskill.SetActive(true);
+            menuDH.SetActive(false);
         }
     }
     public void ChonSkill()
     {
         GameObject Skillchon = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
-        debug.Log(Skillchon.transform.parent.name);
-
-        CrGame.ins.panelLoadDao.SetActive(true);
-        StartCoroutine(Load());
-        IEnumerator Load()
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Skill";
+        datasend["method"] = "AddSkill";
+        datasend["data"]["nameSkill"] = Skillchon.transform.parent.name;
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
         {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "AddSkill/nameSkill/" + Skillchon.transform.parent.name + "/taikhoan/" + LoginFacebook.ins.id);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
+            if (json["status"].Value == "ok")
             {
-                debug.Log(www.error);
-                CrGame.ins.OnThongBaoNhanh("Lỗi");
-                CrGame.ins.panelLoadDao.SetActive(false);
-                gameObject.SetActive(false);
+                LoadSkillChon(json["skill"]["skill1"].Value, json["skill"]["skill2"].Value, json["skill"]["skill3"].Value);
             }
             else
             {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-                if (json["status"].Value == "ok")
-                {
-                    LoadSkillChon(json["skill"]["skill1"].Value, json["skill"]["skill2"].Value, json["skill"]["skill3"].Value);
-                }    
-                else
-                {
-                    CrGame.ins.OnThongBaoNhanh(json["status"].Value);
-                }
-                CrGame.ins.panelLoadDao.SetActive(false);
+                CrGame.ins.OnThongBaoNhanh(json["status"].Value);
             }
         }
     }
     public void XoaSkill()
     {
         GameObject Skillchon = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
-        debug.Log(Skillchon.transform.parent.name);
-
-        CrGame.ins.panelLoadDao.SetActive(true);
-        StartCoroutine(Load());
-        IEnumerator Load()
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Skill";
+        datasend["method"] = "XoaSkill";
+        datasend["data"]["oskill"] = (Skillchon.transform.parent.parent.transform.GetSiblingIndex() + 1).ToString();
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
         {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "XoaSkill/oskill/" + (Skillchon.transform.parent.parent.transform.GetSiblingIndex() + 1) + "/taikhoan/" + LoginFacebook.ins.id);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
+            if (json["status"].AsString == "0")
             {
-                debug.Log(www.error);
-                CrGame.ins.OnThongBaoNhanh("Lỗi");
-                CrGame.ins.panelLoadDao.SetActive(false);
-                gameObject.SetActive(false);
+                ObjectSkillChon.transform.GetChild(Skillchon.transform.parent.parent.transform.GetSiblingIndex()).transform.GetChild(0).gameObject.SetActive(false);
             }
             else
             {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                if (www.downloadHandler.text == "ok")
-                {
-                    ObjectSkillChon.transform.GetChild(Skillchon.transform.parent.parent.transform.GetSiblingIndex()).transform.GetChild(0).gameObject.SetActive(false) ;
-                }
-                else
-                {
-                    CrGame.ins.OnThongBaoNhanh(www.downloadHandler.text);
-                }
-                CrGame.ins.panelLoadDao.SetActive(false);
+                CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+                gameObject.SetActive(false);
             }
         }
     }
     public void XoaHetskill()
     {
-        CrGame.ins.panelLoadDao.SetActive(true);
-        StartCoroutine(Load());
-        IEnumerator Load()
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Skill";
+        datasend["method"] = "XacNhanSkill";
+        datasend["data"]["Key"] = "XoaHet";
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
         {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "XacNhanSkill/Key/XoaHet/taikhoan/" + LoginFacebook.ins.id);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
+            if (json["status"].AsString == "0")
             {
-                debug.Log(www.error);
-                CrGame.ins.OnThongBaoNhanh("Lỗi");
-                CrGame.ins.panelLoadDao.SetActive(false);
-                gameObject.SetActive(false);
+                ObjectSkillChon.transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
+                ObjectSkillChon.transform.GetChild(1).transform.GetChild(0).gameObject.SetActive(false);
+                ObjectSkillChon.transform.GetChild(2).transform.GetChild(0).gameObject.SetActive(false);
+                CrGame.ins.OnThongBaoNhanh("Đã xóa hết kỹ năng");
             }
             else
             {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                if (www.downloadHandler.text == "ok")
-                {
-                    ObjectSkillChon.transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
-                    ObjectSkillChon.transform.GetChild(1).transform.GetChild(0).gameObject.SetActive(false);
-                    ObjectSkillChon.transform.GetChild(2).transform.GetChild(0).gameObject.SetActive(false);
-                    CrGame.ins.OnThongBaoNhanh("Đã xóa hết kỹ năng");
-                }
-                else
-                {
-                    CrGame.ins.OnThongBaoNhanh(www.downloadHandler.text);
-                }
-                CrGame.ins.panelLoadDao.SetActive(false);
+                CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
             }
         }
     }
@@ -349,35 +294,14 @@ public class MenuDoiHinh : MonoBehaviour
     }
     public void XacNhanskill()
     {
-        CrGame.ins.panelLoadDao.SetActive(true);
-        StartCoroutine(Load());
-        IEnumerator Load()
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Skill";
+        datasend["method"] = "XacNhanSkill";
+        datasend["data"]["Key"] = "XacNhan";
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
         {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "XacNhanSkill/Key/XacNhan/taikhoan/" + LoginFacebook.ins.id);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                debug.Log(www.error);
-                CrGame.ins.OnThongBaoNhanh("Lỗi");
-                CrGame.ins.panelLoadDao.SetActive(false);
-                gameObject.SetActive(false);
-            }
-            else
-            {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                if (www.downloadHandler.text == "ok")
-                {
-                    CrGame.ins.OnThongBaoNhanh("Đã lưu");
-                }
-                else
-                {
-                    CrGame.ins.OnThongBaoNhanh(www.downloadHandler.text);
-                }
-                CrGame.ins.panelLoadDao.SetActive(false);
-            }
+            CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
         }
     }
     public void MoKhoaOKyNang()
@@ -389,38 +313,23 @@ public class MenuDoiHinh : MonoBehaviour
     }
     void LoadMoKhoa()
     {
-        CrGame.ins.panelLoadDao.SetActive(true);
-        StartCoroutine(Load());
-        IEnumerator Load()
+        GameObject Skillchon = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Skill";
+        datasend["method"] = "MoKhoaKyNang";
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
         {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "MoKhoaKyNang/taikhoan/" + LoginFacebook.ins.id);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
+            if (json["status"].AsString == "0")
             {
-                debug.Log(www.error);
-                CrGame.ins.OnThongBaoNhanh("Lỗi");
-                CrGame.ins.panelLoadDao.SetActive(false);
-                gameObject.SetActive(false);
+                ObjectSkillChon.transform.GetChild(1).GetComponent<Image>().enabled = false;
+                CrGame.ins.OnThongBaoNhanh("Mở khóa ô kỹ năng thành công");
+
             }
             else
             {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                if (www.downloadHandler.text == "ok")
-                {
-                    ObjectSkillChon.transform.GetChild(1).GetComponent<Image>().enabled = false;
-                    CrGame.ins.OnThongBaoNhanh("Mở khóa ô kỹ năng thành công");
-                    
-                }
-                else
-                {
-                    CrGame.ins.OnThongBaoNhanh(www.downloadHandler.text);
-                }
-                CrGame.ins.panelLoadDao.SetActive(false);
+                CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
             }
-            AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
         }
     }
     void LoadSkillChon(string name1,string name2,string name3)

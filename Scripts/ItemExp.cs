@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using SimpleJSON;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -24,48 +25,34 @@ public class ItemExp : MonoBehaviour
     {
         Button btnsd = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
         btnsd.enabled = false;
-        StartCoroutine(Load());
-        IEnumerator Load()
-        {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "UseItem/nameitem/"+ Value +"/taikhoan/" + LoginFacebook.ins.id);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
 
-            if (www.result != UnityWebRequest.Result.Success)
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "UseItem";
+        datasend["data"]["nameitem"] = Value;
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode jsonn)
+        {
+            if (jsonn["status"].AsString == "0")
             {
-                debug.Log(www.error);
-                btnsd.enabled = true;
-                CrGame.ins.OnThongBaoNhanh("Lỗi");
-            }
-            else
-            {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                if (www.downloadHandler.text == "0")
+                //clone.AddComponent<QuaBay>();
+                if (gameObject.GetComponent<QuaBay>())
                 {
-                    //clone.AddComponent<QuaBay>();
-                    if(gameObject.GetComponent<QuaBay>())
-                    {
-                        GameObject clone = Instantiate(gameObject, transform.position, Quaternion.identity) as GameObject;
-                        clone.transform.GetChild(0).gameObject.SetActive(false);
-                        clone.transform.GetChild(1).gameObject.SetActive(false);
-                        clone.transform.GetChild(2).gameObject.SetActive(false);
-                        GameObject tfbay = GameObject.Find("btnQuaOnline");
-                        clone.transform.SetParent(AllMenu.ins.transform, false);
-                        clone.transform.position = gameObject.transform.position;
-                        QuaBay quabay = clone.GetComponent<QuaBay>();
-                        quabay.vitribay = tfbay;
-                        quabay.enabled = true;
-                    }    
-                    Inventory.ins.AddItem(Value,-1);
-                }    
-                else
-                {
-                    CrGame.ins.OnThongBaoNhanh(www.downloadHandler.text);
-                   // crgame.OnThongBao(true, www.downloadHandler.text,true);
+                    GameObject clone = Instantiate(gameObject, transform.position, Quaternion.identity) as GameObject;
+                    clone.transform.GetChild(0).gameObject.SetActive(false);
+                    clone.transform.GetChild(1).gameObject.SetActive(false);
+                    clone.transform.GetChild(2).gameObject.SetActive(false);
+                    GameObject tfbay = GameObject.Find("btnQuaOnline");
+                    clone.transform.SetParent(AllMenu.ins.transform, false);
+                    clone.transform.position = gameObject.transform.position;
+                    QuaBay quabay = clone.GetComponent<QuaBay>();
+                    quabay.vitribay = tfbay;
+                    quabay.enabled = true;
                 }
-                btnsd.enabled = true;
+                Inventory.ins.AddItem(Value, -1);
             }
+            else CrGame.ins.OnThongBaoNhanh(jsonn["message"].AsString);
+            btnsd.enabled = true;
         }
     }
 }

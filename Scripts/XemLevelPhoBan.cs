@@ -30,6 +30,6 @@ public class XemLevelPhoBan : MonoBehaviour,IPointerDownHandler,IPointerUpHandle
         InfoLevelPhoBan infolevel = transform.parent.transform.parent.GetComponent<XemPhoBan>().GdMapVienChinh.GetComponent<InfoLevelPhoBan>();
         VienChinh vienchinh = GameObject.FindGameObjectWithTag("vienchinh").GetComponent<VienChinh>();
         vienchinh.nameMapvao = gameObject.name;
-        infolevel.StartCoroutine(infolevel.XemLevel(vienchinh.nameMapvao));
+        infolevel.XemLevel(vienchinh.nameMapvao);
     }
 }

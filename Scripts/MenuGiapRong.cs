@@ -783,29 +783,15 @@ public class MenuGiapRong : MonoBehaviour
         } 
             
         string nameitem = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.transform.parent.name;
-        StartCoroutine(Load());
-        IEnumerator Load()
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "XemShop";
+        datasend["data"]["nameitem"] = nameitem;
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        void Ok(JSONNode json)
         {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "XemShop/taikhoan/" + LoginFacebook.ins.id + "/nameitem/" + nameitem);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                debug.Log(www.error);
-            }
-            else
-            {
-                // Show results as text
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-                CrGame.ins.OnThongBaoNhanh(json["thongtin"].AsString);
-                length = (short)json["thongtin"].AsString.Length;
-                //AllMenu.ins.OpenCreateMenu("infoitem", GameObject.FindGameObjectWithTag("trencung"));
-                //AllMenu.ins.menu["infoitem"].transform.GetChild(0).GetComponent<Text>().text = json["thongtin"].Value;
-                //AllMenu.ins.menu["infoitem"].SetActive(xemgiap);
-                //// ifitem.Disnable(10f);
-                //debug.Log(www.downloadHandler.text);
-            }
+            CrGame.ins.OnThongBaoNhanh(json["thongtin"].AsString);
+            length = (short)json["thongtin"].AsString.Length;
         }
     }
 }

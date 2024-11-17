@@ -1,6 +1,7 @@
 ﻿using SimpleJSON;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -13,34 +14,21 @@ public class MenuHomThu : MonoBehaviour
     public Sprite spriteCoThu, spriteDaDoc, spriteCoQua;
     private void OnEnable()
     {
-        CrGame.ins.panelLoadDao.transform.SetAsLastSibling();
-        CrGame.ins.panelLoadDao.SetActive(true);
-        StartCoroutine(Load());
-        IEnumerator Load()
-        {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "XemHomThu/taikhoan/" + LoginFacebook.ins.id);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "HomThu";
+        datasend["method"] = "XemHomThu";
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
 
-            if (www.result != UnityWebRequest.Result.Success)
+        void Ok(JSONNode jsonn)
+        {
+            if (jsonn["status"].AsString == "0")
             {
-                debug.Log(www.error);
-                CrGame.ins.panelLoadDao.SetActive(false);
-            }
-            else
-            {
-                // Show results as text
-                //for (int i = 0; i < ScrollRectThu.transform.GetChild(1).childCount; i++)
-                //{
-                //    Destroy(ScrollRectThu.transform.GetChild(0).transform.GetChild(i).gameObject);
-                //}
-                debug.Log(www.downloadHandler.text);
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
+                JSONNode json = jsonn["data"];
                 GameObject objThu = transform.GetChild(2).gameObject;
                 for (int i = 0; i < json["hethong"].Count; i++)
                 {
-                    GameObject thu = Instantiate(objThu,transform.position,Quaternion.identity);
-                    thu.transform.SetParent(ScrollRectThu.transform.GetChild(0).transform.GetChild(0).transform,false);
+                    GameObject thu = Instantiate(objThu, transform.position, Quaternion.identity);
+                    thu.transform.SetParent(ScrollRectThu.transform.GetChild(0).transform.GetChild(0).transform, false);
                     thu.transform.GetChild(0).GetComponent<Text>().text = json["hethong"][i]["namethu"].Value;
                     thu.transform.GetChild(1).GetComponent<Text>().text = json["hethong"][i]["timehethan"].Value;
                     if (json["hethong"][i]["dadoc"].Value == "DaDoc")
@@ -66,12 +54,15 @@ public class MenuHomThu : MonoBehaviour
                     if (json["banbe"][i]["qua"].Count > 0)
                     {
                         thu.GetComponent<Image>().sprite = spriteCoQua;
-                        
+
                     }
                     thu.SetActive(true);
                 }
                 GameObject.FindGameObjectWithTag("btnhomthu").transform.GetChild(1).gameObject.SetActive(false);
-                CrGame.ins.panelLoadDao.SetActive(false);
+            }
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(jsonn["message"].AsString);
             }
         }
     }
@@ -81,33 +72,29 @@ public class MenuHomThu : MonoBehaviour
         thuchon = (byte)vitrithuchon;
         CrGame.ins.panelLoadDao.SetActive(true);
         string thu = "hethong";
-        if (ScrollRectThu.transform.GetChild(0).transform.GetChild(1).gameObject.activeSelf) thu = "banbe"; 
-        StartCoroutine(Load());
-        IEnumerator Load()
-        {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "XemThu/taikhoan/" + LoginFacebook.ins.id + "/thu/" + thu + "/vitri/"+ vitrithuchon);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
+        if (ScrollRectThu.transform.GetChild(0).transform.GetChild(1).gameObject.activeSelf) thu = "banbe";
 
-            if (www.result != UnityWebRequest.Result.Success)
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "HomThu";
+        datasend["method"] = "XemThu";
+        datasend["data"]["thu"] = thu;
+        datasend["data"]["vitri"] = vitrithuchon.ToString();
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+
+        void Ok(JSONNode jsonn)
+        {
+            if (jsonn["status"].AsString == "0")
             {
-                debug.Log(www.error);
-                CrGame.ins.panelLoadDao.SetActive(false);
-            }
-            else
-            {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
+                JSONNode json = jsonn["data"];
                 GameObject showthu = transform.GetChild(0).transform.GetChild(0).transform.GetChild(3).gameObject;
                 showthu.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text = json["nguoigui"].Value;
                 showthu.transform.GetChild(0).transform.GetChild(1).GetComponent<Text>().text = json["timegui"].Value;
                 debug.Log("timegui" + json["timegui"].Value);
-                if(json["nguoigui"].Value == "Admin") showthu.transform.GetChild(0).transform.GetChild(2).gameObject.SetActive(false);
+                if (json["nguoigui"].Value == "Admin") showthu.transform.GetChild(0).transform.GetChild(2).gameObject.SetActive(false);
                 else showthu.transform.GetChild(0).transform.GetChild(2).gameObject.SetActive(true);
                 showthu.transform.GetChild(1).transform.GetChild(0).GetComponent<Text>().text = json["namethu"].Value;
                 showthu.transform.GetChild(2).transform.GetChild(0).GetComponent<Text>().text = json["noidung"].Value;
-                if(json["qua"].Count > 0)
+                if (json["qua"].Count > 0)
                 {
                     for (int i = 1; i < showthu.transform.GetChild(3).childCount; i++)
                     {
@@ -116,7 +103,7 @@ public class MenuHomThu : MonoBehaviour
                     for (int i = 0; i < json["qua"].Count; i++)
                     {
                         GameObject qua = Instantiate(showthu.transform.GetChild(3).GetChild(0).gameObject, transform.position, Quaternion.identity);
-                        if(json["qua"][i]["name"].Value != "")
+                        if (json["qua"][i]["name"].Value != "")
                         {
                             qua.transform.GetChild(0).GetComponent<Image>().sprite = Inventory.LoadSprite(json["qua"][i]["name"].Value);
                             qua.transform.GetChild(1).GetComponent<Text>().text = json["qua"][i]["soluong"].Value;
@@ -126,7 +113,7 @@ public class MenuHomThu : MonoBehaviour
                             qua.transform.GetChild(0).GetComponent<Image>().sprite = Inventory.LoadSpriteRong(json["qua"][i]["namerong"].Value + json["qua"][i]["tienhoa"].Value);
                             qua.transform.GetChild(1).GetComponent<Text>().text = json["qua"][i]["sao"].Value + "sao";
                         }
-                        qua.transform.SetParent(showthu.transform.GetChild(3),false);
+                        qua.transform.SetParent(showthu.transform.GetChild(3), false);
                         qua.SetActive(true);
                     }
                     showthu.transform.GetChild(3).gameObject.SetActive(true);
@@ -136,15 +123,18 @@ public class MenuHomThu : MonoBehaviour
                 {
                     showthu.transform.GetChild(3).gameObject.SetActive(false);
                     showthu.transform.GetChild(4).gameObject.SetActive(false);
-                } 
-                
-                if(thu == "hethong")
+                }
+
+                if (thu == "hethong")
                 {
                     ScrollRectThu.transform.GetChild(0).transform.GetChild(0).GetChild(vitrithuchon).GetComponent<Image>().sprite = spriteDaDoc;
                 }
                 else ScrollRectThu.transform.GetChild(0).transform.GetChild(1).GetChild(vitrithuchon).GetComponent<Image>().sprite = spriteDaDoc;
                 showthu.SetActive(true);
-                CrGame.ins.panelLoadDao.SetActive(false);
+            }
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(jsonn["message"].AsString);
             }
         }
     }
@@ -160,31 +150,26 @@ public class MenuHomThu : MonoBehaviour
         debug.Log(txtguitoi + " + " + txtguitoi.Length);
         if(checktext(txtguitoi) && checktext(txtchude) && checktext(txtnoidung))
         {
-            StartCoroutine(Load());
-            IEnumerator Load()
-            {
-                UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "GuiThu/taikhoan/" + LoginFacebook.ins.id + "/guitoi/" + txtguitoi + "/chude/" + txtchude + "/noidung/" + txtnoidung);
-                www.downloadHandler = new DownloadHandlerBuffer();
-                yield return www.SendWebRequest();
 
-                if (www.result != UnityWebRequest.Result.Success)
+            JSONClass datasend = new JSONClass();
+            datasend["class"] = "HomThu";
+            datasend["method"] = "GuiThu";
+            datasend["data"]["guitoi"] = txtguitoi;
+            datasend["data"]["chude"] = txtchude;
+            datasend["data"]["noidung"] = txtnoidung;
+            NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+            void Ok(JSONNode jsonn)
+            {
+                if (jsonn["status"].AsString == "0")
                 {
-                    debug.Log(www.error);
-                    CrGame.ins.panelLoadDao.SetActive(false);
-                    btngui.interactable = true;
+                    transform.GetChild(1).gameObject.SetActive(false);
+                    CrGame.ins.OnThongBaoNhanh("Đã gửi!");
                 }
                 else
                 {
-                    // Show results as text
-                    debug.Log(www.downloadHandler.text);
-                    if(www.downloadHandler.text == "Đã gửi")
-                    {
-                        transform.GetChild(1).gameObject.SetActive(false);
-                    }    
-                    CrGame.ins.OnThongBaoNhanh(www.downloadHandler.text);
-                    CrGame.ins.panelLoadDao.SetActive(false);
-                    btngui.interactable = true;
+                    CrGame.ins.OnThongBaoNhanh(jsonn["message"].AsString);
                 }
+                btngui.interactable = true;
             }
         }    
         else
@@ -239,34 +224,28 @@ public class MenuHomThu : MonoBehaviour
         CrGame.ins.panelLoadDao.SetActive(true);
         string thu = "hethong";
         if (ScrollRectThu.transform.GetChild(0).transform.GetChild(1).gameObject.activeSelf) thu = "banbe";
-        StartCoroutine(Load());
-        IEnumerator Load()
-        {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "HuyThu/taikhoan/" + LoginFacebook.ins.id + "/thu/" + thu + "/vitri/" + thuchon);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
 
-            if (www.result != UnityWebRequest.Result.Success)
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "HomThu";
+        datasend["method"] = "HuyThu";
+        datasend["data"]["thu"] = thu;
+        datasend["data"]["vitri"] = thuchon.ToString();
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        void Ok(JSONNode jsonn)
+        {
+            if (jsonn["status"].AsString == "0")
             {
-                debug.Log(www.error);
-                CrGame.ins.panelLoadDao.SetActive(false);
+
+                if (thu == "hethong")
+                {
+                    Destroy(ScrollRectThu.transform.GetChild(0).transform.GetChild(0).transform.GetChild(thuchon).gameObject);
+                }
+                else Destroy(ScrollRectThu.transform.GetChild(0).transform.GetChild(1).transform.GetChild(thuchon).gameObject);
+                transform.GetChild(0).transform.GetChild(0).transform.GetChild(3).gameObject.SetActive(false);
             }
             else
             {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-                if(json["status"].Value == "0")
-                {
-                    if(thu == "hethong")
-                    {
-                        Destroy(ScrollRectThu.transform.GetChild(0).transform.GetChild(0).transform.GetChild(thuchon).gameObject); 
-                    }
-                    else Destroy(ScrollRectThu.transform.GetChild(0).transform.GetChild(1).transform.GetChild(thuchon).gameObject);
-                    transform.GetChild(0).transform.GetChild(0).transform.GetChild(3).gameObject.SetActive(false);
-                }
-                CrGame.ins.OnThongBaoNhanh(json["message"].Value);
-                CrGame.ins.panelLoadDao.SetActive(false);
+                CrGame.ins.OnThongBaoNhanh(jsonn["message"].AsString);
             }
         }
     }
@@ -275,34 +254,29 @@ public class MenuHomThu : MonoBehaviour
         CrGame.ins.panelLoadDao.SetActive(true);
         string thu = "hethong";
         if (ScrollRectThu.transform.GetChild(0).transform.GetChild(1).gameObject.activeSelf) thu = "banbe";
-        StartCoroutine(Load());
-        IEnumerator Load()
-        {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "NhanQuaThu/taikhoan/" + LoginFacebook.ins.id + "/thu/" + thu + "/vitri/" + thuchon);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
 
-            if (www.result != UnityWebRequest.Result.Success)
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "HomThu";
+        datasend["method"] = "NhanQuaThu";
+        datasend["data"]["thu"] = thu;
+        datasend["data"]["vitri"] = thuchon.ToString();
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        void Ok(JSONNode jsonn)
+        {
+            if (jsonn["status"].AsString == "0")
             {
-                debug.Log(www.error);
-                CrGame.ins.panelLoadDao.SetActive(false);
+
+                if (thu == "hethong")
+                {
+                    Destroy(ScrollRectThu.transform.GetChild(0).transform.GetChild(0).transform.GetChild(thuchon).gameObject);
+                }
+                else Destroy(ScrollRectThu.transform.GetChild(0).transform.GetChild(1).transform.GetChild(thuchon).gameObject);
+                transform.GetChild(0).transform.GetChild(0).transform.GetChild(3).gameObject.SetActive(false);
+                CrGame.ins.OnThongBaoNhanh("Đã nhận!");
             }
             else
             {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-                if (json["status"].Value == "0")
-                {
-                    if (thu == "hethong")
-                    {
-                        Destroy(ScrollRectThu.transform.GetChild(0).transform.GetChild(0).transform.GetChild(thuchon).gameObject);
-                    }
-                    else Destroy(ScrollRectThu.transform.GetChild(0).transform.GetChild(1).transform.GetChild(thuchon).gameObject);
-                    transform.GetChild(0).transform.GetChild(0).transform.GetChild(3).gameObject.SetActive(false);
-                }
-                CrGame.ins.OnThongBaoNhanh(json["message"].Value);
-                CrGame.ins.panelLoadDao.SetActive(false);
+                CrGame.ins.OnThongBaoNhanh(jsonn["message"].AsString);
             }
         }
     }
@@ -310,26 +284,19 @@ public class MenuHomThu : MonoBehaviour
     {
         if(transform.GetChild(0).transform.GetChild(0).transform.GetChild(3).gameObject.activeSelf)
         {
-            CrGame.ins.panelLoadDao.SetActive(true);
+
             string thu = "hethong";
             if (ScrollRectThu.transform.GetChild(0).transform.GetChild(1).gameObject.activeSelf) thu = "banbe";
-            StartCoroutine(Load());
-            IEnumerator Load()
+            JSONClass datasend = new JSONClass();
+            datasend["class"] = "HomThu";
+            datasend["method"] = "HuyTatCaThu";
+            datasend["data"]["thu"] = thu;   
+            NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+            void Ok(JSONNode json)
             {
-                UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "HuyTatCaThu/taikhoan/" + LoginFacebook.ins.id + "/thu/" + thu);
-                www.downloadHandler = new DownloadHandlerBuffer();
-                yield return www.SendWebRequest();
+                if (json["status"].AsString == "0")
+                {
 
-                if (www.result != UnityWebRequest.Result.Success)
-                {
-                    debug.Log(www.error);
-                    CrGame.ins.panelLoadDao.SetActive(false);
-                }
-                else
-                {
-                    // Show results as text
-                    debug.Log(www.downloadHandler.text);
-                    JSONNode json = JSON.Parse(www.downloadHandler.text);
                     if (json["status"].Value == "0")
                     {
                         if (thu == "hethong")
@@ -349,9 +316,13 @@ public class MenuHomThu : MonoBehaviour
                         transform.GetChild(0).transform.GetChild(0).transform.GetChild(3).gameObject.SetActive(false);
                     }
                     CrGame.ins.OnThongBaoNhanh(json["message"].Value);
-                    CrGame.ins.panelLoadDao.SetActive(false);
+                }
+                else
+                {
+                    CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
                 }
             }
+          
         }
         else CrGame.ins.OnThongBaoNhanh("Không còn thư để xóa");
   

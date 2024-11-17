@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using UnityEngine.UI.Extensions;
 
 public class MenuTrieuHoiRongVangBac : MonoBehaviour
 {
@@ -59,64 +60,53 @@ public class MenuTrieuHoiRongVangBac : MonoBehaviour
         Button btndoi = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
         btndoi.interactable = false;
         GameObject AllmanhRong = transform.GetChild(0).transform.GetChild(2).gameObject;
-        StartCoroutine(Load());
-        IEnumerator Load()
-        {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "TrieuHoiRongEventTet/taikhoan/" + LoginFacebook.ins.id + "/namerong/" + AllmanhRong.name);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
 
-            if (www.result != UnityWebRequest.Result.Success)
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "TrieuHoiRongEventTet";
+        datasend["data"]["namerong"] = AllmanhRong.name;
+
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
+        {
+            if (json["status"].AsString == "0")
             {
-                debug.Log(www.error);
-                CrGame.ins.OnThongBaoNhanh("Lỗi");
-                btndoi.interactable = true;
+                transform.GetChild(0).transform.GetChild(4).gameObject.SetActive(true);
+                StartCoroutine(HieuUngTrieuHoi());
+                if (AllmanhRong.name == "vang")
+                {
+                    string[] allnamemanh = new string[] { "DauRongVang", "CanhRongVang", "ChanRongVang", "ThanRongVang", "DuoiRongVang" };
+                    for (int i = 0; i < allnamemanh.Length; i++)
+                    {
+                        NetworkManager.ins.inventory.AddItem(allnamemanh[i], -1);
+                    }
+                }
+                else if (AllmanhRong.name == "bac")
+                {
+                    string[] allnamemanh = new string[] { "DauRongBac", "CanhRongBac", "ChanRongBac", "ThanRongBac", "DuoiRongBac" };
+                    for (int i = 0; i < allnamemanh.Length; i++)
+                    {
+                        NetworkManager.ins.inventory.AddItem(allnamemanh[i], -1);
+                    }
+                }
             }
-            else
+            else CrGame.ins.OnThongBaoNhanh(json["message"].AsString, 2);
+            IEnumerator HieuUngTrieuHoi()
             {
-                // Show results as text
-                //   btndoi.interactable = false;
-                debug.Log(www.downloadHandler.text);
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-                if (json["status"].AsString == "0")
-                {
-                    transform.GetChild(0).transform.GetChild(4).gameObject.SetActive(true);
-                    StartCoroutine(HieuUngTrieuHoi());
-                    if (AllmanhRong.name == "vang")
-                    {
-                        string[] allnamemanh = new string[] { "DauRongVang", "CanhRongVang", "ChanRongVang", "ThanRongVang", "DuoiRongVang" };
-                        for (int i = 0; i < allnamemanh.Length; i++)
-                        {
-                            NetworkManager.ins.inventory.AddItem(allnamemanh[i], -1);
-                        }
-                    }
-                    else if (AllmanhRong.name == "bac")
-                    {
-                        string[] allnamemanh = new string[] { "DauRongBac", "CanhRongBac", "ChanRongBac", "ThanRongBac", "DuoiRongBac" };
-                        for (int i = 0; i < allnamemanh.Length; i++)
-                        {
-                            NetworkManager.ins.inventory.AddItem(allnamemanh[i], -1);
-                        }
-                    }
-                }
-                else CrGame.ins.OnThongBaoNhanh(json["thongbao"].AsString, 2);
-                IEnumerator HieuUngTrieuHoi()
-                {
-                    yield return new WaitForSeconds(0.5f);
-                    GameObject g = Instantiate(transform.GetChild(1).gameObject, transform.position, Quaternion.identity);//
-                    g.transform.SetParent(GameObject.FindGameObjectWithTag("trencung").transform, false);
-                    g.gameObject.SetActive(true);
-                    Image img = g.GetComponent<Image>();
-                    img.sprite = Inventory.LoadSpriteRong(json["namerong"].AsString);
-                    img.SetNativeSize();
-                    transform.GetChild(0).transform.GetChild(4).gameObject.SetActive(false);//
-                    yield return new WaitForSeconds(0.1f);
-                    QuaBay quabay = img.GetComponent<QuaBay>();
-                    quabay.vitribay = GameObject.FindGameObjectWithTag("hopqua");
-                    quabay.enabled = true;
-                    // gameObject.SetActive(false);//
-                    AllMenu.ins.DestroyMenu("MenuTrieuHoiRongVangBac");
-                }
+                yield return new WaitForSeconds(0.5f);
+                GameObject g = Instantiate(transform.GetChild(1).gameObject, transform.position, Quaternion.identity);//
+                g.transform.SetParent(GameObject.FindGameObjectWithTag("trencung").transform, false);
+                g.gameObject.SetActive(true);
+                Image img = g.GetComponent<Image>();
+                img.sprite = Inventory.LoadSpriteRong(json["namerong"].AsString);
+                img.SetNativeSize();
+                transform.GetChild(0).transform.GetChild(4).gameObject.SetActive(false);//
+                yield return new WaitForSeconds(0.1f);
+                QuaBay quabay = img.GetComponent<QuaBay>();
+                quabay.vitribay = GameObject.FindGameObjectWithTag("hopqua");
+                quabay.enabled = true;
+                // gameObject.SetActive(false);//
+                AllMenu.ins.DestroyMenu("MenuTrieuHoiRongVangBac");
             }
         }
     }

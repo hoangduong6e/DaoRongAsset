@@ -52,7 +52,7 @@ public class ItemLai : MonoBehaviour
                 if (lai.Chonlai[0] == true && lai.Chonlai[1] == true)
                 {
                     //net.socket.Emit("Xemronglai",JSONObject.CreateStringObject(lai.HeRongLai[0] + "-" + lai.GenRong[0] + "+" + lai.HeRongLai[1] + "-" + lai.GenRong[1]));
-                    lai.StartCoroutine(lai.XemRonglai(lai.HeRongLai[0] + "-" + lai.GenRong[0] + "+" + lai.HeRongLai[1] + "-" + lai.GenRong[1] + "+" + lai.SaoRongBoMe[0] + "+" + lai.SaoRongBoMe[1] + "+" + lai.Nameobjectronglai[0] + "+" + lai.Nameobjectronglai[1]));
+                    lai.XemRonglai(lai.HeRongLai[0] + "-" + lai.GenRong[0] + "+" + lai.HeRongLai[1] + "-" + lai.GenRong[1] + "+" + lai.SaoRongBoMe[0] + "+" + lai.SaoRongBoMe[1] + "+" + lai.Nameobjectronglai[0] + "+" + lai.Nameobjectronglai[1]);
                     //lai.btnlai.interactable = true;
                 }
                // lai.spritelai[i].enabled = true;

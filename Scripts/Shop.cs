@@ -42,62 +42,48 @@ public class Shop : MonoBehaviour
     public void LoadInfoitem(string nameVatpham)
     {
         nameVatPham = nameVatpham;
-        StartCoroutine(Load());
-        IEnumerator Load()
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "XemShop";
+        datasend["data"]["nameitem"] = nameVatpham;
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        void Ok(JSONNode json)
         {
-            CrGame.ins.panelLoadDao.SetActive(true);
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "XemShop/taikhoan/" + LoginFacebook.ins.id + "/nameitem/" + nameVatpham);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
+            if (json["gia"].Value != "")
             {
-                debug.Log(www.error);
-                CrGame.ins.panelLoadDao.SetActive(false);
-                CrGame.ins.OnThongBao(true, "Lỗi", true);
+                imgVatPham.sprite = Inventory.LoadSprite(nameVatpham);//img.sprite;
+                imgVatPham.SetNativeSize();
+                soluong = 1;
+                txtSoLuong.text = "1";
+                TxtNameVatPham.text = json["name"].Value;
+                txtGia.text = json["gia"].Value;
+                gia = long.Parse(json["gia"].Value);
+                imgTien.sprite = Inventory.LoadSprite(json["tienmua"].Value);//img.transform.GetChild(3).GetComponent<Image>().sprite; 
+                imgTien.SetNativeSize();
+                txtGia2.gameObject.SetActive(false);
+                ImgTien2.gameObject.SetActive(false);
             }
             else
             {
-                // Show results as text
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-                debug.Log(www.downloadHandler.text);
-                if(json["gia"].Value != "")
-                {
-                    imgVatPham.sprite = Inventory.LoadSprite(nameVatpham);//img.sprite;
-                    imgVatPham.SetNativeSize();
-                    soluong = 1;
-                    txtSoLuong.text = "1";
-                    TxtNameVatPham.text = json["name"].Value;
-                    txtGia.text = json["gia"].Value;
-                    gia = long.Parse(json["gia"].Value);
-                    imgTien.sprite = Inventory.LoadSprite(json["tienmua"].Value);//img.transform.GetChild(3).GetComponent<Image>().sprite; 
-                    imgTien.SetNativeSize();
-                    txtGia2.gameObject.SetActive(false);
-                    ImgTien2.gameObject.SetActive(false);
-                }
-                else
-                {
-                    nameVatpham = nameVatPham.Split('*')[1];
-                    NetworkManager.ins.friend.LoadImage("avt",nameVatpham, imgVatPham);
-                    soluong = 1;
-                    txtSoLuong.text = "1";
-                    TxtNameVatPham.text = json["name"].Value;
-                    txtGia.text = json["tienmua"][0]["gia"].Value;
-                    gia = long.Parse(json["tienmua"][0]["gia"].Value);
-                    imgTien.sprite = Inventory.LoadSprite(json["tienmua"][0]["name"].Value);//img.transform.GetChild(3).GetComponent<Image>().sprite; 
-                    imgTien.SetNativeSize();
+                nameVatpham = nameVatPham.Split('*')[1];
+                NetworkManager.ins.friend.LoadImage("avt", nameVatpham, imgVatPham);
+                soluong = 1;
+                txtSoLuong.text = "1";
+                TxtNameVatPham.text = json["name"].Value;
+                txtGia.text = json["tienmua"][0]["gia"].Value;
+                gia = long.Parse(json["tienmua"][0]["gia"].Value);
+                imgTien.sprite = Inventory.LoadSprite(json["tienmua"][0]["name"].Value);//img.transform.GetChild(3).GetComponent<Image>().sprite; 
+                imgTien.SetNativeSize();
 
-                    txtGia2.gameObject.SetActive(true);
-                    ImgTien2.gameObject.SetActive(true);
-                    txtGia2.text = json["tienmua"][1]["gia"].Value;
-                    gia = long.Parse(json["tienmua"][1]["gia"].Value);
-                    ImgTien2.sprite = Inventory.LoadSprite(json["tienmua"][1]["name"].Value);//img.transform.GetChild(3).GetComponent<Image>().sprite; 
-                    ImgTien2.SetNativeSize();
-                }
-                MenuMua.transform.GetChild(0).transform.GetChild(0).transform.GetChild(2).GetComponent<Text>().text = json["thongtin"].Value;
-                MenuMua.SetActive(true);
-                CrGame.ins.panelLoadDao.SetActive(false);
+                txtGia2.gameObject.SetActive(true);
+                ImgTien2.gameObject.SetActive(true);
+                txtGia2.text = json["tienmua"][1]["gia"].Value;
+                gia = long.Parse(json["tienmua"][1]["gia"].Value);
+                ImgTien2.sprite = Inventory.LoadSprite(json["tienmua"][1]["name"].Value);//img.transform.GetChild(3).GetComponent<Image>().sprite; 
+                ImgTien2.SetNativeSize();
             }
+            MenuMua.transform.GetChild(0).transform.GetChild(0).transform.GetChild(2).GetComponent<Text>().text = json["thongtin"].Value;
+            MenuMua.SetActive(true);
         }
     }    
     public void TangSoLuong(int add)

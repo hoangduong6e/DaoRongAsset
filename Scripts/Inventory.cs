@@ -2,9 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using UnityEngine.UI.Extensions;
 
 public class Inventory : MonoBehaviour
 {
@@ -470,28 +472,31 @@ public class Inventory : MonoBehaviour
     public void XemRongBan(string nameRong,string sao,string id,Image img)
     {
         //  net.socket.Emit("xemGiaRongBan", JSONObject.CreateStringObject(nameRong + "-" + sao));
-        StartCoroutine(GetGia());
-        IEnumerator GetGia()
-        {
-            UnityWebRequest www = new UnityWebRequest(crGame.ServerName + "xemGiaBanRong/name/" + nameRong + "/sao/" + sao);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "xemGiaBanRong";
+        datasend["data"]["sao"] = sao;
+        datasend["data"]["name"] = nameRong;
 
-            if (www.result != UnityWebRequest.Result.Success)
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode jsonn)
+        {
+            if (jsonn["status"].AsString == "0")
             {
-                debug.Log(www.error);
-            }
-            else
-            {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                BanRong banrong = AllMenu.ins.GetCreateMenu("MenuBanRong",GameObject.Find("CanvasTrenCung")).GetComponent<BanRong>();
-                string[] cat = www.downloadHandler.text.Split('-');
+                JSONNode json = jsonn["data"];
+
+                BanRong banrong = AllMenu.ins.GetCreateMenu("MenuBanRong", GameObject.Find("CanvasTrenCung")).GetComponent<BanRong>();
+                string[] cat = json.AsString.Split('-');
                 banrong.txtGiaBan.text = cat[1];
                 banrong.TxtTenRong.text = cat[0];
                 banrong.idrongban = id;
                 banrong.imgRongBan.sprite = img.sprite;//LoadSprite(cat[2] + tienhoa);
                 banrong.imgRongBan.SetNativeSize();
+            }
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(jsonn["message"].Value, 2);
+                // AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
             }
         }
     }
@@ -595,9 +600,9 @@ public class Inventory : MonoBehaviour
     public void OpenMenuAddSlot(string s)
     {
         oslotnao = s;
-        StartCoroutine(XemGiaMaxSlot());
+        XemGiaMaxSlot();
     }
-    public IEnumerator XemGiaMaxSlot()
+    public void XemGiaMaxSlot()
     {
         int soslothientai = 0;
         if(oslotnao == "tuirong")
@@ -608,26 +613,27 @@ public class Inventory : MonoBehaviour
         {
             soslothientai = Otuithuong.transform.childCount;
         }
-        XacNhanMuaCongTrinh xn = new XacNhanMuaCongTrinh("", soslothientai, 0);
-        string data = JsonUtility.ToJson(xn);
-        var request = new UnityWebRequest(crGame.ServerName + "xemGiaAddSlot", "POST");
-        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(data);
-        request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
-        request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-        request.SetRequestHeader("Content-Type", "application/json");
-        yield return request.SendWebRequest();
-        if (request.isNetworkError || request.isHttpError)
-        {
-            debug.Log(request.error);
-            crGame.OnThongBao(true, "Lỗi", true);
-        }
-        else
-        {
 
-            ThongBaoChon tbc = AllMenu.ins.GetCreateMenu("MenuXacNhan", GameObject.Find("CanvasTrenCung")).GetComponent<ThongBaoChon>();
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "xemGiaAddSlot";
+        datasend["data"]["cap"] = soslothientai.ToString();
+        datasend["data"]["tui"] = oslotnao;
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
+        {
+            if (json["status"].AsString == "0")
+            {
+                ThongBaoChon tbc = AllMenu.ins.GetCreateMenu("MenuXacNhan", GameObject.Find("CanvasTrenCung")).GetComponent<ThongBaoChon>();
 
-            tbc.txtThongBao.text = request.downloadHandler.text;
-            tbc.btnChon.onClick.AddListener(addMaxSlot);
+                tbc.txtThongBao.text = json["message"].AsString;
+                tbc.btnChon.onClick.AddListener(addMaxSlot);
+            }
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(json["message"].Value);
+            }
+       
         }
     }
     public void addMaxSlot()

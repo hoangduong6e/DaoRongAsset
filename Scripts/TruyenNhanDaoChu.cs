@@ -14,23 +14,16 @@ public class TruyenNhanDaoChu : MonoBehaviour
     public InputField inputName;
     void OnEnable()
     {
-        StartCoroutine(Load());
-        IEnumerator Load()
-        {
-            CrGame.ins.panelLoadDao.SetActive(true);
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "XemTruyenNhan/taikhoan/" +LoginFacebook.ins.id);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "TruyenNhan";
+        datasend["method"] = "XemTruyenNhan";
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
 
-            if (www.result != UnityWebRequest.Result.Success)
+        void Ok(JSONNode jsonn)
+        {
+            if (jsonn["status"].AsString == "0")
             {
-                debug.Log(www.error);
-            }
-            else
-            {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
+                JSONNode json = jsonn["data"];
                 if (json["namesuphu"].Value == "")
                 {
                     ThietLap.SetActive(true);
@@ -44,16 +37,20 @@ public class TruyenNhanDaoChu : MonoBehaviour
                     XoaSuPhu.transform.GetChild(0).GetComponent<Text>().text = json["namesuphu"].Value;
                     // CrGame.ins.friend.GetAvatarFriend(json["idsuphu"].Value,XoaSuPhu.transform.GetChild(1).GetComponent<Image>());
                     Friend.ins.LoadAvtFriend(json["idsuphu"].Value, XoaSuPhu.transform.GetChild(1).GetComponent<Image>(), XoaSuPhu.transform.GetChild(2).GetComponent<Image>());
-                 //   XoaSuPhu.transform.GetChild(2).GetComponent<Image>().sprite = Inventory.LoadSprite("Avatar" + json["toc"].Value);
+                    //   XoaSuPhu.transform.GetChild(2).GetComponent<Image>().sprite = Inventory.LoadSprite("Avatar" + json["toc"].Value);
                 }
-                txtSoTruyenNhan.text = "Số truyền nhân đã thu nạp : <color=#00ff00ff>"+ json["sotruyennhan"].Value + " </color>";
-                txtSoExp.text = "Số kinh nghiệm nhận được từ truyền nhân : <color=#00ff00ff>"+ json["exp"].Value  + "</color>";
-                txtSoKimCuong.text = "Số <color=#ff00ffff>kim cương</color> nhận được từ truyền nhân : <color=#ff00ffff>"+ json["kimcuong"].Value + "</color>";
+                txtSoTruyenNhan.text = "Số truyền nhân đã thu nạp : <color=#00ff00ff>" + json["sotruyennhan"].Value + " </color>";
+                txtSoExp.text = "Số kinh nghiệm nhận được từ truyền nhân : <color=#00ff00ff>" + json["exp"].Value + "</color>";
+                txtSoKimCuong.text = "Số <color=#ff00ffff>kim cương</color> nhận được từ truyền nhân : <color=#ff00ffff>" + json["kimcuong"].Value + "</color>";
                 if (json["exp"].Value != "0") btnNhanExp.interactable = true;
                 else btnNhanExp.interactable = false;
                 if (json["kimcuong"].Value != "0") btnNhanKc.interactable = true;
                 else btnNhanKc.interactable = false;
                 CrGame.ins.panelLoadDao.SetActive(false);
+            }
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(jsonn["message"].AsString);
             }
         }
     }
@@ -61,65 +58,50 @@ public class TruyenNhanDaoChu : MonoBehaviour
     {
         if(inputName.text != "")
         {
-            StartCoroutine(Load());
-            IEnumerator Load()
-            {
-                UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "ChonTruyenNhan/taikhoanchon/" + inputName.text + "/taikhoan/" +LoginFacebook.ins.id);
-                www.downloadHandler = new DownloadHandlerBuffer();
-                yield return www.SendWebRequest();
+            JSONClass datasend = new JSONClass();
+            datasend["class"] = "TruyenNhan";
+            datasend["method"] = "ChonTruyenNhan";
+            datasend["data"]["taikhoanchon"] = inputName.text;
+            NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
 
-                if (www.result != UnityWebRequest.Result.Success)
+            void Ok(JSONNode jsonn)
+            {
+                JSONNode json = jsonn["data"];
+                if (jsonn["status"].AsString == "0")
                 {
-                    debug.Log(www.error);
-                    CrGame.ins.OnThongBaoNhanh("Lỗi (0)", 1f);
+                    ThietLap.SetActive(false);
+                    XoaSuPhu.SetActive(true);
+                    XoaSuPhu.transform.GetChild(0).GetComponent<Text>().text = json["namesuphu"].Value;
+                    Friend.ins.LoadAvtFriend(json["idsuphu"].Value, XoaSuPhu.transform.GetChild(1).GetComponent<Image>(), XoaSuPhu.transform.GetChild(2).GetComponent<Image>());
+                    //CrGame.ins.friend.GetAvatarFriend(json["idsuphu"].Value, XoaSuPhu.transform.GetChild(1).GetComponent<Image>());
+                    //  XoaSuPhu.transform.GetChild(2).GetComponent<Image>().sprite = Inventory.LoadSprite("Avatar" + json["toc"].Value);
+                    inputName.text = "";
                 }
                 else
                 {
-                    // Show results as text
-                    debug.Log(www.downloadHandler.text);
-                    JSONNode json = JSON.Parse(www.downloadHandler.text);
-                    if (json != null)
-                    {
-                        ThietLap.SetActive(false);
-                        XoaSuPhu.SetActive(true);
-                        XoaSuPhu.transform.GetChild(0).GetComponent<Text>().text = json["namesuphu"].Value;
-                       Friend.ins.LoadAvtFriend(json["idsuphu"].Value, XoaSuPhu.transform.GetChild(1).GetComponent<Image>(), XoaSuPhu.transform.GetChild(2).GetComponent<Image>());
-                        //CrGame.ins.friend.GetAvatarFriend(json["idsuphu"].Value, XoaSuPhu.transform.GetChild(1).GetComponent<Image>());
-                      //  XoaSuPhu.transform.GetChild(2).GetComponent<Image>().sprite = Inventory.LoadSprite("Avatar" + json["toc"].Value);
-                        inputName.text = "";
-                    }
-                    else
-                    {
-                        CrGame.ins.OnThongBaoNhanh(www.downloadHandler.text, 1f);
-                    }
+                    CrGame.ins.OnThongBaoNhanh(jsonn["message"].AsString);
                 }
             }
         }    
     }
     public void XoaTruyenNhan()
     {
-        StartCoroutine(Load());
-        IEnumerator Load()
-        {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "XoaTruyenNhan/taikhoan/" +LoginFacebook.ins.id);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "TruyenNhan";
+        datasend["method"] = "XoaTruyenNhan";
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
 
-            if (www.result != UnityWebRequest.Result.Success)
+        void Ok(JSONNode jsonn)
+        {
+            if (jsonn["status"].AsString == "0")
             {
-                debug.Log(www.error);
+                ThietLap.SetActive(true);
+                XoaSuPhu.SetActive(false);
+                inputName.text = "";
             }
             else
             {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                if(www.downloadHandler.text == "0")
-                {
-                    ThietLap.SetActive(true);
-                    XoaSuPhu.SetActive(false);
-                    inputName.text = "";
-                }
-                else CrGame.ins.OnThongBaoNhanh(www.downloadHandler.text, 1f);
+                CrGame.ins.OnThongBaoNhanh(jsonn["message"].AsString);
             }
         }
     }
@@ -127,32 +109,24 @@ public class TruyenNhanDaoChu : MonoBehaviour
     {
         Button btnchon = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
         btnchon.interactable = false;
-        StartCoroutine(Load());
-        IEnumerator Load()
-        {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "NhanQuaTruyenNhan/qua/"+ qua +"/taikhoan/" +LoginFacebook.ins.id);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "TruyenNhan";
+        datasend["method"] = "NhanQuaTruyenNhan";
+        datasend["data"]["qua"] = qua;
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
 
-            if (www.result != UnityWebRequest.Result.Success)
+        void Ok(JSONNode jsonn)
+        {
+            if (jsonn["status"].AsString == "0")
             {
-                debug.Log(www.error);
+                btnchon.interactable = false;
+                if (qua == "exp") txtSoExp.text = "Số kinh nghiệm nhận được từ truyền nhân : <color=#00ff00ff>" + 0 + "</color>";
+                else txtSoKimCuong.text = "Số <color=#ff00ffff>kim cương</color> nhận được từ truyền nhân : <color=#ff00ffff>" + 0 + "</color>";
             }
             else
             {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                if (www.downloadHandler.text == "0")
-                {
-                    btnchon.interactable = false;
-                    if (qua == "exp") txtSoExp.text = "Số kinh nghiệm nhận được từ truyền nhân : <color=#00ff00ff>" + 0 + "</color>";
-                    else txtSoKimCuong.text = "Số <color=#ff00ffff>kim cương</color> nhận được từ truyền nhân : <color=#ff00ffff>" + 0 + "</color>";
-                }
-                else
-                {
-                    CrGame.ins.OnThongBaoNhanh(www.downloadHandler.text, 1f);
-                    btnchon.interactable = true;
-                }
+                CrGame.ins.OnThongBaoNhanh(jsonn["message"].AsString);
+                btnchon.interactable = true;
             }
         }
     }

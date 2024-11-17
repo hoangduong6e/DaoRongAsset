@@ -19,94 +19,95 @@ public class InfoLevelPhoBan : MonoBehaviour
         }
         menuInfo.SetActive(false);
     }
-    public IEnumerator XemLevel(string namemap)
+    public void XemLevel(string namemap)
     {
         XemPhoBan xemphoban = AllMenu.ins.menu["menuPhoban"].GetComponent<XemPhoBan>();
-       // GiaoDienPVP.ins.panelBatdau.transform.GetChild(2).GetComponent<Text>().text = "";
-        XacNhanMuaCongTrinh xn = new XacNhanMuaCongTrinh(namemap, 0, 0,LoginFacebook.ins.id);
-        string data = JsonUtility.ToJson(xn);
-        var request = new UnityWebRequest(CrGame.ins.ServerName + "xemLevelPhoBan", "POST");
-        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(data);
-        request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
-        request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-        request.SetRequestHeader("Content-Type", "application/json");
-        yield return request.SendWebRequest();
-        if (request.isNetworkError || request.isHttpError)
+
+
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "xemLevelPhoBan";
+        datasend["data"]["name"] = namemap;
+        datasend["data"]["cap"] = "0";
+        datasend["data"]["idcongtrinh"] = "0";
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode jsonn)
         {
-            debug.Log(request.error);
-            CrGame.ins.OnThongBao(true, "Lỗi", true);
-        }
-        else
-        {
-            debug.Log(request.downloadHandler.text);
-            if(request.downloadHandler.text!= "khoa")
+            if (jsonn["status"].Value == "0")
             {
-                JSONNode Json = JSON.Parse(request.downloadHandler.text);
-                objectTang.SetActive(false);
-                // debug.Log(Json["vatphamcothethuduoc"][0].Value);
-                txtNameLevel.text = Json["namelevel"].Value;
-                txtManhVoThuNguyen.text = "Chiến đấu bằng <color=#00ffffff>Mảnh Vỡ Thứ Nguyên:</color><color=#00ff00ff>" + Json["somanhvothunguyen"].Value + "</color>";
-                if (Inventory.ins.ListItemThuong.ContainsKey("itemManhVoThuNguyen"))
+                JSONNode Json = jsonn["data"];
+                if (Json.AsString != "khoa")
                 {
-                    if (int.Parse(Inventory.ins.ListItemThuong["itemManhVoThuNguyen"].transform.GetChild(0).GetComponent<Text>().text) >= int.Parse(Json["somanhvothunguyen"].Value))
+                    objectTang.SetActive(false);
+                    // debug.Log(Json["vatphamcothethuduoc"][0].Value);
+                    txtNameLevel.text = Json["namelevel"].Value;
+                    txtManhVoThuNguyen.text = "Chiến đấu bằng <color=#00ffffff>Mảnh Vỡ Thứ Nguyên:</color><color=#00ff00ff>" + Json["somanhvothunguyen"].Value + "</color>";
+                    if (Inventory.ins.ListItemThuong.ContainsKey("itemManhVoThuNguyen"))
                     {
-                        TxtGiaManhVoThuNguyen.transform.parent.GetComponent<Button>().interactable = true;
+                        if (int.Parse(Inventory.ins.ListItemThuong["itemManhVoThuNguyen"].transform.GetChild(0).GetComponent<Text>().text) >= int.Parse(Json["somanhvothunguyen"].Value))
+                        {
+                            TxtGiaManhVoThuNguyen.transform.parent.GetComponent<Button>().interactable = true;
+                        }
+                        else TxtGiaManhVoThuNguyen.transform.parent.GetComponent<Button>().interactable = false;
                     }
                     else TxtGiaManhVoThuNguyen.transform.parent.GetComponent<Button>().interactable = false;
-                }
-                else TxtGiaManhVoThuNguyen.transform.parent.GetComponent<Button>().interactable = false;
-                TxtGiaManhVoThuNguyen.text = Json["somanhvothunguyen"].Value;
-                for (int i = 0; i < Json["vatphamcothethuduoc"].Count; i++)
-                {
-                    GameObject item = Instantiate(SlotItem, transform.position, Quaternion.identity) as GameObject;
-                    debug.Log(Json["vatphamcothethuduoc"][i]["name"].Value);
-                    //SpriteRenderer spritevatpham = GameObject.Find("Sprite" + Json["vatphamcothethuduoc"][i]["name"].Value).GetComponent<SpriteRenderer>();
-                    Sprite spritevatpham = Resources.Load<Sprite>("GameData/Sprite/" + Json["vatphamcothethuduoc"][i]["name"].Value);//GameObject.Find(Json["vatphamcothethuduoc"][i]["name"].Value).GetComponent<Image>();
-                    item.transform.SetParent(SlotVatPham.transform, false);
-                    Image img = item.transform.GetChild(0).GetComponent<Image>();
-                    img.sprite = spritevatpham; img.SetNativeSize();
-                    item.transform.GetChild(1).GetComponent<Text>().text = Json["vatphamcothethuduoc"][i]["hiem"].Value;
-                    item.SetActive(true);
-                }
-                if (Json["tang"] != null)
-                {
-                    objectTang.SetActive(true);
-                    if (Json["tang"].Value == "1")
+                    TxtGiaManhVoThuNguyen.text = Json["somanhvothunguyen"].Value;
+                    for (int i = 0; i < Json["vatphamcothethuduoc"].Count; i++)
                     {
-                        objectTang.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(true);
-                        objectTang.transform.GetChild(1).transform.GetChild(1).gameObject.SetActive(false);
+                        GameObject item = Instantiate(SlotItem, transform.position, Quaternion.identity) as GameObject;
+                        debug.Log(Json["vatphamcothethuduoc"][i]["name"].Value);
+                        //SpriteRenderer spritevatpham = GameObject.Find("Sprite" + Json["vatphamcothethuduoc"][i]["name"].Value).GetComponent<SpriteRenderer>();
+                        Sprite spritevatpham = Resources.Load<Sprite>("GameData/Sprite/" + Json["vatphamcothethuduoc"][i]["name"].Value);//GameObject.Find(Json["vatphamcothethuduoc"][i]["name"].Value).GetComponent<Image>();
+                        item.transform.SetParent(SlotVatPham.transform, false);
+                        Image img = item.transform.GetChild(0).GetComponent<Image>();
+                        img.sprite = spritevatpham; img.SetNativeSize();
+                        item.transform.GetChild(1).GetComponent<Text>().text = Json["vatphamcothethuduoc"][i]["hiem"].Value;
+                        item.SetActive(true);
                     }
-                    else
+                    if (Json["tang"] != null)
                     {
-                        objectTang.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
-                        objectTang.transform.GetChild(1).transform.GetChild(1).gameObject.SetActive(true);
-                    }
-                    GameObject prefab = VienChinh.vienchinh.transform.GetChild(1).gameObject;
-                    for (int j = 0; j < prefab.transform.childCount; j++)
-                    {
-                        if (prefab.transform.GetChild(j).name == Json["nameboss1"].Value)
+                        objectTang.SetActive(true);
+                        if (Json["tang"].Value == "1")
                         {
-                            Image imgboss = objectTang.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>();
-                            imgboss.sprite = prefab.transform.GetChild(j).GetComponent<SpriteRenderer>().sprite;
-                            imgboss.SetNativeSize();
+                            objectTang.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(true);
+                            objectTang.transform.GetChild(1).transform.GetChild(1).gameObject.SetActive(false);
                         }
-                        if (prefab.transform.GetChild(j).name == Json["nameboss2"].Value)
+                        else
                         {
-                            Image imgboss = objectTang.transform.GetChild(1).transform.GetChild(0).GetComponent<Image>();
-                            imgboss.sprite = prefab.transform.GetChild(j).GetComponent<SpriteRenderer>().sprite;
-                            imgboss.SetNativeSize();
+                            objectTang.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
+                            objectTang.transform.GetChild(1).transform.GetChild(1).gameObject.SetActive(true);
+                        }
+                        GameObject prefab = VienChinh.vienchinh.transform.GetChild(1).gameObject;
+                        for (int j = 0; j < prefab.transform.childCount; j++)
+                        {
+                            if (prefab.transform.GetChild(j).name == Json["nameboss1"].Value)
+                            {
+                                Image imgboss = objectTang.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>();
+                                imgboss.sprite = prefab.transform.GetChild(j).GetComponent<SpriteRenderer>().sprite;
+                                imgboss.SetNativeSize();
+                            }
+                            if (prefab.transform.GetChild(j).name == Json["nameboss2"].Value)
+                            {
+                                Image imgboss = objectTang.transform.GetChild(1).transform.GetChild(0).GetComponent<Image>();
+                                imgboss.sprite = prefab.transform.GetChild(j).GetComponent<SpriteRenderer>().sprite;
+                                imgboss.SetNativeSize();
+                            }
                         }
                     }
+                    //   GiaoDienPVP.ins.panelBatdau.transform.GetChild(2).GetComponent<Text>().text = Json["randomtext"][Random.Range(0, Json["randomtext"].Count)].Value;
+                    //  GiaoDienPVP.ins.maxtime = float.Parse(Json["time"].Value) * 60;
+                    VienChinh.vienchinh.SetBGMap(Json["BackGround"].Value);
+                    //  VienChinh.vienchinh.transform.GetChild(0).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Inventory.LoadSprite();
+                    menuInfo.SetActive(true);
                 }
-                //   GiaoDienPVP.ins.panelBatdau.transform.GetChild(2).GetComponent<Text>().text = Json["randomtext"][Random.Range(0, Json["randomtext"].Count)].Value;
-                //  GiaoDienPVP.ins.maxtime = float.Parse(Json["time"].Value) * 60;
-                VienChinh.vienchinh.SetBGMap(Json["BackGround"].Value);
-              //  VienChinh.vienchinh.transform.GetChild(0).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Inventory.LoadSprite();
-                menuInfo.SetActive(true);
-            }    
+                else
+                {
+                    CrGame.ins.OnThongBaoNhanh("Đang khóa", 1f);
+                }
+            }
             else
             {
-                CrGame.ins.OnThongBaoNhanh("Đang khóa",1f);
+                CrGame.ins.OnThongBaoNhanh(jsonn["message"].Value, 2.5f);
             }
         }
     }

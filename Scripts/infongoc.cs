@@ -77,27 +77,21 @@ public class infongoc : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private void OnHoldComplete()
     {
         string nameitem = gameObject.transform.parent.name;
-        StartCoroutine(Load());
-        IEnumerator Load()
-        {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "XemShop/taikhoan/" + LoginFacebook.ins.id + "/nameitem/" + nameitem);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
 
-            if (www.result != UnityWebRequest.Result.Success)
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "XemShop";
+        datasend["data"]["nameitem"] = nameitem;
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        void Ok(JSONNode json)
+        {
+            if (json["status"].AsString == "0")
             {
-                debug.Log(www.error);
-            }
-            else
-            {
-                // Show results as text
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
                 AllMenu.ins.OpenCreateMenu("infoitem", GameObject.FindGameObjectWithTag("trencung"));
                 CrGame.ins.OnThongBaoNhanh(json["thongtin"].Value, 2, false);
                 id = (short)json["thongtin"].AsString.Length;
-                //  AllMenu.ins.menu["infoitem"].transform.GetChild(0).GetComponent<Text>().text = json["thongtin"].Value;
-                debug.Log(www.downloadHandler.text);
             }
+            else CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
         }
     }
 }

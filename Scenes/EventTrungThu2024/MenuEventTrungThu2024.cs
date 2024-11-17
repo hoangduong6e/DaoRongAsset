@@ -627,70 +627,55 @@ public class MenuEventTrungThu2024 : EventManager
                 menuevent["MenuTangBanh"].SetActive(true);
                 return;
             }
-            CrGame.ins.panelLoadDao.SetActive(true);
-            StartCoroutine(Load());
-            IEnumerator Load()
+            JSONClass datasend = new JSONClass();
+            datasend["class"] = "Main";
+            datasend["method"] = "GetListFriend";
+            datasend["data"]["id"] = LoginFacebook.ins.id;
+            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+            void Ok(JSONNode json)
             {
-                UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "GetListFriend/id/" + LoginFacebook.ins.id);
-                www.downloadHandler = new DownloadHandlerBuffer();
-                yield return www.SendWebRequest();
-                if (www.result != UnityWebRequest.Result.Success)
+                if (json["status"].Value == "0")
                 {
-                    debug.Log(www.error);
-                    CrGame.ins.panelLoadDao.SetActive(false);
-                    CrGame.ins.OnThongBaoNhanh("Lỗi khi tải dữ liệu.");
-                    AllMenu.ins.DestroyMenu("menuFriend");
+                    ThiepChon = btnchon.transform.parent.name;
+                    soluongchon = int.Parse(btnchon.transform.parent.GetChild(3).GetComponent<InputField>().text);
+                    GameObject menuchonthiep = menuevent["MenuChonBanh"];
+                    menuchonthiep.SetActive(false);
+                    GameObject menutangbanh = GetCreateMenu("MenuTangBanh", menuevent["GiaoDien2"].transform, true, menuevent["GiaoDien2"].transform.childCount + 1);
+
+                    JSONNode allfriend = json["data"]["allfriend"];
+                    GameObject menufriend = menutangbanh;
+                    GameObject viewport = menufriend.transform.GetChild(0).transform.GetChild(0).transform.GetChild(2).transform.GetChild(0).gameObject;
+                    GameObject ObjFriend = viewport.transform.GetChild(0).gameObject;
+
+                    GameObject Content = viewport.transform.GetChild(1).gameObject;
+                    for (int i = 1; i < allfriend.Count; i++)
+                    {
+                        GameObject Offriend = Instantiate(ObjFriend, Content.transform.position, Quaternion.identity) as GameObject;
+                        Offriend.transform.SetParent(Content.transform, false);
+                        Offriend.transform.Find("btnMoi").GetComponent<Button>().onClick.AddListener(TangBanh);
+                        Image imgAvatar = Offriend.transform.GetChild(1).GetComponent<Image>();
+                        Image imgKhung = Offriend.transform.GetChild(2).GetComponent<Image>();
+                        Text txtname = Offriend.transform.GetChild(3).GetComponent<Text>();
+                        Offriend.name = allfriend[i]["idfb"].Value;
+                        txtname.text = allfriend[i]["name"].Value;
+                        if (txtname.text.Length > 8)
+                        {
+                            string newname = txtname.text.Substring(0, 8) + "...";
+                            txtname.text = newname;
+                        }
+                        // friend.GetAvatarFriend(CatDauNgoacKep(allfriend[i]["idfb"].ToString()), Avatar);
+                        //  Khung.sprite = Inventory.LoadSprite("Avatar" + CatDauNgoacKep(allfriend[i]["toc"].ToString()));
+                        NetworkManager.ins.friend.LoadAvtFriend(allfriend[i]["objectId"].Value, imgAvatar, imgKhung);
+                        Offriend.SetActive(true);
+                    }
                 }
                 else
                 {
-                    // Show results as text
-                    debug.Log(www.downloadHandler.text);
-
-                    JSONNode json = JSON.Parse(www.downloadHandler.text);
-                    if (json["status"].Value == "ok")
-                    {
-                        ThiepChon = btnchon.transform.parent.name;
-                        soluongchon = int.Parse(btnchon.transform.parent.GetChild(3).GetComponent<InputField>().text);
-                        GameObject menuchonthiep = menuevent["MenuChonBanh"];
-                        menuchonthiep.SetActive(false);
-                        GameObject menutangbanh = GetCreateMenu("MenuTangBanh", menuevent["GiaoDien2"].transform,true, menuevent["GiaoDien2"].transform.childCount + 1);
-
-                        JSONNode allfriend = json["data"]["allfriend"];
-                        GameObject menufriend = menutangbanh;
-                        GameObject viewport = menufriend.transform.GetChild(0).transform.GetChild(0).transform.GetChild(2).transform.GetChild(0).gameObject;
-                        GameObject ObjFriend = viewport.transform.GetChild(0).gameObject;
-
-                        GameObject Content = viewport.transform.GetChild(1).gameObject;
-                        for (int i = 1; i < allfriend.Count; i++)
-                        {
-                            GameObject Offriend = Instantiate(ObjFriend, Content.transform.position, Quaternion.identity) as GameObject;
-                            Offriend.transform.SetParent(Content.transform, false);
-                            Offriend.transform.Find("btnMoi").GetComponent<Button>().onClick.AddListener(TangBanh);
-                            Image imgAvatar = Offriend.transform.GetChild(1).GetComponent<Image>();
-                            Image imgKhung = Offriend.transform.GetChild(2).GetComponent<Image>();
-                            Text txtname = Offriend.transform.GetChild(3).GetComponent<Text>();
-                            Offriend.name = allfriend[i]["idfb"].Value;
-                            txtname.text = allfriend[i]["name"].Value;
-                            if (txtname.text.Length > 8)
-                            {
-                                string newname = txtname.text.Substring(0, 8) + "...";
-                                txtname.text = newname;
-                            }
-                            // friend.GetAvatarFriend(CatDauNgoacKep(allfriend[i]["idfb"].ToString()), Avatar);
-                            //  Khung.sprite = Inventory.LoadSprite("Avatar" + CatDauNgoacKep(allfriend[i]["toc"].ToString()));
-                            NetworkManager.ins.friend.LoadAvtFriend(allfriend[i]["objectId"].Value, imgAvatar, imgKhung);
-                            Offriend.SetActive(true);
-                        }
-                    }
-                    else
-                    {
-                        CrGame.ins.OnThongBaoNhanh(json["status"].Value);
-                        AllMenu.ins.DestroyMenu("menuFriend");
-                    }
-                    CrGame.ins.panelLoadDao.SetActive(false);
-                    //transform.GetChild(4).transform.GetChild(2).transform.GetChild(1).transform.GetChild(0).GetComponent<Image>().fillAmount = 5 / 15;
+                    CrGame.ins.OnThongBaoNhanh(json["message"].Value);
+                    AllMenu.ins.DestroyMenu("menuFriend");
                 }
             }
+            CrGame.ins.panelLoadDao.SetActive(true);
         }
         void ThemSoLuongTangBanh(int i)
         {

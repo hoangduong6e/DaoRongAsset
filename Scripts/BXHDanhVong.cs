@@ -59,90 +59,73 @@ public class BXHDanhVong : MonoBehaviour
     }
     void OpenMenuTop()
     {
-        CrGame.ins.panelLoadDao.SetActive(true);
-        StartCoroutine(delay());
-        IEnumerator delay()
-        {
-            debug.Log("opemmenutop");
-            //  CrGame.ins.OnThongBao(true, "Đang tải...", false);
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "GetBXHDanhVong/taikhoan/" + LoginFacebook.ins.id + "/top/" + top + "/trang/" + trangg);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
 
-            if (www.result != UnityWebRequest.Result.Success)
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "GetBXHDanhVong";
+        datasend["data"]["top"] = top.ToString();
+        datasend["data"]["trang"] = trang.ToString();
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
+        {
+            sangtrang = false;
+            if (json["alltop"].Count > 0)
             {
-                debug.Log(www.error);
-                CrGame.ins.panelLoadDao.SetActive(false);
-                CrGame.ins.OnThongBaoNhanh("Lỗi");
-                AllMenu.ins.DestroyMenu("MenuTopDanhVong");
+                GameObject contentop = transform.GetChild(1).transform.GetChild(4).transform.GetChild(1).gameObject;
+                if (trangg % 2 == 1) topcuoi = float.Parse(json["alltop"][0]["DanhVong"].Value);
+                for (int i = 0; i < 6; i++)
+                {
+                    contentop.transform.GetChild(i).gameObject.SetActive(false);
+                    if (i < json["alltop"].Count)
+                    {
+                        //    debug.Log(json["alltop"][i]["Name"].Value);
+                        Image imgAvatar = contentop.transform.GetChild(i).transform.GetChild(1).GetComponent<Image>();
+                        Image imgKhungAvatar = contentop.transform.GetChild(i).transform.GetChild(2).GetComponent<Image>(); imgKhungAvatar.name = json["alltop"][i]["idfb"].Value;
+                        //   debug.Log("ok1");
+                        Image HuyHieu = contentop.transform.GetChild(i).transform.GetChild(3).GetComponent<Image>();
+                        Text txtName = contentop.transform.GetChild(i).transform.GetChild(4).GetComponent<Text>();
+                        //   debug.Log("ok2");
+                        Text txtTop = contentop.transform.GetChild(i).transform.GetChild(5).GetComponent<Text>();
+                        int sotop = i + 1 + trang - 1;
+                        txtTop.text = sotop.ToString();
+                        //  debug.Log("ok3");
+                        //  net.friend.GetAvatarFriend(json["alltop"][i]["idfb"].Value, imgAvatar);
+                        // imgKhungAvatar.sprite = Inventory.LoadSprite("Avatar" + json["alltop"][i]["Toc"].Value);
+                        Friend.ins.LoadAvtFriend(json["alltop"][i]["idfb"].Value, imgAvatar, imgKhungAvatar);
+                        imgKhungAvatar.name = json["alltop"][i]["idfb"].AsString;
+                        contentop.transform.GetChild(i).gameObject.SetActive(true);
+                        //    debug.Log("ok4");
+                        if (sotop > 3) HuyHieu.sprite = Top;
+                        else if (sotop == 1) HuyHieu.sprite = Top1;
+                        else if (sotop == 2) HuyHieu.sprite = Top2;
+                        else if (sotop == 3) HuyHieu.sprite = Top3;
+                        HuyHieu.SetNativeSize();
+                        //   debug.Log("ok5");
+                        txtName.text = json["alltop"][i]["Name"].Value;
+                        Text txttimee = contentop.transform.GetChild(i).transform.GetChild(6).GetComponent<Text>(); txttimee.text = json["alltop"][i]["DanhVong"].Value;
+                        //   debug.Log("ok5.1");
+                        if (i == 5)
+                        {
+                            sangtrang = true;
+                            top = float.Parse(json["alltop"][i]["DanhVong"].Value);
+                        }
+                        else if (i == json["alltop"].Count - 1) topcuoi = float.Parse(json["alltop"][i]["DanhVong"].Value);
+                        //   debug.Log("ok5.2");
+                    }
+                    //  contentop.transform.GetChild(i).transform.SetParent(imgtop.transform, false);
+                    // CrGame.ins.OnThongBao(false);
+                    //AllTop.SetActive(true);S
+                    // txtTrang.text = trang + "/100";
+                }
+                timedemnguoc = float.Parse(json["time"].Value);
+                if (timedemnguoc > 0) timerIsRunning = true;
+                transform.GetChild(1).gameObject.SetActive(true);
+                //   trang += 6;
             }
             else
             {
-                // Show results as text 
-                sangtrang = false;
-              //  debug.Log(www.downloadHandler.text);
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-                //GameObject objecttop = transform.GetChild(5).transform.GetChild(6).gameObject;
-
-                if (json["alltop"].Count > 0)
-                {
-                    GameObject contentop = transform.GetChild(1).transform.GetChild(4).transform.GetChild(1).gameObject;
-                    if (trangg % 2 == 1) topcuoi = float.Parse(json["alltop"][0]["DanhVong"].Value);
-                    for (int i = 0; i < 6; i++)
-                    {
-                        contentop.transform.GetChild(i).gameObject.SetActive(false);
-                        if (i < json["alltop"].Count)
-                        {
-                        //    debug.Log(json["alltop"][i]["Name"].Value);
-                            Image imgAvatar = contentop.transform.GetChild(i).transform.GetChild(1).GetComponent<Image>();
-                            Image imgKhungAvatar = contentop.transform.GetChild(i).transform.GetChild(2).GetComponent<Image>(); imgKhungAvatar.name = json["alltop"][i]["idfb"].Value;
-                         //   debug.Log("ok1");
-                            Image HuyHieu = contentop.transform.GetChild(i).transform.GetChild(3).GetComponent<Image>();
-                            Text txtName = contentop.transform.GetChild(i).transform.GetChild(4).GetComponent<Text>();
-                         //   debug.Log("ok2");
-                            Text txtTop = contentop.transform.GetChild(i).transform.GetChild(5).GetComponent<Text>();
-                            int sotop = i + 1 + trang - 1;
-                            txtTop.text = sotop.ToString();
-                          //  debug.Log("ok3");
-                            //  net.friend.GetAvatarFriend(json["alltop"][i]["idfb"].Value, imgAvatar);
-                            // imgKhungAvatar.sprite = Inventory.LoadSprite("Avatar" + json["alltop"][i]["Toc"].Value);
-                            Friend.ins.LoadAvtFriend(json["alltop"][i]["idfb"].Value,imgAvatar,imgKhungAvatar);
-                            imgKhungAvatar.name = json["alltop"][i]["idfb"].AsString;
-                            contentop.transform.GetChild(i).gameObject.SetActive(true);
-                        //    debug.Log("ok4");
-                            if (sotop > 3) HuyHieu.sprite = Top;
-                            else if (sotop == 1) HuyHieu.sprite = Top1;
-                            else if (sotop == 2) HuyHieu.sprite = Top2;
-                            else if (sotop == 3) HuyHieu.sprite = Top3;
-                            HuyHieu.SetNativeSize();
-                         //   debug.Log("ok5");
-                            txtName.text = json["alltop"][i]["Name"].Value;
-                            Text txttimee = contentop.transform.GetChild(i).transform.GetChild(6).GetComponent<Text>(); txttimee.text = json["alltop"][i]["DanhVong"].Value;
-                         //   debug.Log("ok5.1");
-                            if (i == 5)
-                            {
-                                sangtrang = true;
-                                top = float.Parse(json["alltop"][i]["DanhVong"].Value);
-                            }
-                            else if (i == json["alltop"].Count - 1) topcuoi = float.Parse(json["alltop"][i]["DanhVong"].Value);
-                         //   debug.Log("ok5.2");
-                        }
-                        //  contentop.transform.GetChild(i).transform.SetParent(imgtop.transform, false);
-                        // CrGame.ins.OnThongBao(false);
-                        //AllTop.SetActive(true);S
-                        // txtTrang.text = trang + "/100";
-                    }
-                    timedemnguoc = float.Parse(json["time"].Value);
-                    if(timedemnguoc > 0) timerIsRunning = true; 
-                    transform.GetChild(1).gameObject.SetActive(true);
-                    //   trang += 6;
-                }
-                else
-                {
-                    AllMenu.ins.DestroyMenu("MenuTopDanhVong");
-                    CrGame.ins.OnThongBaoNhanh("Chưa có xếp hạng");
-                }
-                CrGame.ins.panelLoadDao.SetActive(false);
+                AllMenu.ins.DestroyMenu("MenuTopDanhVong");
+                CrGame.ins.OnThongBaoNhanh("Chưa có xếp hạng");
             }
         }
     }

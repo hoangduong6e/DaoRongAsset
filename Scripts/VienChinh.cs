@@ -452,51 +452,36 @@ public class VienChinh : MonoBehaviour
         {
             //net.socket.Emit("WinEventHalloween", JSONObject.CreateStringObject(infophoban.nameMapvao));
             nameskillthuthach = "";
-            StartCoroutine(delay());
-            IEnumerator delay()
+            nameskillthuthach = "";
+            JSONClass datasend = new JSONClass();
+            datasend["class"] = "DauTruongThuThach";
+            datasend["method"] = "WinDauTruongThuThach";
+            NetworkManager.ins.SendServer(datasend.ToString(), Ok,true);
+            void Ok(JSONNode json)
             {
-                UnityWebRequest www = new UnityWebRequest(crgame.ServerName + "WinDauTruongThuThach/taikhoan/" + LoginFacebook.ins.id);
-                www.downloadHandler = new DownloadHandlerBuffer();
-                yield return www.SendWebRequest();
-
-                if (www.result != UnityWebRequest.Result.Success)
+                if (json["status"].Value == "ok")
                 {
-                    debug.Log(www.error);
-                    crgame.OnThongBaoNhanh("Lỗi");
-                    Thua();
+                    AllMenu.ins.OpenMenu("MenuDauTruongThuThach");
+                    AllMenu.ins.menu["GiaoDienPVP"].SetActive(false);
+                    CrGame.ins.SetPanelThangCap(true);
+                    crgame.txtThangCap.text = "";
+                    transform.GetChild(0).gameObject.SetActive(false);
+                    OffThangCap();
+                    reset();
+                    // debug.LogError(json["thongtin"].Value);
+                    if (json["thongtin"].Value != "")
+                    {
+                        ThongBaoChon tbc = AllMenu.ins.GetCreateMenu("MenuXacNhan", GameObject.Find("CanvasTrenCung")).GetComponent<ThongBaoChon>();
+                        tbc.btnChon.onClick.RemoveAllListeners();
+                        tbc.txtThongBao.text = json["thongtin"].Value;
+                        tbc.btnChon.onClick.AddListener(ChapNhan);
+                    }
                 }
                 else
                 {
-                    // Show results as text
-                    //   btndoi.interactable = false;
-                    //      debug.Log(www.downloadHandler.text);
-                    JSONNode json = JSON.Parse(www.downloadHandler.text);
-                    if (json["status"].Value == "ok")
-                    {
-
-                        AllMenu.ins.OpenMenu("MenuDauTruongThuThach");
-
-                        AllMenu.ins.menu["GiaoDienPVP"].SetActive(false);
-                        CrGame.ins.SetPanelThangCap(true);
-                        crgame.txtThangCap.text = "";
-                        transform.GetChild(0).gameObject.SetActive(false);
-                        OffThangCap();
-                        reset();
-                        // debug.LogError(json["thongtin"].Value);
-                        if (json["thongtin"].Value != "")
-                        {
-                            ThongBaoChon tbc = AllMenu.ins.GetCreateMenu("MenuXacNhan", GameObject.Find("CanvasTrenCung")).GetComponent<ThongBaoChon>();
-                            tbc.btnChon.onClick.RemoveAllListeners();
-                            tbc.txtThongBao.text = json["thongtin"].Value;
-                            tbc.btnChon.onClick.AddListener(ChapNhan);
-                        }
-                    }
-                    else
-                    {
-                        crgame.OnThongBaoNhanh(json["status"].Value);
-                    }
-                    crgame.panelLoadDao.SetActive(false);
+                    crgame.OnThongBaoNhanh(json["status"].Value);
                 }
+                crgame.panelLoadDao.SetActive(false);
             }
         }
     }
@@ -625,49 +610,35 @@ public class VienChinh : MonoBehaviour
         void ThuaDauTruongThuThach()
         {
             nameskillthuthach = "";
-            StartCoroutine(delay());
-            IEnumerator delay()
+            JSONClass datasend = new JSONClass();
+            datasend["class"] = "DauTruongThuThach";
+            datasend["method"] = "ThuaDauTruongThuThach";
+            NetworkManager.ins.SendServer(datasend.ToString(), Ok,true);
+            void Ok(JSONNode json)
             {
-                UnityWebRequest www = new UnityWebRequest(crgame.ServerName + "ThuaDauTruongThuThach/taikhoan/" + LoginFacebook.ins.id);
-                www.downloadHandler = new DownloadHandlerBuffer();
-                yield return www.SendWebRequest();
-
-                if (www.result != UnityWebRequest.Result.Success)
+                if (json["status"].Value == "ok")
                 {
-                    debug.Log(www.error);
-                    crgame.OnThongBaoNhanh("Lỗi");
-                    Thua();
+                    AllMenu.ins.OpenMenu("MenuDauTruongThuThach");
+
+                    AllMenu.ins.menu["GiaoDienPVP"].SetActive(false);
+                    //  crgame.panelThangCap.SetActive(true);
+                    // crgame.txtThangCap.text = "";
+                    transform.GetChild(0).gameObject.SetActive(false);
+                    //OffThangCap();
+                    reset();
+                    debug.LogError(json["thongtin"].Value);
+                    if (json["thongtin"].Value != "")
+                    {
+                        ThongBaoChon tbc = AllMenu.ins.GetCreateMenu("MenuXacNhan", GameObject.Find("CanvasTrenCung")).GetComponent<ThongBaoChon>();
+                        tbc.btnChon.onClick.RemoveAllListeners();
+                        tbc.txtThongBao.text = json["thongtin"].Value;
+                    }
                 }
                 else
                 {
-                    // Show results as text
-                    //   btndoi.interactable = false;
-                    debug.Log(www.downloadHandler.text);
-                    JSONNode json = JSON.Parse(www.downloadHandler.text);
-                    if (json["status"].Value == "ok")
-                    {
-                        AllMenu.ins.OpenMenu("MenuDauTruongThuThach");
-
-                        AllMenu.ins.menu["GiaoDienPVP"].SetActive(false);
-                        //  crgame.panelThangCap.SetActive(true);
-                        // crgame.txtThangCap.text = "";
-                        transform.GetChild(0).gameObject.SetActive(false);
-                        //OffThangCap();
-                        reset();
-                        debug.LogError(json["thongtin"].Value);
-                        if (json["thongtin"].Value != "")
-                        {
-                            ThongBaoChon tbc = AllMenu.ins.GetCreateMenu("MenuXacNhan", GameObject.Find("CanvasTrenCung")).GetComponent<ThongBaoChon>();
-                            tbc.btnChon.onClick.RemoveAllListeners();
-                            tbc.txtThongBao.text = json["thongtin"].Value;
-                        }
-                    }
-                    else
-                    {
-                        crgame.OnThongBaoNhanh(json["status"].Value);
-                    }
-                    crgame.panelLoadDao.SetActive(false);
+                    crgame.OnThongBaoNhanh(json["status"].Value);
                 }
+                crgame.panelLoadDao.SetActive(false);
             }
         }
         void ThuaSolo()

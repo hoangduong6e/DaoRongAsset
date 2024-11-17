@@ -58,25 +58,20 @@ public class Friend : MonoBehaviour
     {
         nameitemtang = name;
         idrongtang = idrong;
-        StartCoroutine(Xemtang());
-        IEnumerator Xemtang()
+
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "xemGiaoDich";
+        datasend["data"]["name"] = name + "*" + txtNameFriend.text;
+
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode jsonn)
         {
-            XacNhanMuaCongTrinh xn = new XacNhanMuaCongTrinh(name + "*" + txtNameFriend.text, 0, 0);
-            string data = JsonUtility.ToJson(xn);
-            var request = new UnityWebRequest(crgame.ServerName + "xemGiaoDich", "POST");
-            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(data);
-            request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
-            request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-            request.SetRequestHeader("Content-Type", "application/json");
-            yield return request.SendWebRequest();
-            if (request.isNetworkError || request.isHttpError)
+            if (jsonn["status"].AsString == "0")
             {
-                debug.Log(request.error);
-                crgame.OnThongBao(true, "Lỗi", true);
-            }
-            else
-            {
-                string[] cat = request.downloadHandler.text.Split('*');
+                JSONNode json = jsonn["data"];
+
+                string[] cat = json.AsString.Split('*');
                 if (cat[0] == "true")
                 {
                     GameObject menutangqua = AllMenu.ins.GetCreateMenu("MenuTangQua", null, false);
@@ -95,10 +90,10 @@ public class Friend : MonoBehaviour
                     btngiamsoluong.onClick.RemoveAllListeners();
                     btntangqua.onClick.RemoveAllListeners();
                     btnexit.onClick.RemoveAllListeners();
-                    btntangsoluong.onClick.AddListener(delegate { TangSoLuong(1); }) ;
+                    btntangsoluong.onClick.AddListener(delegate { TangSoLuong(1); });
                     btngiamsoluong.onClick.AddListener(delegate { TangSoLuong(-1); });
                     btntangqua.onClick.AddListener(TangQua);
-                    btnexit.onClick.AddListener(delegate { AllMenu.ins.DestroyMenu("MenuTangQua");});
+                    btnexit.onClick.AddListener(delegate { AllMenu.ins.DestroyMenu("MenuTangQua"); });
                     inputsoluong.onValueChanged.RemoveAllListeners();
                     inputsoluong.onValueChanged.AddListener(delegate { ChangeSoluong(); });
                     menutangqua.SetActive(true);
@@ -108,7 +103,11 @@ public class Friend : MonoBehaviour
                     AllMenu.ins.DestroyMenu("MenuTangQua");
                     crgame.OnThongBao(true, "Không tặng được vật phẩm này.", true);
                 }
-                debug.Log(request.downloadHandler.text);
+            }
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(jsonn["message"].Value, 2);
+                // AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
             }
         }
     }
@@ -288,181 +287,143 @@ public class Friend : MonoBehaviour
         //  GoHome();
         crgame.panelLoadDao.SetActive(true);
         DataDao = null;
-        StartCoroutine(infoFriend());
-        IEnumerator infoFriend() // xem dấu chấm hỏi công trình
+
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "GetFriend";
+        datasend["data"]["idFriend"] = nameFriend;
+        datasend["data"]["id"] = LoginFacebook.ins.id;
+        datasend["data"]["idfr"] = idFriend;
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode jsonn)
         {
-            Search xn = new Search(nameFriend,LoginFacebook.ins.id,idFriend);
-            string data = JsonUtility.ToJson(xn);
-            var request = new UnityWebRequest(crgame.ServerName + "GetFriend", "POST");
-            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(data);
-            request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
-            request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-            request.SetRequestHeader("Content-Type", "application/json");
-            yield return request.SendWebRequest();
-            if (request.isNetworkError || request.isHttpError)
+            if (jsonn["status"].Value == "0")
             {
-                debug.Log(request.error);
-                crgame.OnThongBao(true, "Lỗi", true);
-                crgame.panelLoadDao.SetActive(false);
-            }
-            else
-            {
-                //debug.Log("Truoc khi giai nen " + request.downloadHandler.text);
-                if (request.downloadHandler.text != "")
+                JSONNode json = jsonn["data"];
+                //  DonDepDao();
+                net.socket.Emit("quanhafriend", JSONObject.CreateStringObject("quanha"));
+                crgame.txtVang.gameObject.SetActive(false);
+                QuaNha = true;
+                DataDao = json["dao"];
+                Clear();
+                DaoFriend.SetActive(true);
+                int i = 0;
+                DaoFriend.transform.GetChild(i).gameObject.SetActive(true);
+                //GamIns.ins.SetMinMax();
+                Image imgCapDao = crgame.FindObject(DaoFriend.transform.GetChild(i).gameObject, "btnCapDaoFriend").GetComponent<Image>();
+
+                imgCapDao.sprite = Inventory.LoadSprite("Dao" + int.Parse(json["dao"][i]["leveldao"].Value));
+                imgCapDao.SetNativeSize();
+                debug.Log("friend 0");
+                for (int j = 0; j < json["dao"][i]["congtrinh"].Count; j++)
                 {
-                  
-                 //   string giainen = Decompress(request.downloadHandler.text);
-
-                    // Dữ liệu nhận được từ Node.js (đã được mã hóa Base64)
-              //      string base64Encoded = request.downloadHandler.text;/* Dữ liệu nhận được từ Node.js */
-                //    string giainen = Decompress(base64Encoded);
-
-                    // Sử dụng decompressedData
-                   // Console.WriteLine(decompressedData);
+                    GameObject congtrinhdao = crgame.FindObject(DaoFriend.transform.GetChild(i).gameObject, "CongtrinhFriend");
+                    CongTrinh ct = congtrinhdao.transform.GetChild(j).GetComponent<CongTrinh>();
+                    byte capct = byte.Parse(json["dao"][i]["congtrinh"][j]["cap"].Value);
+                    ct.nameCongtrinh = json["dao"][i]["congtrinh"][j]["name"].Value; ct.levelCongtrinh = capct; ct.LoadImg();
+                }
 
 
-                 //   debug.Log("Sau khi giai nen: " + giainen);
-                    JSONNode json = JSON.Parse(request.downloadHandler.text);
-                    if(json["message"].Value != "")
+                for (int j = 0; j < json["dao"].Count; j++)
+                {
+                    if (json["dao"][j]["timeNuiThanBi"].ToString() != "")
                     {
-                        crgame.OnThongBaoNhanh(json["message"].Value);
+                        timeNuiThanBi = json["dao"][j]["timeNuiThanBi"].AsFloat;
+                        debug.Log("Time nui than bi dao " + j + ": " + timeNuiThanBi);
+
+                        MauNgocNuiThanBi = json["dao"][j]["namengoc"].AsString;
+                        break;
+
                     }
-                    else
-                    {
-                        //  DonDepDao();
-                        net.socket.Emit("quanhafriend",JSONObject.CreateStringObject("quanha"));
-                        crgame.txtVang.gameObject.SetActive(false);
-                        QuaNha = true;
-                        DataDao = json["dao"];
-                        Clear();
-                        DaoFriend.SetActive(true);
-                        int i = 0;
-                        DaoFriend.transform.GetChild(i).gameObject.SetActive(true);
-                        //GamIns.ins.SetMinMax();
-                        Image imgCapDao = crgame.FindObject(DaoFriend.transform.GetChild(i).gameObject, "btnCapDaoFriend").GetComponent<Image>();
-                       
-                        imgCapDao.sprite = Inventory.LoadSprite("Dao" + int.Parse(json["dao"][i]["leveldao"].Value));
-                        imgCapDao.SetNativeSize();
-                        debug.Log("friend 0");
-                        for (int j = 0; j < json["dao"][i]["congtrinh"].Count; j++)
-                        {
-                            GameObject congtrinhdao = crgame.FindObject(DaoFriend.transform.GetChild(i).gameObject, "CongtrinhFriend");
-                            CongTrinh ct = congtrinhdao.transform.GetChild(j).GetComponent<CongTrinh>();
-                            byte capct = byte.Parse(json["dao"][i]["congtrinh"][j]["cap"].Value);
-                            ct.nameCongtrinh = json["dao"][i]["congtrinh"][j]["name"].Value; ct.levelCongtrinh = capct; ct.LoadImg();
-                        }
+                }
 
 
-                        for (int j = 0; j < json["dao"].Count; j++)
-                        {
-                            if (json["dao"][j]["timeNuiThanBi"].ToString() != "")
-                            {
-                                timeNuiThanBi = json["dao"][j]["timeNuiThanBi"].AsFloat;
-                                debug.Log("Time nui than bi dao " + j + ": " + timeNuiThanBi);
-                              
-                                MauNgocNuiThanBi = json["dao"][j]["namengoc"].AsString;
-                                break;
-                               
-                            }
-                        }
-                      
+                debug.Log("friend 1");
+                GameObject RongFriend = crgame.FindObject(DaoFriend.transform.GetChild(i).gameObject, "RongFriendDao");
+                //for (int j = 3; j < RongFriend.transform.childCount; j++)
+                //{
+                //    Destroy(RongFriend.transform.GetChild(j).gameObject);
+                //}
+                for (int j = 0; j < json["dao"][i]["rong"].Count; j++)
+                {
+                    DragonIslandManager.ParseDragonIsland(json["dao"][i]["rong"][j], (byte)i, Vector3.zero, RongFriend.transform);
+                }
+                GameObject objecttrangtridao = crgame.FindObject(DaoFriend.transform.GetChild(i).gameObject, "TrangTriFriend");
+                //debug.Log("friend 2");
+                //foreach (Transform child in objecttrangtridao.transform)
+                //{
+                //    Destroy(child.gameObject);
+                //}
+                Transform ObjItemEvent = DaoFriend.transform.GetChild(i).transform.Find("ObjItemEvent");
+                if (ObjItemEvent != null) Destroy(ObjItemEvent.gameObject);
+                DragonIslandManager.InsAllItemDao(json["dao"][i]["itemEvent"], (byte)i);
+                //for (int j = 0; j < json["dao"][i]["itemEvent"].Count; j++)
+                //{
+                //    GameObject item = DragonIslandManager.InsItemDao(json["dao"][i]["itemEvent"][j], (byte)i);
+                //    item.transform.position = new Vector3(item.transform.position.x, item.transform.position.y - Mathf.Abs(DaoFriend.transform.GetChild(i).transform.position.y));
+                //}
+                for (int j = 0; j < json["dao"][i]["trangtri"].Count; j++)
+                {
+                    //string nametrangtri = net.CatDauNgoacKep(json["dao"][i]["trangtri"][j]["name"].Value);
 
-                        debug.Log("friend 1");
-                        GameObject RongFriend = crgame.FindObject(DaoFriend.transform.GetChild(i).gameObject, "RongFriendDao");
-                        //for (int j = 3; j < RongFriend.transform.childCount; j++)
-                        //{
-                        //    Destroy(RongFriend.transform.GetChild(j).gameObject);
-                        //}
-                        for (int j = 0; j < json["dao"][i]["rong"].Count; j++)
-                        {
-                            DragonIslandManager.ParseDragonIsland(json["dao"][i]["rong"][j],(byte)i,Vector3.zero, RongFriend.transform);
-                        }
-                        GameObject objecttrangtridao = crgame.FindObject(DaoFriend.transform.GetChild(i).gameObject, "TrangTriFriend");
-                        //debug.Log("friend 2");
-                        //foreach (Transform child in objecttrangtridao.transform)
-                        //{
-                        //    Destroy(child.gameObject);
-                        //}
-                        Transform ObjItemEvent = DaoFriend.transform.GetChild(i).transform.Find("ObjItemEvent");
-                        if (ObjItemEvent != null) Destroy(ObjItemEvent.gameObject);
-                        DragonIslandManager.InsAllItemDao(json["dao"][i]["itemEvent"], (byte)i);
-                        //for (int j = 0; j < json["dao"][i]["itemEvent"].Count; j++)
-                        //{
-                        //    GameObject item = DragonIslandManager.InsItemDao(json["dao"][i]["itemEvent"][j], (byte)i);
-                        //    item.transform.position = new Vector3(item.transform.position.x, item.transform.position.y - Mathf.Abs(DaoFriend.transform.GetChild(i).transform.position.y));
-                        //}
-                        for (int j = 0; j < json["dao"][i]["trangtri"].Count; j++)
-                        {
-                            //string nametrangtri = net.CatDauNgoacKep(json["dao"][i]["trangtri"][j]["name"].Value);
+                    float x = 0, y = 0;
+                    // float y = float.Parse(net.CatDauNgoacKep(json["dao"][i]["trangtri"][j]["y"].Value)) - (Mathf.Abs(DaoFriend.transform.GetChild(i).transform.position.y) + Mathf.Abs(DaoFriend.transform.GetChild(i).transform.position.y));
 
-                            float x = 0, y = 0;
-                            // float y = float.Parse(net.CatDauNgoacKep(json["dao"][i]["trangtri"][j]["y"].Value)) - (Mathf.Abs(DaoFriend.transform.GetChild(i).transform.position.y) + Mathf.Abs(DaoFriend.transform.GetChild(i).transform.position.y));
+                    float.TryParse(net.CatDauNgoacKep(json["dao"][i]["trangtri"][j]["y"].Value), out y);
 
-                            float.TryParse(net.CatDauNgoacKep(json["dao"][i]["trangtri"][j]["y"].Value), out y);
+                    y -= Mathf.Abs(DaoFriend.transform.GetChild(i).transform.position.y);
 
-                            y -= Mathf.Abs(DaoFriend.transform.GetChild(i).transform.position.y);
+                    float.TryParse(net.CatDauNgoacKep(json["dao"][i]["trangtri"][j]["x"].Value), out x);
 
-                            float.TryParse(net.CatDauNgoacKep(json["dao"][i]["trangtri"][j]["x"].Value), out x);
-
-                            //  float y = float.Parse(net.CatDauNgoacKep(json["dao"][i]["trangtri"][j]["y"].Value));
+                    //  float y = float.Parse(net.CatDauNgoacKep(json["dao"][i]["trangtri"][j]["y"].Value));
                     //        float x = float.Parse(net.CatDauNgoacKep(json["dao"][i]["trangtri"][j]["x"].Value));
-                            //  debug.Log("x " + x + " y " + y);
-                            // GameObject trangtri = Instantiate(GameObject.Find(net.CatDauNgoacKep(json["dao"][i]["trangtri"][j]["name"].Value)), new Vector3(float.Parse(net.CatDauNgoacKep(json["dao"][i]["trangtri"][j]["x"].Value)), y), Quaternion.identity) as GameObject;
-                            //  System.Math.Round(y, 2);
-                            GameObject trangtri = Instantiate(Inventory.LoadObjectResource("GameData/Item/" + net.CatDauNgoacKep(json["dao"][i]["trangtri"][j]["name"].Value)), transform.position, Quaternion.identity) as GameObject;
-                            Destroy(trangtri.GetComponent<ItemTrangTri>());
-                            Destroy(trangtri.GetComponent<EventTrigger>());
-                            Destroy(trangtri.GetComponent<Button>());
-                            trangtri.transform.SetParent(objecttrangtridao.transform);
-                            trangtri.transform.position = new Vector3(x, y, 0);
-                            trangtri.transform.GetChild(1).gameObject.SetActive(true);
-                            trangtri.GetComponent<Image>().enabled = false;// new Vector3(float.Parse(net.CatDauNgoacKep(json["dao"][i]["trangtri"][j]["x"].Value)), y)
-                            trangtri.transform.GetChild(1).transform.position = new Vector3(trangtri.transform.GetChild(1).transform.position.x, trangtri.transform.GetChild(1).transform.position.y, 0);
-                            trangtri.transform.GetChild(0).gameObject.SetActive(false);
-                            if (net.CatDauNgoacKep(json["dao"][i]["trangtri"][j]["name"].Value) == "TocLenh")
-                            {
-                                trangtri.transform.GetChild(1).GetComponent<Animator>().runtimeAnimatorController = Inventory.LoadAnimator("TocLenh" + net.CatDauNgoacKep(json["coban"]["toc"].Value));
-                            }
-                        }
-
-                        debug.Log("friend 3");
-                        txtTienVang.text = json["coban"]["vang"].Value;
-                        debug.Log("friend 4");
-                        txtNameFriend.text = json["tenhienthi"].Value;
-
-                        LoadAvtFriend(json["taikhoan"].Value,imgAvatarFriend, imgAvatarFriend.transform.GetChild(1).GetComponent<Image>());
-                        imgAvatarFriend.name = json["taikhoan"].Value;
-                      //  imgAvatarFriend.sprite = imgavatar;
-                        debug.Log("friend 5");
-                        // GetAvatarFriend(json["taikhoan"].Value,imgAvatarFriend);
-                        KhungAvatar.sprite = Inventory.LoadSprite("Avatar" + json["coban"]["toc"].Value);
-                        txtlevel.text = json["coban"]["level"].Value;
-                        debug.Log("friend 6");
-                        float fillamount = float.Parse(json["coban"]["exp"].Value) / float.Parse(json["coban"]["maxexp"].Value);
-                        debug.Log("friend 7");
-                        ThanhExp.fillAmount = fillamount;
-
-                      
-                        //GameObject Dao = DaoFriend.transform.GetChild(0).gameObject;
-                        //DangODaoFriend = 0;
-                        //transform.position = new Vector3(Dao.transform.position.x, Dao.transform.position.y, transform.position.z);
-                        //crgame.ngaydem.transform.position = Dao.transform.position;
-                        //crgame.ngaydem.transform.SetParent(Dao.transform);
-                        //crgame.ngaydem.transform.SetSiblingIndex(4);
-                        //crgame.Bg.transform.position = Dao.transform.position;
-                        GiaoDienFriend.SetActive(true); GiaoDienMinh.SetActive(false);
-                        
-                        //  crgame.OnThongBao(false);
+                    //  debug.Log("x " + x + " y " + y);
+                    // GameObject trangtri = Instantiate(GameObject.Find(net.CatDauNgoacKep(json["dao"][i]["trangtri"][j]["name"].Value)), new Vector3(float.Parse(net.CatDauNgoacKep(json["dao"][i]["trangtri"][j]["x"].Value)), y), Quaternion.identity) as GameObject;
+                    //  System.Math.Round(y, 2);
+                    GameObject trangtri = Instantiate(Inventory.LoadObjectResource("GameData/Item/" + net.CatDauNgoacKep(json["dao"][i]["trangtri"][j]["name"].Value)), transform.position, Quaternion.identity) as GameObject;
+                    Destroy(trangtri.GetComponent<ItemTrangTri>());
+                    Destroy(trangtri.GetComponent<EventTrigger>());
+                    Destroy(trangtri.GetComponent<Button>());
+                    trangtri.transform.SetParent(objecttrangtridao.transform);
+                    trangtri.transform.position = new Vector3(x, y, 0);
+                    trangtri.transform.GetChild(1).gameObject.SetActive(true);
+                    trangtri.GetComponent<Image>().enabled = false;// new Vector3(float.Parse(net.CatDauNgoacKep(json["dao"][i]["trangtri"][j]["x"].Value)), y)
+                    trangtri.transform.GetChild(1).transform.position = new Vector3(trangtri.transform.GetChild(1).transform.position.x, trangtri.transform.GetChild(1).transform.position.y, 0);
+                    trangtri.transform.GetChild(0).gameObject.SetActive(false);
+                    if (net.CatDauNgoacKep(json["dao"][i]["trangtri"][j]["name"].Value) == "TocLenh")
+                    {
+                        trangtri.transform.GetChild(1).GetComponent<Animator>().runtimeAnimatorController = Inventory.LoadAnimator("TocLenh" + net.CatDauNgoacKep(json["coban"]["toc"].Value));
                     }
+                }
 
-                    crgame.panelLoadDao.SetActive(false);
-          
-                }
-                else
-                {
-                    crgame.OnThongBao(true, "Lỗi hoặc bạn bè đã bị khóa", true);
-                   // GoHome();
-                }
+                debug.Log("friend 3");
+                txtTienVang.text = json["coban"]["vang"].Value;
+                debug.Log("friend 4");
+                txtNameFriend.text = json["tenhienthi"].Value;
+
+                LoadAvtFriend(json["taikhoan"].Value, imgAvatarFriend, imgAvatarFriend.transform.GetChild(1).GetComponent<Image>());
+                imgAvatarFriend.name = json["taikhoan"].Value;
+                //  imgAvatarFriend.sprite = imgavatar;
+                debug.Log("friend 5");
+                // GetAvatarFriend(json["taikhoan"].Value,imgAvatarFriend);
+                KhungAvatar.sprite = Inventory.LoadSprite("Avatar" + json["coban"]["toc"].Value);
+                txtlevel.text = json["coban"]["level"].Value;
+                debug.Log("friend 6");
+                float fillamount = float.Parse(json["coban"]["exp"].Value) / float.Parse(json["coban"]["maxexp"].Value);
+                debug.Log("friend 7");
+                ThanhExp.fillAmount = fillamount;
+
+
+                //GameObject Dao = DaoFriend.transform.GetChild(0).gameObject;
+                //DangODaoFriend = 0;
+                //transform.position = new Vector3(Dao.transform.position.x, Dao.transform.position.y, transform.position.z);
+                //crgame.ngaydem.transform.position = Dao.transform.position;
+                //crgame.ngaydem.transform.SetParent(Dao.transform);
+                //crgame.ngaydem.transform.SetSiblingIndex(4);
+                //crgame.Bg.transform.position = Dao.transform.position;
+                GiaoDienFriend.SetActive(true); GiaoDienMinh.SetActive(false);
+
+                //  crgame.OnThongBao(false);
             }
         }
     }
@@ -579,35 +540,19 @@ public class Friend : MonoBehaviour
     }
     public void LoadAvtFriend(string id, Image imgavt, Image imgkhung)
     {
-      //  crgame.panelLoadDao.SetActive(true);
-        StartCoroutine(Load());
-        IEnumerator Load()
+        //  crgame.panelLoadDao.SetActive(true);
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "GetAvtFriend";
+        datasend["data"]["id"] = id;
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok,true);
+        
+        void Ok(JSONNode json)
         {
-            UnityWebRequest www = new UnityWebRequest(LoginFacebook.http + "://" + LoginFacebook.ins.NameServer + "/GetAvtFriend/id/" + id);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-            if (www.result != UnityWebRequest.Result.Success)
+            if (json["status"].Value == "0")
             {
-                debug.Log(www.error);
-               // crgame.panelLoadDao.SetActive(false);
-            }
-            else
-            {
-                // Show results as text
-               // debug.Log(www.downloadHandler.text);
-
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-                if (json["status"].Value == "ok")
-                {
-                    LoadImage("khungavt", json["data"]["khungavtsudung"].AsString, imgkhung);
-                    LoadImage("avt", json["data"]["avtsudung"].AsString, imgavt);
-                }
-                else
-                {
-                    // crgame.OnThongBaoNhanh(json["status"].Value);
-                }
-              //  crgame.panelLoadDao.SetActive(false);
-                //transform.GetChild(4).transform.GetChild(2).transform.GetChild(1).transform.GetChild(0).GetComponent<Image>().fillAmount = 5 / 15;
+                LoadImage("khungavt", json["data"]["khungavtsudung"].AsString, imgkhung);
+                LoadImage("avt", json["data"]["avtsudung"].AsString, imgavt);
             }
         }
     }

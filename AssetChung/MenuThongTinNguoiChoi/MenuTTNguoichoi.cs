@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using UnityEngine.UI.Extensions;
 
 public class MenuTTNguoichoi : MonoBehaviour
 {
@@ -132,25 +133,18 @@ public class MenuTTNguoichoi : MonoBehaviour
             CrGame.ins.OnThongBaoNhanh("Độ dài ghi chú dưới 70 kí tự");
             return;
         }
-        debug.Log("save ghi chu");
-        StartCoroutine(Load());
-        IEnumerator Load()
-        {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "SaveGhiChu/id/" + LoginFacebook.ins.id + "/ghichu/" + inputghichu.text);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
 
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                debug.Log(www.error);
-                //    CrGame.ins.allmenu.DestroyMenu("MenuEventTet2023");
-            }
-            else
-            {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                //transform.GetChild(4).transform.GetChild(2).transform.GetChild(1).transform.GetChild(0).GetComponent<Image>().fillAmount = 5 / 15;
-            }
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "SaveGhiChu";
+        datasend["data"]["id"] = LoginFacebook.ins.id;
+        datasend["data"]["ghichu"] = inputghichu.text;
+
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
+        {
+            CrGame.ins.OnThongBaoNhanh(json["message"].AsString, 2);
+
         }
     }    
     public void KetBan()
@@ -203,27 +197,21 @@ public class MenuTTNguoichoi : MonoBehaviour
         Text txtinfo = GiaoDienDoiAvt.transform.GetChild(0).transform.GetChild(1).GetComponent<Text>();
         avtchon = btnchon.transform.parent.name;
         Image imgkhung = imgavt.transform.GetChild(0).GetComponent<Image>();
-        StartCoroutine(Load());
-        IEnumerator Load()
+
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "LoadChonAvt";
+        datasend["data"]["id"] = ID;
+        datasend["data"]["avtchon"] = avtchon;
+        datasend["data"]["loai"] = GiaoDienDoiAvt.name;
+
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
         {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "LoadChonAvt/id/" + ID + "/avtchon/" + avtchon + "/loai/" + GiaoDienDoiAvt.name);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
+            if (json["status"].Value == "ok")
             {
-                debug.Log(www.error);
-                CrGame.ins.panelLoadDao.SetActive(false);
-                CrGame.ins.OnThongBaoNhanh("Lỗi khi tải dữ liệu.");
-                //CrGame.ins.allmenu.DestroyMenu("MenuEventTet2023");
-            }
-            else
-            {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-                if (json["status"].Value == "ok")
+                StartCoroutine(delay());
+                IEnumerator delay()
                 {
                     if (GiaoDienDoiAvt.name == "avt")
                     {
@@ -231,8 +219,6 @@ public class MenuTTNguoichoi : MonoBehaviour
                     }
                     else
                     {
-                      
-
 
                         if (btnchon.GetComponent<Animator>())
                         {
@@ -246,7 +232,7 @@ public class MenuTTNguoichoi : MonoBehaviour
                             imgkhung.SetNativeSize();
                         }
                     }
-       
+
                     txtsudung.transform.SetParent(btnchon.transform);
                     txtsudung.transform.position = btnchon.transform.position;
                     txtsudung.gameObject.SetActive(true);
@@ -255,17 +241,13 @@ public class MenuTTNguoichoi : MonoBehaviour
                     yield return new WaitForSeconds(0.3f);
                     imgkhung.SetNativeSize();
                 }
-                else
-                {
-                    CrGame.ins.OnThongBaoNhanh(json["status"].Value);
-                }
-
-           
-                //transform.GetChild(4).transform.GetChild(2).transform.GetChild(1).transform.GetChild(0).GetComponent<Image>().fillAmount = 5 / 15;
+          
+            }
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(json["status"].Value);
             }
         }
-
-       
     }    
     public void CuonKhungAvt()
     {
@@ -278,84 +260,70 @@ public class MenuTTNguoichoi : MonoBehaviour
     }
     public void LoadAvt(string loai)
     {
-        CrGame.ins.panelLoadDao.SetActive(true);
-        StartCoroutine(Load());
-        IEnumerator Load()
-        {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "LoadAvt/id/" + ID+"/loai/"+loai);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "LoadAvt";
+        datasend["data"]["id"] = ID;
+        datasend["data"]["loai"] = loai;
 
-            if (www.result != UnityWebRequest.Result.Success)
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
+        {
+            if (json["status"].Value == "ok")
             {
-                debug.Log(www.error);
-                CrGame.ins.panelLoadDao.SetActive(false);
-                CrGame.ins.OnThongBaoNhanh("Lỗi khi tải dữ liệu.");
-                //CrGame.ins.allmenu.DestroyMenu("MenuEventTet2023");
+                giaoDienKhoanhKhac.SetActive(false);
+                GameObject GiaoDien = transform.GetChild(0).transform.GetChild(0).gameObject;
+                GiaoDien.transform.GetChild(0).gameObject.SetActive(false);
+                GameObject GiaoDienDoiAvt = GiaoDien.transform.GetChild(1).gameObject;
+                GiaoDienDoiAvt.SetActive(true);
+                GameObject Content = GiaoDienDoiAvt.transform.GetChild(1).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).gameObject;
+                GameObject ObjAvt = Content.transform.GetChild(0).gameObject;
+                GiaoDienDoiAvt.name = loai;
+                if (loai == "avt")
+                {
+                    JSONNode jsonavt = json["data"]["allavt"];
+                    for (int i = 0; i < jsonavt.Count; i++)
+                    {
+                        GameObject AvtObj = Instantiate(ObjAvt, transform.position, Quaternion.identity);
+                        AvtObj.transform.SetParent(Content.transform, false);
+                        Image imgavt = AvtObj.transform.GetChild(0).GetComponent<Image>();
+                        AvtObj.transform.GetChild(1).gameObject.SetActive(true);
+                        if (NetworkManager.ins.CatDauNgoacKep(jsonavt[i].Value) == json["data"]["avtsudung"].Value)
+                        {
+                            txtsudung.transform.SetParent(AvtObj.transform);
+                            txtsudung.gameObject.SetActive(true);
+                            txtsudung.transform.position = AvtObj.transform.position;
+                        }
+                        Friend.ins.LoadImage(loai, NetworkManager.ins.CatDauNgoacKep(jsonavt[i].Value), imgavt);
+                        AvtObj.name = jsonavt[i].Value;
+                        AvtObj.SetActive(true);
+                    }
+
+                }
+                else if (loai == "khungavt")
+                {
+                    JSONNode jsonavt = json["data"]["allkhungavt"];
+                    for (int i = 0; i < jsonavt.Count; i++)
+                    {
+                        GameObject AvtObj = Instantiate(ObjAvt, transform.position, Quaternion.identity);
+                        AvtObj.transform.SetParent(Content.transform, false);
+                        Image imgavt = AvtObj.transform.GetChild(0).GetComponent<Image>();
+                        if (NetworkManager.ins.CatDauNgoacKep(jsonavt[i].Value) == json["data"]["khungavtsudung"].Value)
+                        {
+                            //AvtObj.transform.GetChild(2).gameObject.SetActive(true);
+                            txtsudung.transform.SetParent(AvtObj.transform);
+                            txtsudung.gameObject.SetActive(true);
+                            txtsudung.transform.position = AvtObj.transform.position;
+                        }
+                        Friend.ins.LoadImage(loai, NetworkManager.ins.CatDauNgoacKep(jsonavt[i].Value), imgavt);
+                        AvtObj.name = jsonavt[i].Value;
+                        AvtObj.SetActive(true);
+                    }
+                }
             }
             else
             {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-                giaoDienKhoanhKhac.SetActive(false);
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-                if (json["status"].Value == "ok")
-                {
-                    GameObject GiaoDien = transform.GetChild(0).transform.GetChild(0).gameObject;
-                    GiaoDien.transform.GetChild(0).gameObject.SetActive(false);
-                    GameObject GiaoDienDoiAvt = GiaoDien.transform.GetChild(1).gameObject;
-                    GiaoDienDoiAvt.SetActive(true);
-                    GameObject Content = GiaoDienDoiAvt.transform.GetChild(1).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).gameObject;
-                    GameObject ObjAvt = Content.transform.GetChild(0).gameObject;
-                    GiaoDienDoiAvt.name = loai;
-                    if (loai == "avt")
-                    {
-                        JSONNode jsonavt = json["data"]["allavt"];
-                        for (int i = 0; i < jsonavt.Count; i++)
-                        {
-                            GameObject AvtObj = Instantiate(ObjAvt, transform.position, Quaternion.identity);
-                            AvtObj.transform.SetParent(Content.transform, false);
-                            Image imgavt = AvtObj.transform.GetChild(0).GetComponent<Image>();
-                            AvtObj.transform.GetChild(1).gameObject.SetActive(true);
-                            if (NetworkManager.ins.CatDauNgoacKep(jsonavt[i].Value) == json["data"]["avtsudung"].Value)
-                            {
-                                txtsudung.transform.SetParent(AvtObj.transform);
-                                txtsudung.gameObject.SetActive(true);
-                                txtsudung.transform.position = AvtObj.transform.position;
-                            }
-                            Friend.ins.LoadImage(loai, NetworkManager.ins.CatDauNgoacKep(jsonavt[i].Value), imgavt);
-                            AvtObj.name = jsonavt[i].Value;
-                            AvtObj.SetActive(true);
-                        }
-                     
-                    }    
-                    else if(loai == "khungavt")
-                    {
-                        JSONNode jsonavt = json["data"]["allkhungavt"];
-                        for (int i = 0; i < jsonavt.Count; i++)
-                        {
-                            GameObject AvtObj = Instantiate(ObjAvt, transform.position, Quaternion.identity);
-                            AvtObj.transform.SetParent(Content.transform, false);
-                            Image imgavt = AvtObj.transform.GetChild(0).GetComponent<Image>();
-                            if (NetworkManager.ins.CatDauNgoacKep(jsonavt[i].Value) == json["data"]["khungavtsudung"].Value)
-                            {
-                                //AvtObj.transform.GetChild(2).gameObject.SetActive(true);
-                                txtsudung.transform.SetParent(AvtObj.transform);
-                                txtsudung.gameObject.SetActive(true);
-                                txtsudung.transform.position = AvtObj.transform.position;
-                            }
-                            Friend.ins.LoadImage(loai, NetworkManager.ins.CatDauNgoacKep(jsonavt[i].Value), imgavt);
-                            AvtObj.name = jsonavt[i].Value;
-                            AvtObj.SetActive(true);
-                        }
-                    }    
-                }
-                else
-                {
-                    CrGame.ins.OnThongBaoNhanh(json["status"].Value);
-                }
-                CrGame.ins.panelLoadDao.SetActive(false);
-                //transform.GetChild(4).transform.GetChild(2).transform.GetChild(1).transform.GetChild(0).GetComponent<Image>().fillAmount = 5 / 15;
+                CrGame.ins.OnThongBaoNhanh(json["status"].Value);
             }
         }
     }    
@@ -400,48 +368,36 @@ public class MenuTTNguoichoi : MonoBehaviour
         GameObject btnchon = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
         GameObject GiaoDien = transform.GetChild(0).transform.GetChild(0).gameObject;
         GameObject GiaoDienDoiAvt = GiaoDien.transform.GetChild(1).gameObject;
-        StartCoroutine(Load());
-        IEnumerator Load()
+
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "ChonAvt";
+        datasend["data"]["id"] = ID;
+        datasend["data"]["avtchon"] = avtchon;
+        datasend["data"]["loai"] = GiaoDienDoiAvt.name;
+
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
         {
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "ChonAvt/id/" + ID + "/avtchon/" + avtchon + "/loai/" + GiaoDienDoiAvt.name);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
+            if (json["status"].Value == "ok")
             {
-                debug.Log(www.error);
-                CrGame.ins.panelLoadDao.SetActive(false);
-                CrGame.ins.OnThongBaoNhanh("Lỗi khi tải dữ liệu.");
-                //CrGame.ins.allmenu.DestroyMenu("MenuEventTet2023");
-            }
-            else
-            {
-                // Show results as text
-                debug.Log(www.downloadHandler.text);
-
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-                if (json["status"].Value == "ok")
+                if (GiaoDienDoiAvt.name == "avt")
                 {
-                    if (GiaoDienDoiAvt.name == "avt")
-                    {
-                        CrGame.ins.FB_useerDp.sprite = imgavt.sprite;
-                    }
-                    else
-                    {
-                        //  CrGame.ins.FB_useerDp.transform.GetChild(1).GetComponent<Image>().sprite = imgavt.transform.GetChild(0).GetComponent<Image>().sprite;
-                        // CrGame.ins.FB_useerDp.transform.GetChild(1).GetComponent<Image>().SetNativeSize();
-                        Friend.ins.LoadImage("khungavt", json["name"].AsString,CrGame.ins.khungAvatar);
-                    }
-                    Huy();
-
-                    CrGame.ins.OnThongBaoNhanh("Đã đổi!");
+                    CrGame.ins.FB_useerDp.sprite = imgavt.sprite;
                 }
                 else
                 {
-                    CrGame.ins.OnThongBaoNhanh(json["status"].Value);
+                    //  CrGame.ins.FB_useerDp.transform.GetChild(1).GetComponent<Image>().sprite = imgavt.transform.GetChild(0).GetComponent<Image>().sprite;
+                    // CrGame.ins.FB_useerDp.transform.GetChild(1).GetComponent<Image>().SetNativeSize();
+                    Friend.ins.LoadImage("khungavt", json["name"].AsString, CrGame.ins.khungAvatar);
                 }
-                CrGame.ins.panelLoadDao.SetActive(false);
-                //transform.GetChild(4).transform.GetChild(2).transform.GetChild(1).transform.GetChild(0).GetComponent<Image>().fillAmount = 5 / 15;
+                Huy();
+
+                CrGame.ins.OnThongBaoNhanh("Đã đổi!");
+            }
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(json["status"].Value);
             }
         }
     }    
