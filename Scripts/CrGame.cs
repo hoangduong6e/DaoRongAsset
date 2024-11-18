@@ -9,8 +9,6 @@ using System.Security.Cryptography;
 using System.Globalization;
 using System.Threading;
 using System;
-using UnityEditor.PackageManager.Requests;
-using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class CrGame : MonoBehaviour
 {

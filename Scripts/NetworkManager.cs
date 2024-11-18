@@ -13,8 +13,6 @@ using System.IO;
 using System;
 
 using Random = UnityEngine.Random;
-using Unity.VisualScripting.Antlr3.Runtime;
-using UnityEditor.PackageManager.Requests;
 
 public class NetworkManager : MonoBehaviour
 {
