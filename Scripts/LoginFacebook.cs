@@ -31,14 +31,18 @@ public class LoginFacebook : MonoBehaviour
     public static LoginFacebook ins;
     public static string token = "";
     public static string thisServer = "";
-#if UNITY_EDITOR_OSX
-      public static string http = "http";
-#elif UNITY_EDITOR_WIN
-         public static string http = "https";
-
+#if UNITY_EDITOR && UNITY_EDITOR_OSX
+// Chỉ Unity Editor trên macOS
+public static string http = "http";
+#elif UNITY_IOS || UNITY_ANDROID
+    // Khi build trên iOS hoặc Android
+    public static string http = "https";
+#else
+// Các trường hợp còn lại (bao gồm Unity Editor trên Windows)
+public static string http = "https";
 #endif
 
-   // public static string ws { get {return (http == "https") } };
+    // public static string ws { get {return (http == "https") } };
     private void Awake()
     {
         //  LoadAllServer();
