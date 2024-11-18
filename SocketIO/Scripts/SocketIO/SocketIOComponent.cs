@@ -89,12 +89,12 @@ namespace SocketIO
 		#endif
 
 		#region Unity interface
-
 		public void Awake()
 		{
             fb = GameObject.Find("facebookManager").GetComponent<LoginFacebook>();
             crgame = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CrGame>();
-            url = LoginFacebook.ws + "://"+ fb.NameServer + "/socket.io/?EIO=4&transport=websocket";
+			string wss = (LoginFacebook.http == "http") ? "ws" : "wss";
+            url = wss + "://"+ fb.NameServer + "/socket.io/?EIO=4&transport=websocket&token="+ LoginFacebook.token;
             crgame.ServerName = LoginFacebook.http + "://" + fb.NameServer + "/";
             encoder = new Encoder();
 			decoder = new Decoder();
@@ -103,9 +103,11 @@ namespace SocketIO
 			ackList = new List<Ack>();
 			sid = null;
 			packetId = 0;
+			//Debug.Log("LoginFacebook.token", LoginFacebook.token);
+   
 
-			ws = new WebSocket(url);
-			ws.OnOpen += OnOpen;
+            ws = new WebSocket(url);
+            ws.OnOpen += OnOpen;
 			ws.OnMessage += OnMessage;
 			ws.OnError += OnError;
 			ws.OnClose += OnClose;
@@ -130,8 +132,14 @@ namespace SocketIO
 			Connect();
 		}
 
+	
 		public void Update()
 		{
+			//if (Input.GetKeyUp(KeyCode.Z))
+			//{
+			//	testblockemit = !testblockemit;
+			//}
+		//	Debug.Log("eventQueue.Count " +eventQueue.Count);
 			lock(eventQueueLock){ 
 				while(eventQueue.Count > 0){
 					EmitEvent(eventQueue.Dequeue());
@@ -298,10 +306,11 @@ namespace SocketIO
                 }
             }
         }
-
-		private void EmitMessage(int id, string raw)
+       // bool testblockemit = false;
+        private void EmitMessage(int id, string raw)
 		{
-			EmitPacket(new Packet(EnginePacketType.MESSAGE, SocketPacketType.EVENT, 0, "/", id, new JSONObject(raw)));
+          //  if (testblockemit) return;
+            EmitPacket(new Packet(EnginePacketType.MESSAGE, SocketPacketType.EVENT, 0, "/", id, new JSONObject(raw)));
 		}
 
 		private void EmitClose()
@@ -309,15 +318,14 @@ namespace SocketIO
 			EmitPacket(new Packet(EnginePacketType.MESSAGE, SocketPacketType.DISCONNECT, 0, "/", -1, new JSONObject("")));
 			EmitPacket(new Packet(EnginePacketType.CLOSE));
 		}
-
 		private void EmitPacket(Packet packet)
 		{
-			#if SOCKET_IO_DEBUG
+#if SOCKET_IO_DEBUG
 			debugMethod.Invoke("[SocketIO] " + packet);
-			#endif
-			
+#endif
 			try {
-				ws.Send(encoder.Encode(packet));
+             //   debug.Log("test emit 2");
+                ws.Send(encoder.Encode(packet));
 			} catch(SocketIOException ex) {
 				#if SOCKET_IO_DEBUG
 				debugMethod.Invoke(ex.ToString());

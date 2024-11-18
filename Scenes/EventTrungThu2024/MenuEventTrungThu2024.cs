@@ -843,8 +843,8 @@ public class MenuEventTrungThu2024 : EventManager
                     LoadMocQuaBXH(json["quatichluythiep"], json["allMocDiemquatichluythiep"], json["duoctangthiep"].AsInt);
                 }
 
-
-                if (LoginFacebook.ins.NameServer.Split(':')[1] == "4567") //sv2 sv3
+                debug.Log("this server là " + LoginFacebook.thisServer);
+                if (LoginFacebook.thisServer == "Sa Mạc" || LoginFacebook.thisServer == "Rừng Rậm") //sv2 sv3
                 {
                     menu.transform.GetChild(0).transform.Find("MenuPhanThuong").transform.GetChild(0).GetComponent<Image>().sprite = EventManager.ins.GetSprite("bxhtop20");
                 }

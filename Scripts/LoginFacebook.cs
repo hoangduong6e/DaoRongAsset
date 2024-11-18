@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using SimpleJSON;
 using System;
 using System.Net;
+using Unity.VisualScripting.Antlr3.Runtime;
 //using SIDGIN.Patcher.SceneManagment;
 //using SIDGIN.Patcher.Client;
 
@@ -21,21 +22,23 @@ using System.Net;
 //}
 public class LoginFacebook : MonoBehaviour
 {
-    public string id,matkhau,key;public bool isLogin = false;
+    public string id,matkhau;public bool isLogin = false;
     public GameObject ThongBao;public Text txtThongbao,txtLoad;public Image maskload;
     public string nameNv;public string NameServer;
     public GameObject btnOk,MenuLogin,ThanhLoad,MenuChon,btnLoginThuong;bool duocdangnhap = true;
     public GameObject loginthuong,allloginthuong,panelloaddao;
     public string ServerChinh;
     public static LoginFacebook ins;
- 
+    public static string token = "";
+    public static string thisServer = "";
 #if UNITY_EDITOR_OSX
       public static string http = "http";
-      public static string ws = "ws";
 #elif UNITY_EDITOR_WIN
          public static string http = "https";
-    public static string ws = "wss";
+
 #endif
+
+   // public static string ws { get {return (http == "https") } };
     private void Awake()
     {
         //  LoadAllServer();
@@ -70,26 +73,9 @@ public class LoginFacebook : MonoBehaviour
 
     private void Start()
     {
-        // Bỏ qua kiểm tra chứng chỉ SSL
-        ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
         LoadAllServer();
         Application.targetFrameRate = 90;
-        StartCoroutine(delay());
-
-        IEnumerator delay()
-        {
-            UnityWebRequest request = UnityWebRequest.Get("https://napthedr.shop/");
-            yield return request.SendWebRequest();
-
-            if (request.result != UnityWebRequest.Result.Success)
-            {
-                Debug.LogError("Error: " + request.error);
-            }
-            else
-            {
-                Debug.Log("Response: " + request.downloadHandler.text);
-            }
-        }
+    
     }
     void PanelLoadDao(bool active)
     {
@@ -681,8 +667,7 @@ public class LoginFacebook : MonoBehaviour
         StartCoroutine(Load());
         IEnumerator Load()
         {
-            debug.Log("test " + LoginFacebook.http + "://" + ServerChinh + "/GetAllServerr");
-            UnityWebRequest www = new UnityWebRequest(LoginFacebook.http + "://" + ServerChinh + "/GetAllServerr");
+            UnityWebRequest www = new UnityWebRequest(LoginFacebook.http + "://" + ServerChinh + "/AllServeRGet");
             www.downloadHandler = new DownloadHandlerBuffer();
             yield return www.SendWebRequest();
 
@@ -714,14 +699,15 @@ public class LoginFacebook : MonoBehaviour
                     if(thutumaychu == i)
                     { 
                         NameServer = json["allserver"][i]["ipserver"].Value;
-                        MenuChon.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text = "Máy Chủ: " + json["allserver"][i]["nameserver"].Value;
+                        MenuChon.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text = "Máy Chủ: " + json["allserver"][i]["nameserver"].AsString;
+                        thisServer = json["allserver"][i]["nameserver"].AsString;
                     }    
                     GameObject maychu = allmaychu.transform.GetChild(i + 1).gameObject;
                     maychu.SetActive(true);
                     maychu.transform.GetChild(0).GetComponent<Text>().text = json["allserver"][i]["nameserver"].Value;
                     maychu.transform.GetChild(0).name = json["allserver"][i]["ipserver"].Value;
                 //    debug.Log(json[i]["ipserver"].Value);
-                 //   debug.Log(json[i]);
+                //   debug.Log(json[i]);
                 }
                // debug.Log(json["linkdown"].AsString);
                 DownLoadAssetBundle.SetLinkDown = json["linkdown"].AsString;
@@ -819,6 +805,7 @@ public class LoginFacebook : MonoBehaviour
         NameServer = g.transform.GetChild(0).name;
         g.transform.parent.transform.parent.transform.parent.gameObject.SetActive(false);
         PlayerPrefs.SetInt("maychu", g.transform.GetSiblingIndex() - 1);
+        thisServer = tensv;
     }
    
    // Start is called before the first frame update
@@ -885,14 +872,15 @@ public class LoginFacebook : MonoBehaviour
                 ThongBao.SetActive(false);
                 // SGSceneManager.LoadScene("SampleScene");
                 //   Application.LoadLevel("SampleScene");
-                key = json["key"].Value;
+            //    key = json["key"].Value;
                 PlayerPrefs.SetString("memobi","");
               //  PlayerPrefs.SetString("maychu", CrGame.EncryptString(MenuChon.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text, "daorongAdmin"));
                 PlayerPrefs.SetString("id", CrGame.EncryptString(id, "daorongAdmin"));
                 PlayerPrefs.SetString("matkhau", CrGame.EncryptString(matkhau, "daorongAdmin"));
                 PlayerPrefs.SetString("tenhienthi", CrGame.EncryptString(nameNv, "daorongAdmin"));
                 PanelLoadDao(false);
-            
+                token = json["token"].AsString;
+                Debug.Log("token là " + token);
                 StartCoroutine(BeginLoad());
                // SGSceneManager.LoadScene("SampleScene");
                 MenuLogin.SetActive(false);

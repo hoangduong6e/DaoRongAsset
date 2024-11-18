@@ -13,6 +13,8 @@ using System.IO;
 using System;
 
 using Random = UnityEngine.Random;
+using Unity.VisualScripting.Antlr3.Runtime;
+using UnityEditor.PackageManager.Requests;
 
 public class NetworkManager : MonoBehaviour
 {
@@ -67,8 +69,10 @@ public class NetworkManager : MonoBehaviour
         {
             if(!setisSend) StartCoroutine(StartSend());
             //crgame.OnThongBao(true, "Đang Mời...", false);
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "SendRequest/data/" + data + "/key/" + LoginFacebook.ins.key+"/taikhoan/"+LoginFacebook.ins.id);
+         //   UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "SendRequest/data/" + data + "/key/" + LoginFacebook.ins.key+"/taikhoan/"+LoginFacebook.ins.id);
+            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "SendRequest/data/" + data + "/taikhoan/"+LoginFacebook.ins.id);
             www.downloadHandler = new DownloadHandlerBuffer();
+            www.SetRequestHeader("Authorization", "Bearer " + LoginFacebook.token);
             yield return www.SendWebRequest();
 
             if (www.result != UnityWebRequest.Result.Success)
@@ -895,12 +899,12 @@ public class NetworkManager : MonoBehaviour
             CrGame.ins.txtDanhVong.text = CatDauNgoacKep(e.data["updatedanhvong"].ToString());
             LoginFacebook.ins.StartCoroutine(delayHienToMoney(CrGame.ins.txtDanhVong.gameObject));
         }
-        else if(e.data["token"])
-        {
-            string token = CatDauNgoacKep(e.data["token"].ToString());
-            debug.Log("token: " + token);
-            socket.Emit("authenticate",JSONObject.CreateStringObject(LoginFacebook.ins.key));
-        }
+        //else if(e.data["token"])
+        //{
+        //    string token = CatDauNgoacKep(e.data["token"].ToString());
+        //    debug.Log("token: " + token);
+        //    socket.Emit("authenticate",JSONObject.CreateStringObject(LoginFacebook.token));
+        //}
         if (e.data["updateNoKhi"])
         {
             GiaoDienPVP.ins.OSkill.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().fillAmount = float.Parse(CatDauNgoacKep(e.data["updateNoKhi"].ToString())) / 150;
@@ -1849,7 +1853,10 @@ public class NetworkManager : MonoBehaviour
     }
     public void PlayerOnline()
     {
-        socket.Emit("Login", JSONObject.CreateStringObject(LoginFacebook.ins.id));
+
+         socket.Emit("Login", JSONObject.CreateStringObject(LoginFacebook.ins.id));
+      
+        
     }
     void OnlaiThanhcong(SocketIOEvent e)
     {
@@ -2795,6 +2802,15 @@ public class NetworkManager : MonoBehaviour
                     friend.LoadImage("avt", CatDauNgoacKep(e.data["coban"]["avtsudung"].ToString()), CrGame.ins.FB_useerDp);
                     //    friend.LoadImage("avt", CatDauNgoacKep(e.data["coban"]["avtsudung"].ToString()),CrGame.ins.FB_useerDp);
                     AudioManager.SetSoundBg("nhacnen0");
+
+                    //for (int i = 0; i < 2; i++)
+                    //{
+                    //    int index = i; // Đảm bảo biến i không bị thay đổi trong lambda
+                    //    System.Threading.Tasks.Task.Run(() =>
+                    //    {
+                    //        socket.Emit("test", JSONObject.CreateStringObject("test lan thu " + index));
+                    //    });
+                    //}
                     //Destroy(GameObject.Find("SoundBg"));
                 }
             }
