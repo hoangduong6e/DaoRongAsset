@@ -68,7 +68,7 @@ public class NetworkManager : MonoBehaviour
             if(!setisSend) StartCoroutine(StartSend());
             //crgame.OnThongBao(true, "Đang Mời...", false);
          //   UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "SendRequest/data/" + data + "/key/" + LoginFacebook.ins.key+"/taikhoan/"+LoginFacebook.ins.id);
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "SendRequest/data/" + data + "/taikhoan/"+LoginFacebook.ins.id);
+            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "RequestSend23/data/" + data + "/taikhoan/"+LoginFacebook.ins.id);
             www.downloadHandler = new DownloadHandlerBuffer();
             www.SetRequestHeader("Authorization", "Bearer " + LoginFacebook.token);
             yield return www.SendWebRequest();
