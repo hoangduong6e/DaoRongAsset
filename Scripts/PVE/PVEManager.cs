@@ -1,7 +1,9 @@
 ﻿using EZ_Pooling;
 using SimpleJSON;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class PVEManager : MonoBehaviour
 {
@@ -32,35 +34,85 @@ public class PVEManager : MonoBehaviour
             //chiso.ImgHp.sprite = VienChinh.vienchinh.thanhmaudo;
         }
     }
-    public static Vector3 GetRandomTFtrieuHoi(string team, string Idlle)
-    {
-        Vector3 randomvec = new Vector3();
-        if (team == "TeamXanh")
+    //public static Vector3 GetRandomTFtrieuHoi(string team, string Idlle,DraHeight draheight)
+    //{
+    //    Vector3 randomvec = new Vector3();
+    //    if (team == "TeamXanh")
+    //    {
+    //        if (Idlle == "Idlle")
+    //        {
+    //            randomvec = ;
+    //        }   
+    //        else
+    //        {
+    //            randomvec = new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0.5f,1.5f), VienChinh.vienchinh.TruXanh.transform.position.z);
+    //        }
+    //    }
+    //    else
+    //    {
+    //        float xcong = 1.8f;
+    //        //if (VienChinh.vienchinh.chedodau == "Online") xcong += 2;
+    //        if (Idlle == "Idlle")
+    //        {
+    //            randomvec = new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - xcong, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-3f,-1), VienChinh.vienchinh.TruDo.transform.position.z);
+    //        }
+    //        else
+    //        {
+    //            randomvec = new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - xcong, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0.5f,1.5f), VienChinh.vienchinh.TruDo.transform.position.z);
+    //        }    
+    //    }
+    //    return randomvec;
+    //}
+
+   private static readonly Dictionary<string, Dictionary<string, Dictionary<DraHeight, Func<Vector3>>>> VecHeight =
+        new Dictionary<string, Dictionary<string, Dictionary<DraHeight, Func<Vector3>>>>
         {
-            if (Idlle == "Idlle")
             {
-                randomvec = new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-1, -3f), VienChinh.vienchinh.TruXanh.transform.position.z);
-            }   
-            else
+                "TeamXanh", new Dictionary<string, Dictionary<DraHeight, Func<Vector3>>>
+                {
+                    {
+                        "Idlle", new Dictionary<DraHeight, Func<Vector3>>
+                        {
+                            { DraHeight.DEFAULT, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-3f,-1f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                         
+                        }
+                    },
+                    {
+                        "Flying", new Dictionary<DraHeight, Func<Vector3>>
+                        {
+                            { DraHeight.DEFAULT, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0.2f,0.8f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.HacLong, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(2.3f,2.5f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.LMX_PH_2DAU, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0f,0.5f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.RongLua, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0.3f,1f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+
+                        }
+                    }
+                }
+            },
             {
-                randomvec = new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-1, -3f) + 3, VienChinh.vienchinh.TruXanh.transform.position.z);
+                "TeamDo", new Dictionary<string, Dictionary<DraHeight, Func<Vector3>>>
+                {
+                    {
+                        "Idlle", new Dictionary<DraHeight, Func<Vector3>>
+                        {
+                            { DraHeight.DEFAULT, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-3f,-1), VienChinh.vienchinh.TruDo.transform.position.z) },
+
+                        }
+                    },
+                    {
+                        "Flying", new Dictionary<DraHeight, Func<Vector3>>
+                        {
+                            { DraHeight.DEFAULT, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0.2f,0.8f), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.HacLong, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(2.3f,2.5f), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.LMX_PH_2DAU, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0f,0.5f), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.RongLua, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0.3f,1f), VienChinh.vienchinh.TruDo.transform.position.z) },
+
+                        }
+                    }
+                }
             }
-        }
-        else
-        {
-            float xcong = 1.8f;
-            //if (VienChinh.vienchinh.chedodau == "Online") xcong += 2;
-            if (Idlle == "Idlle")
-            {
-                randomvec = new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - xcong, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-1, -3f), VienChinh.vienchinh.TruDo.transform.position.z);
-            }
-            else
-            {
-                randomvec = new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - xcong, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-1, -3f) + 3, VienChinh.vienchinh.TruDo.transform.position.z);
-            }    
-        }
-        return randomvec;
-    }
+        };
+
     public static void TrieuHoiDra(JSONObject data, string team)
     {
         GTrieuHoiDra(data, team);
@@ -70,10 +122,11 @@ public class PVEManager : MonoBehaviour
         string nameObject = data["nameobject"].str;
         //  debug.Log("rong1");
         // GameObject hieuung = Instantiate(vienchinh.HieuUngTrieuHoi, new Vector3(randomvec.x, 6, randomvec.z), Quaternion.identity) as GameObject;
-        GameObject rongtrieuhoi = Instantiate(Inventory.GetObjRong(nameObject + "2"), randomvec, Quaternion.identity);
+        GameObject rongtrieuhoi = Instantiate(Inventory.GetObjRong(nameObject + "2"),Vector3.zero, Quaternion.identity);
         SetScaleDragon(nameObject, byte.Parse(data["sao"].ToString()), rongtrieuhoi.transform);
         DraInstantiate draInstantiate = rongtrieuhoi.GetComponent<DraInstantiate>();
-        if(randomvec == default) randomvec = GetRandomTFtrieuHoi(team, draInstantiate.Idlle);
+
+        if(randomvec == default) randomvec = VecHeight[team][draInstantiate.Idlle][draInstantiate.draheight]();//GetRandomTFtrieuHoi(team, draInstantiate.Idlle,draInstantiate.draheight);
         rongtrieuhoi.transform.position = randomvec;
         /// rongtrieuhoi.transform.position = draInstantiate.PositionPVERandom(team);
         //debug.Log("rong3");
@@ -87,7 +140,7 @@ public class PVEManager : MonoBehaviour
         string id = data["id"].str;
 
         // DragonController dra = rongtrieuhoi.GetComponent<DragonController>();
-        //   debug.Log("rong6");
+        //   debug.Log("rong6");x
         // dra.tienhoa = byte.Parse(e.data["xanhtrieuhoi"]["tienhoa"].ToString());
         Transform tfteam = null;
         if (team == "TeamXanh")

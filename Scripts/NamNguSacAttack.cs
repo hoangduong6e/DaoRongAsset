@@ -125,6 +125,6 @@ public class NamNguSacAttack : DragonPVEController
     }
     private void OnDestroy()
     {
-        NguSacAttack.giapphantram -= 30;
+        if(NguSacAttack != null) NguSacAttack.giapphantram -= 30;
     }
 }

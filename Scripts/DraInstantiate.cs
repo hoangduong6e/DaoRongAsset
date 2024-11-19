@@ -1,15 +1,9 @@
-using SimpleJSON;
-using SocketIO;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
-using UnityEngine.U2D.Animation;
 using UnityEngine.UI;
-using static DragonPVEController;
 using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -18,6 +12,7 @@ using Random = UnityEngine.Random;
 public abstract class DraInstantiate : MonoBehaviour
 {
     public string nameSkill, Idlle;
+    public DraHeight draheight;
     public abstract void DraInsIsland(DataDragonIsland data);
     public void DraInsPVP(JSONObject e,string id)
     {
@@ -211,3 +206,11 @@ public class DataDragonIsland
         id = Id;
     }
 }
+public enum DraHeight// chiều cao của trục y của rồng trong trận đấu
+{
+    DEFAULT,
+    HacLong,
+    LMX_PH_2DAU,
+    RongLua
+}
+
