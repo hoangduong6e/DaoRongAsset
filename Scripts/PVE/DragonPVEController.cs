@@ -68,6 +68,8 @@ public abstract class DragonPVEController : MonoBehaviour
     public string idrong;
     public Team team;
     public bool thongke = true;
+    protected bool setAnim = true;
+    public bool walking = true;
     //private void Awake()
     //{
     //    ImgHp = ThanhMau.transform.GetChild(0).GetComponent<Image>();
@@ -123,13 +125,13 @@ public abstract class DragonPVEController : MonoBehaviour
         ABSAnimatorRun();
         stateAnimAttack = 0;
         stateAnimIdle = 0;
-        anim.Play(animplay);
+        if(setAnim) anim.Play(animplay);
         //  ReplayData.AddStateAnimator(gameObject.name, animplay);
     }    
     public void AnimatorAttack()
     {
         ABSAnimatorAttack();
-        anim.Play(animplay);
+        if (setAnim) anim.Play(animplay);
         // ReplayData.AddStateAnimator(gameObject.name,animplay);
     }
     public abstract void ABSAnimatorAttack();
@@ -144,7 +146,7 @@ public abstract class DragonPVEController : MonoBehaviour
             stateAnimAttack = 0;
         }
         AbsUpdateAnimIdle();
-        anim.Play(animplay);
+        if (setAnim) anim.Play(animplay);
     }
     public abstract void AbsUpdateAnimIdle();
     public void UpdateAnimAttack()

@@ -73,17 +73,19 @@ public class PVEManager : MonoBehaviour
                     {
                         "Idlle", new Dictionary<DraHeight, Func<Vector3>>
                         {
-                            { DraHeight.DEFAULT, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-3f,-1f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.DEFAULT, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-2.3f,-1f), VienChinh.vienchinh.TruXanh.transform.position.z) },
                          
                         }
                     },
                     {
                         "Flying", new Dictionary<DraHeight, Func<Vector3>>
                         {
-                            { DraHeight.DEFAULT, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0.2f,0.8f), VienChinh.vienchinh.TruXanh.transform.position.z) },
-                            { DraHeight.HacLong, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(2.3f,2.5f), VienChinh.vienchinh.TruXanh.transform.position.z) },
-                            { DraHeight.LMX_PH_2DAU, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0f,0.5f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.DEFAULT, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0f,0.5f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.HacLong, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(2.6f,2.9f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.LMX_PH_2DAU, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y +Random.Range(-0.3f,1.2f), VienChinh.vienchinh.TruXanh.transform.position.z) },
                             { DraHeight.RongLua, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0.3f,1f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.PH, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-0.3f,1.2f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight._2DAU, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y +Random.Range(-0.5f,0.8f), VienChinh.vienchinh.TruXanh.transform.position.z) },
 
                         }
                     }
@@ -95,17 +97,19 @@ public class PVEManager : MonoBehaviour
                     {
                         "Idlle", new Dictionary<DraHeight, Func<Vector3>>
                         {
-                            { DraHeight.DEFAULT, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-3f,-1), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.DEFAULT, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-2.3f,-1), VienChinh.vienchinh.TruDo.transform.position.z) },
 
                         }
                     },
                     {
                         "Flying", new Dictionary<DraHeight, Func<Vector3>>
                         {
-                            { DraHeight.DEFAULT, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0.2f,0.8f), VienChinh.vienchinh.TruDo.transform.position.z) },
-                            { DraHeight.HacLong, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(2.3f,2.5f), VienChinh.vienchinh.TruDo.transform.position.z) },
-                            { DraHeight.LMX_PH_2DAU, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0f,0.5f), VienChinh.vienchinh.TruDo.transform.position.z) },
-                            { DraHeight.RongLua, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0.3f,1f), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.DEFAULT, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0f,0.5f), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.HacLong, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(2.6f,2.9f), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.LMX_PH_2DAU, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y +Random.Range(-0.3f,1.2f), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.RongLua, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(1.3f,1.5f), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.PH, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-0.3f,1.2f), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight._2DAU, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + +Random.Range(-0.5f,0.8f), VienChinh.vienchinh.TruDo.transform.position.z) },
 
                         }
                     }
@@ -124,9 +128,23 @@ public class PVEManager : MonoBehaviour
         // GameObject hieuung = Instantiate(vienchinh.HieuUngTrieuHoi, new Vector3(randomvec.x, 6, randomvec.z), Quaternion.identity) as GameObject;
         GameObject rongtrieuhoi = Instantiate(Inventory.GetObjRong(nameObject + "2"),Vector3.zero, Quaternion.identity);
         SetScaleDragon(nameObject, byte.Parse(data["sao"].ToString()), rongtrieuhoi.transform);
+   
+
+
         DraInstantiate draInstantiate = rongtrieuhoi.GetComponent<DraInstantiate>();
 
-        if(randomvec == default) randomvec = VecHeight[team][draInstantiate.Idlle][draInstantiate.draheight]();//GetRandomTFtrieuHoi(team, draInstantiate.Idlle,draInstantiate.draheight);
+
+        //Transform child0 = rongtrieuhoi.transform.GetChild(0);
+        //Transform child1 = rongtrieuhoi.transform.GetChild(1);
+        //Vector3 vec1 = child0.localScale;
+        //Vector3 vec2 = child1.localScale;
+        //vec1 = new Vector3(vec1.x * 1.07f, vec1.y * 1.07f, vec1.z);
+        //vec2 = new Vector3(vec1.x * 1.07f, vec1.y * 1.07f, vec1.z);
+
+        //child0.transform.localScale = vec1;
+        //child1.transform.localScale = vec2;
+
+        if (randomvec == default) randomvec = VecHeight[team][draInstantiate.Idlle][draInstantiate.draheight]();//GetRandomTFtrieuHoi(team, draInstantiate.Idlle,draInstantiate.draheight);
         rongtrieuhoi.transform.position = randomvec;
         /// rongtrieuhoi.transform.position = draInstantiate.PositionPVERandom(team);
         //debug.Log("rong3");
@@ -193,6 +211,18 @@ public class PVEManager : MonoBehaviour
                 rong.transform.GetChild(1).transform.localScale = Vector3.one;
             }
         }
+        //else
+        //{
+        //    Transform child0 = rong.transform.GetChild(0);
+        //    Transform child1 = rong.transform.GetChild(1);
+        //    Vector3 vec1 = child0.localScale;
+        //    Vector3 vec2 = child1.localScale;
+        //    vec1 = new Vector3(vec1.x * 1.2f, vec1.y * 1.2f, vec1.z);
+        //    vec2 = new Vector3(vec1.x * 1.2f, vec1.y * 1.2f, vec1.z);
+
+        //    child0.transform.localScale = vec1;
+        //    child1.transform.localScale = vec2;
+        //}
     }
 
     public static GameObject TrieuHoiDraReplay(JSONNode data)
@@ -204,8 +234,12 @@ public class PVEManager : MonoBehaviour
         // GameObject hieuung = Instantiate(vienchinh.HieuUngTrieuHoi, new Vector3(randomvec.x, 6, randomvec.z), Quaternion.identity) as GameObject;
         GameObject rongtrieuhoi = Instantiate(Inventory.GetObjRong(nameObject + "2"), new Vector3(data["x"].AsFloat, data["y"].AsFloat,90), Quaternion.identity);
         SetScaleDragon(nameObject, byte.Parse(data["sao"].AsString), rongtrieuhoi.transform);
+
+
         //debug.Log("rong3");
         Animator anim = rongtrieuhoi.GetComponent<Animator>();
+
+
         //debug.Log("rong4");
         //if (anim.runtimeAnimatorController == null)
         //{
@@ -266,15 +300,19 @@ public class PVEManager : MonoBehaviour
             float tamdanhxa = dragonPVEController.tamdanhxa;
             float speed = dragonPVEController.speed * Time.deltaTime;
 
-            if (parent.position.x > targetPosition.x + tamdanhxa)
+            if(dragonPVEController.walking)
             {
-                parent.position += Vector3.left * speed;
-                dragonPVEController.AnimatorRun();
+                if (parent.position.x > targetPosition.x + tamdanhxa)
+                {
+                    parent.position += Vector3.left * speed;
+                    dragonPVEController.AnimatorRun();
+                }
+                else
+                {
+                    dragonPVEController.AnimatorAttack();
+                }
             }
-            else
-            {
-                dragonPVEController.AnimatorAttack();
-            }
+         
         }
 
         void MoveTeamDo()
@@ -284,16 +322,19 @@ public class PVEManager : MonoBehaviour
             Vector3 targetPosition = dragonPVEController.Target.position;
             float tamdanhxa = dragonPVEController.tamdanhxa;
             float speed = dragonPVEController.speed * Time.deltaTime;
+            if (dragonPVEController.walking)
+            {
+                if (parent.position.x < targetPosition.x - tamdanhxa)
+                {
+                    parent.position += Vector3.right * speed;
+                    dragonPVEController.AnimatorRun();
+                }
+                else
+                {
+                    dragonPVEController.AnimatorAttack();
+                }
+            }
 
-            if (parent.position.x < targetPosition.x - tamdanhxa)
-            {
-                parent.position += Vector3.right * speed;
-                dragonPVEController.AnimatorRun();
-            }
-            else
-            {
-                dragonPVEController.AnimatorAttack();
-            }
         }
 
         void Record()

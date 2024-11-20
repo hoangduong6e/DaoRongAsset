@@ -46,7 +46,7 @@ AnimatorStateMachine:
     m_Position: {x: 510, y: 190, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -3733820302309454333}
-    m_Position: {x: 500, y: 250, z: 0}
+    m_Position: {x: 680, y: 70, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 8427973903165328839}
     m_Position: {x: 630, y: -50, z: 0}
@@ -55,7 +55,10 @@ AnimatorStateMachine:
     m_Position: {x: 250, y: 200, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -6842185379377949816}
-    m_Position: {x: 230, y: 310, z: 0}
+    m_Position: {x: 950, y: 0, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -3239073444559951703}
+    m_Position: {x: 950, y: 80, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -63,7 +66,7 @@ AnimatorStateMachine:
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 50, y: 20, z: 0}
   m_EntryPosition: {x: 50, y: 120, z: 0}
-  m_ExitPosition: {x: 800, y: 120, z: 0}
+  m_ExitPosition: {x: 960, y: 170, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
   m_DefaultState: {fileID: 6905341499222361293}
 --- !u!1102 &-5939208256459731723
@@ -140,7 +143,33 @@ AnimatorState:
   m_TimeParameterActive: 0
   m_Motion: {fileID: 7400000, guid: e73e083c8df56934ba38f39950f3985f, type: 2}
   m_Tag: 
-  m_SpeedParameter: speedRun
+  m_SpeedParameter: speedAttack
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
+--- !u!1102 &-3239073444559951703
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Attack2
+  m_Speed: 0.8
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 1
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 7400000, guid: e73e083c8df56934ba38f39950f3985f, type: 2}
+  m_Tag: 
+  m_SpeedParameter: speedAttack
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 

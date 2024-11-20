@@ -18,7 +18,7 @@ public class DraUpdateAnimator : MonoBehaviour
         Transform vongtron = tf0.transform.Find("vong tron ");
         if(vongtron != null) vongtron.GetComponent<Renderer>().material.shader = Shader.Find("Shader Graphs/Glow");
     }
-    private void Start()
+    protected virtual void Start()
     {
         Transform bong = transform.GetChild(0).transform.Find("bong");
         if (bong != null) bongrong = bong.gameObject;

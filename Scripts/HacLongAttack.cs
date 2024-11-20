@@ -1,19 +1,24 @@
 ﻿
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class HacLongAttack : DragonPVEController
 {
 
-    private bool hoisinh = true;
-    private bool daylui = true;
+    private byte hoisinh = 0;
+    private bool CuongHoa = false;
     protected override void ABSAwake()
     {
 
     }
     public override void AbsStart()
     {
-        skillObj[1].GetComponent<SkillDraController>().skillmoveok += SkillMoveOk;
+        for (int i = 1; i < 6; i++)
+        {
+            skillObj[i].GetComponent<SkillDraController>().skillmoveok += SkillMoveOk;
+        }
         //   Transform parent = transform.parent;
         //   parent.transform.position = new Vector3(transform.position.x, transform.position.y + 3);
     }
@@ -26,11 +31,15 @@ public class HacLongAttack : DragonPVEController
     }
     public override void ChoangABS(float giay = 0.2f)
     {
-        ChoangDefault(giay);
+       // ChoangDefault(giay);
     }
     protected override void Updatee()
     {
+        if (Input.GetKeyUp(KeyCode.J))
+        {
+            if(Random.Range(0,100) > 50) CuongNo();
 
+        }    
     }
     public override void SetHp(float fillhp, bool setonline = false)
     {
@@ -41,9 +50,9 @@ public class HacLongAttack : DragonPVEController
         //MatMauDefault(maumat, cs);
         if (GetHpTru(maumat, cs, setonline) <= 0)
         {
-            if (hoisinh)
+            if (hoisinh < 2)
             {
-                hoisinh = false;
+                hoisinh += 1;
                 hp = Maxhp;
                 ImgHp.fillAmount = 1;
                 PVEManager.InstantiateHieuUngChu("hoisinh", transform);
@@ -58,44 +67,26 @@ public class HacLongAttack : DragonPVEController
     public override void SkillMoveOk()
     {
         if (Target == null) return;
-        List<Transform> ronggan = new List<Transform>(PVEManager.GetDraDungTruoc(3, Target.transform.parent.transform, new Vector2(5, 5)));
+
         float damee = dame;
-        if (CrGame.ins.NgayDem == "Ngay")
+        if (Random.Range(1, 100) <= chimang)
         {
-            //      debug.Log("Phượng hoàng ban ngày + 50% sức đánh");
-            damee *= 1.5f; //Cộng 50% sức đánh
+            damee *= 5;
+            PVEManager.InstantiateHieuUngChu("chimang", transform);
         }
 
-        // bool daylui = PVEManager.GetTyLeDayLui(saorong);
-        bool chimanggg = false;
-        for (int i = 0; i < ronggan.Count; i++)
+        if (Target.name != "trudo" && Target.name != "truxanh")
         {
-            if (ronggan[i].name != "trudo" && ronggan[i].name != "truxanh")
-            {
-                DragonPVEController chisodich = ronggan[i].transform.Find("SkillDra").GetComponent<DragonPVEController>();
+            DragonPVEController dra = Target.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+            dra.MatMau(damee, this);
+            //dataLamCham data = new dataLamCham(5, "caylamcham");
 
-                if (!chimanggg)
-                {
-                    if (Random.Range(1, 100) <= chimang)
-                    {
-                        chimanggg = true;
-                        chisodich.MatMau(damee * 5, this);
-                        PVEManager.InstantiateHieuUngChu("chimang", transform);
-                    }
-                }
-
-                chisodich.MatMau(damee, this);
-                if (daylui) chisodich.DayLuiABS();
-
-            }
-            else
-            {
-                KillTru();
-            }
+          //  dra.LamChamABS(data);
         }
-
-        //gameObject.SetActive(false);
-
+        else
+        {
+            KillTru();
+        }
     }
     public override void ABSAnimatorRun()
     {
@@ -105,7 +96,8 @@ public class HacLongAttack : DragonPVEController
     {
         if (stateAnimAttack < maxStateAttack)
         {
-            animplay = "Attack";
+            if (CuongHoa) animplay = "Attack2";
+            else animplay = "Attack";
         }
         else
         {
@@ -119,11 +111,10 @@ public class HacLongAttack : DragonPVEController
     public override void ABSAnimWin()
     {
         animplay = "Flying";
-
     }
     public override void LamChamABS(dataLamCham data)
     {
-        LamChamDefault(data);
+       // LamChamDefault(data);
     }
     public override void DayLuiABS()
     {
@@ -131,27 +122,57 @@ public class HacLongAttack : DragonPVEController
     }
     public override void AbsUpdateAnimAttack()
     {
-        if (stateAnimAttack == 1 || stateAnimAttack == 3)
+        if (CuongHoa)
         {
-            if (stateAnimAttack == 3) daylui = true;
-            else daylui = false;
-            for (int i = 0; i < skillObj.Length; i++)
+            for (int i = 2; i < 6; i++)
             {
                 if (!skillObj[i].gameObject.activeSelf)
                 {
                     if (Target == null) return;
                     ReplayData.AddAttackTarget(transform.parent.name, i.ToString(), "dungdau");
-                    //Vector3 newvec = transform.position;
-                 //   newvec.y += 1;
-                   // skillObj[i].transform.position = newvec;
                     skillObj[i].SetActive(true);
                     break;
                 }
             }
+
         }
+        else
+        {
+            if (stateAnimAttack == 1 || stateAnimAttack == 4)
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    if (!skillObj[i].gameObject.activeSelf)
+                    {
+                        if (Target == null) return;
+                        ReplayData.AddAttackTarget(transform.parent.name, i.ToString(), "dungdau");
+                        skillObj[i].SetActive(true);
+                        break;
+                    }
+                }
+            }
+        }
+       
     }
     public override void BienCuuABS(float time)
     {
         BienCuuDefault(time);
     }
+    public void CuongNo()
+    {
+        setAnim = false;
+        walking = false;
+        animplay = "CuongNo";
+        anim.Play("CuongNo");
+        CuongHoa = true;
+        stateAnimAttack = 0;
+    }
+    public void UpdateAnimCuongNo()
+    {
+        Debug.Log("UpdateAnimCuongNo");
+        setAnim = true;
+        walking = true;
+        anim.Play(animplay);
+    }
+
 }

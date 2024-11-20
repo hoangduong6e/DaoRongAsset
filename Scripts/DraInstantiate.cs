@@ -13,6 +13,18 @@ public abstract class DraInstantiate : MonoBehaviour
 {
     public string nameSkill, Idlle;
     public DraHeight draheight;
+    public void TangScaleRong(Transform rongtrieuhoi)
+    {
+        Transform child0 = rongtrieuhoi.transform.GetChild(0);
+        Transform child1 = rongtrieuhoi.transform.GetChild(1);
+        Vector3 vec1 = child0.localScale;
+        Vector3 vec2 = child1.localScale;
+        vec1 = new Vector3(vec1.x * 1.07f, vec1.y * 1.07f, vec1.z);
+        vec2 = new Vector3(vec1.x * 1.07f, vec1.y * 1.07f, vec1.z);
+
+        child0.transform.localScale = vec1;
+        child1.transform.localScale = vec2;
+    }    
     public abstract void DraInsIsland(DataDragonIsland data);
     public void DraInsPVP(JSONObject e,string id)
     {
@@ -25,7 +37,7 @@ public abstract class DraInstantiate : MonoBehaviour
         DragonPVEController dragonPVEController = SkillDra.GetComponent<DragonPVEController>();
 
         GetComponent<DraUpdateAnimator>().DragonPVEControllerr = dragonPVEController;
-
+        TangScaleRong(transform);
 
         dragonPVEController.ParseData(e);
         PVEManager.GetScale(transform);
@@ -49,7 +61,7 @@ public abstract class DraInstantiate : MonoBehaviour
         SkillDra.name = "SkillDra";
         DragonPVEController dragonPVEController = SkillDra.GetComponent<DragonPVEController>();
         GetComponent<DraUpdateAnimator>().DragonPVEControllerr = dragonPVEController;
-
+        TangScaleRong(transform);
 
         dragonPVEController.ParseData(e);
         PVEManager.GetScale(transform);
@@ -82,7 +94,10 @@ public abstract class DraInstantiate : MonoBehaviour
         //replayDra.ParseData();
         PVEManager.GetScale(transform);
 
+        TangScaleRong(transform);
+
         SetScaleSkill(dragonPVEController.skillObj);
+
 
         if (transform.parent.name == "TeamDo" && Setting.cauhinh == CauHinh.CauHinhCao)
         {
@@ -211,6 +226,8 @@ public enum DraHeight// chiều cao của trục y của rồng trong trận đ�
     DEFAULT,
     HacLong,
     LMX_PH_2DAU,
-    RongLua
+    RongLua,
+    PH,
+    _2DAU
 }
 
