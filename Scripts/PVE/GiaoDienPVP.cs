@@ -28,11 +28,49 @@ public class GiaoDienPVP : MonoBehaviour
     public GameObject btnTangToc,hienPlayer;
     private bool thanhanh = false;
     public MinimapController minimap;
+    [SerializeField]
+    GameObject paneltoi;
 
-    
+    public Transform[] objtatkhitoi; // Mảng chứa các đối tượng
+    private bool[] initialStates;    // Mảng lưu trạng thái ban đầu
+
+    public bool SetPanelToi { set { 
+            if(value)
+            {
+                for (int i = 0; i < objtatkhitoi.Length; i++)
+                {
+                    if (objtatkhitoi[i] != null)
+                    {
+                        initialStates[i] = objtatkhitoi[i].gameObject.activeSelf;
+                    }
+                }
+                foreach (Transform obj in objtatkhitoi)
+                {
+                    if (obj != null)
+                    {
+                        obj.gameObject.SetActive(false);
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < objtatkhitoi.Length; i++)
+                {
+                    if (objtatkhitoi[i] != null)
+                    {
+                        objtatkhitoi[i].gameObject.SetActive(initialStates[i]);
+                    }
+                }
+            }
+            paneltoi.SetActive(value);
+        } }
+
+
     void Awake()
     {
+        paneltoi.transform.SetParent(GameObject.FindGameObjectWithTag("canvasGame").transform);
         ins = this;
+        initialStates = new bool[objtatkhitoi.Length];
     }
     private void OnEnable()
     {
@@ -255,6 +293,7 @@ public class GiaoDienPVP : MonoBehaviour
         //timeskill[objskill.transform.GetSiblingIndex()] = 15;
         //HieuUngSkill("Skill" + objskill.name);
     }
+
     public void XemNoKhi()
     {
         GameObject trencung = GameObject.FindGameObjectWithTag("trencung");
@@ -423,6 +462,10 @@ public class GiaoDienPVP : MonoBehaviour
                 break;
             }
         }
+    }
+    private void OnDestroy()
+    {
+        Destroy(paneltoi);
     }
     //private void ThaNhanh()
     //{

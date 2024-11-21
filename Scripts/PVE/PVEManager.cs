@@ -550,6 +550,65 @@ public class PVEManager : MonoBehaviour
         return dradungtruoc;
     }
 
+
+    public static Transform GetRongManhNhat(Team teamMinh)
+    {
+        float hpWeight = 50f; // Trọng số ưu tiên HP so với dame để lấy rồng mạnh nhất
+        List<Transform> strongestDragons = new List<Transform>();
+        float maxCombinedStrength = 0;
+
+        // Duyệt qua các con rồng trong TeamXanh
+        Transform TeamTf = null;
+        if(teamMinh == Team.TeamXanh)
+        {
+            TeamTf = VienChinh.vienchinh.TeamDo.transform;
+        }    
+        else TeamTf = VienChinh.vienchinh.TeamXanh.transform;
+        for (int i = 1; i < TeamTf.childCount; i++)
+        {
+            // Tìm DragonPVEController
+            DragonPVEController dra = TeamTf.GetChild(i)
+                .transform.Find("SkillDra")
+                .GetComponent<DragonPVEController>();
+
+            float hp = dra.hp;
+            float maxhp = dra.Maxhp;
+            float dame = dra.dame;
+
+            // Kiểm tra nếu máu >= 50%
+            if (hp >= maxhp * 0.5f)
+            {
+                // Tính sức mạnh tổng hợp
+                float combinedStrength = dame + (hp / maxhp) * hpWeight;
+
+                // So sánh chỉ số sức mạnh
+                if (combinedStrength > maxCombinedStrength)
+                {
+                    // Nếu mạnh hơn, làm mới danh sách
+                    strongestDragons.Clear();
+                    strongestDragons.Add(dra.transform.parent);
+                    maxCombinedStrength = combinedStrength;
+                }
+                else if (combinedStrength == maxCombinedStrength)
+                {
+                    // Nếu bằng sức mạnh cao nhất, thêm vào danh sách
+                    strongestDragons.Add(dra.transform.parent);
+                }
+            }
+        }
+
+        // Trả về ngẫu nhiên một Transform trong danh sách mạnh nhất
+        if (strongestDragons.Count > 0)
+        {
+            int randomIndex = Random.Range(0, strongestDragons.Count);
+            return strongestDragons[randomIndex];
+        }
+
+        // Nếu không tìm thấy con rồng nào, trả về null
+        return null;
+    }
+
+
     //public static void InstantiateHieuUngChu(string nameeff, Transform tfins,float destroy = 2f,bool setOnline = false)
     //{
     //    if(nameeff == "chimang")

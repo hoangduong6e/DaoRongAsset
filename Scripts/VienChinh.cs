@@ -3,15 +3,13 @@ using SocketIO;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+using Unity.Collections;
 using Unity.Mathematics;
-using Unity.VisualScripting;
+using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Networking;
-using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public enum CheDoDau
 {
@@ -309,7 +307,7 @@ public class VienChinh : MonoBehaviour
             Destroy(TeamXanh.transform.GetChild(i).gameObject);
         }
         yield return new WaitForSeconds(2f);
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 2; i++)
         {
             timeskill[i] = 10;
         }
@@ -902,9 +900,32 @@ public class VienChinh : MonoBehaviour
     public float smoothing = 0.1f; // Hệ số giảm chấn
     private Vector3 velocity = Vector3.zero;
     private bool isDragging = false;
-  
+    public IEnumerator Shake(float duration = 0.12f, float magnitude = 0.08f)
+    {
+        Vector3 originalPosition = CrGame.ins.transform.localPosition; // Lưu vị trí gốc của camera
+        float elapsed = 0.0f;
+
+        while (elapsed < duration)
+        {
+            float x = Random.Range(-1f, 1f) * magnitude;
+            float y = Random.Range(-1f, 1f) * magnitude;
+
+            CrGame.ins.transform.localPosition = new Vector3(originalPosition.x + x, originalPosition.y + y, originalPosition.z);
+
+            elapsed += Time.deltaTime;
+
+            yield return null; // Đợi đến khung hình tiếp theo
+        }
+
+        CrGame.ins.transform.localPosition = originalPosition; // Trả camera về vị trí gốc
+    }
+
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Space)) // Nhấn phím Space để thử nghiệm
+        {
+            StartCoroutine(Shake()); // Rung màn hình trong 0.2 giây với cường độ 0.1
+        }
         //if(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == null)
         //{
         //    if (Input.GetMouseButtonDown(0))
@@ -940,21 +961,27 @@ public class VienChinh : MonoBehaviour
             }
         }
 
+        var oSkillTransform = GiaoDienPVP.ins.OSkill.transform.GetChild(1);
+
         for (int i = 0; i < 3; i++)
         {
+            var skillButton = oSkillTransform.GetChild(i).GetComponent<Button>();
+            var child1 = oSkillTransform.GetChild(i).transform.GetChild(1);
+            var imgthanhcho = child1.GetComponent<Image>();
+            var textComponent = child1.transform.GetChild(0).GetComponent<Text>();
+
             if (timeskill[i] > 0)
             {
                 timeskill[i] -= Time.deltaTime;
-                GiaoDienPVP.ins.OSkill.transform.GetChild(1).GetChild(i).GetComponent<Button>().interactable = false;
-                Image imgthanhcho = GiaoDienPVP.ins.OSkill.transform.GetChild(1).GetChild(i).transform.GetChild(1).GetComponent<Image>();
+                skillButton.interactable = false;
                 imgthanhcho.gameObject.SetActive(true);
-                GiaoDienPVP.ins.OSkill.transform.GetChild(1).GetChild(i).transform.GetChild(1).transform.GetChild(0).GetComponent<Text>().text = Math.Round(timeskill[i], 1).ToString();
+                textComponent.text = Math.Round(timeskill[i], 1).ToString();
                 imgthanhcho.fillAmount = timeskill[i] / 15;
             }
             else
             {
-                GiaoDienPVP.ins.OSkill.transform.GetChild(1).GetChild(i).GetComponent<Button>().interactable = true;
-                GiaoDienPVP.ins.OSkill.transform.GetChild(1).GetChild(i).transform.GetChild(1).gameObject.SetActive(false);
+                skillButton.interactable = true;
+                imgthanhcho.gameObject.SetActive(false);
             }
         }
     }
@@ -1090,7 +1117,115 @@ public class VienChinh : MonoBehaviour
         gameObject.SetActive(false);
         AllMenu.ins.menu["GiaoDienPVP"].SetActive(false);
     }
-  
+
+
+  public  IEnumerator CreateHieuUngSkillsBuff(global::Team team,string nameskill)
+    {
+        // Tải prefab hiệu ứng
+        GameObject objskill = Resources.Load("GameData/Skill/" + nameskill) as GameObject;
+        if (objskill == null)
+        {
+            Debug.LogError("Không tìm thấy objskill!");
+            yield break;
+        }
+
+        Transform startPoint = null;
+
+        // Xác định điểm bắt đầu dựa trên team
+        if (team == global::Team.TeamXanh)
+        {
+            startPoint = VienChinh.vienchinh.TruXanh.transform;
+        }
+        else
+        {
+            startPoint = VienChinh.vienchinh.TruDo.transform;
+        }
+
+        // Kiểm tra startPoint
+        if (startPoint == null)
+        {
+            Debug.LogError("StartPoint không hợp lệ!");
+            yield break;
+        }
+
+        // Hiển thị panel
+        GiaoDienPVP.ins.SetPanelToi = true;
+
+        // Lấy vị trí động của muctieu
+        Vector3 endPosition = (team == global::Team.TeamXanh)
+            ? VienChinh.vienchinh.muctieuxanh.transform.position
+            : VienChinh.vienchinh.muctieudo.transform.position;
+
+
+        endPosition = new Vector3(endPosition.x, endPosition.y, startPoint.transform.position.z);
+
+        Debug.Log($"StartPoint: {startPoint.position}, EndPosition: {endPosition}");
+
+        // Tính khoảng cách và số hiệu ứng
+        float distance = Vector3.Distance(startPoint.position, endPosition);
+
+        // Xử lý ngoại lệ cho distance
+        //if (distance > 30f)
+        //{
+        //    Debug.LogWarning("Khoảng cách quá lớn, giới hạn lại!");
+        //    distance = 30f; // Giới hạn khoảng cách tối đa
+        //}
+
+        int skillCount = Mathf.Max(Mathf.FloorToInt(distance / 3f), 1); // Ít nhất 1 hiệu ứng
+
+        Debug.Log($"Distance: {distance}, SkillCount: {skillCount}");
+
+        // Reset các hiệu ứng cũ (nếu cần)
+        foreach (Transform child in startPoint)
+        {
+            if (child.name.Contains("HapHuyetHacLong"))
+            {
+                Destroy(child.gameObject);
+            }
+        }
+
+        if (skillCount == 1)
+        {
+            // Nếu chỉ có 1 hiệu ứng, đặt nó ở giữa
+            Vector3 middlePosition = (startPoint.position + endPosition) / 2;
+            middlePosition.y = startPoint.position.y; // Giữ nguyên trục Y
+
+            GameObject hieuung = Instantiate(objskill, middlePosition, Quaternion.identity);
+            hieuung.name = "HapHuyetHacLong";
+            hieuung.transform.SetParent(startPoint); // Gắn vào trụ để quản lý hierarchy
+            hieuung.SetActive(true);
+
+            Destroy(hieuung, 1f); // Tự động hủy sau 1 giây
+        }
+        else
+        {
+            // Tạo nhiều hiệu ứng
+            for (int i = 0; i < skillCount; i++)
+            {
+                float t = i / (float)(skillCount - 1); // Giá trị từ 0 đến 1
+                Vector3 spawnPosition = Vector3.Lerp(startPoint.position, endPosition, t);
+
+                spawnPosition.y = startPoint.position.y + 2; // Giữ nguyên trục Y
+
+                GameObject hieuung = Instantiate(objskill, spawnPosition, Quaternion.identity);
+                hieuung.name = "HapHuyetHacLong";
+                hieuung.transform.SetParent(startPoint); // Gắn vào trụ để quản lý hierarchy
+                hieuung.SetActive(true);
+
+                if (i % 2 == 0)
+                {
+                    StartCoroutine(VienChinh.vienchinh.Shake());
+                }
+
+                Destroy(hieuung, 1.5f);
+
+                yield return new WaitForSeconds(0.2f); // Delay trước khi tạo hiệu ứng tiếp theo
+            }
+        }
+
+        // Ẩn panel
+        GiaoDienPVP.ins.SetPanelToi = false;
+    }
 
     public GameObject InstantiateHieuUngSkill(string nameSkill,string team = "TeamDo")
     {
@@ -1098,15 +1233,8 @@ public class VienChinh : MonoBehaviour
         ReplayData.AddHieuUngSkill(nameSkill);
         if (nameSkill == "SkillSamNo")
         {
-            GameObject Team = TeamXanh;
-            if (team != "TeamDo") Team = TeamDo;
-
-            int giua = Team.transform.childCount / 2;
-            GameObject hieuung = Instantiate(objskill, transform.position, Quaternion.identity);
-            hieuung.transform.SetParent(TruXanh.transform);
-            hieuung.transform.position = new Vector3(Team.transform.GetChild(giua).transform.position.x, Team.transform.GetChild(giua).transform.position.y + UnityEngine.Random.Range(3, 4));
-            hieuung.SetActive(true);
-            Destroy(hieuung, 2f);
+            string team_ = (team == "TeamDo") ? "TeamXanh" : "TeamDo";
+          StartCoroutine(CreateHieuUngSkillsBuff((Team)Enum.Parse(typeof(Team), team_), "SkillSamNo"));
 
         }
         else if (nameSkill == "SkillDatBom")
@@ -1139,6 +1267,10 @@ public class VienChinh : MonoBehaviour
         {
 
         }
+        else if (nameSkill == "SkillDienKienTuThan")
+        {
+
+        }
         else
         {
             GameObject Team = TeamDo;
@@ -1152,6 +1284,7 @@ public class VienChinh : MonoBehaviour
 
             IEnumerator delaySkill()
             {
+                GiaoDienPVP.ins.SetPanelToi = true;
                 for (int i = 0; i < Team.transform.childCount;)
                 {
                     int tf = 0;
@@ -1163,7 +1296,7 @@ public class VienChinh : MonoBehaviour
                     GameObject hieuung = Instantiate(objskill, transform.position, Quaternion.identity);
                     hieuung.transform.SetParent(TruDo.transform);
                     Vector3 vec = new Vector3();
-
+                    if(i % 2 == 0) StartCoroutine(Shake());
                     if (nameSkill == "SkillDatBangDaySong" || nameSkill == "SkillMatTroiXuongNui") vec = new Vector3(Team.transform.GetChild(tf).transform.position.x, TruDo.transform.position.y + UnityEngine.Random.Range(1.5f, 2.5f));
                     else if (nameSkill == "SkillGioPhuongBac") vec = new Vector3(Team.transform.GetChild(tf).transform.position.x, TruDo.transform.position.y + UnityEngine.Random.Range(0.5f, 1f));
                     else vec = new Vector3(Team.transform.GetChild(tf).transform.position.x, TruDo.transform.position.y - UnityEngine.Random.Range(1f, 2f));
@@ -1173,6 +1306,7 @@ public class VienChinh : MonoBehaviour
                     i += chia;
                     yield return new WaitForSeconds(0.2f);
                 }
+                GiaoDienPVP.ins.SetPanelToi = false;
                 // giaodienPvp.transform.GetChild(3).gameObject.SetActive(false);
             }
         }
@@ -1197,7 +1331,10 @@ public class VienChinh : MonoBehaviour
             }
            // if (nameSkill == "SkillBienCuu" || nameSkill == "SkillCuongLoan") return;
         }
+      //  debug.Log("xong1");
         GameObject hieuungg = InstantiateHieuUngSkill(nameSkill,team);
+       // debug.Log("xong2");
+
         if (nameSkill == "SkillSamNo")
         {
 
@@ -1226,8 +1363,85 @@ public class VienChinh : MonoBehaviour
         else if (nameSkill == "SkillBienCuu")
         {
          
-         
-           // debug.Log("so cuu bien " + socuubien);
+        }
+        else if (nameSkill == "SkillDienKienTuThan")
+        {
+            //debug.Log("SkillDienKienTuThan");
+            string[] randomthebai = new string [0];
+            string nameskill = "";
+            float[] probabilities = { 0.4f, 0.3f, 0.3f }; // Xác suất: 40%, 40%, 20%
+            float randomPoint = Random.value; // Random từ 0.0 đến 1.0
+
+            if (randomPoint < probabilities[0]) // 40%
+            {
+                randomthebai = new string[] { "doatmenhhaclong", "xhaclong", "doatmenhhaclong" }; // cuongno
+                nameskill = "CuongNo";
+            }
+            else if (randomPoint < probabilities[0] + probabilities[1]) // 30%
+            {
+                randomthebai = new string[] { "doatmenhhaclong", "xhaclong", "xhaclong" }; // haphuyet
+                nameskill = "HapHuyet";
+            }
+            else // 30%
+            {
+                randomthebai = new string[] { "doatmenhhaclong", "doatmenhhaclong", "doatmenhhaclong" }; // doatmenh
+                nameskill = "DoatMenh";
+            }
+          //  nameskill = "DoatMenh";
+
+            Transform Obj = GiaoDienPVP.ins.OSkill.transform.Find("DienKienTuThan");
+            Obj.gameObject.SetActive(true);
+            StartCoroutine(delay());
+            IEnumerator delay()
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    Image img = Obj.transform.GetChild(i).GetComponent<Image>();
+                    Animator anim = Obj.transform.GetChild(i).GetComponent<Animator>();
+
+                    Obj.transform.GetChild(i).gameObject.SetActive(true);
+                    anim.enabled = true;
+                    yield return new WaitForSeconds(0.2f);
+                   
+                    anim.enabled = false;
+                    img.sprite = Inventory.LoadSprite(randomthebai[i]);
+                    img.SetNativeSize();
+
+                }
+                for (int i = 1; i < vienchinh.TeamXanh.transform.childCount; i++)
+                {
+                    DragonPVEController dra = vienchinh.TeamXanh.transform.GetChild(i).transform.Find("SkillDra").GetComponent<DragonPVEController>();
+                    if (dra.nameobj == "RongHacLong")
+                    {
+                        HacLongAttack haclong = dra.GetComponent<HacLongAttack>();
+                       // haclong.CuongNo();
+                       if(nameskill == "DoatMenh")
+                        {
+                            haclong.Invoke(nameskill, 1.2f);
+                        }
+                        else haclong.Invoke(nameskill, 0);
+                    }
+                }
+
+                for (int i = 1; i < vienchinh.TeamXanh.transform.childCount; i++)
+                {
+                    DragonPVEController dra = vienchinh.TeamXanh.transform.GetChild(i).transform.Find("SkillDra").GetComponent<DragonPVEController>();
+                    float hp = dra.hp;
+                    float maxhp = dra.Maxhp;
+                    float dame = dra.dame;
+                }
+
+                yield return new WaitForSeconds(3f);
+                Obj.gameObject.SetActive(false);
+                for (int i = 0; i < 3; i++)
+                {
+                    Obj.transform.GetChild(i).gameObject.SetActive(false);
+
+                    RectTransform rectTransform = Obj.transform.GetChild(i).GetComponent<RectTransform>();
+                    rectTransform.sizeDelta = new Vector2(200, 200); // Thay đổi kích thước
+
+                }
+            }
         }
         else
         {
@@ -1239,6 +1453,7 @@ public class VienChinh : MonoBehaviour
                     // ChiSo cs = vienchinh.TeamDo.transform.GetChild(i).GetComponent<ChiSo>();
 
                     dragonPVEController.MatMau(dame, null);
+
                 }
             }
         }    

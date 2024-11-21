@@ -973,15 +973,15 @@ public class NetworkManager : MonoBehaviour
         }
         else if (e.data["useskill"])
         {
+            //e.data["useskill"]["nameskill"] = JSONObject.CreateStringObject("");
             string nameskill = e.data["useskill"]["nameskill"].str;
-            GiaoDienPVP.ins.OSkill.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().fillAmount = float.Parse(CatDauNgoacKep(e.data["useskill"]["sonokhi"].ToString())) / 300;
+            GiaoDienPVP.ins.OSkill.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().fillAmount = float.Parse(CatDauNgoacKep(e.data["useskill"]["sonokhi"].ToString())) / 150;
 
             GiaoDienPVP.ins.OSkill.transform.GetChild(0).transform.GetChild(1).GetComponent<Text>().text = CatDauNgoacKep(e.data["useskill"]["sonokhi"].ToString());
 
             vienchinh.timeskill[int.Parse(CatDauNgoacKep(e.data["useskill"]["index"].ToString()))] = float.Parse(CatDauNgoacKep(e.data["useskill"]["time"].ToString()));
 
             vienchinh.HieuUngSkill("Skill" + CatDauNgoacKep(e.data["useskill"]["nameskill"].ToString()), float.Parse(CatDauNgoacKep(e.data["useskill"]["satthuong"].ToString())), float.Parse(CatDauNgoacKep(e.data["useskill"]["level"].ToString())));
-
             if (nameskill == "SamNo")
             {
                 vienchinh.HienIconSkill(float.Parse(CatDauNgoacKep(e.data["useskill"]["timeskill"].ToString())),"Xanh", "iconSamNoXanh");

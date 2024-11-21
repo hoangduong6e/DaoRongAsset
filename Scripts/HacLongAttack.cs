@@ -1,17 +1,39 @@
-﻿
-using System.Collections.Generic;
-using Unity.VisualScripting;
+﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class HacLongAttack : DragonPVEController
 {
-
+    public float timeCDskill = 12;
     private byte hoisinh = 0;
     private bool CuongHoa = false;
+    private float timeCuongNo;private float MaxtimeCuongNo = 5;
+
+    public bool BiDong = false;
+
+    private void AutoKichHoatSkill()
+    {
+        string nameskill = "";
+        float[] probabilities = { 0.4f, 0.3f, 0.3f }; // Xác suất: 40%, 40%, 20%
+        float randomPoint = Random.value; // Random từ 0.0 đến 1.0
+
+        if (randomPoint < probabilities[0]) // 40%
+        {
+            nameskill = "CuongNo";
+        }
+        else if (randomPoint < probabilities[0] + probabilities[1]) // 30%
+        {
+            nameskill = "HapHuyet";
+        }
+        else // 30%
+        {
+            nameskill = "DoatMenh";
+        }
+    }
+    public Transform TargetDoatMenh;
     protected override void ABSAwake()
     {
-
+        
     }
     public override void AbsStart()
     {
@@ -19,6 +41,39 @@ public class HacLongAttack : DragonPVEController
         {
             skillObj[i].GetComponent<SkillDraController>().skillmoveok += SkillMoveOk;
         }
+ 
+        if(team == Team.TeamXanh)
+        {
+            GiaoDienPVP.ins.OSkill.SetActive(true);
+            Transform oskill = GiaoDienPVP.ins.OSkill.transform.GetChild(1);
+            for (int i = 0; i < oskill.transform.childCount; i++)
+            {
+                if (!oskill.transform.GetChild(i).gameObject.activeSelf)
+                {
+                    oskill.transform.GetChild(i).gameObject.SetActive(true);
+                    oskill.transform.GetChild(i).gameObject.name = "DienKienTuThan";
+                    Image imgskill = oskill.transform.GetChild(i).GetComponent<Image>();
+                    imgskill.sprite = Inventory.LoadSprite("DienKienTuThan");
+                    imgskill.SetNativeSize();
+                    oskill.GetChild(i).transform.GetChild(1).GetComponent<Image>().sprite = imgskill.sprite;
+                    oskill.transform.GetChild(i).transform.GetChild(0).GetComponent<Text>().text = GamIns.CatDauNgoacKep("");
+
+                    oskill.GetChild(i).GetComponent<Button>().interactable = true;
+                    oskill.GetChild(i).transform.GetChild(1).gameObject.SetActive(false);
+                    break;
+                }
+
+            }
+        }
+        else
+        {
+            if(VienChinh.vienchinh.chedodau != CheDoDau.Online)
+            {
+                BiDong = true;
+            }
+        }
+       // if (VienChinh.vienchinh.timeskill[3] == 0)
+      
         //   Transform parent = transform.parent;
         //   parent.transform.position = new Vector3(transform.position.x, transform.position.y + 3);
     }
@@ -35,11 +90,20 @@ public class HacLongAttack : DragonPVEController
     }
     protected override void Updatee()
     {
-        if (Input.GetKeyUp(KeyCode.J))
-        {
-            if(Random.Range(0,100) > 50) CuongNo();
+        //if (Input.GetKeyUp(KeyCode.J))
+        //{
+        //    if(Random.Range(0,100) > 50) CuongNo();
 
-        }    
+        //}    
+        if(CuongHoa)
+        {
+            timeCuongNo -= Time.deltaTime;
+            if(timeCuongNo <= -1)
+            {
+                CuongHoa = false;
+            }    
+        }
+       // if (skillObj[6].activeSelf)
     }
     public override void SetHp(float fillhp, bool setonline = false)
     {
@@ -63,7 +127,6 @@ public class HacLongAttack : DragonPVEController
             }
         }
     }
-
     public override void SkillMoveOk()
     {
         if (Target == null) return;
@@ -124,6 +187,11 @@ public class HacLongAttack : DragonPVEController
     {
         if (CuongHoa)
         {
+            //if (stateAnimAttack % 2 ==0)
+            //{
+            //    StartCoroutine(VienChinh.vienchinh.Shake(0.12f,0.06f));
+            //}    
+           
             for (int i = 2; i < 6; i++)
             {
                 if (!skillObj[i].gameObject.activeSelf)
@@ -160,12 +228,15 @@ public class HacLongAttack : DragonPVEController
     }
     public void CuongNo()
     {
+        Debug.Log("Cuồng nộ");
         setAnim = false;
         walking = false;
         animplay = "CuongNo";
         anim.Play("CuongNo");
         CuongHoa = true;
         stateAnimAttack = 0;
+        timeCuongNo = MaxtimeCuongNo;
+        UseSkill();
     }
     public void UpdateAnimCuongNo()
     {
@@ -174,5 +245,42 @@ public class HacLongAttack : DragonPVEController
         walking = true;
         anim.Play(animplay);
     }
+    public void HapHuyet()
+    {
+        Debug.Log("Hấp Huyết");
+        StartCoroutine(VienChinh.vienchinh.CreateHieuUngSkillsBuff(team, "HapHuyetHacLong"));
+        UseSkill();
+    }
 
+    public void DoatMenh()
+    {
+        Debug.Log("Đoạt mệnh");
+        Transform strongestDragonTransform = PVEManager.GetRongManhNhat(team);
+        if (strongestDragonTransform != null)
+        {
+            ReplayData.AddAttackTarget(transform.parent.name, "6", "dungdau");
+            TargetDoatMenh = strongestDragonTransform;
+            skillObj[6].SetActive(true);
+        }
+        else
+        {
+            Debug.Log("Không tìm thấy con rồng nào đáp ứng điều kiện.");
+        }
+        UseSkill();
+    }
+    public void DoatMenhOk()
+    {
+        if(TargetDoatMenh != null)
+        {
+            DragonPVEController dra = TargetDoatMenh.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+            dra.ImgHp.fillAmount = -1;
+            ReplayData.addHp(dra.transform.parent.name, "-1");
+            Debug.Log("Doat menh rong " + dra.nameobj);
+            dra.Died();
+        }
+    }
+    private void UseSkill()
+    {
+        VienChinh.vienchinh.timeskill[2] = timeCDskill;
+    }
 }
