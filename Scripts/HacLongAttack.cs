@@ -2,34 +2,14 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HacLongAttack : DragonPVEController
+public partial class HacLongAttack : DragonPVEController
 {
     public float timeCDskill = 12;
     private byte hoisinh = 0;
     private bool CuongHoa = false;
     private float timeCuongNo;private float MaxtimeCuongNo = 5;
 
-    public bool BiDong = false;
-
-    private void AutoKichHoatSkill()
-    {
-        string nameskill = "";
-        float[] probabilities = { 0.4f, 0.3f, 0.3f }; // Xác suất: 40%, 40%, 20%
-        float randomPoint = Random.value; // Random từ 0.0 đến 1.0
-
-        if (randomPoint < probabilities[0]) // 40%
-        {
-            nameskill = "CuongNo";
-        }
-        else if (randomPoint < probabilities[0] + probabilities[1]) // 30%
-        {
-            nameskill = "HapHuyet";
-        }
-        else // 30%
-        {
-            nameskill = "DoatMenh";
-        }
-    }
+  
     public Transform TargetDoatMenh;
     protected override void ABSAwake()
     {
@@ -72,6 +52,8 @@ public class HacLongAttack : DragonPVEController
                 BiDong = true;
             }
         }
+
+        StartBiDong();
        // if (VienChinh.vienchinh.timeskill[3] == 0)
       
         //   Transform parent = transform.parent;
@@ -103,6 +85,7 @@ public class HacLongAttack : DragonPVEController
                 CuongHoa = false;
             }    
         }
+        UpdateBiDong();
        // if (skillObj[6].activeSelf)
     }
     public override void SetHp(float fillhp, bool setonline = false)
@@ -161,6 +144,10 @@ public class HacLongAttack : DragonPVEController
         {
             if (CuongHoa) animplay = "Attack2";
             else animplay = "Attack";
+            if(BiDong)
+            {
+                KichHoatCuongNoStart();
+            }
         }
         else
         {
@@ -178,6 +165,9 @@ public class HacLongAttack : DragonPVEController
     public override void LamChamABS(dataLamCham data)
     {
        // LamChamDefault(data);
+        data.eff = "";
+        data.chia = 2;
+        LamChamDefault(data);
     }
     public override void DayLuiABS()
     {
@@ -206,6 +196,7 @@ public class HacLongAttack : DragonPVEController
         }
         else
         {
+            
             if (stateAnimAttack == 1 || stateAnimAttack == 4)
             {
                 for (int i = 0; i < 2; i++)
@@ -254,7 +245,13 @@ public class HacLongAttack : DragonPVEController
 
     public void DoatMenh()
     {
-        Debug.Log("Đoạt mệnh");
+       Invoke("SDDoatMenh",1.2f);
+    }
+
+
+    private void SDDoatMenh()
+    {
+         Debug.Log("Đoạt mệnh");
         Transform strongestDragonTransform = PVEManager.GetRongManhNhat(team);
         if (strongestDragonTransform != null)
         {
@@ -281,6 +278,7 @@ public class HacLongAttack : DragonPVEController
     }
     private void UseSkill()
     {
+        if(team == Team.TeamDo) return;
         VienChinh.vienchinh.timeskill[2] = timeCDskill;
     }
 }

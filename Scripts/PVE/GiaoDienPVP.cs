@@ -37,7 +37,9 @@ public class GiaoDienPVP : MonoBehaviour
     public bool SetPanelToi { set { 
             if(value)
             {
-                for (int i = 0; i < objtatkhitoi.Length; i++)
+                if(!paneltoi.activeSelf)
+                {
+                     for (int i = 0; i < objtatkhitoi.Length; i++)
                 {
                     if (objtatkhitoi[i] != null)
                     {
@@ -51,6 +53,8 @@ public class GiaoDienPVP : MonoBehaviour
                         obj.gameObject.SetActive(false);
                     }
                 }
+                }
+               
             }
             else
             {

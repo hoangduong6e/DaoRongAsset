@@ -3,9 +3,6 @@ using SocketIO;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Collections;
-using Unity.Mathematics;
-using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -1159,7 +1156,7 @@ public class VienChinh : MonoBehaviour
 
         endPosition = new Vector3(endPosition.x, endPosition.y, startPoint.transform.position.z);
 
-        Debug.Log($"StartPoint: {startPoint.position}, EndPosition: {endPosition}");
+      //  Debug.Log($"StartPoint: {startPoint.position}, EndPosition: {endPosition}");
 
         // Tính khoảng cách và số hiệu ứng
         float distance = Vector3.Distance(startPoint.position, endPosition);
@@ -1173,7 +1170,7 @@ public class VienChinh : MonoBehaviour
 
         int skillCount = Mathf.Max(Mathf.FloorToInt(distance / 3f), 1); // Ít nhất 1 hiệu ứng
 
-        Debug.Log($"Distance: {distance}, SkillCount: {skillCount}");
+       // Debug.Log($"Distance: {distance}, SkillCount: {skillCount}");
 
         // Reset các hiệu ứng cũ (nếu cần)
         foreach (Transform child in startPoint)
@@ -1222,7 +1219,6 @@ public class VienChinh : MonoBehaviour
                 yield return new WaitForSeconds(0.2f); // Delay trước khi tạo hiệu ứng tiếp theo
             }
         }
-
         // Ẩn panel
         GiaoDienPVP.ins.SetPanelToi = false;
     }
@@ -1314,9 +1310,7 @@ public class VienChinh : MonoBehaviour
     }
     public void HieuUngSkill(string nameSkill,float dame,float level, bool setOnline = false,string team = "TeamDo")
     {
-
         //  giaodienPvp.transform.GetChild(3).gameObject.SetActive(true);
-
         if (vienchinh.chedodau == CheDoDau.Online)
         {
             if (!setOnline)
@@ -1415,20 +1409,9 @@ public class VienChinh : MonoBehaviour
                     {
                         HacLongAttack haclong = dra.GetComponent<HacLongAttack>();
                        // haclong.CuongNo();
-                       if(nameskill == "DoatMenh")
-                        {
-                            haclong.Invoke(nameskill, 1.2f);
-                        }
-                        else haclong.Invoke(nameskill, 0);
-                    }
-                }
 
-                for (int i = 1; i < vienchinh.TeamXanh.transform.childCount; i++)
-                {
-                    DragonPVEController dra = vienchinh.TeamXanh.transform.GetChild(i).transform.Find("SkillDra").GetComponent<DragonPVEController>();
-                    float hp = dra.hp;
-                    float maxhp = dra.Maxhp;
-                    float dame = dra.dame;
+                        haclong.Invoke(nameskill, 0);
+                    }
                 }
 
                 yield return new WaitForSeconds(3f);
