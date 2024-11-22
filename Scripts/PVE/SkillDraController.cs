@@ -17,6 +17,7 @@ public abstract class SkillDraController : MonoBehaviour
 
         //}
         ABSAwake();
+        transform.SetParent(VienChinh.vienchinh.ObjSkill.transform);
     }
     protected abstract void ABSAwake();
     public void UpdateAnimationSkill()
@@ -24,8 +25,12 @@ public abstract class SkillDraController : MonoBehaviour
     //    debug.Log("UpdateAnimationSkill");
         ABSUpdateAnimationSkill();
     }
+    private void OnDisable()
+    {
+        if (controller == null)
+        {
+            Destroy(gameObject);
+        }
+    }
     public abstract void ABSUpdateAnimationSkill();
-
-
-
 }

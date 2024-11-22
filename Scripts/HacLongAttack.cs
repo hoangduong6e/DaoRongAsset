@@ -9,7 +9,6 @@ public partial class HacLongAttack : DragonPVEController
     private bool CuongHoa = false;
     private float timeCuongNo;private float MaxtimeCuongNo = 5;
 
-  
     public Transform TargetDoatMenh;
     protected override void ABSAwake()
     {
@@ -21,8 +20,7 @@ public partial class HacLongAttack : DragonPVEController
         {
             skillObj[i].GetComponent<SkillDraController>().skillmoveok += SkillMoveOk;
         }
- 
-        if(team == Team.TeamXanh)
+        if (team == Team.TeamXanh)
         {
             GiaoDienPVP.ins.OSkill.SetActive(true);
             Transform oskill = GiaoDienPVP.ins.OSkill.transform.GetChild(1);
@@ -221,7 +219,7 @@ public partial class HacLongAttack : DragonPVEController
     {
         Debug.Log("Cuồng nộ");
         setAnim = false;
-        walking = false;
+   //     walking = false;
         animplay = "CuongNo";
         anim.Play("CuongNo");
         CuongHoa = true;
@@ -233,7 +231,7 @@ public partial class HacLongAttack : DragonPVEController
     {
         Debug.Log("UpdateAnimCuongNo");
         setAnim = true;
-        walking = true;
+     //   walking = true;
         anim.Play(animplay);
     }
     public void HapHuyet()
@@ -251,7 +249,8 @@ public partial class HacLongAttack : DragonPVEController
 
     private void SDDoatMenh()
     {
-         Debug.Log("Đoạt mệnh");
+        if (VienChinh.vienchinh.chedodau == CheDoDau.Replay) return;
+        Debug.Log("Đoạt mệnh");
         Transform strongestDragonTransform = PVEManager.GetRongManhNhat(team);
         if (strongestDragonTransform != null)
         {
@@ -265,20 +264,58 @@ public partial class HacLongAttack : DragonPVEController
         }
         UseSkill();
     }
+    protected override void ClearSkill()
+    {
+        for (int i = 0; i < skillObj.Length - 1; i++)// trừ skill đoạt mệnh ra
+        {
+            if (!skillObj[i].activeSelf)
+            {
+                Destroy(skillObj[i].gameObject);
+            }
+        }
+    }
     public void DoatMenhOk()
     {
         if(TargetDoatMenh != null)
         {
             DragonPVEController dra = TargetDoatMenh.transform.Find("SkillDra").GetComponent<DragonPVEController>();
-            dra.ImgHp.fillAmount = -1;
-            ReplayData.addHp(dra.transform.parent.name, "-1");
+    
+         
             Debug.Log("Doat menh rong " + dra.nameobj);
-            dra.Died();
+            if(VienChinh.vienchinh.chedodau == CheDoDau.VienChinh ||
+                VienChinh.vienchinh.chedodau == CheDoDau.BossTG ||
+                VienChinh.vienchinh.chedodau == CheDoDau.XucTu ||
+                VienChinh.vienchinh.chedodau == CheDoDau.XucTu)
+            {
+                dra.MatMau(9999, this);
+            }
+            else
+            {
+                dra.ImgHp.fillAmount = -1;
+                ReplayData.addHp(dra.transform.parent.name, "-1");
+                dra.Died();
+            }
+
         }
     }
     private void UseSkill()
     {
         if(team == Team.TeamDo) return;
         VienChinh.vienchinh.timeskill[2] = timeCDskill;
+    }
+
+    private void OnDestroy()
+    {
+        SDDoatMenh();
+    }
+
+    protected override void Die()
+    {
+        SDDoatMenh();
+        Transform parent = transform.parent;
+        parent.gameObject.SetActive(false);
+        parent.SetParent(VienChinh.vienchinh.ObjSkill.transform);
+        Destroy(parent.gameObject, 5);
+       // base.Die();
     }
 }

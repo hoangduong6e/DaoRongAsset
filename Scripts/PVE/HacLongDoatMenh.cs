@@ -15,11 +15,19 @@ public class HacLongDoatMenh : SkillDraController
 
     private void OnEnable()
     {
+        if(VienChinh.vienchinh.chedodau == CheDoDau.Replay)
+        {
+            haclong.TargetDoatMenh = controller.Target;
+        }
         if (haclong.TargetDoatMenh != null)
         {
             transform.position = new Vector3(haclong.TargetDoatMenh.transform.position.x, VienChinh.vienchinh.TruXanh.transform.position.y - 1.8f, haclong.TargetDoatMenh.transform.position.z);
         }
-        else gameObject.SetActive(false);
+        else
+        {
+            gameObject.SetActive(false);
+        } 
+            
     }
     public override void ABSUpdateAnimationSkill()
     {

@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -11,6 +12,7 @@ public class RongMatXeAttack : DragonPVEController
     protected override void ABSAwake()
     {
         xuongMatXe.transform.position = new Vector3(xuongMatXe.transform.position.x,xuongMatXe.transform.position.y + Random.Range(0f,3f));
+        StartCoroutine(MoveAndDestroy());
     }
     public override void ChoangABS(float giay = 0.2f)
     {
@@ -25,25 +27,59 @@ public class RongMatXeAttack : DragonPVEController
         //    actionUpdateAnimAttack += AbsUpdateAnimAttackRongCay;
         //    actionMoveSkillok += SkillMoveOkRongDat;
         //}
-        
+       
     }
-    protected override void Updatee()
+    private IEnumerator MoveAndDestroy()
     {
-        if(xuongMatXe != null)
+        while (xuongMatXe != null)
         {
             Vector3 vec = Vector3.zero;
+
+            // Xác định vị trí đích dựa trên đội
             if (team == Team.TeamXanh)
             {
-                vec = new Vector3(VienChinh.vienchinh.TruDo.transform.position.x + 25, xuongMatXe.transform.position.y, xuongMatXe.transform.position.z);
+                vec = new Vector3(VienChinh.vienchinh.TruDo.transform.position.x + 25,
+                                  xuongMatXe.transform.position.y,
+                                  xuongMatXe.transform.position.z);
             }
             else
             {
-                vec = new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x - 25, xuongMatXe.transform.position.y, xuongMatXe.transform.position.z);
+                vec = new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x - 25,
+                                  xuongMatXe.transform.position.y,
+                                  xuongMatXe.transform.position.z);
             }
-            xuongMatXe.transform.LeanMove(vec, 3f).setOnComplete(() => {
-                Destroy(xuongMatXe.gameObject);
+
+            // Sử dụng LeanTween để di chuyển
+            xuongMatXe.transform.LeanMove(vec, 3f).setOnComplete(() =>
+            {
+                if (xuongMatXe != null)
+                {
+                    Destroy(xuongMatXe.gameObject);
+                }
             });
-        }    
+
+            // Dừng Coroutine nếu `xuongMatXe` bị hủy giữa chừng
+            yield return new WaitForSeconds(3f);
+        }
+    }
+
+    protected override void Updatee()
+    {
+        //if(xuongMatXe != null)
+        //{
+        //    Vector3 vec = Vector3.zero;
+        //    if (team == Team.TeamXanh)
+        //    {
+        //        vec = new Vector3(VienChinh.vienchinh.TruDo.transform.position.x + 25, xuongMatXe.transform.position.y, xuongMatXe.transform.position.z);
+        //    }
+        //    else
+        //    {
+        //        vec = new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x - 25, xuongMatXe.transform.position.y, xuongMatXe.transform.position.z);
+        //    }
+        //    xuongMatXe.transform.LeanMove(vec, 3f).setOnComplete(() => {
+        //        Destroy(xuongMatXe.gameObject);
+        //    });
+        //}    
     }
     public override void DayLuiABS()
     {
@@ -108,7 +144,7 @@ public class RongMatXeAttack : DragonPVEController
         if (stateAnimAttack == 1)
         {
             if (Target == null) return;
-            ReplayData.AddAttackTarget(transform.parent.name, "0", "dungdau");
+          //  ReplayData.AddAttackTarget(transform.parent.name, "0", "dungdau");
             SkillMoveOk();
            // skillObj[0].transform.position = transform.position;
            // skillObj[0].SetActive(true);

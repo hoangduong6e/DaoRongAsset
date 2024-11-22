@@ -34,7 +34,9 @@ public class GiaoDienPVP : MonoBehaviour
     public Transform[] objtatkhitoi; // Mảng chứa các đối tượng
     private bool[] initialStates;    // Mảng lưu trạng thái ban đầu
 
-    public bool SetPanelToi { set { 
+    public bool SetPanelToi { 
+        set 
+        { 
             if(value)
             {
                 if(!paneltoi.activeSelf)
@@ -67,14 +69,18 @@ public class GiaoDienPVP : MonoBehaviour
                 }
             }
             paneltoi.SetActive(value);
-        } }
+        }
+        get { return paneltoi.activeSelf; }
+    }
 
 
     void Awake()
     {
         paneltoi.transform.SetParent(GameObject.FindGameObjectWithTag("canvasGame").transform);
+
         ins = this;
         initialStates = new bool[objtatkhitoi.Length];
+        paneltoi.GetComponent<RectTransform>().anchoredPosition = new Vector2(5828, 270);
     }
     private void OnEnable()
     {

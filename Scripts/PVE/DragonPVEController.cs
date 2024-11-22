@@ -69,7 +69,7 @@ public abstract class DragonPVEController : MonoBehaviour
     public Team team;
     public bool thongke = true;
     protected bool setAnim = true;
-    public bool walking = true;
+    public bool DanganimAttack = false;
     //private void Awake()
     //{
     //    ImgHp = ThanhMau.transform.GetChild(0).GetComponent<Image>();
@@ -80,6 +80,21 @@ public abstract class DragonPVEController : MonoBehaviour
         if (animm != null) anim = animm;
         idrong = transform.parent.name;
         ABSAwake();
+    
+    }
+    private void OnDestroy()
+    {
+         ClearSkill();
+    }
+    protected virtual void ClearSkill()
+    {
+        for (int i = 0; i < skillObj.Length; i++)
+        {
+            if (!skillObj[i].activeSelf)
+            {
+                Destroy(skillObj[i].gameObject);
+            }
+        }
     }
     //private void OnEnable()
     //{
@@ -87,10 +102,14 @@ public abstract class DragonPVEController : MonoBehaviour
 
     //   // tf.transform.LeanScale(scale, 3f);
     //}
-   
+
     public void SpawmComplete()
     {
-    //    debug.Log("SpawmComplete " + gameObject.name);
+        //for (int i = 0; i < skillObj.Length; i++)
+        //{
+        //    skillObj[i].transform.SetParent(VienChinh.vienchinh.transform);
+        //}
+        //    debug.Log("SpawmComplete " + gameObject.name);
         Startt();
 
         //StartCoroutine(delay());
@@ -153,11 +172,13 @@ public abstract class DragonPVEController : MonoBehaviour
     {
       //  debug.Log("UpdateAnimAttack " + gameObject.name);
         stateAnimAttack += 1;
-        //if (stateAnimAttack >= maxStateAttack)
-        //{
-
-        //}
+        if (stateAnimAttack >= maxStateAttack)
+        {
+            DanganimAttack = false;
+        }
+        else DanganimAttack = true;
         AbsUpdateAnimAttack();
+
     }
     public void AnimWin()
     {
@@ -670,7 +691,8 @@ public abstract class DragonPVEController : MonoBehaviour
             Destroy(dieAnim, 0.4f);
      
         }
-        Destroy(parnent.gameObject);
+        Die();
+      
         // }
 
         //if (GetComponent<QuaiVienChinh.vienchinh>())
@@ -685,6 +707,11 @@ public abstract class DragonPVEController : MonoBehaviour
         //}    
     }
 
+
+    protected virtual void Die()
+    {
+        Destroy(transform.parent.gameObject);
+    }    
     public void BatTu(float sec)
     {
         battu = true;
@@ -710,7 +737,7 @@ public abstract class DragonPVEController : MonoBehaviour
         }
         //   debug.Log("killl tru2");
         truvienchinh.MatMau(hp);
-        ReplayData.AddKillTru(transform.parent.name);
+        ReplayData.AddKillTru(idrong);
     }
     public abstract void BienCuuABS(float time);
 

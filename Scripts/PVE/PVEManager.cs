@@ -300,19 +300,16 @@ public class PVEManager : MonoBehaviour
             float tamdanhxa = dragonPVEController.tamdanhxa;
             float speed = dragonPVEController.speed * Time.deltaTime;
 
-            if(dragonPVEController.walking)
+            if (parent.position.x > targetPosition.x + tamdanhxa)
             {
-                if (parent.position.x > targetPosition.x + tamdanhxa)
-                {
-                    parent.position += Vector3.left * speed;
-                    dragonPVEController.AnimatorRun();
-                }
-                else
-                {
-                    dragonPVEController.AnimatorAttack();
-                }
+                parent.position += Vector3.left * speed;
+                if (!dragonPVEController.DanganimAttack) dragonPVEController.AnimatorRun();
             }
-         
+            else
+            {
+                dragonPVEController.AnimatorAttack();
+            }
+
         }
 
         void MoveTeamDo()
@@ -322,19 +319,19 @@ public class PVEManager : MonoBehaviour
             Vector3 targetPosition = dragonPVEController.Target.position;
             float tamdanhxa = dragonPVEController.tamdanhxa;
             float speed = dragonPVEController.speed * Time.deltaTime;
-            if (dragonPVEController.walking)
+            //if (dragonPVEController.walking)
+            //{
+              
+            //}
+            if (parent.position.x < targetPosition.x - tamdanhxa)
             {
-                if (parent.position.x < targetPosition.x - tamdanhxa)
-                {
-                    parent.position += Vector3.right * speed;
-                    dragonPVEController.AnimatorRun();
-                }
-                else
-                {
-                    dragonPVEController.AnimatorAttack();
-                }
+                parent.position += Vector3.right * speed;
+                if(!dragonPVEController.DanganimAttack) dragonPVEController.AnimatorRun();
             }
-
+            else
+            {
+                dragonPVEController.AnimatorAttack();
+            }
         }
 
         void Record()
@@ -603,9 +600,13 @@ public class PVEManager : MonoBehaviour
             int randomIndex = Random.Range(0, strongestDragons.Count);
             return strongestDragons[randomIndex];
         }
+        if (TeamTf.transform.childCount > 1)
+        {
+            return TeamTf.transform.GetChild(1);
+        }    
+            // Nếu không tìm thấy con rồng nào, trả về null
 
-        // Nếu không tìm thấy con rồng nào, trả về null
-        return null;
+            return null;
     }
 
 

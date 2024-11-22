@@ -53,7 +53,7 @@ public class VienChinh : MonoBehaviour
     public float[] timeskill; public GameObject Hieuungd;
     public float buffgiapallxanh { get; private set; }
     public float buffgiapalldo { get; private set; }
-    public GameObject muctieuxanh, muctieudo, PoolEffect;
+    public GameObject muctieuxanh, muctieudo, PoolEffect, ObjSkill;
     public static VienChinh vienchinh;
     public CheDoDau chedodau;
     //public JSONClass ThongKeDame = new JSONClass();
@@ -313,7 +313,10 @@ public class VienChinh : MonoBehaviour
 
         GiaoDienPVP.ins.panelBatdau.transform.GetChild(0).gameObject.SetActive(false);
         camera.transform.position = new Vector3(camera.transform.position.x, camera.transform.position.y, -10);
-
+        if(GiaoDienPVP.ins.SetPanelToi)
+        {
+            GiaoDienPVP.ins.SetPanelToi = false;
+        }    
         debug.Log("timee " + GiaoDienPVP.ins.maxtime);
         if (GiaoDienPVP.ins.maxtime > 0)
         {
@@ -752,6 +755,10 @@ public class VienChinh : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             GiaoDienPVP.ins.OSkill.transform.GetChild(1).GetChild(i).gameObject.SetActive(false);
+        }
+        for (int i = 0; i < ObjSkill.transform.childCount; i++)
+        {
+            Destroy(ObjSkill.transform.GetChild(i).gameObject);
         }
         for (int i = 0; i < 3; i++)
         {
