@@ -1365,7 +1365,7 @@ public class VienChinh : MonoBehaviour
         {
          
         }
-        else if (nameSkill == "SkillDienKienTuThan")
+        else if (nameSkill == "SkillDienKienTuThan" && !setOnline)
         {
             //debug.Log("SkillDienKienTuThan");
             string[] randomthebai = new string [0];

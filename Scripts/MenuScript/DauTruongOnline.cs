@@ -13,6 +13,15 @@ public class DauTruongOnline : MonoBehaviour
     public GameObject[] btnMoi;
     public bool coroom = false;
     private bool updateData = false;
+    public static bool GetUpdateDra
+    {
+        get
+        {
+            if(DauTruongOnline.ins == null) return false;
+            if(VienChinh.vienchinh.chedodau != CheDoDau.Online) return false;
+            return DauTruongOnline.ins.updateData;
+        }
+    }
     public static DauTruongOnline ins;
     public static string namedoithu = "";
     public static Dictionary<string, Transform> dicdra;
@@ -183,6 +192,10 @@ public class DauTruongOnline : MonoBehaviour
 
                 dragonPVEController.Died(true);
                 //    dragonPVEController.SetHp(float.Parse(e.data["UpdateDra"]["setfillhp"].str));
+            }
+            else if (e.data["UpdateDra"]["func"])
+            {
+                dragonPVEController.FuncInvokeOnline(e.data["UpdateDra"]["func"].str);
             }
         }
         else if (e.data["KetQua"])

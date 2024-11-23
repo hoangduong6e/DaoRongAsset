@@ -217,6 +217,17 @@ public partial class HacLongAttack : DragonPVEController
     }
     public void CuongNo()
     {
+
+        if (DauTruongOnline.GetUpdateDra)
+        {
+            //  debug.Log("set lam chammmmm");
+            JSONObject newjson = new JSONObject();
+            newjson.AddField("id", idrong);
+            newjson.AddField("func", "CuongNo");
+            DauTruongOnline.ins.AddUpdateData(newjson);
+            return;
+        }
+
         Debug.Log("Cuồng nộ");
         setAnim = false;
    //     walking = false;
@@ -276,6 +287,8 @@ public partial class HacLongAttack : DragonPVEController
     }
     public void DoatMenhOk()
     {
+        if (VienChinh.vienchinh.chedodau == CheDoDau.Replay) return;
+        if (!DauTruongOnline.GetUpdateDra) return;
         if(TargetDoatMenh != null)
         {
             DragonPVEController dra = TargetDoatMenh.transform.Find("SkillDra").GetComponent<DragonPVEController>();
@@ -301,6 +314,7 @@ public partial class HacLongAttack : DragonPVEController
     private void UseSkill()
     {
         if(team == Team.TeamDo) return;
+      //  if(VienChinh.vienchinh.chedodau == CheDoDau.Online)
         VienChinh.vienchinh.timeskill[2] = timeCDskill;
     }
 
@@ -317,5 +331,9 @@ public partial class HacLongAttack : DragonPVEController
         parent.SetParent(VienChinh.vienchinh.ObjSkill.transform);
         Destroy(parent.gameObject, 5);
        // base.Die();
+    }
+    public override void FuncInvokeOnline(string namefunc)
+    {
+        Invoke(namefunc,0);
     }
 }

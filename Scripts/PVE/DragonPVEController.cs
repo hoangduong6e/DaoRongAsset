@@ -794,5 +794,5 @@ public abstract class DragonPVEController : MonoBehaviour
             dame = damelucdau;
         }
     }
-  
+    public virtual void FuncInvokeOnline(string namefunc){ }
 }
