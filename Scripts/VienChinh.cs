@@ -1388,7 +1388,7 @@ public class VienChinh : MonoBehaviour
                 randomthebai = new string[] { "doatmenhhaclong", "doatmenhhaclong", "doatmenhhaclong" }; // doatmenh
                 nameskill = "DoatMenh";
             }
-          //  nameskill = "DoatMenh";
+           // nameskill = "CuongNo";
 
             Transform Obj = GiaoDienPVP.ins.OSkill.transform.Find("DienKienTuThan");
             Obj.gameObject.SetActive(true);
@@ -1415,9 +1415,8 @@ public class VienChinh : MonoBehaviour
                     if (dra.nameobj == "RongHacLong")
                     {
                         HacLongAttack haclong = dra.GetComponent<HacLongAttack>();
-                       // haclong.CuongNo();
-
-                        haclong.Invoke(nameskill, 0);
+                        // haclong.CuongNo();
+                        haclong.FuncInvokeOnline(nameskill,false);
                     }
                 }
 

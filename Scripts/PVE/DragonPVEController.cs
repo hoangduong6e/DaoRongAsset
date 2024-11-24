@@ -58,7 +58,7 @@ public abstract class DragonPVEController : MonoBehaviour
 
     public float maxspeed { get; set; }
 
-    private bool battu = false, daylui = true;
+    protected bool battu = false; private bool daylui = true;
     public string animplay { get; protected set; }
     //protected byte stateAnimIdle = 0, stateAnimAttack = 0;
 
@@ -794,5 +794,5 @@ public abstract class DragonPVEController : MonoBehaviour
             dame = damelucdau;
         }
     }
-    public virtual void FuncInvokeOnline(string namefunc){ }
+    public virtual void FuncInvokeOnline(string namefunc, params object[] parameters) { }
 }

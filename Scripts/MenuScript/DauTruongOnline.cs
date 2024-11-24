@@ -195,7 +195,8 @@ public class DauTruongOnline : MonoBehaviour
             }
             else if (e.data["UpdateDra"]["func"])
             {
-                dragonPVEController.FuncInvokeOnline(e.data["UpdateDra"]["func"].str);
+                debug.Log("UpdateDra func" + e.data["UpdateDra"]["func"].str);
+                dragonPVEController.FuncInvokeOnline(e.data["UpdateDra"]["func"].str,true);
             }
         }
         else if (e.data["KetQua"])

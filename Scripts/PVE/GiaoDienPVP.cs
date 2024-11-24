@@ -31,42 +31,43 @@ public class GiaoDienPVP : MonoBehaviour
     [SerializeField]
     GameObject paneltoi;
 
-    public Transform[] objtatkhitoi; // Mảng chứa các đối tượng
-    private bool[] initialStates;    // Mảng lưu trạng thái ban đầu
+  //  public Transform[] objtatkhitoi; // Mảng chứa các đối tượng
+   // private bool[] initialStates;    // Mảng lưu trạng thái ban đầu
 
     public bool SetPanelToi { 
         set 
         { 
             if(value)
             {
-                if(!paneltoi.activeSelf)
-                {
-                     for (int i = 0; i < objtatkhitoi.Length; i++)
-                {
-                    if (objtatkhitoi[i] != null)
-                    {
-                        initialStates[i] = objtatkhitoi[i].gameObject.activeSelf;
-                    }
-                }
-                foreach (Transform obj in objtatkhitoi)
-                {
-                    if (obj != null)
-                    {
-                        obj.gameObject.SetActive(false);
-                    }
-                }
-                }
-               
+                //if(!paneltoi.activeSelf)
+                //{
+                //     for (int i = 0; i < objtatkhitoi.Length; i++)
+                //{
+                //    if (objtatkhitoi[i] != null)
+                //    {
+                //        initialStates[i] = objtatkhitoi[i].gameObject.activeSelf;
+                //    }
+                //}
+                //foreach (Transform obj in objtatkhitoi)
+                //{
+                //    if (obj != null)
+                //    {
+                //        obj.gameObject.SetActive(false);
+                //    }
+                //}
+                //}
+                gameObject.SetActive(false);
             }
             else
             {
-                for (int i = 0; i < objtatkhitoi.Length; i++)
-                {
-                    if (objtatkhitoi[i] != null)
-                    {
-                        objtatkhitoi[i].gameObject.SetActive(initialStates[i]);
-                    }
-                }
+                //for (int i = 0; i < objtatkhitoi.Length; i++)
+                //{
+                //    if (objtatkhitoi[i] != null)
+                //    {
+                //        objtatkhitoi[i].gameObject.SetActive(initialStates[i]);
+                //    }
+                //}
+                gameObject.SetActive(true);
             }
             paneltoi.SetActive(value);
         }
@@ -79,7 +80,7 @@ public class GiaoDienPVP : MonoBehaviour
         paneltoi.transform.SetParent(GameObject.FindGameObjectWithTag("canvasGame").transform);
 
         ins = this;
-        initialStates = new bool[objtatkhitoi.Length];
+     //   initialStates = new bool[objtatkhitoi.Length];
         paneltoi.GetComponent<RectTransform>().anchoredPosition = new Vector2(5828, 270);
     }
     private void OnEnable()

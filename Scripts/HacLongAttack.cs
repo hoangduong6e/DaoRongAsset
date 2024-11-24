@@ -1,21 +1,34 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public partial class HacLongAttack : DragonPVEController
 {
     public float timeCDskill = 12;
     private byte hoisinh = 0;
     private bool CuongHoa = false;
-    private float timeCuongNo;private float MaxtimeCuongNo = 5;
-
+    private float timeCuongNo; private float MaxtimeCuongNo = 5;
     public Transform TargetDoatMenh;
+
+    Dictionary<string, Action<object[]>> methodMap;
     protected override void ABSAwake()
     {
-        
+
     }
     public override void AbsStart()
     {
+        methodMap = new Dictionary<string, Action<object[]>>
+         {
+             { "CuongNo", args => CuongNo((bool)args[0]) },
+             { "HapHuyet", args => HapHuyet((bool)args[0]) },
+             { "DoatMenh", args => DoatMenh((bool)args[0]) },
+             { "SDDoatMenh", args => SDDoatMenh((bool)args[0]) }
+         };
         for (int i = 1; i < 6; i++)
         {
             skillObj[i].GetComponent<SkillDraController>().skillmoveok += SkillMoveOk;
@@ -45,15 +58,15 @@ public partial class HacLongAttack : DragonPVEController
         }
         else
         {
-            if(VienChinh.vienchinh.chedodau != CheDoDau.Online)
+            if (VienChinh.vienchinh.chedodau != CheDoDau.Online)
             {
                 BiDong = true;
             }
         }
 
         StartBiDong();
-       // if (VienChinh.vienchinh.timeskill[3] == 0)
-      
+        // if (VienChinh.vienchinh.timeskill[3] == 0)
+
         //   Transform parent = transform.parent;
         //   parent.transform.position = new Vector3(transform.position.x, transform.position.y + 3);
     }
@@ -66,7 +79,7 @@ public partial class HacLongAttack : DragonPVEController
     }
     public override void ChoangABS(float giay = 0.2f)
     {
-       // ChoangDefault(giay);
+        // ChoangDefault(giay);
     }
     protected override void Updatee()
     {
@@ -75,20 +88,31 @@ public partial class HacLongAttack : DragonPVEController
         //    if(Random.Range(0,100) > 50) CuongNo();
 
         //}    
-        if(CuongHoa)
+        if (CuongHoa)
         {
             timeCuongNo -= Time.deltaTime;
-            if(timeCuongNo <= -1)
+            if (timeCuongNo <= -1)
             {
                 CuongHoa = false;
-            }    
+            }
         }
         UpdateBiDong();
-       // if (skillObj[6].activeSelf)
+        // if (skillObj[6].activeSelf)
     }
     public override void SetHp(float fillhp, bool setonline = false)
     {
-        SetHpDefault(fillhp, setonline);
+        ImgHp.fillAmount = fillhp;
+        ImgHp.transform.parent.gameObject.SetActive(true);
+        if (!setonline)
+        {
+            if (fillhp <= 0)
+            {
+                debug.Log("Hac long Die Danh Online");
+                Die();
+            }
+        }
+
+        delaytatthanhmau();
     }
     public override void AbsMatMau(float maumat, DragonPVEController cs, bool setonline = false)
     {
@@ -125,7 +149,7 @@ public partial class HacLongAttack : DragonPVEController
             dra.MatMau(damee, this);
             //dataLamCham data = new dataLamCham(5, "caylamcham");
 
-          //  dra.LamChamABS(data);
+            //  dra.LamChamABS(data);
         }
         else
         {
@@ -142,7 +166,7 @@ public partial class HacLongAttack : DragonPVEController
         {
             if (CuongHoa) animplay = "Attack2";
             else animplay = "Attack";
-            if(BiDong)
+            if (BiDong)
             {
                 KichHoatCuongNoStart();
             }
@@ -162,9 +186,9 @@ public partial class HacLongAttack : DragonPVEController
     }
     public override void LamChamABS(dataLamCham data)
     {
-       // LamChamDefault(data);
+        // LamChamDefault(data);
         data.eff = "";
-        data.chia = 2;
+        data.chia = 1;
         LamChamDefault(data);
     }
     public override void DayLuiABS()
@@ -179,7 +203,7 @@ public partial class HacLongAttack : DragonPVEController
             //{
             //    StartCoroutine(VienChinh.vienchinh.Shake(0.12f,0.06f));
             //}    
-           
+
             for (int i = 2; i < 6; i++)
             {
                 if (!skillObj[i].gameObject.activeSelf)
@@ -194,7 +218,7 @@ public partial class HacLongAttack : DragonPVEController
         }
         else
         {
-            
+
             if (stateAnimAttack == 1 || stateAnimAttack == 4)
             {
                 for (int i = 0; i < 2; i++)
@@ -209,57 +233,92 @@ public partial class HacLongAttack : DragonPVEController
                 }
             }
         }
-       
+
     }
     public override void BienCuuABS(float time)
     {
         BienCuuDefault(time);
     }
-    public void CuongNo()
+    public void CuongNo(bool setonline = false)
     {
-
-        if (DauTruongOnline.GetUpdateDra)
+        if (VienChinh.vienchinh.chedodau == CheDoDau.Online && !setonline)
         {
             //  debug.Log("set lam chammmmm");
             JSONObject newjson = new JSONObject();
             newjson.AddField("id", idrong);
             newjson.AddField("func", "CuongNo");
-            DauTruongOnline.ins.AddUpdateData(newjson);
+            DauTruongOnline.ins.AddUpdateData(newjson,true);
             return;
         }
-
+        battu = true;
         Debug.Log("Cuồng nộ");
         setAnim = false;
    //     walking = false;
         animplay = "CuongNo";
         anim.Play("CuongNo");
+        
         CuongHoa = true;
         stateAnimAttack = 0;
         timeCuongNo = MaxtimeCuongNo;
         UseSkill();
+        Shake();
+        GiaoDienPVP.ins.SetPanelToi = true;
     }
+    private void Shake()
+    {
+        VienChinh.vienchinh.StartCoroutine(Shakee());
+        IEnumerator Shakee()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                yield return new WaitForSeconds(0.1f);
+                VienChinh.vienchinh.StartCoroutine(VienChinh.vienchinh.Shake());
+            }
+        }
+    }
+
     public void UpdateAnimCuongNo()
     {
         Debug.Log("UpdateAnimCuongNo");
         setAnim = true;
-     //   walking = true;
+        //   walking = true;
+        battu = false;
+        GiaoDienPVP.ins.SetPanelToi = false;
         anim.Play(animplay);
     }
-    public void HapHuyet()
+    public void HapHuyet(bool setonline)
     {
+        if (VienChinh.vienchinh.chedodau == CheDoDau.Online && !setonline)
+        {
+            //  debug.Log("set lam chammmmm");
+            JSONObject newjson = new JSONObject();
+            newjson.AddField("id", idrong);
+            newjson.AddField("func", "HapHuyet");
+            DauTruongOnline.ins.AddUpdateData(newjson, true);
+            return;
+        }
         Debug.Log("Hấp Huyết");
         StartCoroutine(VienChinh.vienchinh.CreateHieuUngSkillsBuff(team, "HapHuyetHacLong"));
         UseSkill();
     }
 
-    public void DoatMenh()
+    public void DoatMenh(bool setonline = false)
     {
-       Invoke("SDDoatMenh",1.2f);
+        EventManager.StartDelay2(() => { SDDoatMenh(setonline); }, 1.2f);
     }
 
 
-    private void SDDoatMenh()
+    private void SDDoatMenh(bool setonline = false)
     {
+        if (VienChinh.vienchinh.chedodau == CheDoDau.Online && !setonline)
+        {
+            //  debug.Log("set lam chammmmm");
+            JSONObject newjson = new JSONObject();
+            newjson.AddField("id", idrong);
+            newjson.AddField("func", "SDDoatMenh");
+            DauTruongOnline.ins.AddUpdateData(newjson, true);
+            return;
+        }
         if (VienChinh.vienchinh.chedodau == CheDoDau.Replay) return;
         Debug.Log("Đoạt mệnh");
         Transform strongestDragonTransform = PVEManager.GetRongManhNhat(team);
@@ -318,11 +377,11 @@ public partial class HacLongAttack : DragonPVEController
         VienChinh.vienchinh.timeskill[2] = timeCDskill;
     }
 
-    private void OnDestroy()
-    {
-        SDDoatMenh();
-    }
-
+    //private void OnDestroy()
+    //{
+    //    SDDoatMenh();
+    //}
+         
     protected override void Die()
     {
         SDDoatMenh();
@@ -332,8 +391,16 @@ public partial class HacLongAttack : DragonPVEController
         Destroy(parent.gameObject, 5);
        // base.Die();
     }
-    public override void FuncInvokeOnline(string namefunc)
+    public override void FuncInvokeOnline(string namefunc, params object[] parameters)
     {
-        Invoke(namefunc,0);
+        if (methodMap.ContainsKey(namefunc))
+        {
+            debug.Log("FuncInvokeOnline " + namefunc);
+            methodMap[namefunc].Invoke(parameters);
+        }
+        else
+        {
+            debug.LogError($"Method '{namefunc}' not found.");
+        }
     }
 }
