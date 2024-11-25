@@ -32,8 +32,7 @@ public partial class HacLongAttack : DragonPVEController
         {
             nameskill = "DoatMenh";
         }
-
-        Invoke(nameskill,0);
+        FuncInvokeOnline(nameskill,false);
     }
     private bool isCuongNoStart = false;
     private void KichHoatCuongNoStart()

@@ -36,6 +36,7 @@ public abstract class DragonPVEController : MonoBehaviour
         chimang = 0,
         netranh = 0,
         huthp = 0,
+        maxhuthp=0,
         giapso = 0,
         giapphantram = 0,
         xuyengiap = 0,
@@ -438,6 +439,7 @@ public abstract class DragonPVEController : MonoBehaviour
         dame = float.Parse(data["chiso"]["sucdanh"].ToString());
         //    debug.Log("rong13,1");
         huthp = float.Parse(data["chiso"]["hutmau"].ToString());
+        maxhuthp = huthp;
         //    debug.Log("rong14");
         netranh = float.Parse(data["chiso"]["netranh"].ToString());
         chimang = float.Parse(data["chiso"]["tilechimang"].ToString());
@@ -795,4 +797,8 @@ public abstract class DragonPVEController : MonoBehaviour
         }
     }
     public virtual void FuncInvokeOnline(string namefunc, params object[] parameters) { }
+    public virtual void PlayAnimReplay(string s)
+    {
+        anim.Play(s);
+    }
 }

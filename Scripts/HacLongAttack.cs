@@ -11,8 +11,10 @@ public partial class HacLongAttack : DragonPVEController
 {
     public float timeCDskill = 12;
     private byte hoisinh = 0;
-    private bool CuongHoa = false;
+    private bool CuongHoa = false,isHapHuyet=false;
     private float timeCuongNo; private float MaxtimeCuongNo = 5;
+    private float timeHapHuyet; private float MaxtimeHapHuyet = 5;
+    private float chiMangCuongNo = 5, HutHpChoToanDoi = 25;
     public Transform TargetDoatMenh;
 
     Dictionary<string, Action<object[]>> methodMap;
@@ -63,12 +65,150 @@ public partial class HacLongAttack : DragonPVEController
                 BiDong = true;
             }
         }
-
+        LoadAllChiSo();
         StartBiDong();
-        // if (VienChinh.vienchinh.timeskill[3] == 0)
+    }
+    private void LoadAllChiSo()
+    {
+        ChiSoCuongNo();
+        ChiSoHapHuyet();
+    }
+    private void ChiSoCuongNo()
+    {
+        if(saorong >= 21 && saorong <= 25)
+        {
+            MaxtimeCuongNo = 6;
+        }
+        else if(saorong >= 26 && saorong <= 29)
+        {
+            MaxtimeCuongNo = 7;
+        }
+        else if(saorong >= 30)
+        {
+            MaxtimeCuongNo = 8;
+        }
 
-        //   Transform parent = transform.parent;
-        //   parent.transform.position = new Vector3(transform.position.x, transform.position.y + 3);
+        if(saorong == 17)
+        {
+            chiMangCuongNo = 6;
+        }
+        else if(saorong == 18)
+        {
+            chiMangCuongNo = 7;
+        }
+        else if(saorong == 19)
+        {
+            chiMangCuongNo = 8;
+        }
+         else if(saorong == 20)
+        {
+            chiMangCuongNo = 9;
+        }
+         else if(saorong == 21)
+        {
+            chiMangCuongNo = 11;
+        }
+         else if(saorong == 22)
+        {
+            chiMangCuongNo = 12;
+        }
+         else if(saorong == 23)
+        {
+            chiMangCuongNo = 13;
+        }
+         else if(saorong == 24)
+        {
+            chiMangCuongNo = 14;
+        }
+          else if(saorong == 25)
+        {
+            chiMangCuongNo = 15;
+        }
+        else if(saorong == 26)
+        {
+            chiMangCuongNo = 17;
+        }
+        else if(saorong == 27)
+        {
+            chiMangCuongNo = 18;
+        }
+        else if(saorong == 28)
+        {
+            chiMangCuongNo = 19;
+        }
+         else if(saorong == 29)
+        {
+            chiMangCuongNo = 20;
+        }
+         else if(saorong >= 30)
+        {
+            chiMangCuongNo = 22;
+        }
+    }
+    private void ChiSoHapHuyet()
+    {
+        MaxtimeHapHuyet = MaxtimeCuongNo;
+        if(saorong == 16)
+        {
+            HutHpChoToanDoi = 30;
+        }
+         if(saorong == 17)
+        {
+            HutHpChoToanDoi = 32;
+        }
+        else if(saorong == 18)
+        {
+            HutHpChoToanDoi = 34;
+        }
+        else if(saorong == 19)
+        {
+            HutHpChoToanDoi = 36;
+        }
+         else if(saorong == 20)
+        {
+            HutHpChoToanDoi = 38;
+        }
+         else if(saorong == 21)
+        {
+            HutHpChoToanDoi = 41;
+        }
+         else if(saorong == 22)
+        {
+            HutHpChoToanDoi = 43;
+        }
+         else if(saorong == 23)
+        {
+            HutHpChoToanDoi = 45;
+        }
+         else if(saorong == 24)
+        {
+            HutHpChoToanDoi = 47;
+        }
+          else if(saorong == 25)
+        {
+            HutHpChoToanDoi = 49;
+        }
+        else if(saorong == 26)
+        {
+            HutHpChoToanDoi = 53;
+        }
+        else if(saorong == 27)
+        {
+            HutHpChoToanDoi = 55;
+        }
+        else if(saorong == 28)
+        {
+            HutHpChoToanDoi = 57;
+        }
+         else if(saorong == 29)
+        {
+            HutHpChoToanDoi = 59;
+        }
+         else if(saorong >= 30)
+        {
+            HutHpChoToanDoi = 65;
+        }
+        
     }
     public override void SetHpOnline(JSONObject data)
     {
@@ -94,6 +234,30 @@ public partial class HacLongAttack : DragonPVEController
             if (timeCuongNo <= -1)
             {
                 CuongHoa = false;
+                chimang -= chiMangCuongNo;
+            }
+        }
+        if(isHapHuyet)
+        {
+            timeHapHuyet -= Time.deltaTime;
+            if (timeCuongNo <= -1)
+            {
+                isHapHuyet = false;
+                huthp = maxhuthp;
+                  Transform TeamTf = null;
+        if(team == Team.TeamDo) TeamTf = VienChinh.vienchinh.TeamDo.transform;
+        else TeamTf = VienChinh.vienchinh.TeamXanh.transform;
+
+        for (int i = 1; i < TeamTf.transform.childCount; i++)
+        {
+           Transform skilldra = TeamTf.transform.GetChild(i).transform.Find("SkillDra");
+           if(skilldra != null)
+           {
+              DragonPVEController dra = skilldra.GetComponent<DragonPVEController>();
+              dra.huthp = maxhuthp;
+           }
+        }
+                
             }
         }
         UpdateBiDong();
@@ -158,10 +322,12 @@ public partial class HacLongAttack : DragonPVEController
     }
     public override void ABSAnimatorRun()
     {
+         if(!setAnim) return;
         animplay = "Flying";
     }
     public override void ABSAnimatorAttack()
     {
+         if(!setAnim) return;
         if (stateAnimAttack < maxStateAttack)
         {
             if (CuongHoa) animplay = "Attack2";
@@ -182,7 +348,7 @@ public partial class HacLongAttack : DragonPVEController
     }
     public override void ABSAnimWin()
     {
-        animplay = "Flying";
+        animplay = "Win";
     }
     public override void LamChamABS(dataLamCham data)
     {
@@ -262,6 +428,7 @@ public partial class HacLongAttack : DragonPVEController
         timeCuongNo = MaxtimeCuongNo;
         UseSkill();
         Shake();
+        chimang += chiMangCuongNo;
         GiaoDienPVP.ins.SetPanelToi = true;
     }
     private void Shake()
@@ -274,6 +441,7 @@ public partial class HacLongAttack : DragonPVEController
                 yield return new WaitForSeconds(0.1f);
                 VienChinh.vienchinh.StartCoroutine(VienChinh.vienchinh.Shake());
             }
+              GiaoDienPVP.ins.SetPanelToi = false;
         }
     }
 
@@ -283,7 +451,7 @@ public partial class HacLongAttack : DragonPVEController
         setAnim = true;
         //   walking = true;
         battu = false;
-        GiaoDienPVP.ins.SetPanelToi = false;
+      
         anim.Play(animplay);
     }
     public void HapHuyet(bool setonline)
@@ -299,6 +467,21 @@ public partial class HacLongAttack : DragonPVEController
         }
         Debug.Log("Hấp Huyết");
         StartCoroutine(VienChinh.vienchinh.CreateHieuUngSkillsBuff(team, "HapHuyetHacLong"));
+        huthp = 100;
+        Transform TeamTf = null;
+        if(team == Team.TeamDo) TeamTf = VienChinh.vienchinh.TeamDo.transform;
+        else TeamTf = VienChinh.vienchinh.TeamXanh.transform;
+
+        for (int i = 1; i < TeamTf.transform.childCount; i++)
+        {
+           Transform skilldra = TeamTf.transform.GetChild(i).transform.Find("SkillDra");
+           if(skilldra != null)
+           {
+              DragonPVEController dra = skilldra.GetComponent<DragonPVEController>();
+              dra.huthp += HutHpChoToanDoi;
+           }
+        }
+        timeHapHuyet = MaxtimeHapHuyet;
         UseSkill();
     }
 
@@ -347,7 +530,6 @@ public partial class HacLongAttack : DragonPVEController
     public void DoatMenhOk()
     {
         if (VienChinh.vienchinh.chedodau == CheDoDau.Replay) return;
-        if (!DauTruongOnline.GetUpdateDra) return;
         if(TargetDoatMenh != null)
         {
             DragonPVEController dra = TargetDoatMenh.transform.Find("SkillDra").GetComponent<DragonPVEController>();
@@ -403,4 +585,13 @@ public partial class HacLongAttack : DragonPVEController
             debug.LogError($"Method '{namefunc}' not found.");
         }
     }
+    public override void PlayAnimReplay(string s)
+    {
+        base.PlayAnimReplay(s);
+        if(s == "CuongNo")
+        {
+            GiaoDienPVP.ins.SetPanelToi = true;
+            Shake();
+        }
+    } 
 }

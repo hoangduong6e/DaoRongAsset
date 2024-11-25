@@ -56,6 +56,7 @@ public class VienChinh : MonoBehaviour
     public GameObject muctieuxanh, muctieudo, PoolEffect, ObjSkill;
     public static VienChinh vienchinh;
     public CheDoDau chedodau;
+
     //public JSONClass ThongKeDame = new JSONClass();
     
     //public void AddThongKeDame(string id, string nameobjrong,byte saorong,float damee)
@@ -350,6 +351,33 @@ public class VienChinh : MonoBehaviour
 
         AudioManager.SoundBg.Stop();
         AudioManager.PlaySound("thuatran");
+    }
+    public void SetAnimWinAllDra()
+    {
+        for (int i = 1; i < VienChinh.vienchinh.TeamDo.transform.childCount; i++)
+                {
+                    Transform skilldra = VienChinh.vienchinh.TeamDo.transform.GetChild(i).transform.Find("SkillDra");
+                    if(skilldra != null)
+                    {
+                        DragonPVEController dra = skilldra.GetComponent<DragonPVEController>();
+                        dra.AnimWin();
+                    }
+               
+                }
+                for (int i = 1; i < VienChinh.vienchinh.TeamXanh.transform.childCount; i++)
+                {
+                    Transform skilldra = VienChinh.vienchinh.TeamXanh.transform.GetChild(i).transform.Find("SkillDra");
+                    if (skilldra != null)
+                    {
+                        DragonPVEController dra = skilldra.GetComponent<DragonPVEController>();
+                        dra.AnimWin();
+                    }
+
+                   // DragonPVEController dra = VienChinh.vienchinh.TeamXanh.transform.GetChild(i).transform.Find("SkillDra").GetComponent<DragonPVEController>();
+                   //if (dra != null) dra.AnimWin();
+            
+                    //Destroy(TeamXanh.transform.GetChild(i).gameObject);
+                }
     }
     public Action ketquaWin()
     {
@@ -690,7 +718,7 @@ public class VienChinh : MonoBehaviour
         }
         else if (chedodau == CheDoDau.solo)
         {
-            soloWin("thua");
+            soloWin("thua",true);
         }
         else if (chedodau == CheDoDau.Online)
         {
@@ -801,7 +829,7 @@ public class VienChinh : MonoBehaviour
         }
     }
 
-    public void soloWin(string s)
+    public void soloWin(string s,bool outlien = false)
     {
         JSONClass datasend = new JSONClass();
         datasend["class"] = "DragonIsland";
@@ -812,8 +840,14 @@ public class VienChinh : MonoBehaviour
         {
 
         }
-        dangdau = false;
-        AudioManager.SetSoundBg("nhacnen0");
+       SetAnimWinAllDra();
+        StartCoroutine(delay());
+        IEnumerator delay()
+        {
+            if(outlien) yield return new WaitForSeconds(0f);
+            else yield return new WaitForSeconds(3f);
+             dangdau = false;
+         AudioManager.SetSoundBg("nhacnen0");
         GameObject camera = GameObject.FindGameObjectWithTag("MainCamera");
         for (int i = 1; i < TeamDo.transform.childCount; i++)
         {
@@ -842,6 +876,8 @@ public class VienChinh : MonoBehaviour
         //    gameObject.SetActive(false);
         GetComponent<VienChinh>().enabled = false;
         clearSkill();
+        }
+       
     }
 
     public void reset()
@@ -1200,6 +1236,7 @@ public class VienChinh : MonoBehaviour
             hieuung.SetActive(true);
 
             Destroy(hieuung, 1f); // Tự động hủy sau 1 giây
+             StartCoroutine(VienChinh.vienchinh.Shake());
         }
         else
         {
@@ -1234,10 +1271,10 @@ public class VienChinh : MonoBehaviour
     {
         GameObject objskill = Resources.Load("GameData/Skill/" + nameSkill) as GameObject;
         ReplayData.AddHieuUngSkill(nameSkill);
-        if (nameSkill == "SkillSamNo")
+        if (nameSkill == "SkillSamNo" || nameSkill == "SkillCuongLoan")
         {
             string team_ = (team == "TeamDo") ? "TeamXanh" : "TeamDo";
-          StartCoroutine(CreateHieuUngSkillsBuff((Team)Enum.Parse(typeof(Team), team_), "SkillSamNo"));
+          StartCoroutine(CreateHieuUngSkillsBuff((Team)Enum.Parse(typeof(Team), team_), nameSkill));
 
         }
         else if (nameSkill == "SkillDatBom")
@@ -1254,18 +1291,6 @@ public class VienChinh : MonoBehaviour
             hieuung.SetActive(true);
 
         }
-        else if (nameSkill == "SkillCuongLoan")
-        {
-            GameObject Team = TeamXanh;
-            if (team != "TeamDo") Team = TeamDo;
-
-            int giua = Team.transform.childCount / 2;
-            GameObject hieuung = Instantiate(objskill, transform.position, Quaternion.identity);
-            hieuung.transform.SetParent(TruXanh.transform);
-            hieuung.transform.position = new Vector3(Team.transform.GetChild(giua).transform.position.x, Team.transform.GetChild(giua).transform.position.y + UnityEngine.Random.Range(3, 4));
-            hieuung.SetActive(true);
-            Destroy(hieuung, 2f);
-        }
         else if(nameSkill == "SkillBienCuu")
         {
 
@@ -1276,6 +1301,9 @@ public class VienChinh : MonoBehaviour
         }
         else
         {
+                   StartCoroutine(CreateHieuUngSkillsBuff((Team)Enum.Parse(typeof(Team), team), nameSkill));
+
+            return objskill;
             GameObject Team = TeamDo;
             if (team != "TeamDo") Team = TeamXanh;
 
@@ -1388,7 +1416,7 @@ public class VienChinh : MonoBehaviour
                 randomthebai = new string[] { "doatmenhhaclong", "doatmenhhaclong", "doatmenhhaclong" }; // doatmenh
                 nameskill = "DoatMenh";
             }
-           // nameskill = "CuongNo";
+          //  nameskill = "DoatMenh";
 
             Transform Obj = GiaoDienPVP.ins.OSkill.transform.Find("DienKienTuThan");
             Obj.gameObject.SetActive(true);

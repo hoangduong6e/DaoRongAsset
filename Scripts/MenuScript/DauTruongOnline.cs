@@ -13,15 +13,15 @@ public class DauTruongOnline : MonoBehaviour
     public GameObject[] btnMoi;
     public bool coroom = false;
     private bool updateData = false;
-    public static bool GetUpdateDra
-    {
-        get
-        {
-            if(DauTruongOnline.ins == null) return false;
-            if(VienChinh.vienchinh.chedodau != CheDoDau.Online) return false;
-            return DauTruongOnline.ins.updateData;
-        }
-    }
+    //public static bool GetUpdateDra
+    //{
+    //    get
+    //    {
+    //        if(DauTruongOnline.ins == null) return false;
+    //        if(VienChinh.vienchinh.chedodau != CheDoDau.Online) return false;
+    //        return DauTruongOnline.ins.updateData;
+    //    }
+    //}
     public static DauTruongOnline ins;
     public static string namedoithu = "";
     public static Dictionary<string, Transform> dicdra;
@@ -30,7 +30,7 @@ public class DauTruongOnline : MonoBehaviour
         ins = this;
         NetworkManager.ins.socket.On("DauTruongOnline", DauOnline);
         dicdra = new Dictionary<string, Transform>();
-        debug.Log("new dic draaaa");
+       // debug.Log("new dic draaaa");
     }
     public void AddUpdateData(JSONObject json,bool set = false)
     {

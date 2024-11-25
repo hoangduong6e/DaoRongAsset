@@ -62,7 +62,7 @@ public class ReplayDra : MonoBehaviour
         {
             transform.position = new Vector3(ReplayData.NodeDataPosition[nameobj][i]["x"].AsFloat, transform.position.y, 90);
         }
-        if (ReplayData.CheckData(nameobj, "anim",i)) dragonPVEController.anim.Play(ReplayData.NodeDataPosition[nameobj][i]["anim"].AsString);
+        if (ReplayData.CheckData(nameobj, "anim",i)) dragonPVEController.PlayAnimReplay(ReplayData.NodeDataPosition[nameobj][i]["anim"].AsString);
         if(setFloatAnim)
         {
             dragonPVEController.anim.SetFloat("speedRun", ReplayData.speedReplay);

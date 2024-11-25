@@ -88,30 +88,7 @@ public class TruVienChinh : MonoBehaviour
                 AllMenu.ins.menu["GiaoDienPVP"].transform.GetChild(6).gameObject.SetActive(false);
                 AllMenu.ins.menu["GiaoDienPVP"].transform.GetChild(7).gameObject.SetActive(false);
 
-                for (int i = 1; i < VienChinh.vienchinh.TeamDo.transform.childCount; i++)
-                {
-                    Transform skilldra = VienChinh.vienchinh.TeamDo.transform.GetChild(i).transform.Find("SkillDra");
-                    if(skilldra != null)
-                    {
-                        DragonPVEController dra = skilldra.GetComponent<DragonPVEController>();
-                        dra.AnimWin();
-                    }
-               
-                }
-                for (int i = 1; i < VienChinh.vienchinh.TeamXanh.transform.childCount; i++)
-                {
-                    Transform skilldra = VienChinh.vienchinh.TeamXanh.transform.GetChild(i).transform.Find("SkillDra");
-                    if (skilldra != null)
-                    {
-                        DragonPVEController dra = skilldra.GetComponent<DragonPVEController>();
-                        dra.AnimWin();
-                    }
-
-                   // DragonPVEController dra = VienChinh.vienchinh.TeamXanh.transform.GetChild(i).transform.Find("SkillDra").GetComponent<DragonPVEController>();
-                   //if (dra != null) dra.AnimWin();
-            
-                    //Destroy(TeamXanh.transform.GetChild(i).gameObject);
-                }
+                VienChinh.vienchinh.SetAnimWinAllDra();
           
               //  ReplayData.Record = false;
               //  vienchinh.ClearQuai();
