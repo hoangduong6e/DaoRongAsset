@@ -530,11 +530,11 @@ public partial class HacLongAttack : DragonPVEController
     public void DoatMenhOk()
     {
         if (VienChinh.vienchinh.chedodau == CheDoDau.Replay) return;
+       // debug.Log("");
         if(TargetDoatMenh != null)
         {
             DragonPVEController dra = TargetDoatMenh.transform.Find("SkillDra").GetComponent<DragonPVEController>();
-    
-         
+
             Debug.Log("Doat menh rong " + dra.nameobj);
             if(VienChinh.vienchinh.chedodau == CheDoDau.VienChinh ||
                 VienChinh.vienchinh.chedodau == CheDoDau.BossTG ||

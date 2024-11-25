@@ -1416,7 +1416,7 @@ public class VienChinh : MonoBehaviour
                 randomthebai = new string[] { "doatmenhhaclong", "doatmenhhaclong", "doatmenhhaclong" }; // doatmenh
                 nameskill = "DoatMenh";
             }
-          //  nameskill = "DoatMenh";
+            nameskill = "DoatMenh";
 
             Transform Obj = GiaoDienPVP.ins.OSkill.transform.Find("DienKienTuThan");
             Obj.gameObject.SetActive(true);
