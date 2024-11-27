@@ -4,8 +4,8 @@ public class RongTuanLongAttack : DragonPVEController
     public override void AbsStart()
     {
         //  debug.Log("AbsStart");
-        string team = transform.parent.transform.parent.name;
-        if (team == "TeamXanh")
+       // string team = transform.parent.transform.parent.name;
+        if (team == Team.TeamXanh)
         {
             VienChinh.vienchinh.HienIconSkill(300, "Xanh", "iconKhienTuanLongXanh");
             VienChinh.vienchinh.SetBuffGiapall(saorong, team);
@@ -109,8 +109,7 @@ public class RongTuanLongAttack : DragonPVEController
 
     private void OnDestroy()
     {
-        string team = transform.parent.transform.parent.name;
-        if (team == "TeamDo")
+        if (team == Team.TeamDo)
         {
             VienChinh.vienchinh.TaticonSkill("iconKhienTuanLongDo", "Do");
             VienChinh.vienchinh.SetBuffGiapall(-saorong, team);

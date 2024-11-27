@@ -65,9 +65,9 @@ public class VienChinh : MonoBehaviour
     //   ThongKeDame[nameobjrong][id + "/" + saorong] = 0;
    // }    
 
-    public void SetBuffGiapall(float set, string team)
+    public void SetBuffGiapall(float set, Team team)
     {
-        if (team == "TeamDo")
+        if (team == Team.TeamDo)
         {
             buffgiapalldo += set;
             debug.Log("buff giáp all đỏ" + buffgiapalldo);
@@ -516,6 +516,7 @@ public class VienChinh : MonoBehaviour
         ClearQuai();
         if (chedodau == CheDoDau.VienChinh)
         {
+            //chedodau = CheDoDau.Null;
             return ThuaVienChinh;
         }
         else if (chedodau == CheDoDau.LoiDai)

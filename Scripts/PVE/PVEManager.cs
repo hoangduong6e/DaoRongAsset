@@ -451,14 +451,13 @@ public class PVEManager : MonoBehaviour
         {
             dungdau = VienChinh.vienchinh.muctieuxanh.transform;
         }
-        dradungtruoc.Add(dungdau);
         //if (team.transform.childCount == 1)
         //{
         //    dradungtruoc.Add(team.transform.GetChild(0));
         //    return dradungtruoc;
-        //}    
+        //}
         List<Transform> potentialTransforms = new List<Transform>();
-
+        
         for (int i = 1; i < team.transform.childCount; i++)
         {
             Transform childTransform = team.transform.GetChild(i);
@@ -484,6 +483,11 @@ public class PVEManager : MonoBehaviour
             dradungtruoc.Add(potentialTransforms[i]);
         }
 
+        if(dradungtruoc.Count == 0)
+        {
+            dradungtruoc.Add(dungdau);
+        }    
+       // Debug.Log("Count dra đứng trước là: " + dradungtruoc.Count);
         return dradungtruoc;
     }
     //public static List<Transform> GetDraDungTruoc(Transform team, Vector2 phamvi) // không có giới hạn rồng

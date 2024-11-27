@@ -4,29 +4,28 @@ using UnityEngine;
 public class skillKyLan : SkillDraController
 {
     private bool ok = true;
-    private Team nameTeam = Team.Null;
     protected override void ABSAwake()
     {
         
     }
+    private void Start()
+    {
+        if (controller.team == Team.TeamXanh)
+        {
+            transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        }
+    }
     private void OnEnable()
     {
-        transform.position = transform.parent.transform.position;
+        transform.position = controller.transform.position;
         ok = true;
-        if(nameTeam == Team.Null)
-        {
-            nameTeam = (Team)Enum.Parse(typeof(Team), transform.parent.transform.parent.transform.parent.gameObject.name);
-            if (nameTeam == Team.TeamXanh)
-            {
-                transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-            }
-        }    
-      
+     
+
     }
     // Update is called once per frame
     void FixedUpdate()
     {
-        if(nameTeam == Team.TeamXanh)
+        if(controller.team == Team.TeamXanh)
         {
             transform.position += Vector3.right * 15 * ReplayData.speedReplay * Time.deltaTime;
             if (skillmoveok != null && ok) skillmoveok();

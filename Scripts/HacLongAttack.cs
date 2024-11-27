@@ -471,6 +471,17 @@ public partial class HacLongAttack : DragonPVEController
            }
         }
         timeHapHuyet = MaxtimeHapHuyet;
+        isHapHuyet = true;
+        if (team == Team.TeamXanh)
+        {
+            VienChinh.vienchinh.HienIconSkill(timeHapHuyet, "Xanh", "iconHapHuyetXanh");
+        }
+        else
+        {
+            //  ImgHp.sprite = VienChinh.vienchinh.thanhmaudo;
+            VienChinh.vienchinh.HienIconSkill(timeHapHuyet, "Do", "iconHapHuyetDo");
+        }
+
         UseSkill();
     }
 
