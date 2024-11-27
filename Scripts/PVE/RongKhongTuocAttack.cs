@@ -61,7 +61,7 @@ public class RongKhongTuocAttack : DragonPVEController
         {
             float damee = dame;
             DragonPVEController chisodich = Target.transform.Find("SkillDra").GetComponent<DragonPVEController>();
-            if (Random.Range(1, 100) <= chimang)
+            if (Random.Range(1, 100) <= _ChiMang)
             {
                 damee *= 5;
                 PVEManager.InstantiateHieuUngChu("chimang",transform);
@@ -130,8 +130,8 @@ public class RongKhongTuocAttack : DragonPVEController
                 // ReplayData.AddAttackTarget(transform.parent.name, "0", "dungdau");
                 // anim.Play("Attack_2");
                 if (Target == null) return;
-                float hutmaubandau = huthp;
-                huthp = 0;
+                float hutmaubandau = _HutHp;
+                _HutHp = 0;
                 BatTu(2);
                 // anim.SetInteger("tancong", 2);
 
@@ -182,7 +182,7 @@ public class RongKhongTuocAttack : DragonPVEController
                 {
                     VienChinh.vienchinh.HienIconSkill(timelamcham, "Do", "iconKhongTuocDo");
                 }
-                huthp = hutmaubandau;
+                _HutHp = hutmaubandau;
                
                 //skillObj[0].transform.position = transform.position;
                 //skillObj[0].SetActive(true);

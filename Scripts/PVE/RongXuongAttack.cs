@@ -214,7 +214,7 @@ public class RongXuongAttack : DragonPVEController
 
                 if (!chimanggg)
                 {
-                    if (Random.Range(1, 100) <= chimang)
+                    if (Random.Range(1, 100) <= _ChiMang)
                     {
                         chimanggg = true;
                         chisodich.MatMau(damee * 5, this);
@@ -281,7 +281,7 @@ public class RongXuongAttack : DragonPVEController
 
                 if (!chimanggg)
                 {
-                    if (Random.Range(1, 100) <= chimang)
+                    if (Random.Range(1, 100) <= _ChiMang)
                     {
                         chimanggg = true;
                         chisodich.MatMau(damee * 5, this);
@@ -299,8 +299,8 @@ public class RongXuongAttack : DragonPVEController
     private void SkillMoveOkRongCay()
     {
         float damee = dame;
-        if (Random.Range(1, 100) <= chimang)
-        {
+        if (Random.Range(1, 100) <= _ChiMang)
+        {   
             damee *= 5;
             PVEManager.InstantiateHieuUngChu("chimang", transform);
         }
@@ -331,7 +331,7 @@ public class RongXuongAttack : DragonPVEController
 
                 if (!chimanggg)
                 {
-                    if (Random.Range(1, 100) <= chimang)
+                    if (Random.Range(1, 100) <= _ChiMang)
                     {
                         chimanggg = true;
                         chisodich.MatMau(damee * 5, this);
@@ -357,7 +357,7 @@ public class RongXuongAttack : DragonPVEController
     private void SkillMoveOkRongDat()
     {
         float damee = dame;
-        if (Random.Range(1, 100) <= chimang)
+        if (Random.Range(1, 100) <= _ChiMang)
         {
             damee *= 5;
             PVEManager.InstantiateHieuUngChu("chimang", transform);
@@ -387,7 +387,7 @@ public class RongXuongAttack : DragonPVEController
     private void SkillMoveOkHaiDau()
     {
         float damee = dame;
-        if (Random.Range(1, 100) <= chimang)
+        if (Random.Range(1, 100) <= _ChiMang)
         {
             damee *= 5;
             PVEManager.InstantiateHieuUngChu("chimang", transform);
@@ -416,7 +416,7 @@ public class RongXuongAttack : DragonPVEController
 
                 if (!chimanggg)
                 {
-                    if (Random.Range(1, 100) <= chimang)
+                    if (Random.Range(1, 100) <= _ChiMang)
                     {
                         chimanggg = true;
                         chisodich.MatMau(damee * 5, this);

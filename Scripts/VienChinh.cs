@@ -947,25 +947,32 @@ public class VienChinh : MonoBehaviour
 
         while (elapsed < duration)
         {
+            // Tạo độ lệch ngẫu nhiên
             float x = Random.Range(-1f, 1f) * magnitude;
             float y = Random.Range(-1f, 1f) * magnitude;
 
-            CrGame.ins.transform.localPosition = new Vector3(originalPosition.x + x, originalPosition.y + y, originalPosition.z);
+            // Tính toán vị trí rung
+            Vector3 shakenPosition = new Vector3(originalPosition.x + x, originalPosition.y + y, originalPosition.z);
+
+            // Giới hạn vị trí rung bằng Clampcamera
+            CrGame.ins.transform.localPosition = Clampcamera(shakenPosition);
 
             elapsed += Time.deltaTime;
 
             yield return null; // Đợi đến khung hình tiếp theo
         }
 
-        CrGame.ins.transform.localPosition = originalPosition; // Trả camera về vị trí gốc
+        // Trả camera về vị trí gốc
+        CrGame.ins.transform.localPosition = originalPosition;
     }
+
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) // Nhấn phím Space để thử nghiệm
-        {
-            StartCoroutine(Shake()); // Rung màn hình trong 0.2 giây với cường độ 0.1
-        }
+        //if (Input.GetKeyDown(KeyCode.Space)) // Nhấn phím Space để thử nghiệm
+        //{
+        //    StartCoroutine(Shake()); // Rung màn hình trong 0.2 giây với cường độ 0.1
+        //}
         //if(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == null)
         //{
         //    if (Input.GetMouseButtonDown(0))
@@ -1416,7 +1423,7 @@ public class VienChinh : MonoBehaviour
                 randomthebai = new string[] { "doatmenhhaclong", "doatmenhhaclong", "doatmenhhaclong" }; // doatmenh
                 nameskill = "DoatMenh";
             }
-            nameskill = "DoatMenh";
+
 
             Transform Obj = GiaoDienPVP.ins.OSkill.transform.Find("DienKienTuThan");
             Obj.gameObject.SetActive(true);

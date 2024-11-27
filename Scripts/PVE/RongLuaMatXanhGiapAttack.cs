@@ -112,7 +112,7 @@ public class RongLuaMatXanhGiapAttack : DragonPVEController
                 debug.Log("damee x5");
                 damee *= 5;
             }
-            if (Random.Range(1, 100) <= chimang)
+            if (Random.Range(1, 100) <= _ChiMang)
             {
                 damee *= 5;
                 PVEManager.InstantiateHieuUngChu("chimang", transform);

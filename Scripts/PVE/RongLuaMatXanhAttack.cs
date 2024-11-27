@@ -80,7 +80,7 @@ public class RongLuaMatXanhAttack : DragonPVEController
                 debug.Log("damee x5");
                 damee *= 5;
             }
-            if (Random.Range(1, 100) <= chimang)
+            if (Random.Range(1, 100) <= _ChiMang)
             {
                 damee *= 5;
                 PVEManager.InstantiateHieuUngChu("chimang", transform);
@@ -100,7 +100,7 @@ public class RongLuaMatXanhAttack : DragonPVEController
         if (Target.name != "trudo" && Target.name != "truxanh")
         {
             DragonPVEController chisodich = Target.transform.Find("SkillDra").GetComponent<DragonPVEController>();
-            if (Random.Range(1, 100) <= chimang)
+            if (Random.Range(1, 100) <= _ChiMang)
             {
                 damee *= 5;
                 PVEManager.InstantiateHieuUngChu("chimang", transform);

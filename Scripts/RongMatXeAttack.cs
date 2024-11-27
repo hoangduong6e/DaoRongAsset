@@ -153,7 +153,7 @@ public class RongMatXeAttack : DragonPVEController
     public override void SkillMoveOk()
     {
         float damee = dame;
-        if (Random.Range(1, 100) <= chimang)
+        if (Random.Range(1, 100) <= _ChiMang)
         {
             damee *= 5;
             PVEManager.InstantiateHieuUngChu("chimang", transform);

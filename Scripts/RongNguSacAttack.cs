@@ -179,7 +179,7 @@ public class RongNguSacAttack : DragonPVEController
         if (Target.name != "trudo" && Target.name != "truxanh")
         {
             DragonPVEController chisodich = Target.transform.Find("SkillDra").GetComponent<DragonPVEController>();
-            if (Random.Range(1, 100) <= chimang)
+            if (Random.Range(1, 100) <= _ChiMang)
             {
                 damee *= 5;
                 PVEManager.InstantiateHieuUngChu("chimang", transform);

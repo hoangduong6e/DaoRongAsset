@@ -88,7 +88,7 @@ public partial class HacLongAttack : DragonPVEController
             MaxtimeCuongNo = 8;
         }
 
-        if(saorong == 17)
+        if (saorong == 17)
         {
             chiMangCuongNo = 6;
         }
@@ -234,30 +234,30 @@ public partial class HacLongAttack : DragonPVEController
             if (timeCuongNo <= -1)
             {
                 CuongHoa = false;
-                chimang -= chiMangCuongNo;
+                _ChiMang -= chiMangCuongNo;
             }
         }
-        if(isHapHuyet)
+        if (isHapHuyet)
         {
             timeHapHuyet -= Time.deltaTime;
-            if (timeCuongNo <= -1)
+            if (timeHapHuyet <= -1)
             {
                 isHapHuyet = false;
-                huthp = maxhuthp;
-                  Transform TeamTf = null;
-        if(team == Team.TeamDo) TeamTf = VienChinh.vienchinh.TeamDo.transform;
-        else TeamTf = VienChinh.vienchinh.TeamXanh.transform;
+                _HutHp = maxhuthp;
+                Transform TeamTf = null;
+                if (team == Team.TeamDo) TeamTf = VienChinh.vienchinh.TeamDo.transform;
+                else TeamTf = VienChinh.vienchinh.TeamXanh.transform;
 
-        for (int i = 1; i < TeamTf.transform.childCount; i++)
-        {
-           Transform skilldra = TeamTf.transform.GetChild(i).transform.Find("SkillDra");
-           if(skilldra != null)
-           {
-              DragonPVEController dra = skilldra.GetComponent<DragonPVEController>();
-              dra.huthp = maxhuthp;
-           }
-        }
-                
+                for (int i = 1; i < TeamTf.transform.childCount; i++)
+                {
+                    Transform skilldra = TeamTf.transform.GetChild(i).transform.Find("SkillDra");
+                    if (skilldra != null)
+                    {
+                        DragonPVEController dra = skilldra.GetComponent<DragonPVEController>();
+                        dra._HutHp = maxhuthp;
+                    }
+                }
+
             }
         }
         UpdateBiDong();
@@ -265,18 +265,7 @@ public partial class HacLongAttack : DragonPVEController
     }
     public override void SetHp(float fillhp, bool setonline = false)
     {
-        ImgHp.fillAmount = fillhp;
-        ImgHp.transform.parent.gameObject.SetActive(true);
-        if (!setonline)
-        {
-            if (fillhp <= 0)
-            {
-                debug.Log("Hac long Die Danh Online");
-                Die();
-            }
-        }
-
-        delaytatthanhmau();
+        SetHpDefault(fillhp, setonline);
     }
     public override void AbsMatMau(float maumat, DragonPVEController cs, bool setonline = false)
     {
@@ -301,7 +290,7 @@ public partial class HacLongAttack : DragonPVEController
         if (Target == null) return;
 
         float damee = dame;
-        if (Random.Range(1, 100) <= chimang)
+        if (Random.Range(1, 100) <= _ChiMang)
         {
             damee *= 5;
             PVEManager.InstantiateHieuUngChu("chimang", transform);
@@ -417,7 +406,7 @@ public partial class HacLongAttack : DragonPVEController
             return;
         }
         battu = true;
-        Debug.Log("Cuồng nộ");
+       // Debug.Log("Cuồng nộ");
         setAnim = false;
    //     walking = false;
         animplay = "CuongNo";
@@ -428,7 +417,7 @@ public partial class HacLongAttack : DragonPVEController
         timeCuongNo = MaxtimeCuongNo;
         UseSkill();
         Shake();
-        chimang += chiMangCuongNo;
+        _ChiMang += chiMangCuongNo;
         GiaoDienPVP.ins.SetPanelToi = true;
     }
     private void Shake()
@@ -447,7 +436,7 @@ public partial class HacLongAttack : DragonPVEController
 
     public void UpdateAnimCuongNo()
     {
-        Debug.Log("UpdateAnimCuongNo");
+      //  Debug.Log("UpdateAnimCuongNo");
         setAnim = true;
         //   walking = true;
         battu = false;
@@ -465,9 +454,9 @@ public partial class HacLongAttack : DragonPVEController
             DauTruongOnline.ins.AddUpdateData(newjson, true);
             return;
         }
-        Debug.Log("Hấp Huyết");
+   //     Debug.Log("Hấp Huyết");
         StartCoroutine(VienChinh.vienchinh.CreateHieuUngSkillsBuff(team, "HapHuyetHacLong"));
-        huthp = 100;
+        _HutHp = 100;
         Transform TeamTf = null;
         if(team == Team.TeamDo) TeamTf = VienChinh.vienchinh.TeamDo.transform;
         else TeamTf = VienChinh.vienchinh.TeamXanh.transform;
@@ -478,7 +467,7 @@ public partial class HacLongAttack : DragonPVEController
            if(skilldra != null)
            {
               DragonPVEController dra = skilldra.GetComponent<DragonPVEController>();
-              dra.huthp += HutHpChoToanDoi;
+              dra._HutHp += HutHpChoToanDoi;
            }
         }
         timeHapHuyet = MaxtimeHapHuyet;
@@ -530,7 +519,7 @@ public partial class HacLongAttack : DragonPVEController
     public void DoatMenhOk()
     {
         if (VienChinh.vienchinh.chedodau == CheDoDau.Replay) return;
-       // debug.Log("");
+       debug.Log("DoatMenhOk, TargetDoatMenh: " + TargetDoatMenh);
         if(TargetDoatMenh != null)
         {
             DragonPVEController dra = TargetDoatMenh.transform.Find("SkillDra").GetComponent<DragonPVEController>();
@@ -539,7 +528,7 @@ public partial class HacLongAttack : DragonPVEController
             if(VienChinh.vienchinh.chedodau == CheDoDau.VienChinh ||
                 VienChinh.vienchinh.chedodau == CheDoDau.BossTG ||
                 VienChinh.vienchinh.chedodau == CheDoDau.XucTu ||
-                VienChinh.vienchinh.chedodau == CheDoDau.XucTu)
+                VienChinh.vienchinh.chedodau == CheDoDau.LanSu)
             {
                 dra.MatMau(9999, this);
             }
@@ -559,11 +548,13 @@ public partial class HacLongAttack : DragonPVEController
         VienChinh.vienchinh.timeskill[2] = timeCDskill;
     }
 
-    //private void OnDestroy()
+    //private void OnDisable()
     //{
+    //    if (VienChinh.vienchinh.chedodau != CheDoDau.Online) return;
+    //    Debug.Log("Doat Menh Onlineeee");
     //    SDDoatMenh();
     //}
-         
+
     protected override void Die()
     {
         SDDoatMenh();

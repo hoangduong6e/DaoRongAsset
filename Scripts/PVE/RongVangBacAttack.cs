@@ -44,7 +44,7 @@ public class RongVangBacAttack : DragonPVEController
     {
         List<Transform> ronggan = new List<Transform>(PVEManager.GetDraDungTruoc(3, Target.transform.parent.transform, new Vector2(1f, 1f)));
         float damee = dame;
-        if (Random.Range(1, 100) <= chimang)
+        if (Random.Range(1, 100) <= _ChiMang)
         {
             damee *= 5;
             PVEManager.InstantiateHieuUngChu("chimang", transform);
@@ -61,7 +61,7 @@ public class RongVangBacAttack : DragonPVEController
 
                 if (!chimanggg)
                 {
-                    if (Random.Range(1, 100) <= chimang)
+                    if (Random.Range(1, 100) <= _ChiMang)
                     {
                         chimanggg = true;
                         chisodich.MatMau(damee * 5, this);

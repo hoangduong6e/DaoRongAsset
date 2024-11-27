@@ -33,16 +33,49 @@ public abstract class DragonPVEController : MonoBehaviour
         Maxhp = 2000,
         speed = 2,
         tamdanhxa,
-        chimang = 0,
         netranh = 0,
-        huthp = 0,
-        maxhuthp=0,
+        maxhuthp = 0,
         giapso = 0,
         giapphantram = 0,
         xuyengiap = 0,
         hpgiap = 0,
         maxhpgiap = 0;
     // protected bool battu;
+
+    [SerializeField]
+    private float huthp = 0, chimang = 0;
+
+    public float _HutHp
+    {
+        get
+        {
+            return huthp;
+        }
+        set
+        {
+            huthp = value;
+            if (huthp > 100)
+            {
+                huthp = 100;
+            }
+        }
+    }
+    public float _ChiMang
+    {
+        get
+        {
+            return chimang;
+        }
+        set
+        {
+            chimang = value;
+            if (chimang > 100)
+            {
+                chimang = 100;
+            }
+        }
+    }
+
     public string nameobj { get; protected set; }
     protected byte saorong;
     //public Transform dra;

@@ -147,7 +147,7 @@ public class RongMaTroiGiapAttack : DragonPVEController
 
                 if (!chimanggg)
                 {
-                    if (Random.Range(1, 100) <= chimang)
+                    if (Random.Range(1, 100) <= _ChiMang)
                     {
                         chimanggg = true;
                         chisodich.MatMau(damee * 5, this);

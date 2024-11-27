@@ -2140,9 +2140,9 @@ public class NetworkManager : MonoBehaviour
                      //   debug.Log("quai ok 1");
                         chiso.speed = float.Parse(GamIns.CatDauNgoacKep(e.data["quai"][i]["speed"].ToString()));
 
-                        chiso.huthp = float.Parse(e.data["quai"][i]["hutmau"].ToString());
+                        chiso._HutHp = float.Parse(e.data["quai"][i]["hutmau"].ToString());
                         chiso.netranh = float.Parse(e.data["quai"][i]["netranh"].ToString());
-                        chiso.chimang = float.Parse(e.data["quai"][i]["tilechimang"].ToString());
+                        chiso._ChiMang = float.Parse(e.data["quai"][i]["tilechimang"].ToString());
                      //   debug.Log("quai ok 2");
                         instance.GetComponent<DraUpdateAnimator>().CreateChamDo();
                       //  debug.Log("quai ok 3");

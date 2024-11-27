@@ -122,7 +122,7 @@ public class QuaiVienChinhNew : DragonPVEController
     {
         List<Transform> ronggan = new List<Transform>(PVEManager.GetDraDungTruoc(3, Target.transform.parent.transform, new Vector2(3, 2)));
         float damee = dame;
-        if (UnityEngine.Random.Range(1, 100) <= chimang)
+        if (UnityEngine.Random.Range(1, 100) <= _ChiMang)
         {
             damee *= 5;
             PVEManager.InstantiateHieuUngChu("chimang", transform);
