@@ -355,6 +355,12 @@ public class DragonIslandManager : MonoBehaviour
                         info.panelinfo.transform.GetChild(6).gameObject.SetActive(true);
                         info.panelinfo.transform.GetChild(6).transform.GetChild(0).GetComponent<Text>().text = json["info"]["infodacbiet"]["infodacbiet2"].AsString;
                     }
+
+                    if (json["info"]["infodacbiet"]["infodacbiet3"] != null)
+                    {
+                        info.panelinfo.transform.GetChild(7).gameObject.SetActive(true);
+                        info.panelinfo.transform.GetChild(7).transform.GetChild(0).GetComponent<Text>().text = json["info"]["infodacbiet"]["infodacbiet3"].AsString;
+                    }
                 }
             }
             else
