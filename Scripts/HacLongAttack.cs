@@ -53,6 +53,7 @@ public partial class HacLongAttack : DragonPVEController
 
                     oskill.GetChild(i).GetComponent<Button>().interactable = true;
                     oskill.GetChild(i).transform.GetChild(1).gameObject.SetActive(false);
+                    VienChinh.vienchinh.timeskill[i] = 0;
                     break;
                 }
 
@@ -454,8 +455,11 @@ public partial class HacLongAttack : DragonPVEController
             DauTruongOnline.ins.AddUpdateData(newjson, true);
             return;
         }
-   //     Debug.Log("Hấp Huyết");
-        StartCoroutine(VienChinh.vienchinh.CreateHieuUngSkillsBuff(team, "HapHuyetHacLong"));
+        // Debug.Log("Hấp Huyết");
+
+        EventManager.StartDelay2(()=>{
+
+             StartCoroutine(VienChinh.vienchinh.CreateHieuUngSkillsBuff(team, "HapHuyetHacLong"));
         _HutHp = 100;
         Transform TeamTf = null;
         if(team == Team.TeamDo) TeamTf = VienChinh.vienchinh.TeamDo.transform;
@@ -483,6 +487,8 @@ public partial class HacLongAttack : DragonPVEController
         }
 
         UseSkill();
+            },1f);
+       
     }
 
     public void DoatMenh(bool setonline = false)

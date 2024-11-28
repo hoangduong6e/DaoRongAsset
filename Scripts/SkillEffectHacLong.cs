@@ -17,6 +17,13 @@ public class SkillEffectHacLong : SkillDraController
     {
         Transform child0 = transform.GetChild(0);
         child0.transform.position = new Vector3(child0.transform.position.x, controller.transform.position.y + 0.6f, 0);
+        if(controller.team != Team.TeamXanh)
+        {
+            Vector3 vec = child0.transform.localScale;
+            vec.y = -vec.y;
+
+            child0.transform.localScale = vec;
+        }
     }
     //public float speedrotation;
 

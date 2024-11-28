@@ -102,18 +102,27 @@ public class SachKiNang : MonoBehaviour
         {
             Image imgSkill = SkillChon.transform.GetChild(0).GetComponent<Image>();
 
+            Transform child0 = SkillChon.transform.GetChild(0);
 
             if (json["status"].AsString == "0")
             {
-                SkillChon.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = json["name"].AsString;
-                SkillChon.transform.GetChild(0).GetChild(4).GetComponent<Text>().text = json["satthuong"].AsString;
-                SkillChon.transform.GetChild(0).GetChild(5).GetComponent<Text>().text = json["nokhi"].AsString;
-                SkillChon.transform.GetChild(0).GetChild(6).GetComponent<Text>().text = json["txtinfo"].AsString;
-                SkillChon.transform.GetChild(0).GetChild(7).GetComponent<Text>().text = json["txtnangcap"].AsString;
+                child0.GetChild(1).GetComponent<Text>().text = json["name"].AsString;
+                child0.GetChild(4).GetComponent<Text>().text = json["satthuong"].AsString;
+                child0.GetChild(5).GetComponent<Text>().text = json["nokhi"].AsString;
+                child0.GetChild(6).GetComponent<Text>().text = json["txtinfo"].AsString;
+                child0.GetChild(7).GetComponent<Text>().text = json["txtnangcap"].AsString;
                 imgSkill.sprite = nameSkill.transform.GetChild(2).GetComponent<Image>().sprite;
                 imgSkill.SetNativeSize();
-                SkillChon.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = nameSkill.transform.GetChild(0).GetComponent<Text>().text;
+                child0.GetChild(0).GetComponent<Text>().text = nameSkill.transform.GetChild(0).GetComponent<Text>().text;
                 imgSkill.gameObject.SetActive(true);
+
+                for(int i = 0; i < child0.transform.childCount - 1;i++)
+                {
+                    child0.transform.GetChild(i).gameObject.SetActive(true);
+                }
+
+                child0.transform.GetChild(child0.transform.childCount - 1).gameObject.SetActive(false);
+
             }
             else if (json["status"].AsString == "2")
             {
@@ -171,6 +180,22 @@ public class SachKiNang : MonoBehaviour
                 else btnNangCap.interactable = false;
                 imgSkill.gameObject.SetActive(false);
                 menunangcap.SetActive(true);
+            }
+            else if (json["status"].AsString == "3")
+            {
+                debug.Log("skill innfo: " + json.ToString());
+                imgSkill.sprite = nameSkill.transform.GetChild(2).GetComponent<Image>().sprite;
+                imgSkill.SetNativeSize();
+                child0.GetChild(0).GetComponent<Text>().text = nameSkill.transform.GetChild(0).GetComponent<Text>().text;
+                imgSkill.gameObject.SetActive(true);
+
+                for(int i = 0; i < child0.transform.childCount - 1;i++)
+                {
+                    child0.transform.GetChild(i).gameObject.SetActive(false);
+                }
+                Text txtinfo =  child0.transform.GetChild(child0.transform.childCount - 1).GetComponent<Text>();
+               txtinfo.gameObject.SetActive(true);
+                txtinfo.text = json["info"].AsString;
             }
             else
             {

@@ -1425,7 +1425,7 @@ public class VienChinh : MonoBehaviour
                 nameskill = "DoatMenh";
             }
 
-
+           // nameskill = "HapHuyet";
             Transform Obj = GiaoDienPVP.ins.OSkill.transform.Find("DienKienTuThan");
             Obj.gameObject.SetActive(true);
             StartCoroutine(delay());
