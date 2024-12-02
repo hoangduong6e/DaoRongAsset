@@ -124,7 +124,7 @@ public class MenuEventValentine2024 : EventManager
                         Vector3 vectorzin = txt.transform.localScale;
                         txt.transform.LeanScale(new Vector3(transform.localScale.x * 1.5f, transform.localScale.y * 1.5f), 0.3f);
                         StartDelay(() => { txt.transform.LeanScale(vectorzin, 0.3f); }, 0.5f);
-                        OpenMenuNhanDuoc("Chocolate","X20 Chocolate",ItemGi.itemthuong);
+                        OpenMenuNhanDuoc("Chocolate","X20 Chocolate",LoaiItem.item);
                     }
                 }
             }
@@ -146,7 +146,7 @@ public class MenuEventValentine2024 : EventManager
                     Destroy(LongBay);
                     Transform KhongTuoc = giaodien1.transform.Find("KhongTuoc");
                     KhongTuoc.transform.LeanScale(Vector3.zero, 0.3f);
-                    OpenMenuNhanDuoc("HuyHieuKhongTuoc","<color=cyan>Huy Hiệu Khổng Tước</color>",ItemGi.itemevent);
+                    OpenMenuNhanDuoc("HuyHieuKhongTuoc","<color=cyan>Huy Hiệu Khổng Tước</color>",LoaiItem.itemevent);
                     StartDelay(() => {
                         Transform trungden = giaodien1.transform.Find("TrungDen");
                         trungden.transform.localScale = Vector3.zero;

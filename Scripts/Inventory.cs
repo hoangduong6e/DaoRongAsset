@@ -144,44 +144,75 @@ public class Inventory : MonoBehaviour
     {
         return Resources.Load("GameData/Object/" + name) as GameObject;
     }
-    public static Sprite LoadSpriteRong(string s,short sao = -1)
+    public static Sprite LoadSpriteRong(string s, short sao = -1)
     {
-        if(sao != -1)
+        if (sao != -1)
         {
-            if(s == "RongRua2"  && sao >= 30)
+            if (s == "RongRua2" && sao >= 30)
             {
                 s = "RongRua3";
             }
-        }    
+        }
+
+        // Tải texture từ asset bundle
         Texture2D tex = DownLoadAssetBundle.bundleDragon.LoadAsset<Texture2D>(s);
         Sprite sprite = null;
+
         if (tex != null)
         {
-
+            // Tạo sprite từ texture nếu tồn tại
+            sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+            sprite.name = tex.name;
         }
-        else if(s.Contains("GiapThin"))
+        else
         {
-            //s.Replace("GiapThin","");
-            string Str = s.Replace("GiapThin", "");
-            // debug.Log("Chuỗi mới: " + Str);
-            tex = DownLoadAssetBundle.bundleDragon.LoadAsset<Texture2D>(Str);
-        }
-        else if (s.Contains("Valentine"))
-        {
-            //s.Replace("GiapThin","");
-            string Str = s.Replace("Valentine", "");
-         //   debug.Log("Chuỗi mới: " + Str);
-            tex = DownLoadAssetBundle.bundleDragon.LoadAsset<Texture2D>(Str);
-        }
-        debug.Log(s);
-        sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(tex.width / 2, tex.height / 2));
+            // Xử lý khi không tìm thấy texture
+            if (s.Contains("GiapThin"))
+            {
+                string newStr = s.Replace("GiapThin", "");
+                tex = DownLoadAssetBundle.bundleDragon.LoadAsset<Texture2D>(newStr);
+            }
+            else if (s.Contains("Valentine"))
+            {
+                string newStr = s.Replace("Valentine", "");
+                tex = DownLoadAssetBundle.bundleDragon.LoadAsset<Texture2D>(newStr);
+            }
 
-        sprite.name = tex.name;
+            if (tex != null)
+            {
+                // Tạo sprite từ texture sau khi xử lý
+                sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+                sprite.name = tex.name;
+            }
+            else
+            {
+                // Trả về sprite mặc định nếu không tìm thấy texture
+                sprite = Resources.Load<Sprite>("GameData/Sprite/Default");
+
+                if (sprite == null)
+                {
+                    Debug.LogError("Sprite mặc định không tồn tại ở đường dẫn GameData/Sprite/Default");
+                }
+            }
+        }
+
+        // Trả về sprite (đã tìm thấy hoặc mặc định)
         return sprite;
     }
+
+
     public static Sprite LoadSprite(string s)
     {
-        return Resources.Load<Sprite>("GameData/Sprite/" + s);
+        // Tải sprite từ Resources
+        Sprite sprite = Resources.Load<Sprite>("GameData/Sprite/" + s);
+
+        // Nếu sprite không tồn tại, trả về sprite mặc định
+        if (sprite == null)
+        {
+            sprite = Resources.Load<Sprite>("GameData/Sprite/Default");
+        }
+
+        return sprite;
     }
     public static RuntimeAnimatorController LoadAnimator(string name)
     {

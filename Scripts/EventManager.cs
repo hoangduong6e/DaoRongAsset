@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public abstract class EventManager : MonoBehaviour
 {
@@ -67,7 +68,16 @@ public abstract class EventManager : MonoBehaviour
     }    
     public Sprite GetSprite(string name)
     {
-        return Resources.Load<Sprite>("GameData/" + nameEvent + "/" + name);
+
+        Sprite sprite = Resources.Load<Sprite>("GameData/" + nameEvent + "/" + name);
+
+        // Nếu sprite không tồn tại, trả về sprite mặc định
+        if (sprite == null)
+        {
+            sprite = Resources.Load<Sprite>("GameData/Sprite/Default");
+        }
+
+        return sprite;
     }
     //void Start()
     //{
@@ -223,22 +233,22 @@ public abstract class EventManager : MonoBehaviour
         }
     }
 
-    public GameObject OpenMenuNhanDuoc(string namequa,string hienthi,ItemGi itemgi)
+    public GameObject OpenMenuNhanDuoc(string namequa,string hienthi,LoaiItem itemgi)
     {
         GameObject mn = Instantiate(Inventory.LoadObjectResource("GameData/Event/PanelHienQua"), transform.position, Quaternion.identity);
         mn.transform.SetParent(CrGame.ins.trencung.transform, false);
         //  mn.transform.position = parnet.transform.position;
         Image imgqua = mn.transform.Find("imgqua").GetComponent<Image>();
         Text txt = mn.transform.Find("txt").GetComponent<Text>();
-        if (itemgi == ItemGi.itemrong)
+        if (itemgi == LoaiItem.rong)
         {
             imgqua.sprite = Inventory.LoadSpriteRong(namequa);
         }
-        else if(itemgi == ItemGi.itemthuong)
+        else if(itemgi == LoaiItem.item)
         {
             imgqua.sprite = Inventory.LoadSprite(namequa);
         }
-        else if (itemgi == ItemGi.itemevent)
+        else if (itemgi == LoaiItem.itemevent)
         {
             imgqua.sprite = GetSprite(namequa);
         }
@@ -249,6 +259,29 @@ public abstract class EventManager : MonoBehaviour
             btn.onClick.AddListener(delegate {Destroy(mn);}) ;
         },0.5f);
         return mn;
+    }
+
+    public Sprite GetSpriteAll(string namequa, LoaiItem itemgi)
+    {
+        if (itemgi == LoaiItem.rong)
+        {
+            // Kiểm tra nếu chuỗi đã có "1" hoặc "2" ở cuối
+            if (!namequa.EndsWith("1") && !namequa.EndsWith("2"))
+            {
+                // Thêm "1" vào cuối chuỗi
+                namequa += "1";
+            }
+            return Inventory.LoadSpriteRong(namequa);
+        }
+        else if (itemgi == LoaiItem.item)
+        {
+            return Inventory.LoadSprite(namequa);
+        }
+        else if (itemgi == LoaiItem.itemevent)
+        {
+            return GetSprite(namequa);
+        }
+        return null;
     }
     public void StartDelay(Action actionDelay, float sec)
     {
@@ -439,9 +472,9 @@ public abstract class EventManager : MonoBehaviour
     }
 }
 
-public enum ItemGi
+public enum LoaiItem
 {
-    itemrong,
-    itemthuong,
+    rong,
+    item,
     itemevent
 }
