@@ -27,7 +27,7 @@ public class SelectGameObjectOnKeyPress : MonoBehaviour
         {
             // Mở rộng và chọn GameObject trong Hierarchy
             Selection.activeGameObject = go;
-            EditorGUIUtility.PingObject(go);
+            EditorGUIUtility.PingObject(go.transform.GetChild(0));
             go.SetActive(true);
             //string str = "";
             //for (int i = 0; i < go.transform.childCount; i++)
