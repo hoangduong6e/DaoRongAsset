@@ -6,11 +6,12 @@ using System;
 using UnityEngine.UI;
 using UnityEditorInternal.Profiling.Memory.Experimental;
 using Unity.VisualScripting;
+using UnityEngine.EventSystems;
 
 public class MenuEventHalloween2024 : EventManager
 {
     [SerializeField]
-    private GameObject PanelItemYeuCau, PanelQua, Eff2, quabay;
+    private GameObject PanelItemYeuCau, PanelQua, Eff2, quabay, ThanhTienDo;
 
     private Transform KhungBua;
 
@@ -19,6 +20,8 @@ public class MenuEventHalloween2024 : EventManager
 
     [SerializeField]
     private Sprite Sprite1, Sprite2;
+
+    private byte AiDangChon;
     private bool SetPanelQua
     {
         set
@@ -58,37 +61,92 @@ public class MenuEventHalloween2024 : EventManager
         {
             SetItem(key.Key,key.Value.AsInt);
         }
-
-        for (int i = 0; i < json["data"]["Da"].Count; i++)
+        SetThanhTienDo(json["data"]["ThanhTienDo"]);
+        Transform allAi = ThanhTienDo.transform.GetChild(2);
+        for (int i = 0; i < allAi.transform.childCount; i++)
         {
-            if (json["data"]["Da"][i]["phongan"].AsBool) // nếu đang phong ấn
-            {
-                if(json["data"]["Da"][i]["name"].AsString != "cot")
-                {
-                    Transform Da = transform.Find(i.ToString());
-                    Transform da = allDa[json["data"]["Da"][i]["name"].AsInt];
+            Transform child = allAi.transform.GetChild(i);
+            child.transform.GetChild(2).GetComponent<Text>().text = (i + 1).ToString();
+        }
+         
+        AiDangChon = json["data"]["AiDangChon"].AsByte;
+        LoadAi(json["data"]["allAi"]);
+    }
+    private void SetThanhTienDo(JSONNode json)
+    {
+        Transform allAi = ThanhTienDo.transform.GetChild(2);
+        Image fill = ThanhTienDo.transform.GetChild(1).GetComponent<Image>();
 
+        for (int i = 0; i < json["Cong"].Count; i++)
+        {
+            Transform child = allAi.transform.GetChild(i);
+            child.transform.GetChild(0).GetComponent<Image>().sprite = Sprite2;
+            Image img = child.transform.GetChild(1).GetComponent<Image>();
+            if(i == AiDangChon) img.sprite = GetSprite("aidango");
+            else img.sprite = GetSprite(json["Cong"][i]["trangthai"].AsString);
+            img.SetNativeSize();
+        }
+
+        fill.fillAmount = json["SoAiDaXong"].AsFloat / 20;
+    }
+
+    private void LoadAi(JSONNode json)
+    {
+        Transform allAi = ThanhTienDo.transform.GetChild(2);
+        Transform child = allAi.transform.GetChild(AiDangChon);
+        Image img = child.transform.GetChild(1).GetComponent<Image>();
+        img.sprite = GetSprite("aidango");
+        img.SetNativeSize();
+        for (int i = 0; i < allDa.Length; i++)
+        {
+            allDa[i].gameObject.SetActive(false);
+        }
+        for (int i = 0; i < 3; i++)
+        {
+            if (json[i]["name"].AsString != "cot")
+            {
+                Transform Da = transform.Find(i.ToString());
+                Transform da = allDa[json[i]["name"].AsInt];
+                da.transform.GetChild(0).GetComponent<Image>().sprite = GetSprite("Da" + (json[i]["name"].AsInt + 1));
+                if (json[i]["phongan"].AsBool) // nếu đang phong ấn
+                {
                     da.gameObject.SetActive(true);
                     da.transform.SetParent(Da);
                     da.transform.position = new Vector3(Da.transform.position.x, da.transform.position.y, da.transform.position.z);
-                    if(i == 0)
+                    if (i == 0)
                     {
                         transform.Find("QuaThuong").GetComponent<Image>().sprite = GetSprite("QuaThuongToi");
                     }
                     else transform.Find("QuaHiem").GetComponent<Image>().sprite = GetSprite("QuaHiemToi");
                 }
-                else // nếu đây là cột
+                else
                 {
-                    Transform cot = transform.Find("2").transform.GetChild(0);
+                    da.gameObject.SetActive(false);
+                    if (i == 0)
+                    {
+                        transform.Find("QuaThuong").GetComponent<Image>().sprite = GetSprite("QuaThuongSang");
+                    }
+                    else transform.Find("QuaHiem").GetComponent<Image>().sprite = GetSprite("QuaHiemSang");
+                }
+            }
+            else // nếu đây là cột
+            {
+                Transform cot = transform.Find("2").transform.GetChild(0);
+                if (json[i]["phongan"].AsBool) // nếu đang phong ấn
+                {
                     cot.transform.GetChild(2).gameObject.SetActive(false);// tắt lửa đi
                     cot.transform.GetChild(3).gameObject.SetActive(true);// bật nút giải phong ấn lên
                     transform.Find("QuaCucHiem").GetComponent<Image>().sprite = GetSprite("QuaCucHiemToi");
-                }
+                }    
+                else
+                {
+                    cot.transform.GetChild(2).gameObject.SetActive(true);
+                    cot.transform.GetChild(3).gameObject.SetActive(false);
+                    transform.Find("QuaCucHiem").GetComponent<Image>().sprite = GetSprite("QuaCucHiemSang");
+                }    
             }
-          
-         
         }
-    }
+    }    
     private bool xemItem = false;
     public void XemItemYeuCau(bool xem)
     {
@@ -99,13 +157,13 @@ public class MenuEventHalloween2024 : EventManager
             return;
         }    
         GameObject btnchon = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
-        debug.Log("Đá chọn là: " + btnchon.transform.parent.name);
+        //debug.Log("Đá chọn là: " + btnchon.transform.parent.name);
         PanelItemYeuCau.transform.position = new Vector3(btnchon.transform.position.x, btnchon.transform.position.y, PanelItemYeuCau.transform.position.z);
-
+        string DaChon = btnchon.transform.parent.transform.parent.name;
         JSONClass datasend = new JSONClass();
         datasend["class"] = nameEvent;
         datasend["method"] = "XemYeuCau";
-        datasend["data"]["DaChon"] = btnchon.transform.parent.transform.parent.name;
+        datasend["data"]["DaChon"] = DaChon;
         NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
         void Ok(JSONNode json)
         {
@@ -113,11 +171,37 @@ public class MenuEventHalloween2024 : EventManager
             {
                 debug.Log(json.ToString());
                 PanelItemYeuCau.SetActive(xemItem);
-
-                for (int i = 0;i < 3; i++)
+                if (DaChon == "2") // nếu đây là cột
                 {
-                    PanelItemYeuCau.transform.GetChild(i).transform.GetChild(0).GetComponent<Text>().text = json["data"][i].AsString;
+                    for (int i = 0; i < 3; i++)
+                    {
+                        Transform childi = PanelItemYeuCau.transform.GetChild(i);
+                        childi.gameObject.SetActive(false);
+                    }
+                    for (int i = 0; i < json["data"].Count; i++)
+                    {
+
+                        Transform childi = PanelItemYeuCau.transform.GetChild(i);
+                        LoaiItem loai = (LoaiItem)Enum.Parse(typeof(LoaiItem), json["data"][i]["loaiitem"].AsString, true);
+                        Image img = childi.GetComponent<Image>();
+                        img.sprite = GetSpriteAll(json["data"][i]["name"].AsString, loai);
+                        img.SetNativeSize();
+                        childi.transform.GetChild(0).GetComponent<Text>().text = json["data"][i]["soluong"].AsString;
+                        childi.gameObject.SetActive(true);
+                    }
+                }   
+                else // nếu đây là đá
+                {
+                    string[] bua = new string[] {"BuaXanh","BuaDo","BuaVang"};
+                    for (int i = 0; i < 3; i++)
+                    {
+                        Transform childi = PanelItemYeuCau.transform.GetChild(i);
+                        childi.GetComponent<Image>().sprite = GetSprite(bua[i]);
+                        childi.transform.GetChild(0).GetComponent<Text>().text = json["data"][i].AsString;
+                        childi.gameObject.SetActive(true);
+                    }
                 }
+               
             }
             else
             {
@@ -188,10 +272,45 @@ public class MenuEventHalloween2024 : EventManager
                 MenuMoPhongAn.gameObject.SetActive(true);
                 Transform g = MenuMoPhongAn.transform.GetChild(0);
                 Transform allBua = g.transform.Find("allBua");
-                for (int i = 0; i < 3; i++)
+                //for (int i = 0; i < 3; i++)
+                //{
+                //    allBua.transform.GetChild(i).transform.GetChild(0).GetComponent<Text>().text = json["yeucau"][i].AsString;
+                //}
+
+                if (DaChon == "2") // nếu đây là cột
                 {
-                    allBua.transform.GetChild(i).transform.GetChild(0).GetComponent<Text>().text = json["yeucau"][i].AsString;
+                    for (int i = 0; i < 3; i++)
+                    {
+                        Transform childi = allBua.transform.GetChild(i);
+                        childi.gameObject.SetActive(false);
+                    }
+                    for (int i = 0; i < json["yeucau"].Count; i++)
+                    {
+
+                        Transform childi = allBua.transform.GetChild(i);
+                        LoaiItem loai = (LoaiItem)Enum.Parse(typeof(LoaiItem), json["yeucau"][i]["loaiitem"].AsString, true);
+                        Image img = childi.GetComponent<Image>();
+                        img.sprite = GetSpriteAll(json["yeucau"][i]["name"].AsString, loai);
+                        img.SetNativeSize();
+                        childi.transform.GetChild(0).GetComponent<Text>().text = json["yeucau"][i]["soluong"].AsString;
+                        childi.gameObject.SetActive(true);
+                    }
                 }
+                else // nếu đây là đá
+                {
+                    string[] bua = new string[] { "BuaXanh", "BuaDo", "BuaVang" };
+                    for (int i = 0; i < 3; i++)
+                    {
+                        Transform childi = allBua.transform.GetChild(i);
+                        childi.GetComponent<Image>().sprite = GetSprite(bua[i]);
+                        childi.transform.GetChild(0).GetComponent<Text>().text = json["yeucau"][i].AsString;
+                        childi.gameObject.SetActive(true);
+                    }
+                }
+
+
+
+
                 Transform allQua = g.transform.Find("allQua");
                 for (int i = 0; i < allQua.transform.childCount; i++)
                 {
@@ -277,11 +396,47 @@ public class MenuEventHalloween2024 : EventManager
                 else // nếu đây là cột
                 {
                     Transform cot = transform.Find("2").transform.GetChild(0);
-                    cot.transform.GetChild(2).gameObject.SetActive(true);// bật lửa lên
+           
                     cot.transform.GetChild(3).gameObject.SetActive(false);// tắt nút giải phong ấn
 
                     transform.Find("2").transform.GetChild(0).transform.GetChild(2).gameObject.SetActive(true);
+
+                    StartCoroutine(delay());
+                    IEnumerator delay()
+                    {
+                        Eff2.transform.position = new Vector3(cot.transform.position.x, Eff2.transform.position.y, Eff2.transform.position.z);
+                        Eff2.SetActive(true);
+                        yield return new WaitForSeconds(0.6f);
+                        Eff2.SetActive(false);
+                        cot.transform.GetChild(2).gameObject.SetActive(true);// bật lửa lên
+                        Transform tfqua = transform.Find(json["nameQua"].AsString);
+                        for (int i = 0; i < json["quaAi"].Count; i++)
+                        {
+                            GameObject inss = Instantiate(quabay, transform.position, Quaternion.identity);
+                            inss.transform.SetParent(transform, false);
+                            Image img = inss.GetComponent<Image>();
+                            PanelQua.transform.GetChild(i).gameObject.SetActive(true);
+                            LoaiItem loai = (LoaiItem)Enum.Parse(typeof(LoaiItem), json["quaAi"][i]["loaiitem"].AsString, true);
+                            img.sprite = GetSpriteAll(json["quaAi"][i]["name"].AsString, loai);
+                            img.SetNativeSize();
+                            GamIns.ResizeItem(img, 120);
+                            inss.transform.position = tfqua.transform.position;
+                            inss.gameObject.SetActive(true);
+                            yield return new WaitForSeconds(0.3f);
+                            QuaBay qbay = inss.AddComponent<QuaBay>();
+                            qbay.enabled = false;
+                            qbay.vitribay = btnHopQua;
+                            qbay.enabled = true;
+                            yield return new WaitForSeconds(0.2f);
+                        }
+                    }
                 }
+
+                if (json["duocquaai"].AsBool)
+                {
+                    SetThanhTienDo(json["ThanhTienDo"]);
+                }
+                
             }
             else
             {
@@ -303,6 +458,73 @@ public class MenuEventHalloween2024 : EventManager
                 KhungBua.transform.Find(name).transform.GetChild(0).GetComponent<Text>().text = soluong.ToString();
                 break;
             default: break;
+        }
+    }
+
+    private void TatSpriteDangMo()
+    {
+        Transform allAi = ThanhTienDo.transform.GetChild(2);
+        Transform child = allAi.transform.GetChild(AiDangChon);
+        Image img = child.transform.GetChild(1).GetComponent<Image>();
+        img.sprite = GetSprite("aidamo");
+        img.SetNativeSize();
+    }    
+    public void ChonCong()
+    {
+        GameObject btnchon = EventSystem.current.currentSelectedGameObject;
+        if(btnchon.GetComponent<Image>().sprite.name == "aichuamo")
+        {
+            return;
+        }
+        int AiChon = btnchon.transform.parent.transform.GetSiblingIndex();
+        if (AiDangChon == AiChon) return;
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = nameEvent;
+        datasend["method"] = "XemAi";
+        datasend["data"]["AiChon"] = AiChon.ToString();
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
+        {
+            if (json["status"].AsString == "0")
+            {
+                TatSpriteDangMo();
+
+                debug.Log(json.ToString());
+                AiDangChon = (byte)AiChon;
+                LoadAi(json["dataAi"]);
+
+
+            }
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+            }
+        }
+    }   
+    public void QuaCong(int i)
+    {
+        int AiQua = AiDangChon + i;
+        if (AiQua < 0) AiQua = 0;
+        else if (AiQua > 19) AiQua = 19;
+
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = nameEvent;
+        datasend["method"] = "XemAi";
+        datasend["data"]["AiChon"] = AiQua.ToString();
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
+        {
+            if (json["status"].AsString == "0")
+            {
+                debug.Log(json.ToString());
+                TatSpriteDangMo();
+                AiDangChon = (byte)AiQua;
+                LoadAi(json["dataAi"]);
+            }
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+            }
         }
     }
 }
