@@ -7,8 +7,9 @@ using UnityEngine.UI;
 using UnityEditorInternal.Profiling.Memory.Experimental;
 using Unity.VisualScripting;
 using UnityEngine.EventSystems;
+using UnityEngine.Windows;
 
-public class MenuEventHalloween2024 : EventManager
+public partial class MenuEventHalloween2024 : EventManager
 {
     [SerializeField]
     private GameObject PanelItemYeuCau, PanelQua, Eff2, quabay, ThanhTienDo;
@@ -146,6 +147,12 @@ public class MenuEventHalloween2024 : EventManager
                 }    
             }
         }
+
+        if (json["sao"].ToString() != "")
+        {
+            transform.Find("CongMaDao").gameObject.SetActive(true);
+        }
+        else transform.Find("CongMaDao").gameObject.SetActive(false);
     }    
     private bool xemItem = false;
     public void XemItemYeuCau(bool xem)
@@ -239,11 +246,13 @@ public class MenuEventHalloween2024 : EventManager
                 {
                     PanelQua.transform.GetChild(i).gameObject.SetActive(true);
                     LoaiItem loai = (LoaiItem)Enum.Parse(typeof(LoaiItem), json["data"][i]["loaiitem"].AsString, true);
+                    string nameitem = json["data"][i]["name"].AsString;
+
                     Image img = PanelQua.transform.GetChild(i).GetComponent<Image>();
-                    img.sprite = GetSpriteAll(json["data"][i]["name"].AsString, loai);
+                    img.sprite = GetSpriteAll(nameitem, loai);
                     img.SetNativeSize();
                     GamIns.ResizeItem(img,100);
-                    img.transform.GetChild(0).GetComponent<Text>().text = (loai != LoaiItem.rong)? json["data"][i]["soluong"].AsString: json["data"][i]["sao"].AsString + " sao";
+                    img.transform.GetChild(0).GetComponent<Text>().text = (loai != LoaiItem.rong)? json["data"][i]["nametv"].AsString: json["data"][i]["sao"].AsString + " sao";
                 }
             }
             else
@@ -321,10 +330,18 @@ public class MenuEventHalloween2024 : EventManager
                     allQua.transform.GetChild(i).gameObject.SetActive(true);
                     LoaiItem loai = (LoaiItem)Enum.Parse(typeof(LoaiItem), json["quaai"][i]["loaiitem"].AsString, true);
                     Image img = allQua.transform.GetChild(i).GetComponent<Image>();
-                    img.sprite = GetSpriteAll(json["quaai"][i]["name"].AsString, loai);
+
+                    string nameitem = json["quaai"][i]["name"].AsString;
+
+          
+
+                    img.sprite = GetSpriteAll(nameitem, loai);
+
+
+
                     img.SetNativeSize();
                     GamIns.ResizeItem(img, 100);
-                    img.transform.GetChild(0).GetComponent<Text>().text = (loai != LoaiItem.rong) ? json["quaai"][i]["soluong"].AsString : json["quaai"][i]["sao"].AsString + " sao";
+                    img.transform.GetChild(0).GetComponent<Text>().text = (loai != LoaiItem.rong) ? json["quaai"][i]["nametv"].AsString : json["quaai"][i]["sao"].AsString + " sao";
                 }
             }
             else
@@ -351,11 +368,12 @@ public class MenuEventHalloween2024 : EventManager
                 {
                     SetItem(key.Key, key.Value.AsInt);
                 }
-                if(json["namedachon"].AsString != "cot")
+                transform.Find(json["nameQua"].AsString).GetComponent<Image>().sprite = GetSprite(json["nameQua"].AsString + "Sang");
+                if (json["namedachon"].AsString != "cot")
                 {
                     Transform dachon = allDa[json["namedachon"].AsInt];
 
-                    transform.Find(json["nameQua"].AsString).GetComponent<Image>().sprite = GetSprite(json["nameQua"].AsString + "Sang");
+                 
                     StartCoroutine(delay());
                     IEnumerator delay()
                     {
@@ -410,6 +428,7 @@ public class MenuEventHalloween2024 : EventManager
                         Eff2.SetActive(false);
                         cot.transform.GetChild(2).gameObject.SetActive(true);// bật lửa lên
                         Transform tfqua = transform.Find(json["nameQua"].AsString);
+
                         for (int i = 0; i < json["quaAi"].Count; i++)
                         {
                             GameObject inss = Instantiate(quabay, transform.position, Quaternion.identity);
