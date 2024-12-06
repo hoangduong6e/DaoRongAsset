@@ -104,12 +104,12 @@ public class BossH : MonoBehaviour
     }
     void Manden()
     {
-        vienchinh.Hieuungd.SetActive(true);
+     //   vienchinh.Hieuungd.SetActive(true);
         StartCoroutine(delay());
         IEnumerator delay()
         {
             yield return new WaitForSeconds(3f);
-            vienchinh.Hieuungd.SetActive(false);
+           // vienchinh.Hieuungd.SetActive(false);
             tancong = 2;
             yield return new WaitForSeconds(10f);
             tancong = 1;
@@ -119,7 +119,7 @@ public class BossH : MonoBehaviour
     }
     private void OnDestroy()
     {
-        vienchinh.Hieuungd.SetActive(false);
+      //  vienchinh.Hieuungd.SetActive(false);
     }
     public void DanhAll()
     {

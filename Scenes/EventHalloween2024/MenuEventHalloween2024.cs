@@ -40,6 +40,7 @@ public partial class MenuEventHalloween2024 : EventManager
     protected override void ABSAwake()
     {
         KhungBua = transform.Find("KhungBua");
+
     }
     // Update is called once per frame
     void Update()
@@ -545,5 +546,52 @@ public partial class MenuEventHalloween2024 : EventManager
                 CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
             }
         }
+    }
+
+    public static Action KetQua(KetQuaTranDau kq, bool quayve = false)
+    {
+        void kqq()
+        {
+            JSONClass datasend = new JSONClass();
+            datasend["class"] = "EventHalloween2024";
+            datasend["method"] = "KetQuaBoss";
+            datasend["data"]["kq"] = kq.ToString();
+            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+            void Ok(JSONNode json)
+            {
+                //  debug.Log(json.ToString()) ;
+                if (json["status"].AsString == "0")
+                {
+
+                    if (quayve)
+                    {
+                        CrGame.ins.OpenMenuRaKhoi();
+                        return;
+                    }
+                    GiaoDienPVP.ins.menuWin.SetActive(true);
+                    if (kq == KetQuaTranDau.Thua)
+                    {
+                        GiaoDienPVP.ins.spriteWin.sprite = GiaoDienPVP.ins.thua;
+                        GiaoDienPVP.ins.thongtin.text = "Bạn đã bị đánh bại";
+                    }
+                    else
+                    {
+                        GiaoDienPVP.ins.spriteWin.sprite = GiaoDienPVP.ins.thang;
+                        GiaoDienPVP.ins.thongtin.text = "Bạn đã đánh bại Boss Halloween";
+                        //CrGame.ins.OnThongBaoNhanh(json["infoqua"].AsString);
+                    }
+                    GiaoDienPVP.ins.panelBatdau.transform.GetChild(2).GetComponent<Text>().text = "";
+                    GiaoDienPVP.ins.btnSetting.SetActive(true);
+                    GiaoDienPVP.ins.spriteWin.SetNativeSize();
+                    // CrGame.ins.OnThongBaoNhanh(json["infoqua"].AsString);
+                }
+                else
+                {
+                    CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+                }
+            }
+        }
+        return kqq;
+
     }
 }

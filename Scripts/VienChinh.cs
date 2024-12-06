@@ -50,7 +50,7 @@ public class VienChinh : MonoBehaviour
 
     public string nameMapvao;
     public bool dangdau = false;
-    public float[] timeskill; public GameObject Hieuungd;
+    public float[] timeskill;
     public float buffgiapallxanh { get; private set; }
     public float buffgiapalldo { get; private set; }
     public GameObject muctieuxanh, muctieudo, PoolEffect, ObjSkill;
@@ -409,6 +409,11 @@ public class VienChinh : MonoBehaviour
        
             return MenuRaKhoi.KetQua(KetQuaTranDau.Thang);
         }
+        else if (chedodau == CheDoDau.Halloween)
+        {
+
+            return MenuEventHalloween2024.KetQua(KetQuaTranDau.Thang);
+        }
         else if (chedodau == CheDoDau.Online)
         {
             void ok()
@@ -548,6 +553,11 @@ public class VienChinh : MonoBehaviour
         {
             Invoke("QuayVe", 10f);
             return MenuRaKhoi.KetQua(KetQuaTranDau.Thua);
+        }
+        else if (chedodau == CheDoDau.Halloween)
+        {
+            Invoke("QuayVe", 10f);
+            return MenuEventHalloween2024.KetQua(KetQuaTranDau.Thua);
         }
         else if (chedodau == CheDoDau.Online)
         {
@@ -692,12 +702,13 @@ public class VienChinh : MonoBehaviour
             transform.GetChild(0).gameObject.SetActive(false);
             reset();
         }
-        //else if (chedodau == "Halloween")
-        //{
-        //    AllMenu.ins.menu["GiaoDienPVP"].SetActive(false);
-        //    transform.GetChild(0).gameObject.SetActive(false);
-        //    AllMenu.ins.menu["MenuEventHalloween"].SetActive(true);
-        //}
+        else if (chedodau == CheDoDau.Halloween)
+        {
+            AllMenu.ins.menu["GiaoDienPVP"].SetActive(false);
+            transform.GetChild(0).gameObject.SetActive(false);
+            AllMenu.ins.transform.Find("MenuEventHalloween2024").gameObject.SetActive(true);
+           // AllMenu.ins.menu["MenuEventHalloween2024"].SetActive(true);
+        }
         else if (chedodau == CheDoDau.BossTG)
         {
             CancelInvoke("QuayVe");
@@ -768,7 +779,6 @@ public class VienChinh : MonoBehaviour
     {
         AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
     }
-
     public void ClearQuai()
     {
         for (int i = 1; i < TeamDo.transform.childCount; i++)
