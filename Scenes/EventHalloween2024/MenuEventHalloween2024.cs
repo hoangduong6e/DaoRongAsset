@@ -4,10 +4,7 @@ using UnityEngine;
 using SimpleJSON;
 using System;
 using UnityEngine.UI;
-using UnityEditorInternal.Profiling.Memory.Experimental;
-using Unity.VisualScripting;
 using UnityEngine.EventSystems;
-using UnityEngine.Windows;
 
 public partial class MenuEventHalloween2024 : EventManager
 {
@@ -23,6 +20,7 @@ public partial class MenuEventHalloween2024 : EventManager
     private Sprite Sprite1, Sprite2;
 
     private byte AiDangChon;
+    public static MenuEventHalloween2024 inss;
     private bool SetPanelQua
     {
         set
@@ -40,7 +38,7 @@ public partial class MenuEventHalloween2024 : EventManager
     protected override void ABSAwake()
     {
         KhungBua = transform.Find("KhungBua");
-
+        inss = this;
     }
     // Update is called once per frame
     void Update()
@@ -502,6 +500,8 @@ public partial class MenuEventHalloween2024 : EventManager
         datasend["class"] = nameEvent;
         datasend["method"] = "XemAi";
         datasend["data"]["AiChon"] = AiChon.ToString();
+
+        
         NetworkManager.ins.SendServer(datasend.ToString(), Ok);
         void Ok(JSONNode json)
         {
@@ -556,6 +556,10 @@ public partial class MenuEventHalloween2024 : EventManager
             datasend["class"] = "EventHalloween2024";
             datasend["method"] = "KetQuaBoss";
             datasend["data"]["kq"] = kq.ToString();
+            datasend["data"]["time"] = GiaoDienPVP.ins.TxtTime.text;
+
+
+
             NetworkManager.ins.SendServer(datasend.ToString(), Ok);
             void Ok(JSONNode json)
             {

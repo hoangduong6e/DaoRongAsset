@@ -9,6 +9,7 @@ public class BossHnew : DragonPVEController
     private string animAttackboss = "Attack";
     private bool den = true;
     private Action actionUpdateAnimAttack, actionMoveSkillok;
+    float damechieucuoi = 2000;
     public override void SetHpOnline(JSONObject data)
     {
 
@@ -77,6 +78,8 @@ public class BossHnew : DragonPVEController
             yield return new WaitForSeconds(1.5f);
             // vienchinh.Hieuungd.SetActive(false);
             GiaoDienPVP.ins.SetPanelToi = false;
+            if (MenuEventHalloween2024.inss.isKichHoatGiamSucManh) damechieucuoi = 1000;
+            else damechieucuoi = 2000;
             animAttackboss = "Attack2";
             yield return new WaitForSeconds(10f);
             animAttackboss = "Attack";
@@ -168,7 +171,7 @@ public class BossHnew : DragonPVEController
             }
             else
             {
-                KillTru();
+                KillTru(9000);
             }
         }
     }

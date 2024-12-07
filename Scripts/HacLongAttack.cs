@@ -537,15 +537,17 @@ public partial class HacLongAttack : DragonPVEController
     {
         if (VienChinh.vienchinh.chedodau == CheDoDau.Replay) return;
        debug.Log("DoatMenhOk, TargetDoatMenh: " + TargetDoatMenh);
-        if(TargetDoatMenh != null)
+        if (TargetDoatMenh != null)
         {
             DragonPVEController dra = TargetDoatMenh.transform.Find("SkillDra").GetComponent<DragonPVEController>();
 
             Debug.Log("Doat menh rong " + dra.nameobj);
-            if(VienChinh.vienchinh.chedodau == CheDoDau.VienChinh ||
+            if (VienChinh.vienchinh.chedodau == CheDoDau.VienChinh ||
                 VienChinh.vienchinh.chedodau == CheDoDau.BossTG ||
                 VienChinh.vienchinh.chedodau == CheDoDau.XucTu ||
-                VienChinh.vienchinh.chedodau == CheDoDau.LanSu)
+                VienChinh.vienchinh.chedodau == CheDoDau.Halloween ||
+                VienChinh.vienchinh.chedodau == CheDoDau.LanSu
+                )
             {
                 dra.MatMau(9999, this);
             }

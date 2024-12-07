@@ -18,9 +18,11 @@ public partial class MenuEventHalloween2024 : EventManager
     [Header("----Boss Halloween-----")]
 
     [SerializeField] private Transform PanelXemDanhBoss;
+
+    public bool isKichHoatGiamSucManh;
     public void ExitYemBua()
     {
-     //   if (!DuocYemBua) return;
+        if (!DuocYemBua) return;
         GameObject btnchon = EventSystem.current.currentSelectedGameObject;
         btnchon.gameObject.SetActive(false);
     }
@@ -101,6 +103,7 @@ public partial class MenuEventHalloween2024 : EventManager
                 for (int i = 0; i < 3; i++)
                 {
                     Image imgsao = all.transform.GetChild(i).GetComponent<Image>();
+                    all.transform.GetChild(i).transform.GetChild(0).GetComponent<Text>().text = json["allDieuKienSao"][i].AsString;
                     Image imgQua = imgsao.transform.Find("qua").GetComponent<Image>();
                     Text txtsoluong = imgQua.transform.GetChild(0).GetComponent<Text>();
                     txtsoluong.text = (json["allQua"][i]["loaiitem"].AsString != "rong") ? json["allQua"][i]["soluong"].AsString: json["allQua"][i]["sao"].AsString + " sao";
@@ -116,44 +119,45 @@ public partial class MenuEventHalloween2024 : EventManager
             }
         }
     }
-    public void VaoMapDanh()
-    {
-        JSONClass datasend = new JSONClass();
-        datasend["class"] = EventManager.ins.nameEvent;
-        datasend["method"] = "DanhBossHalloween";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
-        void Ok(JSONNode json)
-        {
-            debug.Log(json.ToString());
-            if (json["status"].AsString == "0")
-            {
-                VienChinh.vienchinh.GetDoiHinh("BossXucTu", CheDoDau.XucTu);
+    //public void VaoMapDanh()
+    //{
+    //    JSONClass datasend = new JSONClass();
+    //    datasend["class"] = EventManager.ins.nameEvent;
+    //    datasend["method"] = "DanhBossHalloween";
+    //    NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+    //    void Ok(JSONNode json)
+    //    {
+    //        debug.Log(json.ToString());
+    //        if (json["status"].AsString == "0")
+    //        {
+    //            PanelXemDanhBoss.gameObject.SetActive(false);
+    //            VienChinh.vienchinh.GetDoiHinh("BossXucTu", CheDoDau.XucTu);
 
-                NetworkManager.ins.vienchinh.TruDo.SetActive(true);
+    //            NetworkManager.ins.vienchinh.TruDo.SetActive(true);
 
-                NetworkManager.ins.vienchinh.TruXanh.SetActive(true);
+    //            NetworkManager.ins.vienchinh.TruXanh.SetActive(true);
 
-                //TaoXucTu(json["NameBoss"].AsString, json["dame"].AsFloat);
+    //            //TaoXucTu(json["NameBoss"].AsString, json["dame"].AsFloat);
 
-                float chia = json["hp"].AsFloat / 3;
+    //            float chia = json["hp"].AsFloat / 3;
 
-                float[] hplansu = new float[] { chia, chia, chia };
+    //            float[] hplansu = new float[] { chia, chia, chia };
 
-                //SetHpLanSu(hplansu);
-                // VienChinh.vienchinh.SetBGMap("BGLanSu");
-                VienChinh.vienchinh.transform.GetChild(0).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("BGBachTuoc");
-                btnHopQua.transform.SetParent(NetworkManager.ins.loidai.GiaoDien.transform);
-                //Destroy(objtrencung.gameObject);
-                AllMenu.ins.DestroyMenu(nameof(EventDaiChienThuyQuai));
-                //  gameObject.SetActive(false);
-                //  VeNha();
-            }
-            else
-            {
-                CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
-            }
-        }
-    }
+    //            //SetHpLanSu(hplansu);
+    //            // VienChinh.vienchinh.SetBGMap("BGLanSu");
+    //            VienChinh.vienchinh.transform.GetChild(0).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("BGBachTuoc");
+    //            btnHopQua.transform.SetParent(NetworkManager.ins.loidai.GiaoDien.transform);
+    //            //Destroy(objtrencung.gameObject);
+    //            AllMenu.ins.DestroyMenu(nameof(EventDaiChienThuyQuai));
+    //            //  gameObject.SetActive(false);
+    //            //  VeNha();
+    //        }
+    //        else
+    //        {
+    //            CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+    //        }
+    //    }
+    //}
 
     public void ThamChien()
     {
@@ -172,14 +176,17 @@ public partial class MenuEventHalloween2024 : EventManager
         {
             if (json["status"].AsString == "0")
             {
+                PanelXemDanhBoss.gameObject.SetActive(false);
                 debug.Log(json.ToString());
-
-                NetworkManager.ins.socket.Emit("DoiHinhDanh", JSONObject.CreateStringObject(VienChinh.vienchinh.nameMapvao));
                 VienChinh.vienchinh.chedodau = CheDoDau.Halloween;
+                NetworkManager.ins.socket.Emit("DoiHinhDanh", JSONObject.CreateStringObject(VienChinh.vienchinh.nameMapvao + "/" + VienChinh.vienchinh.chedodau.ToString()));
+              
                 VienChinh.vienchinh.enabled = true;
                 //   AllMenu.ins.DestroyMenu("MenuXacNhan");
                 VienChinh.vienchinh.transform.GetChild(0).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Inventory.LoadSprite("BGBanDem");
                 gameObject.SetActive(false);
+
+                isKichHoatGiamSucManh = json["isKichHoatGiamSucManh"].AsBool;
             }
             else
             {
