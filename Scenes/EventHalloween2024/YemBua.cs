@@ -91,7 +91,7 @@ public partial class MenuEventHalloween2024 : EventManager
         JSONClass datasend = new JSONClass();
         datasend["class"] = nameEvent;
         datasend["method"] = "XemAiBoss";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -110,6 +110,34 @@ public partial class MenuEventHalloween2024 : EventManager
                     imgQua.sprite = GetSpriteAll(json["allQua"][i]["name"].AsString, (LoaiItem)Enum.Parse(typeof(LoaiItem), json["allQua"][i]["loaiitem"].AsString, true));
                     imgQua.SetNativeSize();
                     GamIns.ResizeItem(imgQua,100);
+                    Button btnNhan = imgsao.transform.GetChild(3).GetComponent<Button>();
+
+
+                    btnNhan.interactable = (json["allQuaAi"][i].AsString == "2")?true:false;
+                    Text txt = btnNhan.transform.GetChild(0).GetComponent<Text>();
+                    if (json["allQuaAi"][i].AsString == "1")
+                    {
+                        btnNhan.interactable = false;
+                        txt.text = "Nhận";
+                    }
+                    else if (json["allQuaAi"][i].AsString == "2")
+                    {
+                        btnNhan.interactable = true;
+                        txt.text = "Nhận";
+                    }
+                    else if (json["allQuaAi"][i].AsString == "3")
+                    {
+                        btnNhan.interactable = false;
+                        txt.text = "<color=cyan>Đã nhận</color>";
+                    }
+                    if (json["allQuaAi"][i].AsInt >= 2)
+                    {
+                        imgsao.sprite = MenuEventHalloween2024.inss.GetSprite("ngoisao2");
+                    }
+                    else
+                    {
+                        imgsao.sprite = MenuEventHalloween2024.inss.GetSprite("ngoisao1");
+                    }
                 }
                 g.transform.Find("panelBonus").transform.GetChild(0).GetComponent<Text>().text = json["BonusKhiChienDau"].AsString;
             }
@@ -119,45 +147,6 @@ public partial class MenuEventHalloween2024 : EventManager
             }
         }
     }
-    //public void VaoMapDanh()
-    //{
-    //    JSONClass datasend = new JSONClass();
-    //    datasend["class"] = EventManager.ins.nameEvent;
-    //    datasend["method"] = "DanhBossHalloween";
-    //    NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
-    //    void Ok(JSONNode json)
-    //    {
-    //        debug.Log(json.ToString());
-    //        if (json["status"].AsString == "0")
-    //        {
-    //            PanelXemDanhBoss.gameObject.SetActive(false);
-    //            VienChinh.vienchinh.GetDoiHinh("BossXucTu", CheDoDau.XucTu);
-
-    //            NetworkManager.ins.vienchinh.TruDo.SetActive(true);
-
-    //            NetworkManager.ins.vienchinh.TruXanh.SetActive(true);
-
-    //            //TaoXucTu(json["NameBoss"].AsString, json["dame"].AsFloat);
-
-    //            float chia = json["hp"].AsFloat / 3;
-
-    //            float[] hplansu = new float[] { chia, chia, chia };
-
-    //            //SetHpLanSu(hplansu);
-    //            // VienChinh.vienchinh.SetBGMap("BGLanSu");
-    //            VienChinh.vienchinh.transform.GetChild(0).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("BGBachTuoc");
-    //            btnHopQua.transform.SetParent(NetworkManager.ins.loidai.GiaoDien.transform);
-    //            //Destroy(objtrencung.gameObject);
-    //            AllMenu.ins.DestroyMenu(nameof(EventDaiChienThuyQuai));
-    //            //  gameObject.SetActive(false);
-    //            //  VeNha();
-    //        }
-    //        else
-    //        {
-    //            CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
-    //        }
-    //    }
-    //}
 
     public void ThamChien()
     {
@@ -171,7 +160,7 @@ public partial class MenuEventHalloween2024 : EventManager
         JSONClass datasend = new JSONClass();
         datasend["class"] = nameEvent;
         datasend["method"] = "DanhBossHalloween";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -187,6 +176,8 @@ public partial class MenuEventHalloween2024 : EventManager
                 gameObject.SetActive(false);
 
                 isKichHoatGiamSucManh = json["isKichHoatGiamSucManh"].AsBool;
+
+                PanelXemDanhBoss.gameObject.SetActive(false);
             }
             else
             {
@@ -194,7 +185,32 @@ public partial class MenuEventHalloween2024 : EventManager
             }
         }
     }
+    public void NhanQuaAi()
+    {
+        GameObject btnchon = EventSystem.current.currentSelectedGameObject;
+        int quachon = btnchon.transform.parent.transform.GetSiblingIndex();
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = nameEvent;
+        datasend["method"] = "NhanQuaAiBoss";
+        datasend["data"]["quachon"] = quachon.ToString();
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
+        {
+            if (json["status"].AsString == "0")
+            {
+                debug.Log(json.ToString());
+                Image imgQuaNhan = btnchon.transform.parent.transform.Find("qua").GetComponent<Image>();
+                Button btnnhan = btnchon.transform.parent.transform.Find("btnnhan").GetComponent<Button>();
+                btnnhan.interactable = false;
+                btnnhan.transform.GetChild(0).GetComponent<Text>().text = "<color=cyan>Đã nhận</color>";
+            }
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+            }
+        }
 
+    }
     public void SuaDoiHinh()
     {
         AllMenu.ins.GetCreateMenu("MenuDoiHinh", CrGame.ins.trencung.gameObject, true);

@@ -171,7 +171,7 @@ public class BossHnew : DragonPVEController
             }
             else
             {
-                KillTru(9000);
+                KillTru(10000);
             }
         }
     }
