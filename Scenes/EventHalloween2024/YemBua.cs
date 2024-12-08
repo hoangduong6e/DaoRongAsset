@@ -203,6 +203,12 @@ public partial class MenuEventHalloween2024 : EventManager
                 Button btnnhan = btnchon.transform.parent.transform.Find("btnnhan").GetComponent<Button>();
                 btnnhan.interactable = false;
                 btnnhan.transform.GetChild(0).GetComponent<Text>().text = "<color=cyan>Đã nhận</color>";
+                GameObject quabay = Instantiate(imgQuaNhan.gameObject,transform.position,Quaternion.identity);
+                quabay.transform.GetChild(0).gameObject.SetActive(false);
+                quabay.transform.SetParent(transform,false);
+                quabay.transform.position = imgQuaNhan.transform.position;
+                QuaBay bay = quabay.AddComponent<QuaBay>();
+                bay.vitribay = btnHopQua;
             }
             else
             {

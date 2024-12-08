@@ -24,6 +24,14 @@ public class BossHnew : DragonPVEController
         nameobj = "";
         transform.parent.GetComponent<DraUpdateAnimator>().DragonPVEControllerr = this;
         PVEManager.GetUpdateMove(transform, "TeamDo");
+        int aichon = MenuEventHalloween2024.inss.aiDangChon + 1;
+        if(aichon == 9) damechieucuoi = 3000;
+        else if(aichon == 12) damechieucuoi = 5000;
+        else if(aichon == 15) damechieucuoi = 6000;
+        else if(aichon == 18) damechieucuoi = 7000;
+        else if(aichon == 19) damechieucuoi = 8000;
+        else if(aichon == 20) damechieucuoi = 10000;
+
 
         actionMoveSkillok += SkillMoveOkk;
         for (int i = 0; i < skillObj.Length; i++)

@@ -20,6 +20,8 @@ public partial class MenuEventHalloween2024 : EventManager
     private Sprite Sprite1, Sprite2;
 
     private byte AiDangChon;
+
+    public byte aiDangChon {get{ return AiDangChon;} }
     public static MenuEventHalloween2024 inss;
     private bool SetPanelQua
     {
