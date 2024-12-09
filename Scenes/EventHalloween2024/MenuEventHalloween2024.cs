@@ -164,6 +164,8 @@ public partial class MenuEventHalloween2024 : EventManager
             transform.Find("CongMaDao").gameObject.SetActive(true);
         }
         else transform.Find("CongMaDao").gameObject.SetActive(false);
+
+        DuocQuaCong = true;
     }    
     private bool xemItem = false;
     public void XemItemYeuCau(bool xem)
@@ -373,6 +375,7 @@ public partial class MenuEventHalloween2024 : EventManager
         {
             if (json["status"].AsString == "0")
             {
+                DuocQuaCong = false;
                 debug.Log(json.ToString());
                 MenuMoPhongAn.gameObject.SetActive(false);
                 foreach (KeyValuePair<string, JSONNode> key in json["updateitem"].AsObject)
@@ -403,7 +406,7 @@ public partial class MenuEventHalloween2024 : EventManager
                         for (int i = 0; i < json["quaAi"].Count; i++)
                         {
                             GameObject inss = Instantiate(quabay, transform.position, Quaternion.identity);
-                            inss.transform.SetParent(transform, false);
+                            inss.transform.SetParent(CrGame.ins.trencung.transform, false);
                             Image img = inss.GetComponent<Image>();
                             PanelQua.transform.GetChild(i).gameObject.SetActive(true);
                             LoaiItem loai = (LoaiItem)Enum.Parse(typeof(LoaiItem), json["quaAi"][i]["loaiitem"].AsString, true);
@@ -419,6 +422,7 @@ public partial class MenuEventHalloween2024 : EventManager
                             qbay.enabled = true;
                             yield return new WaitForSeconds(0.2f);
                         }
+                        DuocQuaCong = true;
                     }
                    // dachon.gameObject.SetActive(false);
                 }    
@@ -443,7 +447,7 @@ public partial class MenuEventHalloween2024 : EventManager
                         for (int i = 0; i < json["quaAi"].Count; i++)
                         {
                             GameObject inss = Instantiate(quabay, transform.position, Quaternion.identity);
-                            inss.transform.SetParent(transform, false);
+                            inss.transform.SetParent(CrGame.ins.trencung.transform, false);
                             Image img = inss.GetComponent<Image>();
                             PanelQua.transform.GetChild(i).gameObject.SetActive(true);
                             LoaiItem loai = (LoaiItem)Enum.Parse(typeof(LoaiItem), json["quaAi"][i]["loaiitem"].AsString, true);
@@ -459,6 +463,7 @@ public partial class MenuEventHalloween2024 : EventManager
                             qbay.enabled = true;
                             yield return new WaitForSeconds(0.2f);
                         }
+                        DuocQuaCong = true;
                     }
                 }
 
@@ -498,9 +503,11 @@ public partial class MenuEventHalloween2024 : EventManager
         Image img = child.transform.GetChild(1).GetComponent<Image>();
         img.sprite = GetSprite("aidamo");
         img.SetNativeSize();
-    }    
+    }
+    private bool DuocQuaCong = true;
     public void ChonCong()
     {
+        if (!DuocQuaCong) return;
         GameObject btnchon = EventSystem.current.currentSelectedGameObject;
         if(btnchon.GetComponent<Image>().sprite.name == "aichuamo")
         {
@@ -519,6 +526,7 @@ public partial class MenuEventHalloween2024 : EventManager
         {
             if (json["status"].AsString == "0")
             {
+                DuocQuaCong = false;
                 TatSpriteDangMo();
 
                 debug.Log(json.ToString());
@@ -535,6 +543,7 @@ public partial class MenuEventHalloween2024 : EventManager
     }   
     public void QuaCong(int i)
     {
+        if (!DuocQuaCong) return;
         int AiQua = AiDangChon + i;
         if (AiQua < 0) AiQua = 0;
         else if (AiQua > 19) AiQua = 19;
@@ -548,6 +557,7 @@ public partial class MenuEventHalloween2024 : EventManager
         {
             if (json["status"].AsString == "0")
             {
+                DuocQuaCong = false;
                 debug.Log(json.ToString());
                 TatSpriteDangMo();
                 AiDangChon = json["Ai"].AsByte;

@@ -51,6 +51,11 @@ public class QuaBay : MonoBehaviour
         }
         //  vitribay.transform.LeanScale(new Vector2(vitribay.transform.position.x));
     }
+
+    //private void OnDestroy()
+    //{
+    //    Destroy(add, 0.6f);
+    //}
     void Update()
     {
         if (vitribay == null)

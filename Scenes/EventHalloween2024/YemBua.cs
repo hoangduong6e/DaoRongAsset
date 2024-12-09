@@ -222,4 +222,148 @@ public partial class MenuEventHalloween2024 : EventManager
         AllMenu.ins.GetCreateMenu("MenuDoiHinh", CrGame.ins.trencung.gameObject, true);
     }
 
+    private GameObject menumuaitem;
+
+    string txtTv(string s)
+    {
+        switch (s)
+        {
+            case "BuaTrang": return "Bùa Trắng";
+        }
+        return "";
+    }
+    string nameitemmua;
+    Text txtupdate;
+    public void OpenMenuMuaXeng()
+    {
+        AudioManager.SoundClick();
+        GameObject btnchon = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+
+        txtupdate = btnchon.transform.parent.GetComponentsInChildren<Text>()[0];
+        nameitemmua = btnchon.transform.parent.name;
+        debug.Log("Xem itemmua " + nameitemmua);
+        GameObject menu = Instantiate(Inventory.LoadObjectResource("GameData/" + nameEvent + "/MenuMuaItem"), transform.position, Quaternion.identity);
+        menumuaitem = menu;
+        menu.transform.SetParent(CrGame.ins.trencung.transform, false);
+        menu.transform.position = CrGame.ins.trencung.transform.position;
+        menu.SetActive(true);
+
+        //    GameObject menu = EventManager.ins.GetCreateMenu("MenuMuaItem", CrGame.ins.trencung.transform, true, transform.GetSiblingIndex() + 1);
+        XemGiaMuaQueThu();
+        Transform g = menu.transform.GetChild(0);
+        g.transform.Find("txttanggia").GetComponent<Text>().text = "Giá tăng khi mua nhiều trong ngày, sẽ được reset khi qua ngày mới.";
+        Transform btn = g.transform.Find("btn");
+        g.transform.GetChild(1).GetComponent<Text>().text = txtTv(nameitemmua);// tên giao diện
+        Image imgitem = g.transform.GetChild(2).transform.GetChild(0).GetComponent<Image>();
+        imgitem.sprite = Resources.Load<Sprite>("GameData/" + nameEvent + "/" + nameitemmua);
+        imgitem.SetNativeSize();
+        Button btnsangtrai = btn.transform.GetChild(0).GetComponent<Button>();
+        btnsangtrai.onClick.AddListener(delegate { CongThemSoLuongMua(-1); });
+        Button btnsangPhai = btn.transform.GetChild(1).GetComponent<Button>();
+        btnsangPhai.onClick.AddListener(delegate { CongThemSoLuongMua(1); });
+        Button btnExit = g.transform.Find("btnExit").GetComponent<Button>();
+        btnExit.onClick.AddListener(ExitMenuQueThu);
+        Button btnXacNhan = g.transform.Find("btnXacNhan").GetComponent<Button>();
+        btnXacNhan.onClick.AddListener(MuaQueThu);
+        InputField input = g.transform.Find("InputField").GetComponent<InputField>();
+        input.onEndEdit.AddListener(onEndEdit);
+    }
+    short soluongMuaQueThu = 1;
+    private void CongThemSoLuongMua(int i)
+    {
+        AudioManager.SoundClick();
+        debug.Log("Tang so luong " + i);
+        if (soluongMuaQueThu + i >= 1)
+        {
+            GameObject menu = menumuaitem;
+            Transform g = menu.transform.GetChild(0);
+            InputField input = g.transform.Find("InputField").GetComponent<InputField>();
+            soluongMuaQueThu += (short)i;
+            XemGiaMuaQueThu();
+            input.text = soluongMuaQueThu.ToString();
+        }
+    }
+    private void onEndEdit(string s)
+    {
+        if (s == "" || s == "0") s = "1";
+        if (s.Length > 4) s = "500";
+        if (int.Parse(s) >= 500) s = "500";
+        debug.Log("onEndEdit " + s);
+        GameObject menu = menumuaitem;
+        Transform g = menu.transform.GetChild(0);
+        InputField input = g.transform.Find("InputField").GetComponent<InputField>();
+        soluongMuaQueThu = short.Parse(s);
+        XemGiaMuaQueThu();
+        input.text = soluongMuaQueThu.ToString();
+    }
+
+    public void XemGiaMuaQueThu()
+    {
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = nameEvent;
+        datasend["method"] = "XemGiaMua";
+        datasend["data"]["soluong"] = soluongMuaQueThu.ToString();
+        datasend["data"]["nameitem"] = nameitemmua;
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        void Ok(JSONNode json)
+        {
+            if (json["status"].AsString == "0")
+            {
+                GameObject menu = menumuaitem;
+                if (menu != null)
+                {
+
+                    Transform g = menu.transform.GetChild(0);
+                    Text txtgia = g.transform.Find("txtGia").GetComponent<Text>();
+                    txtgia.text = json["gia"].AsString;
+
+
+
+                }
+            }
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+            }
+        }
+    }
+    public void MuaQueThu()
+    {
+        AudioManager.SoundClick();
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = nameEvent;
+        datasend["method"] = "MuaXeng";
+        datasend["data"]["soluong"] = soluongMuaQueThu.ToString();
+        datasend["data"]["nameitem"] = nameitemmua;
+
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        void Ok(JSONNode json)
+        {
+            if (json["status"].AsString == "0")
+            {
+                debug.Log(json.ToString());
+                if (menumuaitem != null)
+                {
+                    ExitMenuQueThu();
+                    //  SetXeng(json["soxeng"].AsString);
+                    CrGame.ins.OnThongBaoNhanh("Mua thành công!");
+                    SetItem(nameitemmua, json["soitem"].AsInt);
+                    //   if (txtupdate.transform.parent.transform.parent.name == "Item")
+                    // {
+                    //   string s = json["soitem"].AsString;
+                    //   txtupdate.text = s;
+                    //  }
+                    //SetsucXac(json["sucxac"].AsString);
+                }
+            }
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+            }
+        }
+    }
+    private void ExitMenuQueThu()
+    {
+        Destroy(menumuaitem); soluongMuaQueThu = 1;
+    }
 }
