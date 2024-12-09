@@ -188,7 +188,16 @@ public abstract class DraInstantiate : MonoBehaviour
         SettingCauHinhThap();
         if (Idlle == "Flying")
         {
-            transform.GetChild(0).transform.Find("bong").transform.position = new Vector3(transform.position.x, transform.position.y - 3);
+            if(draheight == DraHeight.MaThach)
+            {
+                transform.GetChild(0).transform.Find("bong").transform.position = new Vector3(transform.position.x, transform.position.y - 1.5f);
+
+            }
+            else
+            {
+                transform.GetChild(0).transform.Find("bong").transform.position = new Vector3(transform.position.x, transform.position.y - 2.5f);
+
+            }
         }
         else if (VienChinh.vienchinh.chedodau == CheDoDau.XucTu) //nhoxoa
         {
@@ -228,6 +237,7 @@ public enum DraHeight// chiều cao của trục y của rồng trong trận đ�
     LMX_PH_2DAU,
     RongLua,
     PH,
-    _2DAU
+    _2DAU,
+    MaThach
 }
 

@@ -50,6 +50,10 @@ public partial class MenuEventHalloween2024 : EventManager
     protected override void DiemDanhOk(JSONNode json)
     {
 
+          foreach (KeyValuePair<string, JSONNode> key in json["data"]["allitemUpdate"].AsObject)
+        {
+            SetItem(key.Key,key.Value.AsInt);
+        }
     }
 
     public void ParseData(JSONNode json)
@@ -649,4 +653,6 @@ public partial class MenuEventHalloween2024 : EventManager
         return kqq;
 
     }
+
+
 }

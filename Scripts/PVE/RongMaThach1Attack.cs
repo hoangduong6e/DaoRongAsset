@@ -3,8 +3,10 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
+
 public class RongMaThach1Attack : DragonPVEController
 {
+    
     //public override void AbsMoveComponent(SocketIOEvent e)
     //{
     //    Transform tfMove = transform.parent.transform;
@@ -18,6 +20,8 @@ public class RongMaThach1Attack : DragonPVEController
     //    Startt();
     //}
     // Update is called once per frame
+   // [SerializeField]
+     //LoaiMaThach loai;
 
     protected override void ABSAwake()
     {
@@ -74,7 +78,7 @@ public class RongMaThach1Attack : DragonPVEController
         }
         else
         {
-            animplay = "Idlle";
+            animplay = "Flying";
         }
     }
     public override void AbsUpdateAnimIdle()
@@ -83,36 +87,56 @@ public class RongMaThach1Attack : DragonPVEController
     }
     public override void ABSAnimWin()
     {
-        animplay = "Idlle";
+        animplay = "Flying";
     }
     public override void AbsUpdateAnimAttack()
     {
         if (stateAnimAttack == 1)
         {
-            if (Target == null) return;
-            ReplayData.AddAttackTarget(transform.parent.name, "0", "dungdau");
-            skillObj[0].transform.position = transform.position;
-            skillObj[0].SetActive(true);
+             for (int i = 0; i < skillObj.Length; i++)
+            {
+                if (!skillObj[i].gameObject.activeSelf)
+                {
+                    if (Target == null) return;
+                    ReplayData.AddAttackTarget(transform.parent.name, i.ToString(), "dungdau");
+                    skillObj[i].transform.position = transform.position;
+                    skillObj[i].SetActive(true);
+                    break;
+                }
+            }
         }
+      
     }
     public override void SkillMoveOk()
     {
+         List<Transform> ronggan = new List<Transform>(PVEManager.GetDraDungTruoc(10, Target.transform.parent.transform, new Vector2(6, 6)));
         float damee = dame;
-        if (Random.Range(1, 100) <= _ChiMang)
-        {
-            damee *= 5;
-            PVEManager.InstantiateHieuUngChu("chimang", transform);
-        }
 
-        if (Target.name != "trudo" && Target.name != "truxanh")
+        bool chimanggg = false;
+        for (int i = 0; i < ronggan.Count; i++)
         {
-            DragonPVEController dra = Target.transform.Find("SkillDra").GetComponent<DragonPVEController>();
-            dra.MatMau(damee, this);
-            //  dra.LamChamABS(5, "caylamcham");
-        }
-        else
-        {
-            KillTru();
+            if (ronggan[i].name != "trudo" && ronggan[i].name != "truxanh")
+            {
+                DragonPVEController chisodich = ronggan[i].transform.Find("SkillDra").GetComponent<DragonPVEController>();
+
+                if (!chimanggg)
+                {
+                    if (Random.Range(1, 100) <= _ChiMang)
+                    {
+                        chimanggg = true;
+                        chisodich.MatMau(damee * 5, this);
+                        PVEManager.InstantiateHieuUngChu("chimang", transform);
+                    }
+                }
+
+                chisodich.MatMau(damee, this);
+                chisodich.DayLuiABS();
+
+            }
+            else
+            {
+                KillTru();
+            }
         }
     }
     public override void BienCuuABS(float time)

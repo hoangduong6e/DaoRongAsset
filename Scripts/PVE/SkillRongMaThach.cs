@@ -13,16 +13,18 @@ public class SkillRongMaThach : SkillDraController
     {
         if (controller.team == Team.TeamXanh)
         {
-            Transform child0 = transform.GetChild(0);
-            Vector3 vec = child0.transform.localScale;
+          //  Transform child0 = transform.GetChild(0);
+            Vector3 vec = transform.localScale;
             vec.x = -vec.x;
 
-            child0.transform.localScale = vec;
+            transform.localScale = vec;
+            //debug.Log("vec rong ma thach " + vec);
         }
     }
     // Start is called before the first frame update
     private void OnEnable()
     {
+        transform.position = controller.transform.position;
         if (controller.Target != null)
         {
           //  transform.position = new Vector3(controller.Target.transform.position.x - Random.Range(-0.3f, 0.3f), controller.Target.transform.position.y, controller.Target.transform.position.z);

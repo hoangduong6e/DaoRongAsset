@@ -86,6 +86,7 @@ public class PVEManager : MonoBehaviour
                             { DraHeight.RongLua, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0.3f,1f), VienChinh.vienchinh.TruXanh.transform.position.z) },
                             { DraHeight.PH, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-0.3f,1.2f), VienChinh.vienchinh.TruXanh.transform.position.z) },
                             { DraHeight._2DAU, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y +Random.Range(-0.5f,0.8f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.MaThach, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y +Random.Range(-0.8f,0f), VienChinh.vienchinh.TruXanh.transform.position.z) },
 
                         }
                     }
@@ -110,6 +111,7 @@ public class PVEManager : MonoBehaviour
                             { DraHeight.RongLua, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(1.3f,1.5f), VienChinh.vienchinh.TruDo.transform.position.z) },
                             { DraHeight.PH, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-0.3f,1.2f), VienChinh.vienchinh.TruDo.transform.position.z) },
                             { DraHeight._2DAU, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + +Random.Range(-0.5f,0.8f), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.MaThach, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + +Random.Range(-0.8f,0f), VienChinh.vienchinh.TruDo.transform.position.z) },
 
                         }
                     }
