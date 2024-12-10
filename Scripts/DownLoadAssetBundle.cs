@@ -1,7 +1,8 @@
-//using Mono.Cecil;
+﻿//using Mono.Cecil;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -21,16 +22,18 @@ public class DownLoadAssetBundle : MonoBehaviour
 
     public static DownLoadAssetBundle ins;
     public static Dictionary<string, RuntimeAnimatorController> dataKhungavt = new Dictionary<string, RuntimeAnimatorController>();
-    public static Dictionary<string, GameObject> ObjectRong = new Dictionary<string, GameObject>();
+   // public static Dictionary<string, GameObject> ObjectRong = new Dictionary<string, GameObject>();
 
     public static AssetBundle bundleDragon;
+     public static Dictionary<string, GameObject> MenuBundle = new Dictionary<string, GameObject>();
 
     private void Start()
     {
         ins = this;
         //StartCoroutine(DownLoadAllRong());
         //DownLoadObjectRong("rongvang2");
-      //  linkdown = link + linkdown;
+        //  linkdown = link + linkdown;
+       // StartCoroutine(DownLoadMenu("abc"));
     }
     public static string SetLinkDown { set { link = value; linkdown = "https://" + link + linkdown;} }
     public void DownAssetBundleAnimator(Image img, string namekhung)
@@ -88,23 +91,25 @@ public class DownLoadAssetBundle : MonoBehaviour
         }
     }
 
-    public void DownLoadObjectRong(string namerong)
+    public void DownLoadMenu(string namemenu, Action thanhcong)
     {
-        string nameasset = namerong.ToLower();
-        if (ObjectRong.ContainsKey(nameasset))
+        StartCoroutine(DownLoad());
+        IEnumerator DownLoad()
         {
-            debug.Log("load from cache");
-            addObjRong(ObjectRong[nameasset]);
-        }
-        StartCoroutine(GetAssetBundle());
-        IEnumerator GetAssetBundle()
-        {
-            UnityWebRequest www = UnityWebRequestAssetBundle.GetAssetBundle(linkdown + nameasset);
+            float process = 50;
+            CrGame.ins.menulogin.SetActive(true);
+            Image maskload = CrGame.ins.menulogin.transform.GetChild(0).GetComponent<Image>();
+            Text txtload = CrGame.ins.menulogin.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>();
+            //  string nameasset = "manh" + gameObject.name.ToLower();
+            UnityWebRequest www = UnityWebRequestAssetBundle.GetAssetBundle(DownLoadAssetBundle.linkdown + namemenu);
             // DownloadHandler handle = www.downloadHandler;
             www.SendWebRequest();
             while (!www.isDone)
             {
-                debug.Log("Downloading... " + (int)(www.downloadProgress * 100f) + "%");
+                process = 50 + (www.downloadProgress * 100f) / 2;
+                debug.Log("Downloading... " + process + "%");
+                txtload.text = "Đang tải dữ liệu: " + System.Math.Round(process, 2) + "%";
+                maskload.fillAmount = (float)process / 100;
                 yield return new WaitForSeconds(.01f);
             }
             if (www.result != UnityWebRequest.Result.Success)
@@ -114,44 +119,88 @@ public class DownLoadAssetBundle : MonoBehaviour
             else
             {
                 AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(www);
-                debug.Log("down ok");
-                GameObject g = bundle.LoadAsset(namerong) as GameObject;
 
-                //  RuntimeAnimatorController tmpController = bundle.LoadAsset("AssetsBundles") as RuntimeAnimatorController;
-                addObjRong(g);
-                GameObject abc = Instantiate(g, transform.position, Quaternion.identity);
-                //  Instantiate(g);
-                //  debug.LogError("name controller " + tmpController.name);
-                // RuntimeAnimatorController controller = Instantiate(tmpController);
-                //bundle.Unload(true);
-                // save(handle.data, "");
+                UnityEngine.Object[] allAssets = bundle.LoadAllAssets();
+
+                GameObject obj = allAssets[0] as GameObject;
+                MenuBundle.Add(namemenu, obj);
+
+                int process2 = Mathf.FloorToInt(process);
+                for (int i = process2; i < 99; i++)
+                {
+                    process += 1;
+                    txtload.text = "Đang tải dữ liệu: " + System.Math.Round(process, 2) + "%";
+                    maskload.fillAmount = (float)process / 100;
+
+                    yield return new WaitForSeconds(0.01f);
+
+                }
+
+                thanhcong();
             }
-
-        }
-        void addObjRong(GameObject g)
-        {
-            ObjectRong.Add(namerong, g);
         }
     }
-    void save(byte[] data, string path)
-    {
-        //Create the Directory if it does not exist
-        if (!Directory.Exists(Path.GetDirectoryName(path)))
-        {
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
-        }
-        try
-        {
-            File.WriteAllBytes(path, data);
-            debug.Log("Saved Data to: " + path.Replace("/", "\\"));
-        }
-        catch (Exception e)
-        {
-            debug.LogWarning("Failed To Save Data to: " + path.Replace("/", "\\"));
-            debug.LogWarning("Error: " + e.Message);
-        }
-    }
+    //public void DownLoadObjectRong(string namerong)
+    //{
+    //    string nameasset = namerong.ToLower();
+    //    if (ObjectRong.ContainsKey(nameasset))
+    //    {
+    //        debug.Log("load from cache");
+    //        addObjRong(ObjectRong[nameasset]);
+    //    }
+    //    StartCoroutine(GetAssetBundle());
+    //    IEnumerator GetAssetBundle()
+    //    {
+    //        UnityWebRequest www = UnityWebRequestAssetBundle.GetAssetBundle(linkdown + nameasset);
+    //        // DownloadHandler handle = www.downloadHandler;
+    //        www.SendWebRequest();
+    //        while (!www.isDone)
+    //        {
+    //            debug.Log("Downloading... " + (int)(www.downloadProgress * 100f) + "%");
+    //            yield return new WaitForSeconds(.01f);
+    //        }
+    //        if (www.result != UnityWebRequest.Result.Success)
+    //        {
+    //            debug.Log(www.error);
+    //        }
+    //        else
+    //        {
+    //            AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(www);
+    //            debug.Log("down ok");
+    //            GameObject g = bundle.LoadAsset(namerong) as GameObject;
 
+    //            //  RuntimeAnimatorController tmpController = bundle.LoadAsset("AssetsBundles") as RuntimeAnimatorController;
+    //            addObjRong(g);
+    //            GameObject abc = Instantiate(g, transform.position, Quaternion.identity);
+    //            //  Instantiate(g);
+    //            //  debug.LogError("name controller " + tmpController.name);
+    //            // RuntimeAnimatorController controller = Instantiate(tmpController);
+    //            //bundle.Unload(true);
+    //            // save(handle.data, "");
+    //        }
 
-  
+    //    }
+    //    void addObjRong(GameObject g)
+    //    {
+    //        ObjectRong.Add(namerong, g);
+    //    }
+    //}
+    //void save(byte[] data, string path)
+    //{
+    //    //Create the Directory if it does not exist
+    //    if (!Directory.Exists(Path.GetDirectoryName(path)))
+    //    {
+    //        Directory.CreateDirectory(Path.GetDirectoryName(path));
+    //    }
+    //    try
+    //    {
+    //        File.WriteAllBytes(path, data);
+    //        debug.Log("Saved Data to: " + path.Replace("/", "\\"));
+    //    }
+    //    catch (Exception e)
+    //    {
+    //        debug.LogWarning("Failed To Save Data to: " + path.Replace("/", "\\"));
+    //        debug.LogWarning("Error: " + e.Message);
+    //    }
+    //}
 }

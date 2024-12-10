@@ -434,20 +434,26 @@ public class CrGame : MonoBehaviour
                 {
                     Friend.ins.GoHome();
                 }
-              // GameObject gdevent = AllMenu.ins.GetCreateMenu("MenuEventHalloween", AllMenu.ins.gameObject);//AllMenu.ins.transform.GetChild(AllMenu.ins.transform.childCount - 1).gameObject;
-                GameObject gdevent = AllMenu.ins.transform.Find("MenuEventHalloween2024").gameObject;
+                 GameObject gdevent = AllMenu.ins.GetCreateMenu("MenuEventHalloween2024", AllMenu.ins.gameObject);//AllMenu.ins.transform.GetChild(AllMenu.ins.transform.childCount - 1).gameObject;
+                // GameObject gdevent = AllMenu.ins.transform.Find("MenuEventHalloween2024").gameObject;
+                    gdevent.SetActive(true);
+                    gdevent.GetComponent<MenuEventHalloween2024>().ParseData(json);
+                    DonDepDao();
 
-                gdevent.SetActive(true);
-                gdevent.GetComponent<MenuEventHalloween2024>().ParseData(json);
-                DonDepDao();
+                    menulogin.SetActive(false);
 
-                menulogin.SetActive(false);
+                //DownLoadAssetBundle.ins.DownLoadMenu("event2", DownOk);
 
-                //foreach (string key in json["dataEvent"]["allItem"].AsObject.Keys)
+                //void DownOk()
                 //{
-                //    DataManager.DataGame[key] = result[key];
+                //    GameObject gdevent = Instantiate(DownLoadAssetBundle.MenuBundle["event2"],trencung.position,Quaternion.identity);
+                //    gdevent.transform.SetParent(AllMenu.ins.transform,false);
 
-                //    //   debug.Log("key" + key);
+                //    gdevent.SetActive(true);
+                //    gdevent.GetComponent<MenuEventHalloween2024>().ParseData(json);
+                //    DonDepDao();
+
+                //    menulogin.SetActive(false);
                 //}
 
             }

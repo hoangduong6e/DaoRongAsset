@@ -654,5 +654,21 @@ public partial class MenuEventHalloween2024 : EventManager
 
     }
 
+    public void VeNha()
+    {
+        btnHopQua.transform.SetParent(NetworkManager.ins.loidai.GiaoDien.transform);
+        AudioManager.PlaySound("soundClick");
 
+        Transform dangodao = CrGame.ins.AllDao.transform.Find("BGDao" + CrGame.ins.DangODao);
+        CrGame.ins.AllDao.transform.Find("BGDao" + CrGame.ins.DangODao).gameObject.SetActive(true);
+        AudioManager.SetSoundBg("nhacnen0");
+
+        Vector3 vec = dangodao.transform.position;
+        vec.z = -10;
+        CrGame.ins.transform.position = vec;
+        CrGame.ins.giaodien.SetActive(true);
+        //    gameObject.SetActive(false);
+        AllMenu.ins.DestroyMenu("MenuEventHalloween2024");
+        //     Destroy(gameObject);
+    }
 }
