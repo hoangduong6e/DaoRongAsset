@@ -653,6 +653,10 @@ public partial class MenuEventHalloween2024 : EventManager
         return kqq;
 
     }
+    public void OpenQuan3ConSoc()
+    {
+        Quan3ConSoc.OpenMenuQuan3ConSoc(1);
+    }
 
     public void VeNha()
     {

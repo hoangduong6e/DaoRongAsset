@@ -21,7 +21,6 @@ public class MenuRaKhoi : MonoBehaviour
     private string[] SocChat = new string[] { "Có rất nhiều đồ hiếm trong quán BA CON SÓC!" };
     private string[] ThuongNhanChat = new string[] { "Bản đồ kho báu Râu Đen cho người anh hùng đây!" };
     private string[] BacSiChat = new string[] {"Vô đây ta nâng cấp rồng cho nè!", "Cảm thấy Rồng chưa đủ mạnh? Bấm vào đây!" };
-    private string[] Quan3ConSocChat = new string[] { "Luôn có hàng mới mỗi ngày. Nhớ ghé mua nhé!","","","" };
     private List<string[]> list = new List<string[]>();
     private GameObject btnHopQua;
     Transform MapRaKhoi;
@@ -36,10 +35,12 @@ public class MenuRaKhoi : MonoBehaviour
     public Animator animThuyenTo;
     public float timeSec;
     public static string nameEvent = "EventHalloween2024";
+
+    public static MenuRaKhoi ins;
     void Start()
     {
+        ins = this;
         InvokeRepeating(nameof(AnimNhaSangToi),0.5f, 0.5f);
-      
     }
 
     public void ParseData(JSONNode json)
@@ -53,42 +54,8 @@ public class MenuRaKhoi : MonoBehaviour
         g.transform.Find("Item").transform.GetChild(0).transform.GetChild(1).GetComponent<Text>().text = json["TuiLuongThuc"].AsString;
         gameObject.SetActive(true);
 
-        quan3ConSoc = transform.Find("Quan3ConSoc").transform.GetChild(0);
-        quan3ConSoc.transform.parent.transform.SetParent(CrGame.ins.trencung);
-        quan3ConSoc.transform.parent.transform.SetSiblingIndex(CrGame.ins.menulogin.transform.GetSiblingIndex() - 1);
-        Text txtDongXuCo = quan3ConSoc.transform.Find("txtDongXuCo").GetComponent<Text>();
-
-        txtDongXuCo.text = json["DongXuCo"].AsString;
-
-        Transform content = quan3ConSoc.transform.Find("Scroll View").transform.GetChild(0).transform.GetChild(0);
-
-        GameObject objItem = content.transform.GetChild(0).gameObject;
-
-        for (int i = 0; i < json["allItemQuan3ConSoc"].Count; i++)
-        {
-            GameObject ins = Instantiate(objItem, transform.position, Quaternion.identity);
-            ins.transform.SetParent(content, false);
-            Image imgitem = ins.transform.GetChild(0).GetComponent<Image>();
-            if (json["allItemQuan3ConSoc"][i]["loaiitem"].AsString == "item")
-            {
-                imgitem.sprite = Inventory.LoadSprite(json["allItemQuan3ConSoc"][i]["nameitem"].AsString);
-            }
-            else if (json["allItemQuan3ConSoc"][i]["loaiitem"].AsString == "itemrong")
-            {
-                imgitem.sprite = Inventory.LoadSpriteRong(json["allItemQuan3ConSoc"][i]["nameitem"].AsString + "2");
-                imgitem.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
-            }
-            else if (json["allItemQuan3ConSoc"][i]["loaiitem"].AsString == "itemevent")
-            {
-                imgitem.sprite = Resources.Load<Sprite>("GameData/" + nameEvent + "/" + json["allItemQuan3ConSoc"][i]["nameitem"].AsString);
-            }
-            imgitem.name = json["allItemQuan3ConSoc"][i]["nameitem"].AsString;
-            imgitem.SetNativeSize();
-            ins.transform.GetChild(3).GetComponent<Text>().text = json["allItemQuan3ConSoc"][i]["giaxuco"].AsString;
-            ins.SetActive(true);
-            ResizeItem(imgitem);
-            btnHopQua.transform.SetParent(transform);
-        }
+       // quan3ConSoc = transform.Find("Quan3ConSoc").transform.GetChild(0);
+       
         MapRaKhoi = transform.Find("MapRaKhoi");
         PanelAllDao = MapRaKhoi.transform.Find("PanelAllDao");
         int hang = json["vitriThuyen"][0].AsInt;
@@ -103,7 +70,7 @@ public class MenuRaKhoi : MonoBehaviour
         txtTimeApTrung.transform.SetSiblingIndex(0);
         ViTriDao = PanelAllDao.transform.GetChild(hang).transform.GetChild(O).transform;
         Thuyen.transform.position = ViTriDao.transform.position;
-
+        btnHopQua.transform.SetParent(transform);
         //if (json["TrungRongRua"].AsInt > 0)
         //{
         //    if (json["TrangThaiTrung"].AsString == "chuaap")
@@ -199,8 +166,7 @@ public class MenuRaKhoi : MonoBehaviour
         }
         list.Add(SocChat);
         list.Add(ThuongNhanChat);
-        list.Add(BacSiChat);
-        list.Add(Quan3ConSocChat);
+        list.Add(BacSiChat);;
 
         StartCoroutine(delay());
         IEnumerator delay()
@@ -238,9 +204,9 @@ public class MenuRaKhoi : MonoBehaviour
         Transform tf = allitem.transform.Find("txtDongXu");
         // tf.GetComponent<Text>().text = i.ToString();
 
-        Text txtDongXuCo = quan3ConSoc.transform.Find("txtDongXuCo").GetComponent<Text>();
+       // Text txtDongXuCo = quan3ConSoc.transform.Find("txtDongXuCo").GetComponent<Text>();
 
-        txtDongXuCo.text = i.ToString();
+        //txtDongXuCo.text = i.ToString();
 
         HieuUngTxt(tf,i.ToString());
     }
@@ -803,7 +769,7 @@ public class MenuRaKhoi : MonoBehaviour
                 {
                     CrGame.ins.giaodien.SetActive(false);
                     btnHopQua.transform.SetParent(NetworkManager.ins.loidai.GiaoDien.transform);
-                    Destroy(quan3ConSoc.transform.parent.gameObject);
+                  //  Destroy(quan3ConSoc.transform.parent.gameObject);
                     Destroy(giaodiennut1.gameObject);
                     Destroy(MapRaKhoi.gameObject);
                     Destroy(ChuyenCanh.gameObject);
@@ -1146,97 +1112,8 @@ public class MenuRaKhoi : MonoBehaviour
 
 
     }
-    Transform quan3ConSoc;
-    public GameObject khung;
-    private string nameItemChon;
-    public void ChonItem()
-    {
-        GameObject btnchon = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+   // Transform quan3ConSoc;
 
-        JSONClass datasend = new JSONClass();
-        datasend["class"] = nameEvent;
-        datasend["method"] = "XemInfoItem";
-        datasend["data"]["nameitem"] = btnchon.name;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
-        void Ok(JSONNode json)
-        {
-            if (json["status"].AsString == "0")
-            {
-                nameItemChon = btnchon.name;
-                khung.SetActive(true);
-                khung.transform.SetParent(btnchon.transform.parent);
-                khung.transform.position = btnchon.transform.position;
-                Text txtInfoItem = quan3ConSoc.transform.Find("txtInfoItem").GetComponent<Text>();
-                txtInfoItem.text = json["txt"].AsString;
-            }
-            else CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
-        }
-
-    }
-    public void MuaItem()
-    {
-        if (nameItemChon == "") return;
-        JSONClass datasend = new JSONClass();
-        datasend["class"] = nameEvent;
-        datasend["method"] = "XemXacNhan";
-        datasend["data"]["nameitem"] = nameItemChon;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
-        void Ok(JSONNode json)
-        {
-            if (json["status"].AsString == "0")
-            {
-                EventManager.OpenThongBaoChon(json["txt"].AsString,Mua);
-            }
-            else CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
-        }
-        void Mua()
-        {
-            JSONClass datasend = new JSONClass();
-            datasend["class"] = nameEvent;
-            datasend["method"] = "MuaItem";
-            datasend["data"]["nameitem"] = nameItemChon;
-            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
-            void Ok(JSONNode json)
-            {
-                if (json["status"].AsString == "0")
-                {
-                    //khung.SetActive(false);
-
-                    Text txtInfoItem = quan3ConSoc.transform.Find("txtInfoItem").GetComponent<Text>();
-                    txtInfoItem.text = json["txt"].AsString;
-
-                    Text txtDongXuCo = quan3ConSoc.transform.Find("txtDongXuCo").GetComponent<Text>();
-
-                    txtDongXuCo.text = json["DongXuCo"].AsString;
-
-                    Transform content = quan3ConSoc.transform.Find("Scroll View").transform.GetChild(0).transform.GetChild(0);
-
-                    for (int i = 0; i < content.transform.childCount; i++)
-                    {
-                        Transform child = content.transform.GetChild(i).transform.GetChild(0);
-                        if (child.name == nameItemChon)
-                        {
-                            GameObject qua = Instantiate(child.gameObject,transform.position,Quaternion.identity);
-                            qua.transform.SetParent(CrGame.ins.trencung,false);
-                            qua.transform.position = child.transform.position;
-                            QuaBay quabay = qua.AddComponent<QuaBay>();
-                            quabay.vitribay = btnHopQua;
-                            break;
-                        }
-                    }
-                    if(nameItemChon == "TrungRongRua")
-                    {
-                        btnAptrung.SetActive(true);
-                        Animator anim = transform.GetChild(0).transform.Find("LongApRongRua").GetComponent<Animator>();
-                        anim.Play("CoTrung_chua_ap");
-                    }
-                }
-                else CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
-            }
-        }
-    
-
-    }
     public GameObject Thuyen;
     private IEnumerator delaychat(int i)
     {
@@ -1304,21 +1181,6 @@ public class MenuRaKhoi : MonoBehaviour
             NhaBacSi.transform.LeanScale(new Vector3(0.73f, 0.73f, 1), 0.2f);
         }
     }
-
-    void ResizeItem(Image image)
-    {
-        // Lấy kích thước gốc của image
-        float originalWidth = image.rectTransform.rect.width;
-        float originalHeight = image.rectTransform.rect.height;
-
-        // Tính toán tỉ lệ thu nhỏ
-        float widthRatio = 155f / originalWidth;
-        float heightRatio = 155f / originalHeight;
-        float minRatio = Mathf.Min(widthRatio, heightRatio);
-
-        // Điều chỉnh kích thước
-        image.rectTransform.sizeDelta = new Vector2(originalWidth * minRatio, originalHeight * minRatio);
-    }
     Vector3 dragOrigin; Camera cam; SpriteRenderer imgMap;
     float MapMinX, MapMaxX, mapMiny, MapMaxY;
     bool drag;GameObject giaodiennut1;
@@ -1376,7 +1238,7 @@ public class MenuRaKhoi : MonoBehaviour
     {
         btnHopQua.transform.SetParent(NetworkManager.ins.loidai.GiaoDien.transform);
         AudioManager.PlaySound("soundClick");
-        Destroy(quan3ConSoc.transform.parent.gameObject);
+      //  Destroy(quan3ConSoc.transform.parent.gameObject);
         Destroy(giaodiennut1.gameObject);
         Destroy(MapRaKhoi.gameObject);
         Destroy(ChuyenCanh.gameObject);
@@ -1609,5 +1471,9 @@ public class MenuRaKhoi : MonoBehaviour
     public void OpenMenuNangSao()
     {
         AllMenu.ins.GetCreateMenu("menuNangSaoRong",CrGame.ins.trencung.gameObject,true);
+    }
+    public void OpenQuan3ConSoc()
+    {
+        Quan3ConSoc.OpenMenuQuan3ConSoc();
     }
 }
