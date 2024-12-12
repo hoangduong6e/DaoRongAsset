@@ -541,15 +541,18 @@ public class TayTuy : MonoBehaviour
                             }
                         }
                     }
+                    btnTayTuy.interactable = true;
+                    btnNhanThuocTinhMoi.interactable = false;
                 }
               
             }
             else
             {
                 CrGame.ins.OnThongBaoNhanh(jsonn["message"].AsString);
+                btnTayTuy.interactable = true;
+                btnNhanThuocTinhMoi.interactable = false;
             }
-            btnTayTuy.interactable = true;
-            btnNhanThuocTinhMoi.interactable = false;
+       
         }
     }
     public void BtnTangSao()

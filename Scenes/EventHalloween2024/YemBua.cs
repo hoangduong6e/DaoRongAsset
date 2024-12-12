@@ -172,7 +172,7 @@ public partial class MenuEventHalloween2024 : EventManager
               
                 VienChinh.vienchinh.enabled = true;
                 //   AllMenu.ins.DestroyMenu("MenuXacNhan");
-                VienChinh.vienchinh.transform.GetChild(0).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Inventory.LoadSprite("BGBanDem");
+                VienChinh.vienchinh.transform.GetChild(0).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Inventory.LoadSprite("BGTinhVan");
                 gameObject.SetActive(false);
 
                 isKichHoatGiamSucManh = json["isKichHoatGiamSucManh"].AsBool;
@@ -205,7 +205,7 @@ public partial class MenuEventHalloween2024 : EventManager
                 btnnhan.transform.GetChild(0).GetComponent<Text>().text = "<color=cyan>Đã nhận</color>";
                 GameObject quabay = Instantiate(imgQuaNhan.gameObject,transform.position,Quaternion.identity);
                 quabay.transform.GetChild(0).gameObject.SetActive(false);
-                quabay.transform.SetParent(transform,false);
+                quabay.transform.SetParent(CrGame.ins.trencung,false);
                 quabay.transform.position = imgQuaNhan.transform.position;
                 QuaBay bay = quabay.AddComponent<QuaBay>();
                 bay.vitribay = btnHopQua;

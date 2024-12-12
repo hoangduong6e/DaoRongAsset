@@ -138,13 +138,15 @@ public class MenuNhatKiLoiDai : MonoBehaviour
     }
     public void OpenShare()
     {
+        CrGame.ins.OnThongBaoNhanh("Tính năng chưa mở!");
+        return;
         string idtrandau = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.transform.parent.name;
         ThongBaoChon tbc = AllMenu.ins.GetCreateMenu("MenuXacNhan", GameObject.Find("CanvasTrenCung"), true, transform.GetSiblingIndex() + 1).GetComponent<ThongBaoChon>();
         tbc.btnChon.onClick.RemoveAllListeners();
 
         tbc.txtThongBao.text = "Bạn muốn chia sẻ trận đấu này vào khoảnh khắc của mình?";
-        tbc.btnChon.onClick.AddListener(delegate { Share(idtrandau); });
-    }    
+         tbc.btnChon.onClick.AddListener(delegate { Share(idtrandau); });
+    }
     private void Share(string idtrandau)
     {
      

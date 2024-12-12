@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class RongMaThach1Attack : DragonPVEController
+public class RongMaThach3Attack : DragonPVEController
 {
-    
+
+    private byte danh = 1;
     //public override void AbsMoveComponent(SocketIOEvent e)
     //{
     //    Transform tfMove = transform.parent.transform;
@@ -20,8 +21,8 @@ public class RongMaThach1Attack : DragonPVEController
     //    Startt();
     //}
     // Update is called once per frame
-   // [SerializeField]
-     //LoaiMaThach loai;
+    // [SerializeField]
+    //LoaiMaThach loai;
 
     protected override void ABSAwake()
     {
@@ -93,7 +94,7 @@ public class RongMaThach1Attack : DragonPVEController
     {
         if (stateAnimAttack == 1)
         {
-             for (int i = 0; i < skillObj.Length; i++)
+            for (int i = 0; i < skillObj.Length; i++)
             {
                 if (!skillObj[i].gameObject.activeSelf)
                 {
@@ -105,17 +106,28 @@ public class RongMaThach1Attack : DragonPVEController
                 }
             }
         }
-      
+
     }
     public override void SkillMoveOk()
     {
-         List<Transform> ronggan = new List<Transform>(PVEManager.GetDraDungTruoc(10, Target.transform.parent.transform, new Vector2(6, 6)));
+        List<Transform> ronggan = new List<Transform>(PVEManager.GetDraDungTruoc(10, Target.transform.parent.transform, new Vector2(6, 6)));
         float damee = dame;
         if (CrGame.ins.NgayDem == "Dem")
         {
             damee *= 1.5f; //Cộng 50% sức đánh
         }
         bool chimanggg = false;
+
+        if (danh <= 3) danh += 1;
+        else
+        {
+            danh = 0;
+            debug.Log("damee x5");
+            damee *= 5;
+        }
+
+        dataLamCham data = new dataLamCham(3);
+
         for (int i = 0; i < ronggan.Count; i++)
         {
             if (ronggan[i].name != "trudo" && ronggan[i].name != "truxanh")
@@ -134,6 +146,8 @@ public class RongMaThach1Attack : DragonPVEController
 
                 chisodich.MatMau(damee, this);
                 chisodich.DayLuiABS();
+
+                chisodich.LamChamABS(data);
 
             }
             else

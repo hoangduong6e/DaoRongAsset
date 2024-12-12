@@ -177,7 +177,10 @@ public class Inventory : MonoBehaviour
                 string newStr = s.Replace("Valentine", "");
                 tex = DownLoadAssetBundle.bundleDragon.LoadAsset<Texture2D>(newStr);
             }
-
+            if (tex == null)
+            {
+                tex = DownLoadAssetBundle.bundleDragon.LoadAsset<Texture2D>(s + "1"); //cho thêm 1 để thử load ra baby
+            }
             if (tex != null)
             {
                 // Tạo sprite từ texture sau khi xử lý

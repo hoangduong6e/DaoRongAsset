@@ -680,7 +680,7 @@ public class VienChinh : MonoBehaviour
         }
         void ThuaSolo()
         {
-            soloWin("thua");
+            soloWin("thua",true);
         }
     }
     public void QuayVe()
@@ -706,8 +706,9 @@ public class VienChinh : MonoBehaviour
         {
             AllMenu.ins.menu["GiaoDienPVP"].SetActive(false);
             transform.GetChild(0).gameObject.SetActive(false);
-            AllMenu.ins.transform.Find("MenuEventHalloween2024").gameObject.SetActive(true);
-           // AllMenu.ins.menu["MenuEventHalloween2024"].SetActive(true);
+
+           // AllMenu.ins.transform.Find("MenuEventHalloween2024").gameObject.SetActive(true);
+            AllMenu.ins.menu["MenuEventHalloween2024"].SetActive(true);
         }
         else if (chedodau == CheDoDau.BossTG)
         {
@@ -847,15 +848,20 @@ public class VienChinh : MonoBehaviour
         datasend["method"] = "KetQuaSolo";
         datasend["data"]["ketqua"] = s;
         NetworkManager.ins.SendServer(datasend.ToString(), Ok,true);
-        void Ok(JSONNode json)
-        {
-
-        }
-       SetAnimWinAllDra();
+        void Ok(JSONNode json) { }
+        SetAnimWinAllDra();
         StartCoroutine(delay());
         IEnumerator delay()
         {
-            if(outlien) yield return new WaitForSeconds(0f);
+            if (s == "win")
+            {
+                //Invoke("invoke", 5);
+                crgame.txtThangCap.text = "Win";
+                CrGame.ins.SetPanelThangCap(true);
+                GiaoDienPVP.ins.btnSetting.gameObject.SetActive(false);
+                crgame.StartCoroutine(crgame.offlencap(crgame.txtThangCap.text));
+            }
+            if (outlien) yield return new WaitForSeconds(0f);
             else yield return new WaitForSeconds(3f);
              dangdau = false;
          AudioManager.SetSoundBg("nhacnen0");
@@ -869,13 +875,7 @@ public class VienChinh : MonoBehaviour
             Destroy(TeamXanh.transform.GetChild(i).gameObject);
         }
         GiaoDienPVP.ins.DestroyAllItemRong();
-        if (s == "win")
-        {
-            //Invoke("invoke", 5);
-            crgame.txtThangCap.text = "Win";
-            CrGame.ins.SetPanelThangCap(true);
-            crgame.StartCoroutine(crgame.offlencap(crgame.txtThangCap.text));
-        }
+ 
         GiaoDienPVP.ins.panelBatdau.transform.GetChild(0).gameObject.SetActive(false);
         friend.GiaoDienNgoai.SetActive(true);
         Vector3 tf = friend.DaoFriend.transform.GetChild(friend.DangODaoFriend).transform.position;

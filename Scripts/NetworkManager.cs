@@ -998,7 +998,7 @@ public class NetworkManager : MonoBehaviour
                         DragonPVEController dragonPVEController = vienchinh.TeamXanh.transform.GetChild(i).transform.Find("SkillDra").GetComponent<DragonPVEController>();
                         if (dragonPVEController != null)
                         {
-                            dataLamCham data = new dataLamCham(float.Parse(CatDauNgoacKep(e.data["useskill"]["timeskill"].ToString())), "", 0, "0.7+0.7+1.5",false,true);
+                            dataLamCham data = new dataLamCham(float.Parse(CatDauNgoacKep(e.data["useskill"]["timeskill"].ToString())), "", 0, "0.7+0.7+1.3",false,true);
                             dragonPVEController.LamChamABS(data);// [speed][speedrun][speedAttack]
                         }
                         else break;

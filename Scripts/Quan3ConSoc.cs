@@ -23,6 +23,8 @@ public class Quan3ConSoc : MonoBehaviour
     public JSONNode itemYeuCau;
     public JSONNode SoitemYeuCau;
     private byte tabhientai = 0;
+
+    Text txtInfoItem;
     public byte OpenTab
     {
         set
@@ -45,12 +47,16 @@ public class Quan3ConSoc : MonoBehaviour
 
             txtDongXuCo.text = SoitemYeuCau[value].AsString;
 
+            txtInfoItem.text = "";
+
+            nameItemChon = "";
         }
     }
     private void Awake()
     {
         quan3ConSoc = transform.GetChild(0);
         hopqua = GameObject.FindGameObjectWithTag("hopqua");
+        txtInfoItem = quan3ConSoc.transform.Find("txtInfoItem").GetComponent<Text>();
     }
     private void Start()
     {
@@ -172,7 +178,7 @@ public class Quan3ConSoc : MonoBehaviour
                 khung.SetActive(true);
                 khung.transform.SetParent(btnchon.transform.parent);
                 khung.transform.position = btnchon.transform.position;
-                Text txtInfoItem = quan3ConSoc.transform.Find("txtInfoItem").GetComponent<Text>();
+               // Text txtInfoItem = quan3ConSoc.transform.Find("txtInfoItem").GetComponent<Text>();
                 txtInfoItem.text = json["txt"].AsString;
             }
             else CrGame.ins.OnThongBaoNhanh(json["message"].AsString);

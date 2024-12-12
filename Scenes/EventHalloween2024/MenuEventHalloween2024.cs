@@ -421,9 +421,9 @@ public partial class MenuEventHalloween2024 : EventManager
                             inss.gameObject.SetActive(true);
                             yield return new WaitForSeconds(0.3f);
                             QuaBay qbay = inss.AddComponent<QuaBay>();
-                            qbay.enabled = false;
+                           // qbay.enabled = false;
                             qbay.vitribay = btnHopQua;
-                            qbay.enabled = true;
+                           // qbay.enabled = true;
                             yield return new WaitForSeconds(0.2f);
                         }
                         DuocQuaCong = true;
@@ -574,6 +574,51 @@ public partial class MenuEventHalloween2024 : EventManager
         }
     }
 
+    public void OpenMenuNhiemvu()
+    {
+        AudioManager.SoundClick();
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = nameEvent;
+        datasend["method"] = "GetNhiemVu";
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
+        {
+            debug.Log(json.ToString());
+            if (json["status"].AsString == "0")
+            {
+                GameObject MenuNhiemVu = GetCreateMenu("MenuNhiemVu", CrGame.ins.trencung, true);
+                GameObject AllNhiemVu = MenuNhiemVu.transform.GetChild(1).transform.GetChild(0).transform.GetChild(0).gameObject;
+                GameObject obj = AllNhiemVu.transform.GetChild(0).gameObject;
+                for (int i = 0; i < json["allNhiemvu"].Count; i++)
+                {
+                    //debug.Log(json["allNhiemvu"][i].ToString());
+                    GameObject instan = Instantiate(obj, transform.position, Quaternion.identity);
+                    instan.transform.SetParent(AllNhiemVu.transform, false);
+                    Text txtnv = instan.transform.GetChild(0).GetComponent<Text>();
+                    txtnv.text = json["allNhiemvu"][i]["namenhiemvu"].Value;
+
+                    Text txttiendo = instan.transform.GetChild(1).GetComponent<Text>();
+                    Text txtphanthuong = instan.transform.GetChild(2).GetComponent<Text>();
+                    if (int.Parse(json["allNhiemvu"][i]["dalam"].Value) >= int.Parse(json["allNhiemvu"][i]["maxnhiemvu"].Value))
+                    {
+                        txttiendo.text = "<color=#00ff00ff>" + GamIns.FormatCash(json["allNhiemvu"][i]["dalam"].AsInt) + "/" + GamIns.FormatCash(json["allNhiemvu"][i]["maxnhiemvu"].AsInt) + "</color>";
+                    }
+                    else
+                    {
+                        txttiendo.text = "<color=#ff0000ff>" + GamIns.FormatCash(json["allNhiemvu"][i]["dalam"].AsInt) + "/" + GamIns.FormatCash(json["allNhiemvu"][i]["maxnhiemvu"].AsInt) + "</color>";
+                    }
+                    txtphanthuong.text = json["allNhiemvu"][i]["qua"]["soluong"].AsString;
+                    Image img = instan.transform.GetChild(3).GetComponent<Image>();
+                    img.sprite = GetSprite(json["allNhiemvu"][i]["qua"]["name"].AsString);
+
+                    img.SetNativeSize();
+                    instan.SetActive(true);
+                }
+                MenuNhiemVu.transform.GetChild(0).transform.Find("btnExit").GetComponent<Button>().onClick.AddListener(delegate { DestroyMenu("MenuNhiemVu"); });
+
+            }
+        }
+    }
     public static Action KetQua(KetQuaTranDau kq, bool quayve = false)
     {
         void kqq()

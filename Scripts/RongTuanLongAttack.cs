@@ -1,3 +1,4 @@
+using UnityEngine;
 using Random = UnityEngine.Random;
 public class RongTuanLongAttack : DragonPVEController
 {
@@ -16,6 +17,12 @@ public class RongTuanLongAttack : DragonPVEController
             VienChinh.vienchinh.HienIconSkill(300, "Do", "iconKhienTuanLongDo");
             VienChinh.vienchinh.SetBuffGiapall(saorong, team);
         }
+
+        Transform khien = transform.Find("khientuanlong");
+        Vector3 vec1 = khien.localScale;
+        vec1 = new Vector3(vec1.x * 1.15f, vec1.y * 1.15f, vec1.z);
+
+        khien.transform.localScale = vec1;
     }
     protected override void Updatee()
     {
