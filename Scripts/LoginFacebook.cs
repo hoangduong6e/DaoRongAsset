@@ -42,6 +42,25 @@ public static string http = "http";
 public static string http = "https";
 #endif
 
+
+    public string keyAes
+    {
+        get
+        {
+            string substring = token.Substring(0, 10 - NetworkManager.ins.solanrequest.ToString().Length);
+
+            return AesEncryption.Keyyy + substring + NetworkManager.ins.solanrequest;
+        }
+    }
+    public string IVAes
+    {
+        get
+        {
+            string substring = token.Substring(0, 10 - NetworkManager.ins.solanrequest.ToString().Length);
+
+            return AesEncryption.IVvvv + substring + NetworkManager.ins.solanrequest;
+        }
+    }
     // public static string ws { get {return (http == "https") } };
     private void Awake()
     {
@@ -501,7 +520,7 @@ public static string http = "https";
             postLogin p = new postLogin(objdangnhap.transform.GetChild(0).GetComponent<InputField>().text,"", objdangnhap.transform.GetChild(1).GetComponent<InputField>().text, hedieuhanh);
             string data = JsonUtility.ToJson(p);
             //var request = new UnityWebRequest(LoginFacebook.http + "://"+NameServer+"/dangnhapfbk1.7", "POST");
-            debug.Log("test2 " + http + "://" + ServerChinh + "/DangNhapp");
+        //    debug.Log("test2 " + http + "://" + ServerChinh + "/DangNhapp");
             var request = new UnityWebRequest(http + "://" + ServerChinh + "/DangNhapp", "POST");
             //  debug.Log(crgame.ServerName + "dangnhapfbk");
             byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(data);
@@ -884,6 +903,9 @@ public static string http = "https";
                 PlayerPrefs.SetString("tenhienthi", CrGame.EncryptString(nameNv, "daorongAdmin"));
                 PanelLoadDao(false);
                 token = json["token"].AsString;
+               
+               // AesEncryption.Key += substring;
+             //   AesEncryption.IV += substring;
                 Debug.Log("token là " + token);
                 StartCoroutine(BeginLoad());
                // SGSceneManager.LoadScene("SampleScene");

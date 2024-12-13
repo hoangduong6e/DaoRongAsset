@@ -46,7 +46,7 @@ public class Shop : MonoBehaviour
         datasend["class"] = "Main";
         datasend["method"] = "XemShop";
         datasend["data"]["nameitem"] = nameVatpham;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
         void Ok(JSONNode json)
         {
             if (json["gia"].Value != "")
@@ -172,7 +172,7 @@ public class Shop : MonoBehaviour
         datasend["class"] = "Main";
         datasend["method"] = "CheckXemQc";
         datasend["data"]["namequaxem"] = admob.namequaxem;
-        NetworkManager.ins.SendServer(datasend.ToString(), oK, true);
+        NetworkManager.ins.SendServer(datasend.ToString(), oK);
         void oK(JSONNode json)
         {
             debug.Log(json.ToString());

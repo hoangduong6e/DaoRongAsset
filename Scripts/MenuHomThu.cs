@@ -70,7 +70,7 @@ public class MenuHomThu : MonoBehaviour
     {
         int vitrithuchon = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.transform.GetSiblingIndex();
         thuchon = (byte)vitrithuchon;
-        CrGame.ins.panelLoadDao.SetActive(true);
+      //  CrGame.ins.panelLoadDao.SetActive(true);
         string thu = "hethong";
         if (ScrollRectThu.transform.GetChild(0).transform.GetChild(1).gameObject.activeSelf) thu = "banbe";
 
@@ -79,7 +79,7 @@ public class MenuHomThu : MonoBehaviour
         datasend["method"] = "XemThu";
         datasend["data"]["thu"] = thu;
         datasend["data"]["vitri"] = vitrithuchon.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
 
         void Ok(JSONNode jsonn)
         {
@@ -142,7 +142,7 @@ public class MenuHomThu : MonoBehaviour
     {
         Button btngui = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
         btngui.interactable = false;
-        CrGame.ins.panelLoadDao.SetActive(true);
+        //CrGame.ins.panelLoadDao.SetActive(true);
         string txtguitoi = transform.GetChild(1).transform.GetChild(0).transform.GetChild(0).GetComponent<InputField>().text ,txtchude = transform.GetChild(1).transform.GetChild(0).transform.GetChild(1).GetComponent<InputField>().text;
         string txtnoidung = transform.GetChild(1).transform.GetChild(0).transform.GetChild(2).GetComponent<InputField>().text;
         txtguitoi = txtguitoi.Trim();// cat het khoang trang o dau va cuoi chuoi
@@ -221,7 +221,7 @@ public class MenuHomThu : MonoBehaviour
     }   
     public void HuyThu()
     {
-        CrGame.ins.panelLoadDao.SetActive(true);
+       // CrGame.ins.panelLoadDao.SetActive(true);
         string thu = "hethong";
         if (ScrollRectThu.transform.GetChild(0).transform.GetChild(1).gameObject.activeSelf) thu = "banbe";
 
@@ -251,7 +251,7 @@ public class MenuHomThu : MonoBehaviour
     }
     public void NhanQuaThu()
     {
-        CrGame.ins.panelLoadDao.SetActive(true);
+        //CrGame.ins.panelLoadDao.SetActive(true);
         string thu = "hethong";
         if (ScrollRectThu.transform.GetChild(0).transform.GetChild(1).gameObject.activeSelf) thu = "banbe";
 
@@ -260,7 +260,7 @@ public class MenuHomThu : MonoBehaviour
         datasend["method"] = "NhanQuaThu";
         datasend["data"]["thu"] = thu;
         datasend["data"]["vitri"] = thuchon.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
         void Ok(JSONNode jsonn)
         {
             if (jsonn["status"].AsString == "0")

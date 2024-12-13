@@ -14,6 +14,16 @@ using System;
 
 using Random = UnityEngine.Random;
 
+[SerializeField]
+public class postSend
+{
+    public string data, taikhoan;
+    public postSend(string Data,string TaiKhoan)
+    {
+        taikhoan = TaiKhoan;
+        data = Data;
+    }
+}
 public class NetworkManager : MonoBehaviour
 {
     public SocketIOComponent socket;
@@ -59,43 +69,100 @@ public class NetworkManager : MonoBehaviour
      //   vienchinh = GameObject.FindGameObjectWithTag("vienchinh").GetComponent<VienChinh>();
     }
     public static bool isSend = true;
-    public void SendServer(string data,CallbackServerResult call,bool setisSend = false)
+
+    public int solanrequest = 0;
+    public void SendServer(string dataa, CallbackServerResult call, bool setisSend = false)
     {
         if (!isSend && !setisSend) return;
-        StartCoroutine(Send());
-        IEnumerator Send()
-        {
-            if(!setisSend) StartCoroutine(StartSend());
-            //crgame.OnThongBao(true, "Đang Mời...", false);
-         //   UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "SendRequest/data/" + data + "/key/" + LoginFacebook.ins.key+"/taikhoan/"+LoginFacebook.ins.id);
-            UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "RequestSend23/data/" + data + "/taikhoan/"+LoginFacebook.ins.id);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            www.SetRequestHeader("Authorization", "Bearer " + LoginFacebook.token);
-            yield return www.SendWebRequest();
 
-            if (www.result != UnityWebRequest.Result.Success)
+        StartCoroutine(Load());
+
+        IEnumerator Load()
+        {
+            debug.Log("LoginFacebook.ins.keyAes: " + LoginFacebook.ins.keyAes + ", LoginFacebook.ins.IVAes: " + LoginFacebook.ins.IVAes);
+            postSend p = new postSend(AesEncryption.Encrypt(dataa), LoginFacebook.ins.id); // Dữ liệu cần gửi
+            string data = JsonUtility.ToJson(p); // Chuyển đổi đối tượng thành chuỗi JSON
+
+            // Tạo request POST
+            var request = new UnityWebRequest(CrGame.ins.ServerName + "RequestSend23", "POST");
+
+            // Chuyển đổi chuỗi JSON thành mảng byte và thiết lập nội dung yêu cầu
+            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(data);
+            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = new DownloadHandlerBuffer();
+
+            // Thiết lập headers
+            request.SetRequestHeader("Content-Type", "application/json");
+            // Nếu cần gửi token trong header
+            request.SetRequestHeader("Authorization", "Bearer " + LoginFacebook.token);  // Ví dụ về Authorization header nếu có
+
+            // Gửi yêu cầu
+            yield return request.SendWebRequest();
+
+            // Kiểm tra lỗi (cập nhật với result trong các phiên bản mới của Unity)
+            if (request.result != UnityWebRequest.Result.Success)
             {
-                debug.Log(www.error);
-             //   CrGame.ins.OnThongBaoNhanh("Không thể kết nối tới máy chủ!");
+                debug.Log("Request failed: " + request.error); // Hiển thị lỗi
                 JSONClass jsonerror = new JSONClass();
                 jsonerror["status"] = "1";
                 jsonerror["message"] = "Không thể kết nối tới máy chủ";
-                call(jsonerror);
+                call(jsonerror); // Trả về kết quả lỗi
             }
             else
             {
-                // Show results as text
-               // debug.Log(www.downloadHandler.text);
+                // Nếu thành công, parse và trả về kết quả
+                debug.Log(request.downloadHandler.text);
+                JSONNode json = JSON.Parse(AesEncryption.Decrypt(request.downloadHandler.text));
+                call(json); // Trả về dữ liệu đã nhận từ server
 
-                JSONNode json = JSON.Parse(www.downloadHandler.text);
-
-                //StopCoroutine(StartSend());
-
-                call(json);
+                solanrequest = json["solanrequest"].AsInt;
             }
-            CrGame.ins.panelLoadDao.SetActive(false);
+
+            // Dọn dẹp
+            request.Dispose();
             isSend = true;
+
+            CrGame.ins.panelLoadDao.SetActive(false);
         }
+
+
+
+        //StartCoroutine(Send());
+        //IEnumerator Send()
+        //{
+        //    if (!setisSend) StartCoroutine(StartSend());
+        //    //crgame.OnThongBao(true, "Đang Mời...", false);
+        //    //   UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "SendRequest/data/" + data + "/key/" + LoginFacebook.ins.key+"/taikhoan/"+LoginFacebook.ins.id);
+
+        //    data = AesEncryption.Encrypt(data);
+        //    UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "RequestSend23/data/" + data + "/taikhoan/" + LoginFacebook.ins.id);
+        //    www.downloadHandler = new DownloadHandlerBuffer();
+        //    www.SetRequestHeader("Authorization", "Bearer " + LoginFacebook.token);
+        //    yield return www.SendWebRequest();
+
+        //    if (www.result != UnityWebRequest.Result.Success)
+        //    {
+        //        debug.Log(www.error);
+        //        //   CrGame.ins.OnThongBaoNhanh("Không thể kết nối tới máy chủ!");
+        //        JSONClass jsonerror = new JSONClass();
+        //        jsonerror["status"] = "1";
+        //        jsonerror["message"] = "Không thể kết nối tới máy chủ";
+        //        call(jsonerror);
+        //    }
+        //    else
+        //    {
+        //        // Show results as text
+        //        // debug.Log(www.downloadHandler.text);
+
+        //        JSONNode json = JSON.Parse(www.downloadHandler.text);
+
+        //        //StopCoroutine(StartSend());
+
+        //        call(json);
+        //    }
+        //    CrGame.ins.panelLoadDao.SetActive(false);
+        //    isSend = true;
+        //}
     }
     IEnumerator StartSend()
     {
