@@ -462,9 +462,9 @@ public partial class MenuEventHalloween2024 : EventManager
                             inss.gameObject.SetActive(true);
                             yield return new WaitForSeconds(0.3f);
                             QuaBay qbay = inss.AddComponent<QuaBay>();
-                            qbay.enabled = false;
+                          //  qbay.enabled = false;
                             qbay.vitribay = btnHopQua;
-                            qbay.enabled = true;
+                         //   qbay.enabled = true;
                             yield return new WaitForSeconds(0.2f);
                         }
                         DuocQuaCong = true;
