@@ -9,7 +9,7 @@ public class BossHnew : DragonPVEController
     private string animAttackboss = "Attack";
     private bool den = true;
     private Action actionUpdateAnimAttack, actionMoveSkillok;
-    float damechieucuoi = 2000;
+    float damechieucuoi = 10000;
     public override void SetHpOnline(JSONObject data)
     {
 
@@ -24,13 +24,18 @@ public class BossHnew : DragonPVEController
         nameobj = "";
         transform.parent.GetComponent<DraUpdateAnimator>().DragonPVEControllerr = this;
         PVEManager.GetUpdateMove(transform, "TeamDo");
-        int aichon = MenuEventHalloween2024.inss.aiDangChon + 1;
-        if(aichon == 9) damechieucuoi = 3000;
-        else if(aichon == 12) damechieucuoi = 5000;
-        else if(aichon == 15) damechieucuoi = 6000;
-        else if(aichon == 18) damechieucuoi = 7000;
-        else if(aichon == 19) damechieucuoi = 8000;
-        else if(aichon == 20) damechieucuoi = 10000;
+        if(VienChinh.vienchinh.chedodau == CheDoDau.Halloween)
+        {
+            int aichon = MenuEventHalloween2024.inss.aiDangChon + 1;
+            if (aichon < 9) damechieucuoi = 2000;
+            else if (aichon == 9) damechieucuoi = 3000;
+            else if (aichon == 12) damechieucuoi = 5000;
+            else if (aichon == 15) damechieucuoi = 6000;
+            else if (aichon == 18) damechieucuoi = 7000;
+            else if (aichon == 19) damechieucuoi = 8000;
+            else if (aichon == 20) damechieucuoi = 10000;
+        }
+
 
 
         actionMoveSkillok += SkillMoveOkk;
@@ -86,7 +91,11 @@ public class BossHnew : DragonPVEController
             yield return new WaitForSeconds(1.5f);
             // vienchinh.Hieuungd.SetActive(false);
             GiaoDienPVP.ins.SetPanelToi = false;
-            if (MenuEventHalloween2024.inss.isKichHoatGiamSucManh) damechieucuoi = 1000;
+            if (VienChinh.vienchinh.chedodau == CheDoDau.Halloween)
+            {
+                if (MenuEventHalloween2024.inss.isKichHoatGiamSucManh) damechieucuoi = 1000;
+            }
+                
             else damechieucuoi = 2000;
             animAttackboss = "Attack2";
             yield return new WaitForSeconds(10f);

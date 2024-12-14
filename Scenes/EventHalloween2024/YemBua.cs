@@ -99,6 +99,7 @@ public partial class MenuEventHalloween2024 : EventManager
                 debug.Log(json.ToString());
                 PanelXemDanhBoss.gameObject.SetActive(true);
                 Transform g = PanelXemDanhBoss.transform.GetChild(0);
+                g.transform.GetChild(1).GetComponent<Text>().text = "<color=orange>Boss Ma Đạo ải "+ (aiDangChon + 1) +"</color>";
                 Transform all = g.transform.Find("all");
                 for (int i = 0; i < 3; i++)
                 {

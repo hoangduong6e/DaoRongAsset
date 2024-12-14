@@ -21,7 +21,10 @@ public partial class MenuEventHalloween2024 : EventManager
 
     private byte AiDangChon;
 
-    public byte aiDangChon {get{ return AiDangChon;} }
+    public byte aiDangChon {
+        get{ return AiDangChon;} 
+        set { AiDangChon = value; if (AiDangChon >= 20) AiDangChon = 19; }
+    }
     public static MenuEventHalloween2024 inss;
     private bool SetPanelQua
     {
@@ -76,7 +79,7 @@ public partial class MenuEventHalloween2024 : EventManager
             child.transform.GetChild(2).GetComponent<Text>().text = (i + 1).ToString();
         }
          
-        AiDangChon = json["data"]["AiDangChon"].AsByte;
+        aiDangChon = json["data"]["AiDangChon"].AsByte;
         LoadAi(json["data"]["allAi"]);
     }
     private void SetThanhTienDo(JSONNode json)
@@ -108,6 +111,7 @@ public partial class MenuEventHalloween2024 : EventManager
 
     private void LoadAi(JSONNode json)
     {
+        debug.Log("AiDangChon" + AiDangChon);
         Transform allAi = ThanhTienDo.transform.GetChild(2);
         Transform child = allAi.transform.GetChild(AiDangChon);
         Image img = child.transform.GetChild(1).GetComponent<Image>();
@@ -534,7 +538,7 @@ public partial class MenuEventHalloween2024 : EventManager
                 TatSpriteDangMo();
 
                 debug.Log(json.ToString());
-                AiDangChon = (byte)AiChon;
+                aiDangChon = (byte)AiChon;
                 LoadAi(json["dataAi"]);
 
 
@@ -564,7 +568,7 @@ public partial class MenuEventHalloween2024 : EventManager
                 DuocQuaCong = false;
                 debug.Log(json.ToString());
                 TatSpriteDangMo();
-                AiDangChon = json["Ai"].AsByte;
+                aiDangChon = json["Ai"].AsByte;
                 LoadAi(json["dataAi"]);
             }
             else
@@ -640,7 +644,8 @@ public partial class MenuEventHalloween2024 : EventManager
 
                     if (quayve)
                     {
-                        CrGame.ins.OpenMenuRaKhoi();
+                        //CrGame.ins.OpenMenuRaKhoi();
+                        MenuEventHalloween2024.ins.gameObject.SetActive(true);
                         return;
                     }
                     GiaoDienPVP.ins.menuWin.SetActive(true);
@@ -659,7 +664,8 @@ public partial class MenuEventHalloween2024 : EventManager
                     GiaoDienPVP.ins.btnSetting.SetActive(true);
                     GiaoDienPVP.ins.spriteWin.SetNativeSize();
 
-                    MenuEventHalloween2024.inss.PanelXemDanhBoss.gameObject.SetActive(true);
+                    //MenuEventHalloween2024.inss.PanelXemDanhBoss.gameObject.SetActive(true);
+                    MenuEventHalloween2024.inss.XemAiBoss();
                     Transform g = MenuEventHalloween2024.inss.PanelXemDanhBoss.transform.GetChild(0);
                     Transform all = g.transform.Find("all");
                     for (int i = 0; i < 3; i++)

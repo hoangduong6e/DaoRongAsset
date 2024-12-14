@@ -1704,6 +1704,8 @@ public class CrGame : MonoBehaviour
                 NetworkManager.ins.vienchinh.TruXanh.SetActive(true);
                 //  net.socket.Off("usersOut", UsersOut);;
                 AllMenu.ins.DestroyMenu("MenuBossTG");
+
+              
                 menulogin.SetActive(false);
             }
 
@@ -1729,25 +1731,44 @@ public class CrGame : MonoBehaviour
         GameObject menuboss = AllMenu.ins.GetCreateMenu("MenuBossTG");
         BossTG boss = menuboss.GetComponent<BossTG>();
         boss.GetTop();
+
+        Transform allboss = menuboss.transform.Find("allboss");
+        Transform tfboss = null;
+        for (int i = 0; i < allboss.transform.childCount; i++)
+        {
+            if(allboss.transform.GetChild(i).name == json["nameboss"].AsString)
+            {
+                allboss.transform.GetChild(i).gameObject.SetActive(true);
+                tfboss = allboss.transform.GetChild(i);
+                break;
+            }
+            //else
+            //{
+            //    allboss.transform.GetChild(i).gameObject.SetActive(false);
+            //}
+        }
+        tfboss.GetComponent<Animator>().Play(json["animBoss"].AsString);
+       
+       //  debug.Log("BGBOSS " + json["BG"].AsString);
         //float fillamount = (float)float.Parse(json["hp"].Value) / (float)float.Parse(json["maxhp"].Value);
         //boss.imgHpBoss.fillAmount = fillamount;
-        if(json["nameboss"].Value != "TinhTinhLuaDo")
-        {
-            //menuboss.transform.GetChild(2).GetComponent<Animator>().runtimeAnimatorController = Inventory.LoadAnimator(json["nameboss"].Value);]
-            for (int i = 0; i < menuboss.transform.GetChild(2).transform.childCount; i++)
-            {
-                if(menuboss.transform.GetChild(2).transform.GetChild(i).gameObject.name == json["nameboss"].Value)
-                {
-                    menuboss.transform.GetChild(2).GetComponent<SpriteRenderer>().enabled = false;
-                    menuboss.transform.GetChild(2).transform.GetChild(i).GetComponent<Animator>().runtimeAnimatorController = Inventory.LoadAnimator(json["nameboss"].Value);
-                    menuboss.transform.GetChild(2).transform.GetChild(i).gameObject.SetActive(true);
-                }
-            }
-        }
-        else
-        {
-            menuboss.transform.GetChild(2).GetComponent<SpriteRenderer>().enabled = true;
-        }
+        //if(json["nameboss"].Value != "TinhTinhLuaDo")
+        //{
+        //    //menuboss.transform.GetChild(2).GetComponent<Animator>().runtimeAnimatorController = Inventory.LoadAnimator(json["nameboss"].Value);]
+        //    for (int i = 0; i < menuboss.transform.GetChild(2).transform.childCount; i++)
+        //    {
+        //        if(menuboss.transform.GetChild(2).transform.GetChild(i).gameObject.name == json["nameboss"].Value)
+        //        {
+        //            menuboss.transform.GetChild(2).GetComponent<SpriteRenderer>().enabled = false;
+        //            menuboss.transform.GetChild(2).transform.GetChild(i).GetComponent<Animator>().runtimeAnimatorController = Inventory.LoadAnimator(json["nameboss"].Value);
+        //            menuboss.transform.GetChild(2).transform.GetChild(i).gameObject.SetActive(true);
+        //        }
+        //    }
+        //}
+        //else
+        //{
+        //    menuboss.transform.GetChild(2).GetComponent<SpriteRenderer>().enabled = true;
+        //}
         boss.Updatehp(float.Parse(json["hp"].Value), float.Parse(json["maxhp"].Value));
 
         GameObject nguoichoi = menuboss.transform.GetChild(0).gameObject;
@@ -1808,8 +1829,9 @@ public class CrGame : MonoBehaviour
         {
             NetworkManager.ins.loidai.objGiaoDienOff[i].SetActive(false);
         }
-        if(NgayDem == "Ngay") NetworkManager.ins.vienchinh.transform.GetChild(0).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Inventory.LoadSprite("BGBanNgay");
-        else if(NgayDem == "Dem") NetworkManager.ins.vienchinh.transform.GetChild(0).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Inventory.LoadSprite("BGBanDem");
+        //if(NgayDem == "Ngay") NetworkManager.ins.vienchinh.transform.GetChild(0).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Inventory.LoadSprite("BGBanNgay");
+        //else if(NgayDem == "Dem") NetworkManager.ins.vienchinh.transform.GetChild(0).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Inventory.LoadSprite("BGBanDem");
+        NetworkManager.ins.vienchinh.transform.GetChild(0).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Inventory.LoadSprite(json["BG"].AsString);
         giaodien.SetActive(true);
         giaodien.transform.GetChild(5).gameObject.SetActive(false);
         txtDanhVong.gameObject.SetActive(true);

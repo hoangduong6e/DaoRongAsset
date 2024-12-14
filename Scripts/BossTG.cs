@@ -22,7 +22,9 @@ public class BossTG : MonoBehaviour
         NetworkManager.ins.socket.On("usersChat", UsersChat);
         NetworkManager.ins.socket.On("UpdateHpBoss", UpdateHpBoss);
         NetworkManager.ins.socket.On("BossDie", BossDie);
-    //    GameObject nguoichoi = transform.GetChild(0).gameObject;
+
+       
+        //GameObject nguoichoi = transform.GetChild(0).gameObject;
 
     }
     void UsersOut(SocketIOEvent e)
@@ -458,7 +460,7 @@ public class BossTG : MonoBehaviour
                 NetworkManager.ins.vienchinh.TruDo.SetActive(true);
                 NetworkManager.ins.vienchinh.TruXanh.SetActive(true);
                 //   CrGame.ins.allmenu.DestroyMenu("MenuXacNhan");
-                //   NetworkManager.ins.vienchinh.transform.GetChild(0).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Inventory.LoadSprite("BGTinhVan");
+              
                 //gameObject.SetActive(false);
                 //  Destroy(gameObject);
 
