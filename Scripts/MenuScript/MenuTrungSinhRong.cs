@@ -657,6 +657,7 @@ public class MenuTrungSinhRong : MonoBehaviour
         if (transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text == "Chuyển hóa Rồng Lửa Mắt Xanh" 
             || transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text == "Chuyển hóa Rồng Ma Trơi"
             || transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text == "Chuyển hóa Rồng Huyết Nguyệt Long"
+            || transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text == "Chuyển hóa Rồng Ma Thạch"
             ) load = "ChuyenHoa";
 
         AudioManager.PlaySound("soundClick");

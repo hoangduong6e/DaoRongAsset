@@ -683,6 +683,7 @@ public abstract class DragonPVEController : MonoBehaviour
         //    //DauTruongOnline.ins.AddUpdateData(newjson);
         //    return;
         //}
+        return;
         PVEManager.InstantiateHieuUngChu("choang", transform,giay);
         
         speed = 0;

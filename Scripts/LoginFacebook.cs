@@ -517,7 +517,7 @@ public static string http = "https";
 
         IEnumerator Load()
         {
-            postLogin p = new postLogin(objdangnhap.transform.GetChild(0).GetComponent<InputField>().text,"", objdangnhap.transform.GetChild(1).GetComponent<InputField>().text, hedieuhanh);
+            postLogin p = new postLogin(objdangnhap.transform.GetChild(0).GetComponent<InputField>().text,"", objdangnhap.transform.GetChild(1).GetComponent<InputField>().text, hedieuhanh, Application.version);
             string data = JsonUtility.ToJson(p);
             //var request = new UnityWebRequest(LoginFacebook.http + "://"+NameServer+"/dangnhapfbk1.7", "POST");
         //    debug.Log("test2 " + http + "://" + ServerChinh + "/DangNhapp");
@@ -864,10 +864,10 @@ public static string http = "https";
 #elif UNITY_ANDROID
         hedieuhanh = "android";
 #endif
-          postLogin p = new postLogin(id,nameNv,matkhau, hedieuhanh);
+          postLogin p = new postLogin(id,nameNv,matkhau, hedieuhanh, Application.version);
         string data = JsonUtility.ToJson(p);
         //var request = new UnityWebRequest(LoginFacebook.http + "://"+NameServer+"/dangnhapfbk1.7", "POST");
-        var request = new UnityWebRequest(LoginFacebook.http + "://"+NameServer+"/dangnhapfbk3.8", "POST");
+        var request = new UnityWebRequest(LoginFacebook.http + "://"+NameServer+"/dangnhapfbk3.9", "POST");
       //  debug.Log(crgame.ServerName + "dangnhapfbk");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(data);
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
@@ -945,7 +945,7 @@ public static string http = "https";
         {
             //NameServer = GameObject.Find("InputNameServer").GetComponent<InputField>().text;
             yield return id != "";
-            postLogin p = new postLogin(loginthuong.transform.GetChild(0).GetComponent<InputField>().text, nameNv, loginthuong.transform.GetChild(1).GetComponent<InputField>().text,"android");
+            postLogin p = new postLogin(loginthuong.transform.GetChild(0).GetComponent<InputField>().text, nameNv, loginthuong.transform.GetChild(1).GetComponent<InputField>().text,"android", Application.version);
             string data = JsonUtility.ToJson(p);
             var request = new UnityWebRequest(LoginFacebook.http + "://" + NameServer + "/dangnhap", "POST");
             //  debug.Log(crgame.ServerName + "dangnhapfbk");
@@ -1220,12 +1220,13 @@ public class SothucAn
 [SerializeField]
 public class postLogin
 {
-    public string taikhoan,matkhau,name,hedieuhanh;
-    public postLogin(string idf,string Name,string MatKhau,string HeDieuHanh)
+    public string taikhoan,matkhau,name,hedieuhanh,version;
+    public postLogin(string idf,string Name,string MatKhau,string HeDieuHanh,string Verison)
     {
         taikhoan = idf;
         name = Name;
         matkhau = MatKhau;
         hedieuhanh = HeDieuHanh;
+        version = Verison;
     }
 }

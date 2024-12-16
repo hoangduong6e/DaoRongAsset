@@ -22,12 +22,14 @@ public partial class MenuEventHalloween2024 : EventManager
     public bool isKichHoatGiamSucManh;
     public void ExitYemBua()
     {
+        AudioManager.PlaySound("soundClick");
         if (!DuocYemBua) return;
         GameObject btnchon = EventSystem.current.currentSelectedGameObject;
         btnchon.gameObject.SetActive(false);
     }
     public void YemBua()
     {
+        AudioManager.PlaySound("soundClick");
         if (!DuocYemBua) return;
         JSONClass datasend = new JSONClass();
         datasend["class"] =nameEvent;
@@ -87,7 +89,7 @@ public partial class MenuEventHalloween2024 : EventManager
 
     public void XemAiBoss()
     {
-
+        AudioManager.PlaySound("soundClick");
         JSONClass datasend = new JSONClass();
         datasend["class"] = nameEvent;
         datasend["method"] = "XemAiBoss";
@@ -101,6 +103,7 @@ public partial class MenuEventHalloween2024 : EventManager
                 Transform g = PanelXemDanhBoss.transform.GetChild(0);
                 g.transform.GetChild(1).GetComponent<Text>().text = "<color=orange>Boss Ma Đạo ải "+ (aiDangChon + 1) +"</color>";
                 Transform all = g.transform.Find("all");
+                g.transform.Find("txtluotdanh").GetComponent<Text>().text = json["txtluotdanh"].AsString;
                 for (int i = 0; i < 3; i++)
                 {
                     Image imgsao = all.transform.GetChild(i).GetComponent<Image>();
@@ -180,14 +183,41 @@ public partial class MenuEventHalloween2024 : EventManager
 
                 PanelXemDanhBoss.gameObject.SetActive(false);
             }
+            else if(json["status"].AsString == "2")
+            {
+                EventManager.OpenThongBaoChon(json["message"].AsString, MuaLuotDanh, "Mua");
+            }    
             else
             {
                 CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
             }
         }
     }
+    void MuaLuotDanh()
+    {
+
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = nameEvent;
+        datasend["method"] = "MuaLuotDanh";
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        void Ok(JSONNode json)
+        {
+            if (json["status"].AsString == "0")
+            {
+                Transform g = PanelXemDanhBoss.transform.GetChild(0);
+                g.transform.Find("txtluotdanh").GetComponent<Text>().text = json["txtluotdanh"].AsString;
+                debug.Log(json.ToString());
+            }
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+            }
+        }
+
+    }
     public void NhanQuaAi()
     {
+        AudioManager.PlaySound("soundClick");
         GameObject btnchon = EventSystem.current.currentSelectedGameObject;
         int quachon = btnchon.transform.parent.transform.GetSiblingIndex();
         JSONClass datasend = new JSONClass();
@@ -220,6 +250,7 @@ public partial class MenuEventHalloween2024 : EventManager
     }
     public void SuaDoiHinh()
     {
+        AudioManager.PlaySound("soundClick");
         AllMenu.ins.GetCreateMenu("MenuDoiHinh", CrGame.ins.trencung.gameObject, true);
     }
 

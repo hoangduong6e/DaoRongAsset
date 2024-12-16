@@ -46,10 +46,6 @@ public partial class MenuEventHalloween2024 : EventManager
         inss = this;
     }
     // Update is called once per frame
-    void Update()
-    {
-
-    }
     protected override void DiemDanhOk(JSONNode json)
     {
 
@@ -58,7 +54,10 @@ public partial class MenuEventHalloween2024 : EventManager
             SetItem(key.Key,key.Value.AsInt);
         }
     }
-
+    private void OnEnable()
+    {
+        AudioManager.SetSoundBg("nhacnen1");
+    }
     public void ParseData(JSONNode json)
     {
         btnHopQua = CrGame.ins.giaodien.transform.Find("btnQuaOnline").gameObject;
@@ -81,6 +80,7 @@ public partial class MenuEventHalloween2024 : EventManager
          
         aiDangChon = json["data"]["AiDangChon"].AsByte;
         LoadAi(json["data"]["allAi"]);
+  
     }
     private void SetThanhTienDo(JSONNode json)
     {
@@ -287,6 +287,7 @@ public partial class MenuEventHalloween2024 : EventManager
     private string DaChon;
     public void XemMoPhongAn()
     {
+        AudioManager.PlaySound("soundClick");
         GameObject btnchon = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
         JSONClass datasend = new JSONClass();
         datasend["class"] = nameEvent;
@@ -374,6 +375,7 @@ public partial class MenuEventHalloween2024 : EventManager
     }    
     public void MoPhongAn()
     {
+        AudioManager.PlaySound("soundClick");
         JSONClass datasend = new JSONClass();
         datasend["class"] = nameEvent;
         datasend["method"] = "MoPhongAn";
@@ -526,6 +528,7 @@ public partial class MenuEventHalloween2024 : EventManager
     private bool DuocQuaCong = true;
     public void ChonCong()
     {
+        AudioManager.PlaySound("soundClick");
         if (!DuocQuaCong) return;
         GameObject btnchon = EventSystem.current.currentSelectedGameObject;
         if(btnchon.GetComponent<Image>().sprite.name == "aichuamo")

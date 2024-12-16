@@ -354,15 +354,14 @@ public abstract class EventManager : MonoBehaviour
                     }
                     else if (json["ManhDoi"][i]["itemgi"].Value == "itemevent")
                     {
-                        //for (int j = 0; j < EventManager.ins.allitemEvent.Length; j++)
-                        //{
-                        //    if (json["ManhDoi"][i]["nameitem"].Value == EventManager.ins.allitemEvent[j].name)
-                        //    {
-                        //        imgmanh.sprite = EventManager.ins.allitemEvent[j];
-                        //    }
-                        //}
                         imgmanh.sprite = EventManager.ins.GetSprite(json["ManhDoi"][i]["nameitem"].AsString);
                         imgmanh.SetNativeSize();
+                    }
+                    else if (json["ManhDoi"][i]["itemgi"].Value == "avatar")
+                    {
+                        Friend.ins.LoadImage("avt", json["ManhDoi"][i]["nameitem"].AsString, imgmanh);
+                       // imgmanh.sprite = EventManager.ins.GetSprite(json["ManhDoi"][i]["nameitem"].AsString);
+                       // imgmanh.SetNativeSize();
                     }
                     else
                     {

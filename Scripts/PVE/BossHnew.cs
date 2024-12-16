@@ -9,7 +9,7 @@ public class BossHnew : DragonPVEController
     private string animAttackboss = "Attack";
     private bool den = true;
     private Action actionUpdateAnimAttack, actionMoveSkillok;
-    float damechieucuoi = 10000;
+    float damechieucuoi = 6000;
     public override void SetHpOnline(JSONObject data)
     {
 
@@ -27,13 +27,13 @@ public class BossHnew : DragonPVEController
         if(VienChinh.vienchinh.chedodau == CheDoDau.Halloween)
         {
             int aichon = MenuEventHalloween2024.inss.aiDangChon + 1;
-            if (aichon < 9) damechieucuoi = 2000;
-            else if (aichon == 9) damechieucuoi = 3000;
-            else if (aichon == 12) damechieucuoi = 5000;
-            else if (aichon == 15) damechieucuoi = 6000;
-            else if (aichon == 18) damechieucuoi = 7000;
-            else if (aichon == 19) damechieucuoi = 8000;
-            else if (aichon == 20) damechieucuoi = 10000;
+            if (aichon < 9) damechieucuoi = 5000;
+            else if (aichon == 9) damechieucuoi = 6000;
+            else if (aichon == 12) damechieucuoi = 7000;
+            else if (aichon == 15) damechieucuoi = 8000;
+            else if (aichon == 18) damechieucuoi = 9000;
+            else if (aichon == 19) damechieucuoi = 15000;
+            else if (aichon == 20) damechieucuoi = 20000;
         }
 
 
@@ -66,8 +66,19 @@ public class BossHnew : DragonPVEController
     }
     public override void AbsMatMau(float maumat, DragonPVEController cs, bool setonline = false)
     {
-        MatMauDefault(maumat, cs, setonline);
-        if(den)
+        if(VienChinh.vienchinh.chedodau == CheDoDau.BossTG)
+        {
+            ThongKeDame.AddThongKe(new ThongKeDame.CData(cs.team.ToString(), cs.nameobj, cs.idrong, maumat, ThongKeDame.EType.dame));
+            NetworkManager.ins.socket.Emit("DanhBossTG", JSONObject.CreateStringObject(maumat.ToString()));
+        }    
+        else
+        {
+            MatMauDefault(maumat, cs, setonline);
+        }
+
+
+      
+        if (den)
         {
             if (hp <= Maxhp / 1.3f)
             {
