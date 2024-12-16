@@ -25,10 +25,7 @@ public class RongVangBacAttack : DragonPVEController
     {
 
     }
-    public override void ChoangABS(float giay = 0.2f)
-    {
-        ChoangDefault(giay);
-    }
+
     public override void SetHpOnline(JSONObject data)
     {
         hp = float.Parse(data["hp"].str);
@@ -71,6 +68,7 @@ public class RongVangBacAttack : DragonPVEController
 
                 chisodich.MatMau(damee, this);
                 if (daylui) chisodich.DayLuiABS();
+                chisodich.Choang();
             }
             else
             {

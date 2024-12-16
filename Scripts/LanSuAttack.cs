@@ -30,9 +30,9 @@ public class LanSuAttack : DragonPVEController
         };
         thongke = false;
     }
-    public override void ChoangABS(float giay = 0.2f)
+    public override void Choang(float giay = 0.4F, bool setOnline = false)
     {
-        ChoangDefault(giay);
+        // base.Choang(giay);
     }
     public override void AbsStart()
     {
@@ -144,7 +144,7 @@ public class LanSuAttack : DragonPVEController
                 chisodich.DayLuiABS();
                 dataLamCham data = new dataLamCham(1f, "caylamcham");
                 chisodich.LamChamABS(data);
-                chisodich.ChoangABS(Random.Range(0.2f,1));
+                chisodich.Choang(Random.Range(0.2f,1));
                 chisodich.MatMau(damee, this);
             }
             else

@@ -69,6 +69,9 @@ public class MenuTrungSinhRong : MonoBehaviour
                               || itemdra.nameObjectDragon == "RongPhuongHoangDungNham" && nameimg == "RongPhuongHoangDungNham2"
                               || itemdra.nameObjectDragon == "RongMatXe" && nameimg == "RongMatXe2"
                               || itemdra.nameObjectDragon == "RongHuyetNguyetLong" && nameimg == "RongHuyetNguyetLong2"
+                              || itemdra.nameObjectDragon == "RongMaThach1" && nameimg == "RongMaThach12"
+                              || itemdra.nameObjectDragon == "RongMaThach2" && nameimg == "RongMaThach22"
+                              || itemdra.nameObjectDragon == "RongMaThach3" && nameimg == "RongMaThach32"
                              ) 
                     {
 
@@ -149,6 +152,15 @@ public class MenuTrungSinhRong : MonoBehaviour
                         else if (itemdra.nameObjectDragon == "RongHuyetNguyetLong" && nameimg == "RongHuyetNguyetLong2")
                         {
                             if (int.Parse(itemdra.txtSao.text) >= 23 && int.Parse(itemdra.txtSao.text) <= 24)
+                            {
+                                SetRong();
+                            }
+                        }
+                        else if (itemdra.nameObjectDragon == "RongMaThach1" && nameimg == "RongMaThach12"
+                              || itemdra.nameObjectDragon == "RongMaThach2" && nameimg == "RongMaThach22"
+                              || itemdra.nameObjectDragon == "RongMaThach3" && nameimg == "RongMaThach32")
+                        {
+                            if (int.Parse(itemdra.txtSao.text) >= 10 && int.Parse(itemdra.txtSao.text) <= 22)
                             {
                                 SetRong();
                             }
@@ -332,6 +344,54 @@ public class MenuTrungSinhRong : MonoBehaviour
             }
         }
     }
+
+    public void OpenChuyenHoaRongMaThach()
+    {
+        GameObject contentRong = transform.GetChild(1).transform.GetChild(1).transform.GetChild(0).transform.GetChild(0).gameObject;
+        GameObject allitemcan = transform.GetChild(0).transform.Find("allitemcan").gameObject;
+        Image item1 = allitemcan.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>();
+        item1.sprite = Inventory.LoadSprite("SungMaTroi");
+        transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text = "Chuyển hóa Rồng Ma Thạch";
+        transform.GetChild(0).transform.GetChild(1).GetComponent<Text>().text = "Yêu cầu vật phẩm <color=#00ff00ff>Nọc nhện đen</color> để <color=#ffa500ff>Chuyển hóa</color> <color=#ffff00ff>Rồng Ma Thạch</color> <color=#ff0000ff>trường thành</color> Cấp 1 thành <color=#ffff00ff>Rồng Ma Thạch trưởng thành </color> Cấp 2";
+        for (int i = 1; i < contentRong.transform.childCount; i++)
+        {
+            Destroy(contentRong.transform.GetChild(i).gameObject);
+        }
+        GameObject g = transform.GetChild(0).gameObject;
+        //SpriteRenderer spriteRongChon = g.transform.Find("SpriteRongChon").GetComponent<SpriteRenderer>();
+        // Text txtQuaThong = transform.GetChild(0).transform.GetChild(3).GetComponent<Text>();
+        //SpriteRenderer SpriteRongNang = g.transform.Find("SpriteRongNangCap").GetComponent<SpriteRenderer>();
+        // txtQuaThong.gameObject.SetActive(false);
+        ClearRongGd();
+        for (int i = 0; i < allitemcan.transform.childCount; i++)
+        {
+            allitemcan.transform.GetChild(i).gameObject.SetActive(false);
+        }
+        if (Inventory.ins.TuiRong.transform.childCount > 1)
+        {
+            for (int i = 0; i < Inventory.ins.TuiRong.transform.childCount - 1; i++)
+            {
+                if (Inventory.ins.TuiRong.transform.GetChild(i).transform.childCount > 0)
+                {
+                    ItemDragon itemdra = Inventory.ins.TuiRong.transform.GetChild(i).transform.GetChild(0).GetComponent<ItemDragon>();
+                    string nameimg = itemdra.transform.GetChild(0).GetComponent<Image>().sprite.name;
+                    if (itemdra.nameObjectDragon == "RongMaThach1" && nameimg == "RongMaThach12" || itemdra.nameObjectDragon == "RongMaThach2" && nameimg == "RongMaThach22")
+                    {
+                        GameObject rong = Instantiate(contentRong.transform.GetChild(0).gameObject, transform.position, Quaternion.identity);
+                        rong.transform.SetParent(contentRong.transform, false);
+                        // ite
+                        rong.name = itemdra.name;
+                        Image imgRong = rong.transform.GetChild(0).GetComponent<Image>();
+                        imgRong.sprite = Inventory.LoadSpriteRong(itemdra.nameObjectDragon + "2"); imgRong.SetNativeSize();
+                        rong.transform.GetChild(1).GetComponent<Text>().text = itemdra.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text;
+                        rong.transform.GetChild(2).GetComponent<Text>().text = itemdra.txtSao.text;
+                        // AddSlotRong(item.name, item.nameObjectDragon, ""); //item.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text
+                        rong.SetActive(true);
+                    }
+                }
+            }
+        }
+    }
     public void ChonRongNangSao()
     {
         CrGame.ins.panelLoadDao.SetActive(true) ;
@@ -422,7 +482,11 @@ public class MenuTrungSinhRong : MonoBehaviour
                     }
                     //animrongnang.runtimeAnimatorController = Inventory.LoadAnimator(json["namechuyenhoa"].AsString);
                     //animrongnang.SetInteger("TienHoa", 2);
-                    SetRongGd(namerong + "2", json["namechuyenhoa"].AsString + "1");
+                    if(namerong == "RongMaThach1" || namerong == "RongMaThach2")
+                    {
+                        SetRongGd(namerong + "2", json["namechuyenhoa"].AsString + "2");
+                    }    
+                    else SetRongGd(namerong + "2", json["namechuyenhoa"].AsString + "1");
 
                 }
                 byte ok = 0;

@@ -19,10 +19,6 @@ public class RongMaTroiGiapAttack : DragonPVEController
     //}
     // Update is called once per frame
     public Image fillGiap;
-    public override void ChoangABS(float giay = 0.2f)
-    {
-        ChoangDefault(giay);
-    }
     protected override void ABSAwake()
     {
 

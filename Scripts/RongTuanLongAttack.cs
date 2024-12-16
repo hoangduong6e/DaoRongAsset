@@ -43,10 +43,6 @@ public class RongTuanLongAttack : DragonPVEController
     {
         MatMauDefault(maumat, cs, setonline);
     }
-    public override void ChoangABS(float giay = 0.2f)
-    {
-        ChoangDefault(giay);
-    }
     public override void LamChamABS(dataLamCham data)
     {
         data.eff = "";

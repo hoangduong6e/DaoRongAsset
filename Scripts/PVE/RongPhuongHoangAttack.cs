@@ -24,10 +24,6 @@ public class RongPhuongHoangAttack : DragonPVEController
         ImgHp.transform.parent.gameObject.SetActive(true);
         delaytatthanhmau();
     }
-    public override void ChoangABS(float giay = 0.2f)
-    {
-        ChoangDefault(giay);
-    }
     protected override void Updatee()
     {
 

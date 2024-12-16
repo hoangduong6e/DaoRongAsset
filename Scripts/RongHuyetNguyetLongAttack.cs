@@ -10,22 +10,22 @@ public class RongHuyetNguyetLongAttack : DragonPVEController
     {
 
     }
- //   private void flipduoi(float x)
-//{
-      //  var shape = scaleduoi.shape;
-        //if(x < 0)
-      //  {
-            
-       // }
-      //  else
-     //   {
-        
-      //      shape.alignToDirection = false;
-      //  }
- //   }
-    public override void ChoangABS(float giay = 0.2f)
+    //   private void flipduoi(float x)
+    //{
+    //  var shape = scaleduoi.shape;
+    //if(x < 0)
+    //  {
+
+    // }
+    //  else
+    //   {
+
+    //      shape.alignToDirection = false;
+    //  }
+    //   }
+    public override void Choang(float giay = 0.4F, bool setOnline = false)
     {
-       // ChoangDefault(giay);
+        // base.Choang(giay);
     }
     public override void AbsStart()
     {

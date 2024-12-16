@@ -14,10 +14,6 @@ public class RongMatXeAttack : DragonPVEController
         xuongMatXe.transform.position = new Vector3(xuongMatXe.transform.position.x,xuongMatXe.transform.position.y + Random.Range(0f,3f));
         StartCoroutine(MoveAndDestroy());
     }
-    public override void ChoangABS(float giay = 0.2f)
-    {
-        ChoangDefault(giay);
-    }
     public override void AbsStart()
     {
         //  actionUpdateAnimAttack += AbsUpdateAnimAttackRongCay;

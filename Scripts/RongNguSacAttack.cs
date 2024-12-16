@@ -115,10 +115,6 @@ public class RongNguSacAttack : DragonPVEController
       //  Rongtrieuhoi.transform.position = transform.position;
     }
 
-    public override void ChoangABS(float giay = 0.2f)
-    {
-        ChoangDefault(giay);
-    }
     protected override void Updatee()
     {
         // transform.position = transform.parent.position;

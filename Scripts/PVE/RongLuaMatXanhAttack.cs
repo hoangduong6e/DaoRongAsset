@@ -21,10 +21,6 @@ public class RongLuaMatXanhAttack : DragonPVEController
 
 
     }
-    public override void ChoangABS(float giay = 0.2f)
-    {
-        ChoangDefault(giay);
-    }
     protected override void Updatee()
     {
 

@@ -79,7 +79,7 @@ public class NetworkManager : MonoBehaviour
 
         IEnumerator Load()
         {
-            debug.Log("LoginFacebook.ins.keyAes: " + LoginFacebook.ins.keyAes + ", LoginFacebook.ins.IVAes: " + LoginFacebook.ins.IVAes);
+           // debug.Log("LoginFacebook.ins.keyAes: " + LoginFacebook.ins.keyAes + ", LoginFacebook.ins.IVAes: " + LoginFacebook.ins.IVAes);
             postSend p = new postSend(AesEncryption.Encrypt(dataa), LoginFacebook.ins.id); // Dữ liệu cần gửi
             string data = JsonUtility.ToJson(p); // Chuyển đổi đối tượng thành chuỗi JSON
 
@@ -111,7 +111,7 @@ public class NetworkManager : MonoBehaviour
             else
             {
                 // Nếu thành công, parse và trả về kết quả
-                debug.Log(request.downloadHandler.text);
+             //   debug.Log(request.downloadHandler.text);
                 JSONNode json = JSON.Parse(AesEncryption.Decrypt(request.downloadHandler.text));
                 call(json); // Trả về dữ liệu đã nhận từ server
 

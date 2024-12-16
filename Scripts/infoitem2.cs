@@ -74,12 +74,8 @@ public class infoitem2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
         NetworkManager.ins.SendServer(datasend.ToString(), Ok,true);
         void Ok(JSONNode json)
         {
-            if (json["status"].AsString == "0")
-            {
-                id = (short)json["thongtin"].AsString.Length;
-                CrGame.ins.OnThongBaoNhanh(json["thongtin"].AsString, 2, false);
-            }
-            else CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+            id = (short)json["thongtin"].AsString.Length;
+            CrGame.ins.OnThongBaoNhanh(json["thongtin"].AsString, 2, false);
         }
     }
 }

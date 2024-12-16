@@ -9,7 +9,7 @@ using UnityEngine.EventSystems;
 public partial class MenuEventHalloween2024 : EventManager
 {
     [SerializeField]
-    private GameObject PanelItemYeuCau, PanelQua, Eff2, quabay, ThanhTienDo;
+    private GameObject PanelItemYeuCau, PanelQua, Eff2,Eff3, quabay, ThanhTienDo;
 
     private Transform KhungBua;
 
@@ -127,7 +127,7 @@ public partial class MenuEventHalloween2024 : EventManager
             {
                 Transform Da = transform.Find(i.ToString());
                 Transform da = allDa[json[i]["name"].AsInt];
-                da.transform.GetChild(0).GetComponent<Image>().sprite = GetSprite("Da" + (json[i]["name"].AsInt + 1));
+                da.transform.GetChild(1).GetComponent<Image>().sprite = GetSprite("Da" + (json[i]["name"].AsInt + 1));
                 if (json[i]["phongan"].AsBool) // nếu đang phong ấn
                 {
                     da.gameObject.SetActive(true);
@@ -399,7 +399,7 @@ public partial class MenuEventHalloween2024 : EventManager
                     StartCoroutine(delay());
                     IEnumerator delay()
                     {
-                        Animator anim = dachon.transform.GetChild(0).GetComponent<Animator>();
+                        Animator anim = dachon.transform.GetChild(1).GetComponent<Animator>();
                         Eff2.transform.position = new Vector3(dachon.transform.position.x, Eff2.transform.position.y, Eff2.transform.position.z);
                         Eff2.SetActive(true);
                         yield return new WaitForSeconds(0.5f);
@@ -478,6 +478,17 @@ public partial class MenuEventHalloween2024 : EventManager
                 if (json["duocquaai"].AsBool)
                 {
                     SetThanhTienDo(json["ThanhTienDo"]);
+
+                    Transform allAi = ThanhTienDo.transform.GetChild(2);
+                    Image fill = ThanhTienDo.transform.GetChild(1).GetComponent<Image>();
+
+                    Transform child = allAi.transform.GetChild(aiDangChon + 1);
+                    Image img = child.transform.GetChild(1).GetComponent<Image>();
+
+                    Eff3.transform.position = img.transform.position;
+                    Eff3.SetActive(true);
+                    StartDelay(() => { Eff3.SetActive(false); }, 0.6f);
+                   
                 }
                 
             }

@@ -285,7 +285,7 @@ public class Friend : MonoBehaviour
     {
         //crgame.OnThongBao(true, "Đang tải", false);
         //  GoHome();
-        crgame.panelLoadDao.SetActive(true);
+        CrGame.ins.panelLoadDao.SetActive(true);
         DataDao = null;
 
         JSONClass datasend = new JSONClass();
@@ -422,7 +422,7 @@ public class Friend : MonoBehaviour
                 //crgame.ngaydem.transform.SetSiblingIndex(4);
                 //crgame.Bg.transform.position = Dao.transform.position;
                 GiaoDienFriend.SetActive(true); GiaoDienMinh.SetActive(false);
-
+                CrGame.ins.panelLoadDao.SetActive(false);
                 //  crgame.OnThongBao(false);
             }
         }

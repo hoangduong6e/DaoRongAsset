@@ -27,10 +27,6 @@ public class RongMaThach2Attack : DragonPVEController
     {
 
     }
-    public override void ChoangABS(float giay = 0.2f)
-    {
-        ChoangDefault(giay);
-    }
     public override void AbsStart()
     {
 

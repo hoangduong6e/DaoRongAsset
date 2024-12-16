@@ -44,7 +44,7 @@ public abstract class DragonPVEController : MonoBehaviour
 
     [SerializeField]
     private float huthp = 0, chimang = 0;
-
+    //public string animIdlle;
     public float _HutHp
     {
         get
@@ -619,17 +619,36 @@ public abstract class DragonPVEController : MonoBehaviour
         //  debug.Log("tangtoc " + cong);
         if (cong == "0")
         {
+
+            bool setSpeedRun = true;
+            bool setSpeedAnim = true;
+            if(effect == "caylamcham")
+            {
+                setSpeedRun = false;
+            }
+            else if (effect == "banglamcham")
+            {
+                setSpeedAnim = false;
+            }
+            
             if (maxspeed * ReplayData.speedReplay / chia >= 0.3f)
             {
-                speed = maxspeed * ReplayData.speedReplay / chia;
-                anim.SetFloat("speedRun", ReplayData.speedReplay / chia);
-                anim.SetFloat("speedAttack", ReplayData.speedReplay / chia);
+                if(setSpeedRun) speed = maxspeed * ReplayData.speedReplay / chia;
+                if(setSpeedAnim)
+                {
+                    anim.SetFloat("speedRun", ReplayData.speedReplay / chia);
+                    anim.SetFloat("speedAttack", ReplayData.speedReplay / chia);
+                }    
             }
             else
             {
-                speed = 0.3f * ReplayData.speedReplay;
-                anim.SetFloat("speedRun", 0.3f * ReplayData.speedReplay);
-                anim.SetFloat("speedAttack", 0.3f * ReplayData.speedReplay);
+                if (setSpeedRun) speed = 0.3f * ReplayData.speedReplay;
+                if (setSpeedAnim)
+                {
+                    anim.SetFloat("speedRun", 0.3f * ReplayData.speedReplay);
+                    anim.SetFloat("speedAttack", 0.3f * ReplayData.speedReplay);
+                }
+              
             }
         }
         else
@@ -652,17 +671,40 @@ public abstract class DragonPVEController : MonoBehaviour
         }
     }
     public abstract void LamChamABS(dataLamCham data);
-    public abstract void ChoangABS(float giay = 0.2f);
-    protected void ChoangDefault(float giay)
+
+    public virtual void Choang(float giay = 0.4f,bool setOnline = false)
     {
+        //if (VienChinh.vienchinh.chedodau == CheDoDau.Online && !setOnline)
+        //{
+        //    //  debug.Log("set lam chammmmm");
+        //    //JSONObject newjson = new JSONObject();
+        //    //newjson.AddField("id", parnent.name);
+        //    //newjson.AddField("rongdie", "");
+        //    //DauTruongOnline.ins.AddUpdateData(newjson);
+        //    return;
+        //}
+        PVEManager.InstantiateHieuUngChu("choang", transform,giay);
+        
         speed = 0;
+        //  setAnim = false;
+        //  animplay = animIdlle;
+        anim.SetFloat("speedRun", 0);
+        anim.SetFloat("speedAttack", 0);
         StartCoroutine(delay());
         IEnumerator delay()
         {
             yield return new WaitForSeconds(giay);
             speed = maxspeed;
+            anim.SetFloat("speedRun", 1);
+            anim.SetFloat("speedAttack", 1);
+            // setAnim = true;
         }
-    }
+    }    
+    //public abstract void ChoangABS(float giay = 0.4f);
+    //protected void ChoangDefault(float giay)
+    //{
+      
+    //}
     //public void duocdaylui()
     //{
     //    StartCoroutine(delay());

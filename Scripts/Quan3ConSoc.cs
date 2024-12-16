@@ -225,11 +225,12 @@ public class Quan3ConSoc : MonoBehaviour
 
                     txtDongXuCo.text = json["soitem"].AsString;
 
-                    Transform content = allListItem.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0);
+                    Transform content = allListItem.transform.GetChild(tabchon).transform.GetChild(0).transform.GetChild(0);
 
                     for (int i = 0; i < content.transform.childCount; i++)
                     {
-                        Transform child = content.transform.GetChild(i).transform.GetChild(0);
+                        Transform childi = content.transform.GetChild(i);
+                        Transform child = childi.transform.GetChild(0);
                         if (child.name == nameItemChon)
                         {
                             GameObject qua = Instantiate(child.gameObject,transform.position,Quaternion.identity);
@@ -237,6 +238,7 @@ public class Quan3ConSoc : MonoBehaviour
                             qua.transform.position = child.transform.position;
                             QuaBay quabay = qua.AddComponent<QuaBay>();
                             quabay.vitribay = hopqua;
+                            childi.transform.GetChild(3).GetComponent<Text>().text = json["gianew"].AsString;
                             break;
                         }
                     }

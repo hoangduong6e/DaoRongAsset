@@ -49,6 +49,7 @@ public abstract class DraInstantiate : MonoBehaviour
         }
         else dragonPVEController.team = Team.TeamXanh;
         DauTruongOnline.dicdra.Add(id,transform);
+        //dragonPVEController.animIdlle = Idlle;
         SetDraCompleted();
     }
     public void DraInsPVE(JSONObject e)
@@ -74,7 +75,7 @@ public abstract class DraInstantiate : MonoBehaviour
             dragonPVEController.team = Team.TeamDo;
         }
         else dragonPVEController.team = Team.TeamXanh;
-
+       // dragonPVEController.animIdlle = Idlle;
         SetDraCompleted();
     }
     public void DraInsReplay(string nameObject,float timetrieuhoi)
@@ -116,6 +117,7 @@ public abstract class DraInstantiate : MonoBehaviour
             dragonPVEController.team = Team.TeamDo;
         }
         else dragonPVEController.team = Team.TeamXanh;
+        //dragonPVEController.animIdlle = Idlle;
         SetDraCompleted();
     }
     protected void InsCanvasDraIsland(DataDragonIsland dataa)

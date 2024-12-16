@@ -85,13 +85,9 @@ public class infongoc : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
         void Ok(JSONNode json)
         {
-            if (json["status"].AsString == "0")
-            {
-                AllMenu.ins.OpenCreateMenu("infoitem", GameObject.FindGameObjectWithTag("trencung"));
-                CrGame.ins.OnThongBaoNhanh(json["thongtin"].Value, 2, false);
-                id = (short)json["thongtin"].AsString.Length;
-            }
-            else CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+            AllMenu.ins.OpenCreateMenu("infoitem", GameObject.FindGameObjectWithTag("trencung"));
+            CrGame.ins.OnThongBaoNhanh(json["thongtin"].Value, 2, false);
+            id = (short)json["thongtin"].AsString.Length;
         }
     }
 }

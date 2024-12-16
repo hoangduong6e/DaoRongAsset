@@ -32,10 +32,12 @@ public class RongKhongTuocAttack : DragonPVEController
         //}
         MatMauDefault(maumat, cs, setonline);
     }
-    public override void ChoangABS(float giay = 0.2f)
-    {
-        ChoangDefault(giay);
-    }
+
+
+    //public override void ChoangABS(float giay = 0.2f)
+    //{
+    //    ChoangDefault(giay);
+    //}
     protected override void ABSAwake()
     {
 

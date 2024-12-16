@@ -331,6 +331,7 @@ public abstract class EventManager : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = EventManager.ins.nameEvent;
         datasend["method"] = "MenuDoiManh";
+      //  if (menuevent.ContainsKey("GiaoDien2")) datasend["method"] = "MenuDoiManh2";
         NetworkManager.ins.SendServer(datasend.ToString(), Ok);
 
         void Ok(JSONNode json)
@@ -367,9 +368,12 @@ public abstract class EventManager : MonoBehaviour
                     {
                         imgmanh.sprite = Inventory.LoadSpriteRong(json["ManhDoi"][i]["nameitem"].Value + "2");
                     }
+                    imgmanh.SetNativeSize();
                     manh.name = json["ManhDoi"][i]["namekey"];
                     manh.SetActive(true);
+                    GamIns.ResizeItem(imgmanh, 200);
                 }
+
                 menuDoiManh.transform.GetChild(2).GetComponent<Button>().onClick.AddListener(DoiManh);
                 menuDoiManh.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().onClick.AddListener(ExitDoiManh);
                 menuDoiManh.SetActive(true);
@@ -391,41 +395,76 @@ public abstract class EventManager : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = EventManager.ins.nameEvent;
         datasend["method"] = "XemManhDoi";
+    //    if (menuevent.ContainsKey("GiaoDien2")) datasend["method"] = "XemManhDoi2";
         datasend["data"]["namemanh"] = namemanhchon;
         NetworkManager.ins.SendServer(datasend.ToString(), Ok);
         void Ok(JSONNode json)
         {
-            debug.Log(json.ToString());
-            for (int i = 0; i < yeucau.transform.childCount; i++)
+            Debug.Log(json.ToString());
+            for (int i = 1; i < yeucau.transform.childCount; i++)
             {
-                yeucau.transform.GetChild(i).gameObject.SetActive(false);
+                Destroy(yeucau.transform.GetChild(i).gameObject);
             }
             int sonvok = 0;
             for (int i = 0; i < json["manhdoi"]["itemcan"].Count; i++)
             {
-                for (int j = 0; j < yeucau.transform.childCount; j++)
-                {
-                    if (yeucau.transform.GetChild(j).name == json["manhdoi"]["itemcan"][i]["nameitem"].Value)
-                    {
-                        Text txtyeucau = yeucau.transform.GetChild(j).transform.GetChild(1).GetComponent<Text>();
-                        yeucau.transform.GetChild(j).gameObject.SetActive(true);
 
-                        txtyeucau.text = json["hienthisoitemco"][json["manhdoi"]["itemcan"][i]["nameitem"].AsString].AsString;
-                        if (json["hienthisoitemco"][json["manhdoi"]["itemcan"][i]["nameitem"].AsString].AsBool)
-                        {
-                            sonvok += 1;
-                        }
-                        if (json["duocdoi"].AsBool)
-                        {
-                            EventManager.ins.menuevent["MenuDoiManh"].transform.GetChild(2).gameObject.SetActive(true);
-                            EventManager.ins.menuevent["MenuDoiManh"].transform.GetChild(2).GetComponent<Button>().interactable = true;
-                        }
-                        else
-                        {
-                            EventManager.ins.menuevent["MenuDoiManh"].transform.GetChild(2).gameObject.SetActive(false);
-                        }
-                    }
+                GameObject g = yeucau.transform.GetChild(0).gameObject;
+                GameObject instan = Instantiate(g, transform.position, Quaternion.identity);
+                instan.transform.SetParent(yeucau.transform, false);
+                string nameitem = json["manhdoi"]["itemcan"][i]["nameitem"].AsString; ;
+                instan.name = nameitem;
+                Image img = instan.transform.GetChild(0).GetComponent<Image>();
+                if (json["manhdoi"]["itemcan"][i]["loaiitem"].AsString == "ItemEvent")
+                {
+                    img.sprite = GetSprite(nameitem);
                 }
+                else if (json["manhdoi"]["itemcan"][i]["loaiitem"].AsString == "Item")
+                {
+                    img.sprite = Inventory.LoadSprite(nameitem);
+                }
+                img.SetNativeSize();
+                instan.gameObject.SetActive(true);
+                Text txtyeucau = instan.transform.GetChild(1).GetComponent<Text>();
+
+                txtyeucau.text = json["hienthisoitemco"][json["manhdoi"]["itemcan"][i]["nameitem"].AsString].AsString;
+                if (json["hienthisoitemco"][json["manhdoi"]["itemcan"][i]["nameitem"].AsString].AsBool)
+                {
+                    sonvok += 1;
+                }
+                if (json["duocdoi"].AsBool)
+                {
+                    EventManager.ins.menuevent["MenuDoiManh"].transform.GetChild(2).gameObject.SetActive(true);
+                    EventManager.ins.menuevent["MenuDoiManh"].transform.GetChild(2).GetComponent<Button>().interactable = true;
+                }
+                else
+                {
+                    EventManager.ins.menuevent["MenuDoiManh"].transform.GetChild(2).gameObject.SetActive(false);
+                }
+                GamIns.ResizeItem(img);
+                //for (int j = 0; j < yeucau.transform.childCount; j++)
+                //{
+                //    if (yeucau.transform.GetChild(j).name == json["manhdoi"]["itemcan"][i]["nameitem"].Value)
+                //    {
+                //        Text txtyeucau = yeucau.transform.GetChild(j).transform.GetChild(1).GetComponent<Text>();
+                //        yeucau.transform.GetChild(j).gameObject.SetActive(true);
+
+                //        txtyeucau.text = json["hienthisoitemco"][json["manhdoi"]["itemcan"][i]["nameitem"].AsString].AsString;
+                //        if (json["hienthisoitemco"][json["manhdoi"]["itemcan"][i]["nameitem"].AsString].AsBool)
+                //        {
+                //            sonvok += 1;
+                //        }
+                //        if (json["duocdoi"].AsBool)
+                //        {
+                //            EventManager.ins.menuevent["MenuDoiManh"].transform.GetChild(2).gameObject.SetActive(true);
+                //            EventManager.ins.menuevent["MenuDoiManh"].transform.GetChild(2).GetComponent<Button>().interactable = true;
+                //        }
+                //        else
+                //        {
+                //            EventManager.ins.menuevent["MenuDoiManh"].transform.GetChild(2).gameObject.SetActive(false);
+                //        }
+                //    }
+                //}
             }
             EventManager.ins.menuevent["MenuDoiManh"].transform.GetChild(0).transform.GetChild(3).GetComponent<Text>().text = json["manhdoi"]["thongtin"].Value;
         }
@@ -438,7 +477,9 @@ public abstract class EventManager : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = EventManager.ins.nameEvent;
         datasend["method"] = "DoiQua";
+        if (menuevent.ContainsKey("GiaoDien2")) datasend["method"] = "DoiQua2";
         datasend["data"]["namemanh"] = namemanhchon;
+
         NetworkManager.ins.SendServer(datasend.ToString(), Ok);
         void Ok(JSONNode json)
         {
