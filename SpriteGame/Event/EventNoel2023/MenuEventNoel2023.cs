@@ -19,7 +19,7 @@ public class MenuEventNoel2023 : EventManager
     public byte vitrichon;
     public Sprite[] allitemEvent;
     public Transform BtnKeo;
-    private short BinhNangLuongCap1Chon,
+    private int BinhNangLuongCap1Chon,
      BinhNangLuongCap2Chon, SoBinhSuDung;
     private int soBinhNangLuongCap1, soBinhNangLuongCap2;
     // Start is called before the first frame update
@@ -739,7 +739,7 @@ public class MenuEventNoel2023 : EventManager
                 soBinhNangLuongCap2 = json["BinhNangLuongCap2"].AsInt;
                 menubonphan.transform.GetChild(3).GetComponent<Text>().text = soBinhNangLuongCap1.ToString();
 
-                SoBinhSuDung = (byte)json["GiamThoiGian"].AsInt;
+                SoBinhSuDung = json["GiamThoiGian"].AsInt;
                 giamthoigian = json["GiamThoiGian"].AsFloat;
                 menubonphan.transform.GetChild(7).GetComponent<Image>().fillAmount = SoBinhSuDung / maxgiam;
 
@@ -1072,6 +1072,7 @@ public class MenuEventNoel2023 : EventManager
                 MenuCayThong menuCayThong = GetCreateMenu("MenuCayThong", giaodiennut1.transform).GetComponent<MenuCayThong>();
                 menuCayThong.ParseData(json);
                 //   menuNgocTrai.transform.GetChild(0).Find("btnExit").GetComponent<Button>().onClick.AddListener(ExitNgocTrai);
+                menuCayThong.transform.SetAsLastSibling();
                 menuCayThong.gameObject.SetActive(true);
             }
             else CrGame.ins.OnThongBaoNhanh(json["message"].Value);
@@ -1089,9 +1090,9 @@ public class MenuEventNoel2023 : EventManager
             //    debug.Log(json.ToString());
             if (json["status"].AsString == "0")
             {
-
                 MenuPhongAn menuPhongAn = GetCreateMenu("GiaoDienPhongAn", giaodiennut1.transform).GetComponent<MenuPhongAn>();
                 menuPhongAn.ParseData(json);
+                menuPhongAn.transform.SetAsLastSibling();
                 //   menuNgocTrai.transform.GetChild(0).Find("btnExit").GetComponent<Button>().onClick.AddListener(ExitNgocTrai);
                 menuPhongAn.gameObject.SetActive(true);
             }

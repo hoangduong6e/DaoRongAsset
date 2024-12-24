@@ -97,7 +97,8 @@ public class MenuCayThong : MonoBehaviour
     private void BoQuaXacNhan(string solanquay)
     {
         boquaxacnhan = true;
-        AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
+        if(AllMenu.ins.menu.ContainsKey("MenuXacNhan")) AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
+
         QuayMayMan(solanquay);
     }
     void SetTraiChauVaHopQua(string traichau,string hopqua)
@@ -140,6 +141,7 @@ public class MenuCayThong : MonoBehaviour
         //yield return new WaitForSeconds(0.4f);
         // JSONNode allqua = allquanhan["allqua"];
         GameObject panelnhanqua = ev.GetCreateMenu("PanelNhanQua", transform, true);
+        panelnhanqua.transform.SetAsLastSibling();
         Button btnnhan = panelnhanqua.transform.GetChild(1).transform.GetChild(0).GetComponent<Button>();
         debug.Log("delay 1");
         btnnhan.onClick.RemoveAllListeners();

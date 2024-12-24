@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class MenuPhongAn : MonoBehaviour
 {
     public GameObject oItem, ContentDanhSachKhoBau, ObjKhoBau;
-    private EventSinhNhat2024 ev;
+    private MenuEventNoel2023 ev;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,7 +21,7 @@ public class MenuPhongAn : MonoBehaviour
     }
     public void ParseData(JSONNode json)
     {
-        ev = EventManager.ins.GetComponent<EventSinhNhat2024>();
+        ev = EventManager.ins.GetComponent<MenuEventNoel2023>();
         debug.Log(json.ToString());
         for(int i = 0; i < json["GiaoDienPhongAn"]["DanhSachKhoBau"].Count;i++)
         {
@@ -156,6 +156,7 @@ public class MenuPhongAn : MonoBehaviour
     public void CongHien()
     {
         ThongBaoChon tbc = AllMenu.ins.GetCreateMenu("MenuXacNhan", GameObject.Find("CanvasTrenCung"), true, ev.giaodiennut1.transform.GetSiblingIndex() + 1).GetComponent<ThongBaoChon>();
+        tbc.transform.SetAsLastSibling();
         tbc.btnChon.onClick.RemoveAllListeners();
         tbc.txtThongBao.text = "Cống hiến " + transform.GetChild(0).transform.Find("txtYeuCau").GetComponent<Text>().text + " Ngọc Trai Vàng";
         tbc.btnChon.onClick.AddListener(XacNhanCongHien);
