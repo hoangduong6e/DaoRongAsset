@@ -58,6 +58,19 @@ public class CrGame : MonoBehaviour
     void Start()
     {
 
+
+        DownLoadAssetBundle.ins.DownLoadMenu("animtienhoa", ok, false);
+        void ok()
+        {
+
+
+
+            // DownLoadAssetBundle.MenuBundle["animTienHoa"].SetActive(true);
+        }
+
+
+
+
         //// Lấy thời gian hiện tại ở múi giờ của máy tính
         //DateTime currentTime = DateTime.UtcNow;
 
@@ -1606,6 +1619,27 @@ public class CrGame : MonoBehaviour
                GameObject menu = AllMenu.ins.GetCreateMenu("MenuLongAp");
               //   GameObject menu = AllMenu.ins.transform.Find("MenuLongAp").gameObject;
                 menu.GetComponent<MenuApRong>().ParseData(json);
+            }
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+            }
+        }
+    }
+
+    public void OpenGiaoDienTienHoaRong()
+    {
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "TienHoaRong";
+        datasend["method"] = "GetData";
+        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        void Ok(JSONNode json)
+        {
+            if (json["status"].AsString == "0")
+            {
+                GameObject menu = AllMenu.ins.GetCreateMenu("MenuTienHoaRong");
+              // GameObject menu = AllMenu.ins.transform.Find("MenuTienHoaRong").gameObject;
+                menu.GetComponent<MenuTienHoaRong>().ParseData(json);
             }
             else
             {

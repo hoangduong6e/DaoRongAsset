@@ -91,27 +91,53 @@ public class DownLoadAssetBundle : MonoBehaviour
         }
     }
 
-    public void DownLoadMenu(string namemenu, Action thanhcong)
+    public void DownLoadMenu(string namemenu, Action thanhcong,bool gdload = true)
     {
         StartCoroutine(DownLoad());
         IEnumerator DownLoad()
         {
             float process = 50;
-            CrGame.ins.menulogin.SetActive(true);
+            if(gdload) CrGame.ins.menulogin.SetActive(true);
             Image maskload = CrGame.ins.menulogin.transform.GetChild(0).GetComponent<Image>();
             Text txtload = CrGame.ins.menulogin.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>();
-            //  string nameasset = "manh" + gameObject.name.ToLower();
+
+
             UnityWebRequest www = UnityWebRequestAssetBundle.GetAssetBundle(DownLoadAssetBundle.linkdown + namemenu);
-            // DownloadHandler handle = www.downloadHandler;
+
             www.SendWebRequest();
+            float previousDownloadedBytes = 0;
+            float downloadSpeed = 0;
+
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+
             while (!www.isDone)
             {
-                process = 50 + (www.downloadProgress * 100f) / 2;
-                debug.Log("Downloading... " + process + "%");
-                txtload.text = "Đang tải dữ liệu: " + System.Math.Round(process, 2) + "%";
-                maskload.fillAmount = (float)process / 100;
-                yield return new WaitForSeconds(.01f);
+                if (gdload)
+                {
+                    float elapsedSeconds = (float)stopwatch.Elapsed.TotalSeconds;
+
+                    // Calculate download speed (bytes/s)
+                    float downloadedBytes = www.downloadedBytes;
+                    downloadSpeed = (downloadedBytes - previousDownloadedBytes) / elapsedSeconds; // Bytes per second
+                    previousDownloadedBytes = downloadedBytes;
+
+                    // Convert to MB/s
+                    float downloadSpeedMBps = downloadSpeed / (1024 * 1024);
+
+                    process = 50 + (www.downloadProgress * 100f) / 2;
+                    debug.Log($"Downloading... {process}% | Speed: {downloadSpeedMBps:F2} MB/s");
+                    txtload.text = $"Đang tải dữ liệu: {System.Math.Round(process, 2)}% | {downloadSpeedMBps:F2} MB/s";
+                    maskload.fillAmount = (float)process / 100;
+                }
+               
+
+                stopwatch.Restart();
+                yield return new WaitForSeconds(0.1f);
             }
+
+            stopwatch.Stop();
+
             if (www.result != UnityWebRequest.Result.Success)
             {
                 debug.Log(www.error);
@@ -121,7 +147,6 @@ public class DownLoadAssetBundle : MonoBehaviour
                 AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(www);
 
                 UnityEngine.Object[] allAssets = bundle.LoadAllAssets();
-
                 GameObject obj = allAssets[0] as GameObject;
                 MenuBundle.Add(namemenu, obj);
 
@@ -129,17 +154,18 @@ public class DownLoadAssetBundle : MonoBehaviour
                 for (int i = process2; i < 99; i++)
                 {
                     process += 1;
-                    txtload.text = "Đang tải dữ liệu: " + System.Math.Round(process, 2) + "%";
+                    txtload.text = $"Đang tải dữ liệu: {System.Math.Round(process, 2)}%";
                     maskload.fillAmount = (float)process / 100;
 
                     yield return new WaitForSeconds(0.01f);
-
                 }
 
+                CrGame.ins.menulogin.SetActive(false);
                 thanhcong();
             }
         }
     }
+
     //public void DownLoadObjectRong(string namerong)
     //{
     //    string nameasset = namerong.ToLower();

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class MenuNgocTrai : MonoBehaviour
 {
     // Start is called before the first frame update
-    private EventSinhNhat2024 ev;
+    private MenuEventNoel2023 ev;
     public GameObject quabay,AllNgocTrai;
     public Sprite oxanh;
     public Button btnQuaAi;
@@ -17,7 +17,7 @@ public class MenuNgocTrai : MonoBehaviour
     public void ParseData(JSONNode json)
     {
         debug.Log(json.ToString());
-        ev = EventManager.ins.GetComponent<EventSinhNhat2024>();
+        ev = EventManager.ins.GetComponent<MenuEventNoel2023>();
         for (byte i = 0; i < json["GiaoDienNgocTrai"]["OQuaNgocTrai"].Count; i++)
         {
             LoadQuaNgocTrai(i, json["GiaoDienNgocTrai"]["OQuaNgocTrai"][i]);
@@ -44,10 +44,10 @@ public class MenuNgocTrai : MonoBehaviour
         {
             if (songoctrai == "0")
             {
-                ThongBaoChon tbc = AllMenu.ins.GetCreateMenu("MenuXacNhan", GameObject.Find("CanvasTrenCung"), true, ev.giaodiennut1.transform.GetSiblingIndex() + 1).GetComponent<ThongBaoChon>();
-                tbc.btnChon.onClick.RemoveAllListeners();
-                tbc.txtThongBao.text = "Không đủ Ngọc Trai, xác nhận sẽ tốn 200 Kim Cương\n<size=45>(Chỉ nhắc lần đầu)</size>";
-                tbc.btnChon.onClick.AddListener(delegate { BoQuaXacNhan(btnchon.transform.GetSiblingIndex()); });
+                EventManager.OpenThongBaoChon("Không đủ Ngọc Trai, xác nhận sẽ tốn 200 Kim Cương\n<size=45>(Chỉ nhắc lần đầu)</size>", delegate { BoQuaXacNhan(btnchon.transform.GetSiblingIndex()); });
+                //ThongBaoChon tbc = AllMenu.ins.GetCreateMenu("MenuXacNhan",CrGame.ins.trencung.gameObject, true, ev.giaodiennut1.transform.GetSiblingIndex() + 1).GetComponent<ThongBaoChon>();
+                //tbc.btnChon.onClick.RemoveAllListeners();
+                //tbc.btnChon.onClick.AddListener(delegate { BoQuaXacNhan(btnchon.transform.GetSiblingIndex()); });
                 return;
             }
         }
@@ -88,6 +88,7 @@ public class MenuNgocTrai : MonoBehaviour
         //AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
         MoNgocTrai(index);
     }
+    GameObject nhanngocTraiVang;
     public void LoadQuaNgocTrai(byte vitri, JSONNode qua,bool quabayy = false)
     {
        // debug.Log(qua.ToString());
@@ -122,7 +123,7 @@ public class MenuNgocTrai : MonoBehaviour
             {
                 if(quabayy)
                 {
-                    GameObject nhanngocTraiVang = ev.GetCreateMenu("PanelNhanNgocTraiVang", ev.giaodiennut1.transform.parent, true);
+                    nhanngocTraiVang = ev.GetCreateMenu("PanelNhanNgocTraiVang",CrGame.ins.trencung.transform, true,transform.GetSiblingIndex()+1);
                 }
                 CrGame.ins.StartCoroutine(delay());
                 IEnumerator delay()
@@ -280,6 +281,7 @@ public class MenuNgocTrai : MonoBehaviour
 
     public void ExitNgocTrai()
     {
+        if (nhanngocTraiVang != null) Destroy(nhanngocTraiVang);
         ev.DestroyMenu("GiaoDienNgocTrai");
      //   GameObject menuNgocTrai = ev.giaodiennut1.transform.Find("GiaoDienNgocTrai").gameObject;
       //  menuNgocTrai.SetActive(false);

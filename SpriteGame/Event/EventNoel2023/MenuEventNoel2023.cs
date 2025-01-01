@@ -1048,7 +1048,7 @@ public class MenuEventNoel2023 : EventManager
             if (json["status"].AsString == "0")
             {
 
-                MenuNgocTrai menuNgocTrai = GetCreateMenu("GiaoDienNgocTrai", giaodiennut1.transform).GetComponent<MenuNgocTrai>();//giaodiennut1.transform.Find("GiaoDienNgocTrai").GetComponent<MenuNgocTrai>();
+                MenuNgocTrai menuNgocTrai = GetCreateMenu("GiaoDienNgocTrai", CrGame.ins.trencung.transform,true,giaodiennut1.transform.GetSiblingIndex() + 1).GetComponent<MenuNgocTrai>();//giaodiennut1.transform.Find("GiaoDienNgocTrai").GetComponent<MenuNgocTrai>();
                 menuNgocTrai.ParseData(json);
              //   menuNgocTrai.transform.GetChild(0).Find("btnExit").GetComponent<Button>().onClick.AddListener(ExitNgocTrai);
                 menuNgocTrai.gameObject.SetActive(true);

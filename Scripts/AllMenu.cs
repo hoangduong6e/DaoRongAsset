@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UIElements;
 
 public class AllMenu : MonoBehaviour
 {
@@ -57,21 +58,21 @@ public class AllMenu : MonoBehaviour
         //Rong.transform.position = vecBong;
         //Destroy(bong);
     }
-    public void LoadRongGiaoDien(string namerong,Transform tf,float scaleX = 1,bool wps = true,string layername = "RongGiaoDien",Vector3 scale = new Vector3())
+    public GameObject GetRonggdGiaoDien(string namerong, Transform tf, float scaleX = 1, bool wps = true, string layername = "RongGiaoDien", Vector3 scale = new Vector3())
     {
-        GameObject Rong = GetRongGiaoDien(namerong,tf,scaleX,wps,layername,scale);
+        GameObject Rong = GetRongGiaoDien(namerong, tf, scaleX, wps, layername, scale);
 
         GameObject bong0 = Rong.transform.GetChild(0).transform.Find("bong").gameObject;
-       // Vector3 vecbong0 = bong0.transform.position;
+        // Vector3 vecbong0 = bong0.transform.position;
 
         GameObject bong = bong0.transform.GetChild(0).gameObject;
-      //  float YVecBong = Mathf.Abs(tf.transform.position.y) - Mathf.Abs(bong.transform.position.y);
-     //   Rong.transform.position = new Vector3(Rong.transform.position.x, YVecBong, Rong.transform.position.z);
+        //  float YVecBong = Mathf.Abs(tf.transform.position.y) - Mathf.Abs(bong.transform.position.y);
+        //   Rong.transform.position = new Vector3(Rong.transform.position.x, YVecBong, Rong.transform.position.z);
 
 
 
-         Vector3 vecbongcu = bong.transform.position;
-         bong.transform.position = tf.transform.position;
+        Vector3 vecbongcu = bong.transform.position;
+        bong.transform.position = tf.transform.position;
 
         Rong.transform.position = bong.transform.position;
 
@@ -83,12 +84,16 @@ public class AllMenu : MonoBehaviour
         //Rong.transform.position = bong.transform.position;
         //bong.transform.position = Rong.transform.position;
 
-
+        return Rong;
 
 
         //   Vector3 vecbong = bong.transform.position;
 
-       // debug.Log("Transfrom bong " + YVecBong);
+        // debug.Log("Transfrom bong " + YVecBong);
+    }
+    public void LoadRongGiaoDien(string namerong,Transform tf,float scaleX = 1,bool wps = true,string layername = "RongGiaoDien",Vector3 scale = new Vector3())
+    {
+        GetRonggdGiaoDien(namerong,tf,scaleX,wps,layername,scale);
     }    
     private void Start()
     {

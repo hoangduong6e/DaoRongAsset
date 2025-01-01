@@ -26,7 +26,7 @@ public class SetMaterial4 : MonoBehaviour
                     Debug.Log("Đã gán Material cho ParticleSystem.");
 
                     // Sau khi gán thành công, tiếp tục gán Material cho SpriteRenderer
-                    AssignMaterialToSpriteRenderer();
+                  
                 }
                 else
                 {
@@ -38,6 +38,7 @@ public class SetMaterial4 : MonoBehaviour
                 Debug.LogWarning("Không tìm thấy Renderer cho ParticleSystem.");
             }
         }
+        AssignMaterialToSpriteRenderer();
     }
 
     // Hàm gán Material cho SpriteRenderer

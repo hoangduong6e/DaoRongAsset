@@ -76,7 +76,6 @@ public class MenuApRong : MonoBehaviour
             //    timeap[i] = 0;
             //}
         }
-      
     }
     string[] levelLaMa = new string[] { "0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII" };
     public void ParseData(JSONNode data)

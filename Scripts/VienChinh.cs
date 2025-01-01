@@ -78,6 +78,7 @@ public class VienChinh : MonoBehaviour
             debug.Log("buff giáp all xanh" + buffgiapallxanh);
         }
     }
+
     //  public GameObject[] rongdungdauxanh = new GameObject[10], rongdungdaudo = new GameObject[10];
     // public Vector3[] vitriteamxanh = new Vector3[50];
     // public Vector3[] vitriteamdo = new Vector3[50];

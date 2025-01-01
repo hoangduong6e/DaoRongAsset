@@ -1260,7 +1260,7 @@ public class MenuRaKhoi : MonoBehaviour
     {
         AudioManager.PlaySound("soundClick");
         giaodiennut1.transform.SetParent(MapRaKhoi);
-        Vector3 vec = CrGame.ins.AllDao.transform.GetChild(CrGame.ins.DangODao).transform.position;
+        Vector3 vec = CrGame.ins.AllDao.transform.Find("BGDao" + CrGame.ins.DangODao).transform.position;
         vec.z = -10;
         cam.transform.position = vec;
         btnHopQua.transform.SetParent(transform);
