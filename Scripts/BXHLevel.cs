@@ -21,7 +21,7 @@ public class BXHLevel : MonoBehaviour
         datasend["method"] = "SwichBxhLevel";
         datasend["data"]["trang"] = trang.ToString();
         datasend["data"]["toc"] = tocchon;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")

@@ -17,7 +17,7 @@ public class ListFriend : MonoBehaviour
         datasend["class"] = "Main";
         datasend["method"] = "GetListFriend";
         datasend["data"]["id"] = LoginFacebook.ins.id;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].Value == "0")

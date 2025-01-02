@@ -65,7 +65,7 @@ public class BXHDanhVong : MonoBehaviour
         datasend["method"] = "GetBXHDanhVong";
         datasend["data"]["top"] = top.ToString();
         datasend["data"]["trang"] = trang.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             sangtrang = false;
@@ -205,7 +205,7 @@ public class BXHDanhVong : MonoBehaviour
         datasend["method"] = "SwichBxhLevel";
         datasend["data"]["trang"] = tranglevel.ToString();
         datasend["data"]["toc"] = tocchon;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -275,7 +275,7 @@ public class BXHDanhVong : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "LanSu";
         datasend["method"] = "GetBXHBossTGTheoToc";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
         void Ok(JSONNode json)
         {
             debug.Log(json.ToString());

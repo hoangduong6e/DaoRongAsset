@@ -66,7 +66,7 @@ public class MenuTrieuHoiRongVangBac : MonoBehaviour
         datasend["method"] = "TrieuHoiRongEventTet";
         datasend["data"]["namerong"] = AllmanhRong.name;
 
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")

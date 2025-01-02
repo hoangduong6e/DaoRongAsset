@@ -41,6 +41,6 @@ namespace SocketIO
 		PONG	 =  3,
 		MESSAGE	 =  4,
 		UPGRADE  =  5,
-		NOOP   	 =  6
+		NOOP   	 =  6,
 	}
 }

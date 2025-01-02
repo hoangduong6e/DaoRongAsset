@@ -25,6 +25,7 @@
  * THE SOFTWARE.
  */
 #endregion
+using SimpleJSON;
 using UnityEngine;
 
 namespace SocketIO
@@ -51,5 +52,5 @@ namespace SocketIO
 
 			return new SocketIOEvent(json[0].str, json[1]);
 		}
-	}
+    }
 }

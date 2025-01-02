@@ -86,7 +86,7 @@ public class GiaoDienMiniGameTet2024 : MonoBehaviour
         datasend["method"] = "ChonKeoBuaBao";
         datasend["data"]["namechon"] = namechon.name;
         duocchonkeobuabao = false;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             debug.Log(json.ToString());
@@ -152,7 +152,7 @@ public class GiaoDienMiniGameTet2024 : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "EventTrungThu2023";
         datasend["method"] = "GetNhiemVu";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")

@@ -1293,6 +1293,7 @@ namespace WebSocketSharp
                 var e = dequeueFromMessageEventQueue ();
                 if (e != null && _readyState == WebSocketState.Open)
                   OnMessage.Emit (this, e);
+
               }
               catch (Exception ex) {
                 acceptException (ex, "An exception has occurred while OnMessage.");

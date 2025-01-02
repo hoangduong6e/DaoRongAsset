@@ -78,7 +78,7 @@ public class ShopTrungNguSac : MonoBehaviour
             datasend["class"] = nameEvent;
             datasend["method"] = "DoiQuaGiaoDienThinhRong";
             datasend["data"]["keyqua"] = tf.gameObject.name;
-            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+            NetworkManager.ins.SendServer(datasend, Ok);
             void Ok(JSONNode json)
             {
                 if (json["status"].AsString == "ok")

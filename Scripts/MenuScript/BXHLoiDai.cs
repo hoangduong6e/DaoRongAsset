@@ -35,7 +35,7 @@ public class BXHLoiDai : MonoBehaviour
         datasend["class"] = "Main";
         datasend["method"] = "GetTopLoiDai";
         datasend["data"]["top"] = (trang - 1).ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
 
         void Ok(JSONNode jsonn)
         {

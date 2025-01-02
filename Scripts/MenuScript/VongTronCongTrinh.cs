@@ -29,7 +29,7 @@ public class VongTronCongTrinh : MonoBehaviour
         datasend["class"] = "Main";
         datasend["method"] = "BanCongTrinh";
         datasend["data"]["idcongtrinh"] = congtrinh.idCongtrinh.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -56,7 +56,7 @@ public class VongTronCongTrinh : MonoBehaviour
         datasend["class"] = "Main";
         datasend["method"] = "ThanLongBuSua";
         datasend["data"]["name"] = nameThanLong;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].Value == "ok")

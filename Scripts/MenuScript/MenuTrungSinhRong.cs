@@ -434,7 +434,7 @@ public class MenuTrungSinhRong : MonoBehaviour
         datasend["data"]["saorong"] = saorong;
         GameObject g = transform.GetChild(0).gameObject;
         Button btnTrungSinh = g.transform.Find("btnTrungSinh").GetComponent<Button>();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             debug.Log(json.ToString());
@@ -667,7 +667,7 @@ public class MenuTrungSinhRong : MonoBehaviour
         datasend["class"] = "TrungSinh";
         datasend["method"] = load;
         datasend["data"]["idrong"] = idrong;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")

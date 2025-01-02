@@ -190,7 +190,7 @@ public class MenuGiapRong : MonoBehaviour
             datasend["class"] = "GiapRong";
             datasend["method"] = "ChonRong";
             datasend["data"]["idrong"] = RongChon.transform.parent.name;
-            NetworkManager.ins.SendServer(datasend.ToString(), ChonRongOk);
+            NetworkManager.ins.SendServer(datasend, ChonRongOk);
         }
         void ChonRongOk(JSONNode json)
         {
@@ -234,7 +234,7 @@ public class MenuGiapRong : MonoBehaviour
         datasend["method"] = "MacGiap";
         datasend["data"]["idrong"] = RongChon.transform.parent.name;
         datasend["data"]["giap"] = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.transform.parent.name;
-        NetworkManager.ins.SendServer(datasend.ToString(), ChonGiapok);
+        NetworkManager.ins.SendServer(datasend, ChonGiapok);
         void ChonGiapok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -288,7 +288,7 @@ public class MenuGiapRong : MonoBehaviour
         datasend["class"] = "GiapRong";
         datasend["method"] = "ThaoGiap";
         datasend["data"]["idrong"] = RongChon.transform.parent.name;
-        NetworkManager.ins.SendServer(datasend.ToString(), ThaoGiapOk);
+        NetworkManager.ins.SendServer(datasend, ThaoGiapOk);
         void ThaoGiapOk(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -364,7 +364,7 @@ public class MenuGiapRong : MonoBehaviour
         datasend["class"] = "GiapRong";
         datasend["method"] = "RenGiap";
         datasend["data"]["namegiap"] = namegiap;
-        NetworkManager.ins.SendServer(datasend.ToString(), Renok);
+        NetworkManager.ins.SendServer(datasend, Renok);
         void Renok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -435,7 +435,7 @@ public class MenuGiapRong : MonoBehaviour
         Button btnxn = GdRenGiap.transform.Find("btnxacnhan").GetComponent<Button>();
         btnxn.onClick.RemoveAllListeners();
         btnxn.onClick.AddListener(delegate { XnRen(namegiap); });
-        NetworkManager.ins.SendServer(datasend.ToString(), InfoRenGiap);
+        NetworkManager.ins.SendServer(datasend, InfoRenGiap);
         void InfoRenGiap(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -534,7 +534,7 @@ public class MenuGiapRong : MonoBehaviour
         GameObject giaodien1 = transform.GetChild(0).transform.Find("giaodienRen").gameObject;
         GameObject bt = giaodien1.transform.Find("objRong").transform.Find(namegiap).gameObject;
         GdThongtinren.transform.position = new Vector3(bt.transform.position.x - 2f, GdThongtinren.transform.position.y, GdThongtinren.transform.position.z);
-        NetworkManager.ins.SendServer(datasend.ToString(), InfoRenGiapok);
+        NetworkManager.ins.SendServer(datasend, InfoRenGiapok);
         void InfoRenGiapok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -696,7 +696,7 @@ public class MenuGiapRong : MonoBehaviour
         datasend["class"] = "GiapRong";
         datasend["method"] = "XemGiaGiap";
         datasend["data"]["namegiap"] = namegiap;
-        NetworkManager.ins.SendServer(datasend.ToString(), XemNangCapGiapOk);
+        NetworkManager.ins.SendServer(datasend, XemNangCapGiapOk);
         void XemNangCapGiapOk(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -723,7 +723,7 @@ public class MenuGiapRong : MonoBehaviour
         datasend["class"] = "GiapRong";
         datasend["method"] = "NangCapGiap";
         datasend["data"]["namegiap"] = namegiap;
-        NetworkManager.ins.SendServer(datasend.ToString(), NangCapGiapok);
+        NetworkManager.ins.SendServer(datasend, NangCapGiapok);
         void NangCapGiapok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -787,7 +787,7 @@ public class MenuGiapRong : MonoBehaviour
         datasend["class"] = "Main";
         datasend["method"] = "XemShop";
         datasend["data"]["nameitem"] = nameitem;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
         void Ok(JSONNode json)
         {
             CrGame.ins.OnThongBaoNhanh(json["thongtin"].AsString);

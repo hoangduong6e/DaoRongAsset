@@ -73,7 +73,7 @@ public class LoiDai : MonoBehaviour
             datasend["class"] = "Main";
             datasend["method"] = "xemdauloidai";
 
-            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+            NetworkManager.ins.SendServer(datasend, Ok);
             void Ok(JSONNode json)
             {
                 if (json["status"].AsInt <= 2)
@@ -110,7 +110,7 @@ public class LoiDai : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "Main";
         datasend["method"] = "MuaLuotDau2kc";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
 
         void Ok(JSONNode jsonn)
         {
@@ -251,7 +251,7 @@ public class LoiDai : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "ReplayData";
         datasend["method"] = "GetNhatKiLoiDai";
-        NetworkManager.ins.SendServer(datasend.ToString(), ok);
+        NetworkManager.ins.SendServer(datasend, ok);
         void ok(JSONNode json)
         {
             if (json["status"].AsString == "0")

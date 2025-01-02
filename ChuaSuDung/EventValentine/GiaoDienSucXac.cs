@@ -100,7 +100,7 @@ public class GiaoDienSucXac : MonoBehaviour
         datasend["class"] = EventManager.ins.nameEvent;
         datasend["method"] = "TungSucXac";
         datasend["data"]["solanquay"] = x;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
         void Ok(JSONNode json)
         {
             debug.Log(json.ToString());
@@ -440,7 +440,7 @@ public class GiaoDienSucXac : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = EventManager.ins.nameEvent;
         datasend["method"] = "GetGiaoDienChucPhuc";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -518,7 +518,7 @@ public class GiaoDienSucXac : MonoBehaviour
         datasend["class"] = EventManager.ins.nameEvent;
         datasend["method"] = "XemGiaMuaSucXac";
         datasend["data"]["soluong"] = soluongMuaQueThu.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -544,7 +544,7 @@ public class GiaoDienSucXac : MonoBehaviour
         datasend["class"] = EventManager.ins.nameEvent;
         datasend["method"] = "MuaSucXac";
         datasend["data"]["soluong"] = soluongMuaQueThu.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -571,7 +571,7 @@ public class GiaoDienSucXac : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = EventManager.ins.nameEvent;
         datasend["method"] = "MenuDoiManh";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
 
         void Ok(JSONNode json)
         {
@@ -632,7 +632,7 @@ public class GiaoDienSucXac : MonoBehaviour
         datasend["class"] = EventManager.ins.nameEvent;
         datasend["method"] = "XemManhDoi";
         datasend["data"]["namemanh"] = namemanhchon;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             for (int i = 0; i < yeucau.transform.childCount; i++)
@@ -678,7 +678,7 @@ public class GiaoDienSucXac : MonoBehaviour
         datasend["class"] = EventManager.ins.nameEvent;
         datasend["method"] = "DoiQua";
         datasend["data"]["namemanh"] = namemanhchon;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")

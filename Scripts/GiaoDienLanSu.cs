@@ -63,7 +63,7 @@ public class GiaoDienLanSu : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "LanSu";
         datasend["method"] = "DanhLanSu";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             debug.Log(json.ToString());
@@ -99,7 +99,7 @@ public class GiaoDienLanSu : MonoBehaviour
             datasend["class"] = "LanSu";
             datasend["method"] = "MuaBuff";
             datasend["data"]["namebuff"] = namebuff;
-            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+            NetworkManager.ins.SendServer(datasend, Ok);
             void Ok(JSONNode json)
             {
                 debug.Log(json.ToString());
@@ -124,7 +124,7 @@ public class GiaoDienLanSu : MonoBehaviour
             datasend["class"] = "LanSu";
             datasend["method"] = "KetQua";
             datasend["data"]["kq"] = kq.ToString();
-            NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+            NetworkManager.ins.SendServer(datasend, Ok, true);
             void Ok(JSONNode json)
             {
                 if (json["status"].AsString == "0")
@@ -209,7 +209,7 @@ public class GiaoDienLanSu : MonoBehaviour
         datasend["class"] = "LanSu";
         datasend["method"] = "SwichBxhDanhVong";
         datasend["data"]["Toc"] = btnchon.name;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
         void Ok(JSONNode json)
         {
             debug.Log(json.ToString());
@@ -248,7 +248,7 @@ public class GiaoDienLanSu : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "LanSu";
         datasend["method"] = "GetBXH";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
         void Ok(JSONNode json)
         {
             debug.Log(json.ToString());

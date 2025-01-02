@@ -53,7 +53,7 @@ public class VongQuayMayMan : MonoBehaviour
         datasend["class"] = "VongQuayMayMan";
         datasend["method"] = "NhanVeQuayVipTichLuy";
         datasend["data"]["id"] = LoginFacebook.ins.id;
-        NetworkManager.ins.SendServer(datasend.ToString(), oK);
+        NetworkManager.ins.SendServer(datasend, oK);
         void oK(JSONNode json)
         {
              GameObject g = transform.GetChild(0).transform.GetChild(0).gameObject;
@@ -105,7 +105,7 @@ public class VongQuayMayMan : MonoBehaviour
         datasend["method"] = "ResetVongQuay";
         datasend["data"]["id"] = LoginFacebook.ins.id;
         datasend["data"]["vongquay"] = vongquayy;
-        NetworkManager.ins.SendServer(datasend.ToString(), oK);
+        NetworkManager.ins.SendServer(datasend, oK);
         void oK(JSONNode json)
         {
                             if (json["status"].Value == "0")
@@ -215,7 +215,7 @@ public class VongQuayMayMan : MonoBehaviour
         datasend["method"] = "GetVongQuayMayMan";
         datasend["data"]["id"] = LoginFacebook.ins.id;
         datasend["data"]["vongquay"] = vongquay;
-        NetworkManager.ins.SendServer(datasend.ToString(), oK);
+        NetworkManager.ins.SendServer(datasend, oK);
         void oK(JSONNode json)
         {
              if (json["status"].Value == "0")
@@ -363,7 +363,7 @@ public class VongQuayMayMan : MonoBehaviour
         datasend["data"]["id"] = LoginFacebook.ins.id;
         datasend["data"]["vongquay"] = vongquayy;
         datasend["data"]["quayx"] = solanquay;
-        NetworkManager.ins.SendServer(datasend.ToString(), oK);
+        NetworkManager.ins.SendServer(datasend, oK);
         void oK(JSONNode json)
         {
               if (json["status"].Value == "0")

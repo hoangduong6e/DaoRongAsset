@@ -72,7 +72,7 @@ public class GiaoDienRuongThanBi : MonoBehaviour
         datasend["class"] = EventManager.ins.nameEvent;
         datasend["method"] = "GetGiaKc";
         datasend["data"]["nameruong"] = nameRuong;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -90,7 +90,7 @@ public class GiaoDienRuongThanBi : MonoBehaviour
         datasend["method"] = "MoLaBai";
         datasend["data"]["nameruong"] = nameRuong;
         datasend["data"]["index"] = btn.transform.GetSiblingIndex().ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -135,7 +135,7 @@ public class GiaoDienRuongThanBi : MonoBehaviour
         datasend["class"] = EventManager.ins.nameEvent;
         datasend["method"] = "BatDau";
         datasend["data"]["nameruong"] = nameRuong;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
         void Ok(JSONNode json)
         {
             debug.Log(json.ToString());

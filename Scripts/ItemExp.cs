@@ -30,7 +30,7 @@ public class ItemExp : MonoBehaviour
         datasend["class"] = "Main";
         datasend["method"] = "UseItem";
         datasend["data"]["nameitem"] = Value;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode jsonn)
         {
             if (jsonn["status"].AsString == "0")

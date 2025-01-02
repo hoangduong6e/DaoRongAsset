@@ -64,7 +64,7 @@ public class Friend : MonoBehaviour
         datasend["method"] = "xemGiaoDich";
         datasend["data"]["name"] = name + "*" + txtNameFriend.text;
 
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode jsonn)
         {
             if (jsonn["status"].AsString == "0")
@@ -294,7 +294,7 @@ public class Friend : MonoBehaviour
         datasend["data"]["idFriend"] = nameFriend;
         datasend["data"]["id"] = LoginFacebook.ins.id;
         datasend["data"]["idfr"] = idFriend;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode jsonn)
         {
             if (jsonn["status"].Value == "0")
@@ -545,7 +545,7 @@ public class Friend : MonoBehaviour
         datasend["class"] = "Main";
         datasend["method"] = "GetAvtFriend";
         datasend["data"]["id"] = id;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok,true);
+        NetworkManager.ins.SendServer(datasend, Ok,true);
         
         void Ok(JSONNode json)
         {

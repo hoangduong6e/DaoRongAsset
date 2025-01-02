@@ -243,7 +243,7 @@ public class MenuApRong : MonoBehaviour
         datasend["class"] = "LongAp";
         datasend["method"] = "NangCap";
         datasend["data"]["ItemChon"] = itemchon;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             debug.Log(json.ToString());
@@ -346,7 +346,7 @@ public class MenuApRong : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "LongAp";
         datasend["method"] = "DotPha";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             debug.Log(json.ToString());
@@ -390,7 +390,7 @@ public class MenuApRong : MonoBehaviour
         datasend["class"] = "LongAp";
         datasend["method"] = "XemYeuCauMoKhoaLongAp";
         datasend["data"]["LongAp"] = longapchon.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             debug.Log(json.ToString());
@@ -560,7 +560,7 @@ public class MenuApRong : MonoBehaviour
                     datasend["method"] = "ChonRong";
                     datasend["data"]["nameobject"] = btnchon.name;
                     datasend["data"]["sao"] = btnchon.transform.parent.transform.GetChild(2).GetComponent<Text>().text;
-                    NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+                    NetworkManager.ins.SendServer(datasend, Ok);
                     void Ok(JSONNode json)
                     {
                         
@@ -700,7 +700,7 @@ public class MenuApRong : MonoBehaviour
         datasend["data"]["idrong"] = idronglongap[LongApChon];
         datasend["data"]["LongAp"] = LongApChon.ToString();
         datasend["data"]["ItemChon"] = itemchon;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             debug.Log(json.ToString());
@@ -756,7 +756,7 @@ public class MenuApRong : MonoBehaviour
         datasend["class"] = "LongAp";
         datasend["method"] = "NhanRong";
         datasend["data"]["vitrichon"] = vitrichon.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             debug.Log(json.ToString());

@@ -55,7 +55,7 @@ public class SachKiNang : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "Skill";
         datasend["method"] = "XemSkill";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "chuacoskill")
@@ -97,7 +97,7 @@ public class SachKiNang : MonoBehaviour
         datasend["method"] = "XeminfoSkill";
         datasend["data"]["nameSkill"] = nameSkill.name;
         datasend["data"]["nangcap"] = nangcap.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             Image imgSkill = SkillChon.transform.GetChild(0).GetComponent<Image>();
@@ -244,7 +244,7 @@ public class SachKiNang : MonoBehaviour
         datasend["class"] = "Skill";
         datasend["method"] = "NangCapSkill";
         datasend["data"]["nameSkill"] = nameSkill.name;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].Value == "thanhcong")

@@ -242,7 +242,7 @@ public class DauTruongOnline : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "DauTruongOnline";
         datasend["method"] = "ThoatRoomDauTruong";
-        NetworkManager.ins.SendServer(datasend.ToString(), ok);
+        NetworkManager.ins.SendServer(datasend, ok);
         void ok(JSONNode json)
         {
             CrGame.ins.AllDao.transform.Find("BGDao"+CrGame.ins.DangODao).gameObject.SetActive(true);
@@ -317,7 +317,7 @@ public class DauTruongOnline : MonoBehaviour
                 datasend["class"] = "DauTruongOnline";
                 datasend["method"] = "CreateRoomDauTruong";
                 datasend["data"]["kq"] = kq;
-                NetworkManager.ins.SendServer(datasend.ToString(), ok);
+                NetworkManager.ins.SendServer(datasend, ok);
                 void ok(JSONNode json)
                 {
                     if (json["status"].AsString == "0")
@@ -366,7 +366,7 @@ public class DauTruongOnline : MonoBehaviour
         datasend["class"] = "DauTruongOnline";
         datasend["method"] = "MoiBanDanh";
         datasend["data"]["taikhoanban"] = id;
-        NetworkManager.ins.SendServer(datasend.ToString(), ok);
+        NetworkManager.ins.SendServer(datasend, ok);
         void ok(JSONNode json)
         {
             debug.Log(json.ToString());
@@ -398,7 +398,7 @@ public class DauTruongOnline : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "DauTruongOnline";
         datasend["method"] = "GetFriendOnline";
-        NetworkManager.ins.SendServer(datasend.ToString(), ok);
+        NetworkManager.ins.SendServer(datasend, ok);
         void ok(JSONNode json)
         {
       //      debug.Log(json.ToString()) ;
@@ -478,7 +478,7 @@ public class DauTruongOnline : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "DauTruongOnline";
         datasend["method"] = "VaoDanhOnline";
-        NetworkManager.ins.SendServer(datasend.ToString(), ok);
+        NetworkManager.ins.SendServer(datasend, ok);
         void ok(JSONNode json)
         {
             if (json["status"].AsString == "ok")
@@ -505,7 +505,7 @@ public class DauTruongOnline : MonoBehaviour
             JSONClass datasend = new JSONClass();
             datasend["class"] = "DauTruongOnline";
             datasend["method"] = "HuyGhep";
-            NetworkManager.ins.SendServer(datasend.ToString(), ok);
+            NetworkManager.ins.SendServer(datasend, ok);
             void ok(JSONNode json)
             {
                 if (json["status"].AsString == "0")

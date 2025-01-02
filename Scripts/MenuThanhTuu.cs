@@ -55,7 +55,7 @@ public class MenuThanhTuu : MonoBehaviour
         datasend["method"] = "GetDataThanhTuu";
         datasend["data"]["tab"] = tab;
         datasend["data"]["next"] = next;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             debug.Log(json.ToString());
@@ -164,7 +164,7 @@ public class MenuThanhTuu : MonoBehaviour
         datasend["method"] = "NhanQuaThanhTuu";
         datasend["data"]["tab"] = nametab;
         datasend["data"]["namethanhtuu"] = namethanhtuu;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")

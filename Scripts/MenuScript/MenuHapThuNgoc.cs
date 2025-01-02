@@ -130,7 +130,7 @@ public class MenuHapThuNgoc : MonoBehaviour
         datasend["method"] = "HapThu";
         datasend["data"]["namengoc"] = namengoc;
         datasend["data"]["soluong"] = soluong.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")

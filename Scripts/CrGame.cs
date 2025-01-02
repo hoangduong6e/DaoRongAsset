@@ -273,7 +273,7 @@ public class CrGame : MonoBehaviour
             else datasend["data"]["chudao"] = "this";
             datasend["data"]["trangthai"] = "nhat";
             datasend["data"]["nameitemm"] = btnchon.transform.GetChild(0).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite.name;
-            NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+            NetworkManager.ins.SendServer(datasend, Ok, true);
             void Ok(JSONNode json)
             {
                 debug.Log(json.ToString());
@@ -334,7 +334,7 @@ public class CrGame : MonoBehaviour
         datasend["data"]["trangthai"] = "tha";
         datasend["data"]["nameitemm"] = btnchon.transform.GetChild(0).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite.name;
 
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
         void Ok(JSONNode json)
         {
             VienChinh.vienchinh.StopAllCoroutines();
@@ -363,7 +363,7 @@ public class CrGame : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "Main";
         datasend["method"] = "CloseBiaGame";
-        NetworkManager.ins.SendServer(datasend.ToString(), oK,true);
+        NetworkManager.ins.SendServer(datasend, oK,true);
         void oK(JSONNode json)
         {
 
@@ -382,7 +382,7 @@ public class CrGame : MonoBehaviour
             JSONClass datasend = new JSONClass();
             datasend["class"] = "EventNoel2023";
             datasend["method"] = "GetData";
-            NetworkManager.ins.SendServer(datasend.ToString(), GetEventok);
+            NetworkManager.ins.SendServer(datasend, GetEventok);
         }
 
         void GetEventok(JSONNode json)
@@ -434,7 +434,7 @@ public class CrGame : MonoBehaviour
             JSONClass datasend = new JSONClass();
             datasend["class"] = "EventHalloween2024";
             datasend["method"] = "GetData";
-            NetworkManager.ins.SendServer(datasend.ToString(), GetEventok);
+            NetworkManager.ins.SendServer(datasend, GetEventok);
         }
 
         void GetEventok(JSONNode json)
@@ -498,7 +498,7 @@ public class CrGame : MonoBehaviour
             JSONClass datasend = new JSONClass();
             datasend["class"] = MenuRaKhoi.nameEvent;
             datasend["method"] = "GetDataRaKhoi";
-            NetworkManager.ins.SendServer(datasend.ToString(), GetEventok);
+            NetworkManager.ins.SendServer(datasend, GetEventok);
         }
 
         void GetEventok(JSONNode json)
@@ -565,7 +565,7 @@ public class CrGame : MonoBehaviour
         datasend["class"] = "Main";
         datasend["method"] = "NangCapThanLong";
         datasend["data"]["name"] = btnNangCap.name;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
         void Ok(JSONNode json)
         {
             if (json["status"].Value == "ok")
@@ -607,7 +607,7 @@ public class CrGame : MonoBehaviour
             datasend["class"] = "Main";
             datasend["method"] = "XemChiSoThanLong";
             datasend["data"]["name"] = btnNangCap.name;
-            NetworkManager.ins.SendServer(datasend.ToString(), Ok,true);
+            NetworkManager.ins.SendServer(datasend, Ok,true);
             void Ok(JSONNode json)
             {
                 OnThongBaoNhanh(json["thongtin"].Value, 3f);
@@ -709,7 +709,7 @@ public class CrGame : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "Main";
         datasend["method"] = "XemQuaOnline";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode jsonn)
         {
             if (jsonn["status"].AsString == "0")
@@ -753,7 +753,7 @@ public class CrGame : MonoBehaviour
         datasend["method"] = "XemHoaBuiRong";
         datasend["data"]["id"] = id;
         datasend["data"]["dao"] = "true";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -1058,7 +1058,7 @@ public class CrGame : MonoBehaviour
             datasend["data"]["name"] = "dao";
             datasend["data"]["cap"] = leveldao[DangODao].ToString();
             datasend["data"]["idcongtrinh"] = DangODao.ToString();
-            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+            NetworkManager.ins.SendServer(datasend, Ok);
             void Ok(JSONNode jsonn)
             {
                 if (jsonn["status"].AsString == "0")
@@ -1111,7 +1111,7 @@ public class CrGame : MonoBehaviour
         datasend["data"]["name"] = name;
         datasend["data"]["cap"] = cap.ToString();
         datasend["data"]["id"] = "0";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode jsonn)
         {
             if (jsonn["status"].AsString == "0")
@@ -1171,7 +1171,7 @@ public class CrGame : MonoBehaviour
             datasend["data"]["name"] = name;
             datasend["data"]["cap"] = cap.ToString();
             datasend["data"]["id"] = "0";
-            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+            NetworkManager.ins.SendServer(datasend, Ok);
             void Ok(JSONNode jsonn)
             {
                 if (jsonn["status"].AsString == "0")
@@ -1237,7 +1237,7 @@ public class CrGame : MonoBehaviour
             datasend["class"] = "Main";
             datasend["method"] = "XemNangCapThanLong";
             datasend["data"]["name"] = nameThanLong;
-            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+            NetworkManager.ins.SendServer(datasend, Ok);
             void Ok(JSONNode json)
             {
                 UI = AllMenu.ins.GetCreateMenu("MenuNangCapItem", null, true).GetComponent<Ui>();
@@ -1401,7 +1401,7 @@ public class CrGame : MonoBehaviour
         datasend["data"]["name"] = name;
         datasend["data"]["cap"] = cap.ToString();
         datasend["data"]["id"] = id.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode jsonn)
         {
             if (jsonn["status"].AsString == "0")
@@ -1591,7 +1591,7 @@ public class CrGame : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "LanSu";
         datasend["method"] = "GetData";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -1611,7 +1611,7 @@ public class CrGame : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "LongAp";
         datasend["method"] = "GetData";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -1632,7 +1632,7 @@ public class CrGame : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "TienHoaRong";
         datasend["method"] = "GetData";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -1652,7 +1652,7 @@ public class CrGame : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "HapThuNgoc";
         datasend["method"] = "GetData";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -1707,7 +1707,7 @@ public class CrGame : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "BossTheGioi";
         datasend["method"] = "XemBoss";
-        NetworkManager.ins.SendServer(datasend.ToString(), ok);
+        NetworkManager.ins.SendServer(datasend, ok);
 
         void ok(JSONNode json)
         {
@@ -1974,7 +1974,7 @@ public class CrGame : MonoBehaviour
         datasend["method"] = "MuaDao";
         datasend["data"]["dao"] = DangODao.ToString();
         datasend["data"]["tienmua"] = tienmua;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].Value == "ok")

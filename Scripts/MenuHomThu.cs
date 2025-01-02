@@ -17,7 +17,7 @@ public class MenuHomThu : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "HomThu";
         datasend["method"] = "XemHomThu";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
 
         void Ok(JSONNode jsonn)
         {
@@ -79,7 +79,7 @@ public class MenuHomThu : MonoBehaviour
         datasend["method"] = "XemThu";
         datasend["data"]["thu"] = thu;
         datasend["data"]["vitri"] = vitrithuchon.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
 
         void Ok(JSONNode jsonn)
         {
@@ -157,7 +157,7 @@ public class MenuHomThu : MonoBehaviour
             datasend["data"]["guitoi"] = txtguitoi;
             datasend["data"]["chude"] = txtchude;
             datasend["data"]["noidung"] = txtnoidung;
-            NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+            NetworkManager.ins.SendServer(datasend, Ok, true);
             void Ok(JSONNode jsonn)
             {
                 if (jsonn["status"].AsString == "0")
@@ -230,7 +230,7 @@ public class MenuHomThu : MonoBehaviour
         datasend["method"] = "HuyThu";
         datasend["data"]["thu"] = thu;
         datasend["data"]["vitri"] = thuchon.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
         void Ok(JSONNode jsonn)
         {
             if (jsonn["status"].AsString == "0")
@@ -260,7 +260,7 @@ public class MenuHomThu : MonoBehaviour
         datasend["method"] = "NhanQuaThu";
         datasend["data"]["thu"] = thu;
         datasend["data"]["vitri"] = thuchon.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode jsonn)
         {
             if (jsonn["status"].AsString == "0")
@@ -291,7 +291,7 @@ public class MenuHomThu : MonoBehaviour
             datasend["class"] = "HomThu";
             datasend["method"] = "HuyTatCaThu";
             datasend["data"]["thu"] = thu;   
-            NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+            NetworkManager.ins.SendServer(datasend, Ok, true);
             void Ok(JSONNode json)
             {
                 if (json["status"].AsString == "0")

@@ -222,7 +222,7 @@ public class AllMenu : MonoBehaviour
         datasend["class"] = "GiapRong";
         datasend["method"] = "GetAll";
         datasend["data"]["taikhoan"] = LoginFacebook.ins.id;
-        NetworkManager.ins.SendServer(datasend.ToString(), ResultGiapRong);
+        NetworkManager.ins.SendServer(datasend, ResultGiapRong);
     }
     void ResultGiapRong(JSONNode json)
     {

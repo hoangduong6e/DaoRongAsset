@@ -86,5 +86,6 @@ namespace SocketIO
 				throw new SocketIOException("Packet encoding failed: " + packet ,ex);
 			}
 		}
-	}
+
+    }
 }

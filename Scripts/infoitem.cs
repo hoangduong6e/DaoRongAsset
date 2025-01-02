@@ -66,7 +66,7 @@ public class infoitem : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, I
         datasend["class"] = "Main";
         datasend["method"] = "XemShop";
         datasend["data"]["nameitem"] = nameitem;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok,true);
+        NetworkManager.ins.SendServer(datasend, Ok,true);
         void Ok(JSONNode json)
         {
             id = (short)json["thongtin"].AsString.Length;

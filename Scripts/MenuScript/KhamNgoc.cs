@@ -120,7 +120,7 @@ public class KhamNgoc : MonoBehaviour
         datasend["data"]["idrong"] = idrong;
         datasend["data"]["ngoc"] = namengoc;
         //datasend["data"]["dao"] = CrGame.ins.DangODao.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["tb"].Value == "thành công")
@@ -193,7 +193,7 @@ public class KhamNgoc : MonoBehaviour
         datasend["data"]["vitri"] = oRongThao.ToString();
         datasend["data"]["idrong"] = idRongThao;
         //datasend["data"]["dao"] = CrGame.ins.DangODao.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["tb"].Value == "thành công")
@@ -305,7 +305,7 @@ public class KhamNgoc : MonoBehaviour
         datasend["class"] = "Main";
         datasend["method"] = "unlockNgoc";
         datasend["data"]["idrong"] = idRong;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")

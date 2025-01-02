@@ -304,7 +304,7 @@ public class ReplayData : MonoBehaviour
                 datasend["class"] = "ReplayData";
                 datasend["method"] = "GetTranDauReplay";
                 datasend["data"]["idtrandau"] = idtrandau;
-                NetworkManager.ins.SendServer(datasend.ToString(), ok);
+                NetworkManager.ins.SendServer(datasend, ok);
                 void ok(JSONNode json)
                 {
 
@@ -419,7 +419,7 @@ public class ReplayData : MonoBehaviour
         datasend["method"] = "UpdateReplayData";
         datasend["data"]["thangthua"] = thangthua;
        // datasend["data"]["dao"] = dao;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             debug.Log(json.ToString());

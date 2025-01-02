@@ -23,7 +23,7 @@ public class MenuTTNguoichoi : MonoBehaviour
         datasend["class"] = "Main";
         datasend["method"] = "GetTTNguoiChoi";
         datasend["data"]["id"] = ID;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].Value == "0")
@@ -140,7 +140,7 @@ public class MenuTTNguoichoi : MonoBehaviour
         datasend["data"]["id"] = LoginFacebook.ins.id;
         datasend["data"]["ghichu"] = inputghichu.text;
 
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             CrGame.ins.OnThongBaoNhanh(json["message"].AsString, 2);
@@ -205,7 +205,7 @@ public class MenuTTNguoichoi : MonoBehaviour
         datasend["data"]["avtchon"] = avtchon;
         datasend["data"]["loai"] = GiaoDienDoiAvt.name;
 
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].Value == "ok")
@@ -266,7 +266,7 @@ public class MenuTTNguoichoi : MonoBehaviour
         datasend["data"]["id"] = ID;
         datasend["data"]["loai"] = loai;
 
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].Value == "ok")
@@ -376,7 +376,7 @@ public class MenuTTNguoichoi : MonoBehaviour
         datasend["data"]["avtchon"] = avtchon;
         datasend["data"]["loai"] = GiaoDienDoiAvt.name;
 
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].Value == "ok")
@@ -423,7 +423,7 @@ public class MenuTTNguoichoi : MonoBehaviour
         datasend["class"] = "ReplayData";
         datasend["method"] = "GetKhoanhKhacTranDau";
         datasend["data"]["idxem"] = ID;
-        NetworkManager.ins.SendServer(datasend.ToString(), ok);
+        NetworkManager.ins.SendServer(datasend, ok);
         void ok(JSONNode json)
         {
       

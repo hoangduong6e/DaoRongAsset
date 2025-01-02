@@ -24,7 +24,7 @@ public class Xeminfotrangtri : MonoBehaviour
         datasend["method"] = "XemItemTrangTri";
         datasend["data"]["nametrangtri"] = btnchon.transform.parent.name;
         datasend["data"]["dao"] =CrGame.ins.DangODao.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             debug.Log(json.ToString());

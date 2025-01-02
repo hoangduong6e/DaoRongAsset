@@ -18,7 +18,7 @@ public class QuaOnline : MonoBehaviour
         datasend["class"] = "Main";
         datasend["method"] = "NhanQuaOnline";
         datasend["data"]["qua"] = index.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode jsonn)
         {
             if (jsonn["status"].AsString == "0")

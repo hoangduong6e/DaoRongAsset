@@ -61,7 +61,7 @@ public class MenuNgocTrai : MonoBehaviour
         datasend["class"] = EventManager.ins.nameEvent;
         datasend["method"] = "ChonNgocTrai";
         datasend["data"]["vitri"] = index.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             debug.Log(json.ToString());
@@ -168,7 +168,7 @@ public class MenuNgocTrai : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = EventManager.ins.nameEvent;
         datasend["method"] = "QuaAi";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString != "0")

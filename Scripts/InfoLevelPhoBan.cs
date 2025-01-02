@@ -30,7 +30,7 @@ public class InfoLevelPhoBan : MonoBehaviour
         datasend["data"]["name"] = namemap;
         datasend["data"]["cap"] = "0";
         datasend["data"]["idcongtrinh"] = "0";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode jsonn)
         {
             if (jsonn["status"].Value == "0")

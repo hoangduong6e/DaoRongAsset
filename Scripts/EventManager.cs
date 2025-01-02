@@ -88,7 +88,7 @@ public abstract class EventManager : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = nameEvent;
         datasend["method"] = "GetDiemDanh";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -182,7 +182,7 @@ public abstract class EventManager : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = nameEvent;
         datasend["method"] = "DiemDanhEvent";
-        NetworkManager.ins.SendServer(datasend.ToString(), DiemDanhok);
+        NetworkManager.ins.SendServer(datasend, DiemDanhok);
         void DiemDanhok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -214,7 +214,7 @@ public abstract class EventManager : MonoBehaviour
         datasend["class"] = nameEvent;
         datasend["method"] = "NhanQuaDiemDanh";
         datasend["data"]["vitri"] = vitri.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             debug.Log(json.ToString());
@@ -332,7 +332,7 @@ public abstract class EventManager : MonoBehaviour
         datasend["class"] = EventManager.ins.nameEvent;
         datasend["method"] = "MenuDoiManh";
       //  if (menuevent.ContainsKey("GiaoDien2")) datasend["method"] = "MenuDoiManh2";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
 
         void Ok(JSONNode json)
         {
@@ -396,7 +396,7 @@ public abstract class EventManager : MonoBehaviour
         datasend["method"] = "XemManhDoi";
     //    if (menuevent.ContainsKey("GiaoDien2")) datasend["method"] = "XemManhDoi2";
         datasend["data"]["namemanh"] = namemanhchon;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             Debug.Log(json.ToString());
@@ -479,7 +479,7 @@ public abstract class EventManager : MonoBehaviour
         if (menuevent.ContainsKey("GiaoDien2")) datasend["method"] = "DoiQua2";
         datasend["data"]["namemanh"] = namemanhchon;
 
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")

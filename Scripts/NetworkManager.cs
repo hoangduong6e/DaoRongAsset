@@ -71,7 +71,7 @@ public class NetworkManager : MonoBehaviour
     public static bool isSend = true;
 
     public int solanrequest = 0;
-    public void SendServer(string dataa, CallbackServerResult call, bool setisSend = false)
+    public void SendServer(JSONClass dataa, CallbackServerResult call, bool setisSend = false)
     {
         if (!isSend && !setisSend) return;
 
@@ -136,23 +136,33 @@ public class NetworkManager : MonoBehaviour
         //}
 
 
+       // JSONObject.
 
+       
+        //socket.Emit("SendRequest", JSONObject.CreateStringObject(AesEncryption.Encrypt(dataa)), (response) =>
+        //{
+        //    Debug.Log("Server response: " + response.ToString());
+        //    Debug.Log("Server responseeee: " + response[0].str);
+        //    JSONNode json = JSON.Parse(AesEncryption.Decrypt(response[0].str));
+        //    solanrequest = json["solanrequest"].AsInt;
 
+        //    call(json); // Trả về dữ liệu đã nhận từ server
+        //    isSend = true;
+        //});
 
-        socket.Emit("SendRequest", JSONObject.CreateStringObject(AesEncryption.Encrypt(dataa)), (response) =>
+      //  JSONNode json = JSON.Parse(dataa);
+      //  JSONClass jsonclass = json.AsObject;
+       // Debug.Log("json gui la: " + jsonclass.ToString());
+        socket.EmitWithJSONClass("SendRequest", dataa, (response) =>
         {
-            Debug.Log("Server response: " + response.ToString());
-            Debug.Log("Server responseeee: " + response[0].str);
-            JSONNode json = JSON.Parse(AesEncryption.Decrypt(response[0].str));
-            solanrequest = json["solanrequest"].AsInt;
-            
-            call(json); // Trả về dữ liệu đã nhận từ server
+             debug.Log("Server response: " + response.ToString());
+            //Debug.Log("Server responseeee: " + response[0].str);
+            // JSONNode json = JSON.Parse(AesEncryption.Decrypt(response[0].str));
+            // solanrequest = json["solanrequest"].AsInt;
+            // JSONNode json = JSON.Parse(response[0].ToString());
+            call(response[0]); // Trả về dữ liệu đã nhận từ server
             isSend = true;
         });
-
-
-
-
 
 
         //StartCoroutine(Send());
@@ -863,7 +873,7 @@ public class NetworkManager : MonoBehaviour
         datasend["class"] = "DauTruongOnline";
         datasend["method"] = "VaoRoomDauTruong";
         datasend["data"]["id"] = id;
-        SendServer(datasend.ToString(), ok);
+        SendServer(datasend, ok);
         void ok(JSONNode json)
         {
             AllMenu.ins.DestroyallMenu("MenuDauTruongOnIine");

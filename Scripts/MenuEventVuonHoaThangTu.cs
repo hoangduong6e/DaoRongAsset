@@ -299,7 +299,7 @@ public class MenuEventVuonHoaThangTu : EventManager
             datasend["method"] = "MoOHoa";
             datasend["data"]["hangtuyet"] = hangtuyet;
             datasend["data"]["otuyet"] = otuyet;
-            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+            NetworkManager.ins.SendServer(datasend, Ok);
             void Ok(JSONNode json)
             {
                 debug.Log(json.ToString());
@@ -374,7 +374,7 @@ public class MenuEventVuonHoaThangTu : EventManager
         JSONClass datasend = new JSONClass();
         datasend["class"] = nameEvent;
         datasend["method"] = "QuaAi";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].Value == "ok")
@@ -415,7 +415,7 @@ public class MenuEventVuonHoaThangTu : EventManager
         JSONClass datasend = new JSONClass();
         datasend["class"] = nameEvent;
         datasend["method"] = "GetPhanBon";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].Value == "ok")
@@ -443,7 +443,7 @@ public class MenuEventVuonHoaThangTu : EventManager
         datasend["class"] = nameEvent;
         datasend["method"] = "SuDungPhanBon";
         datasend["data"]["sophanbon"] = menubonphan.transform.GetChild(5).GetComponent<Text>().text;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].Value == "ok")
@@ -506,7 +506,7 @@ public class MenuEventVuonHoaThangTu : EventManager
     //    JSONClass datasend = new JSONClass();
     //    datasend["class"] = nameEvent;
     //    datasend["method"] = "MuaXeng";
-    //    NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+    //    NetworkManager.ins.SendServer(datasend, Ok);
     //    void Ok(JSONNode json)
     //    {
     //        debug.Log(json.ToString());
@@ -534,7 +534,7 @@ public class MenuEventVuonHoaThangTu : EventManager
             datasend["method"] = "ThuHoach";
             datasend["data"]["vitri"] = objchon.transform.GetSiblingIndex().ToString();
             datasend["data"]["vuonhoa"] = current_garden.ToString();
-            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+            NetworkManager.ins.SendServer(datasend, Ok);
             void Ok(JSONNode json)
             {
                 if (json["status"].Value == "exp")
@@ -609,7 +609,7 @@ public class MenuEventVuonHoaThangTu : EventManager
             datasend["method"] = "XemGiaTrongCay";
             datasend["data"]["vitri"] = objchon.transform.GetSiblingIndex().ToString();
             datasend["data"]["vuonhoa"] = current_garden.ToString();
-            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+            NetworkManager.ins.SendServer(datasend, Ok);
             void Ok(JSONNode json)
             {
                 if (json["status"].Value == "ok")
@@ -688,7 +688,7 @@ public class MenuEventVuonHoaThangTu : EventManager
         datasend["method"] = "TrongCay";
         datasend["data"]["quachon"] = objchon.transform.parent.transform.GetSiblingIndex().ToString();
         datasend["data"]["vuonhoa"] = vuonhoa.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].Value == "ok")
@@ -884,7 +884,7 @@ public class MenuEventVuonHoaThangTu : EventManager
         datasend["class"] = nameEvent;
         datasend["method"] = "ThapLongDen";
         datasend["data"]["vitri"] = btnchon.transform.parent.transform.GetSiblingIndex().ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].Value == "0")
@@ -1003,7 +1003,7 @@ public class MenuEventVuonHoaThangTu : EventManager
         datasend["class"] = nameEvent;
         datasend["method"] = "XemBXH";
         datasend["data"]["trang"] = trang.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -1102,7 +1102,7 @@ public class MenuEventVuonHoaThangTu : EventManager
         JSONClass datasend = new JSONClass();
         datasend["class"] = nameEvent;
         datasend["method"] = "GetNhatKi";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -1123,7 +1123,7 @@ public class MenuEventVuonHoaThangTu : EventManager
         JSONClass datasend = new JSONClass();
         datasend["class"] = nameEvent;
         datasend["method"] = "GetNhiemVu";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             //debug.Log(json.ToString());
@@ -1166,7 +1166,7 @@ public class MenuEventVuonHoaThangTu : EventManager
         JSONClass datasend = new JSONClass();
         datasend["class"] = nameEvent;
         datasend["method"] = "GetDataGDCheTaoLongDen";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -1238,7 +1238,7 @@ public class MenuEventVuonHoaThangTu : EventManager
         datasend["class"] = EventManager.ins.nameEvent;
         datasend["method"] = "XemGiaMuaXeng";
         datasend["data"]["soluong"] = soluongMuaQueThu.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -1264,7 +1264,7 @@ public class MenuEventVuonHoaThangTu : EventManager
         datasend["class"] = EventManager.ins.nameEvent;
         datasend["method"] = "MuaXeng";
         datasend["data"]["soluong"] = soluongMuaQueThu.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")

@@ -287,7 +287,7 @@ public class LaiRong : MonoBehaviour
         datasend["class"] = "Main";
         datasend["method"] = "xemRonglai";
         datasend["data"]["herong"] = herong;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode jsonn)
         {
             if (jsonn["status"].AsString == "0")
@@ -392,7 +392,7 @@ public class LaiRong : MonoBehaviour
         datasend["data"]["name"] = "";
         datasend["data"]["cap"] = cap.ToString();
         datasend["data"]["idcongtrinh"] = "0";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode jsonn)
         {
             if (jsonn["status"].AsString == "0")

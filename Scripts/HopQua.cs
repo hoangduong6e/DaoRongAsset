@@ -125,7 +125,7 @@ public class HopQua : MonoBehaviour
         datasend["class"] = "Main";
         datasend["method"] = "XoaQuaFriend";
         datasend["data"]["indexqua"] = indexqua.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")

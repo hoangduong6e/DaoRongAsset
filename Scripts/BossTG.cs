@@ -113,7 +113,7 @@ public class BossTG : MonoBehaviour
             datasend["method"] = "GetTopBossTG";
             datasend["data"]["top"] = (trang - 1).ToString();
             datasend["data"]["trang"] = "0";
-            NetworkManager.ins.SendServer(datasend.ToString(), ok);
+            NetworkManager.ins.SendServer(datasend, ok);
             void ok(JSONNode json)
             {
                 GameObject objecttop = transform.GetChild(7).gameObject;
@@ -218,7 +218,7 @@ public class BossTG : MonoBehaviour
         datasend["method"] = "GetTopBossTG";
         datasend["data"]["top"] = top.ToString();
         datasend["data"]["trang"] = trangg.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), ok);
+        NetworkManager.ins.SendServer(datasend, ok);
         void ok(JSONNode json)
         {
           //  JSONNode json = JSON.Parse(www.downloadHandler.text);
@@ -448,7 +448,7 @@ public class BossTG : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "BossTheGioi";
         datasend["method"] = "DanhBossTG";
-        NetworkManager.ins.SendServer(datasend.ToString(), ok);
+        NetworkManager.ins.SendServer(datasend, ok);
 
         void ok(JSONNode json)
         {
@@ -527,7 +527,7 @@ public class BossTG : MonoBehaviour
         datasend["class"] = "BossTheGioi";
         datasend["method"] = "VaoKhuVuc";
         datasend["data"]["khu"] = (btnChon.transform.GetSiblingIndex() - 1).ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), ok);
+        NetworkManager.ins.SendServer(datasend, ok);
         void ok(JSONNode json)
         {
             if (json["status"].Value == "ok")
@@ -573,7 +573,7 @@ public class BossTG : MonoBehaviour
             JSONClass datasend = new JSONClass();
             datasend["class"] = "BossTheGioi";
             datasend["method"] = "XemKhuVuc";
-            NetworkManager.ins.SendServer(datasend.ToString(), ok);
+            NetworkManager.ins.SendServer(datasend, ok);
 
             void ok(JSONNode json)
             {
@@ -670,7 +670,7 @@ public class BossTG : MonoBehaviour
                 datasend["class"] = "BossTheGioi";
                 datasend["method"] = "ChatbossTG";
                 datasend["data"]["noidung"] = txt.text;
-                NetworkManager.ins.SendServer(datasend.ToString(), ok);
+                NetworkManager.ins.SendServer(datasend, ok);
                 void ok(JSONNode json)
                 {
                     if (json["status"].Value == "ok")
@@ -721,7 +721,7 @@ public class BossTG : MonoBehaviour
         datasend["class"] = "BossTheGioi";
         datasend["method"] = "XemBuffchisoboss";
         datasend["data"]["chiso"] = namechiso;
-        NetworkManager.ins.SendServer(datasend.ToString(), ok);
+        NetworkManager.ins.SendServer(datasend, ok);
         void ok(JSONNode json)
         {
             if (json["status"].Value == "ok")
@@ -779,7 +779,7 @@ public class BossTG : MonoBehaviour
         datasend["class"] = "BossTheGioi";
         datasend["method"] = "MuaBuffchisoboss";
         datasend["data"]["chiso"] = name;
-        NetworkManager.ins.SendServer(datasend.ToString(), ok);
+        NetworkManager.ins.SendServer(datasend, ok);
         void ok(JSONNode json)
         {
             CrGame.ins.OnThongBaoNhanh(json["status"].Value, 2);

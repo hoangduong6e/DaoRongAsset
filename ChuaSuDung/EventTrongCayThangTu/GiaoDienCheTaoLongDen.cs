@@ -35,7 +35,7 @@ public class GiaoDienCheTaoLongDen : MonoBehaviour
         datasend["class"] = EventManager.ins.nameEvent;
         datasend["method"] = "CheTaoLongDen";
         datasend["data"]["chetao"] = s;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             debug.Log(json.ToString());
@@ -130,7 +130,7 @@ public class GiaoDienCheTaoLongDen : MonoBehaviour
         datasend["method"] = "XemGiaMuaItemCheTao";
         datasend["data"]["soluong"] = soluongMuaQueThu.ToString();
         datasend["data"]["nameitem"] = nameitemmua;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -157,7 +157,7 @@ public class GiaoDienCheTaoLongDen : MonoBehaviour
         datasend["method"] = "MuaItemCheTao";
         datasend["data"]["soluong"] = soluongMuaQueThu.ToString();
         datasend["data"]["nameitem"] = nameitemmua;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")

@@ -45,7 +45,7 @@ public class Dao : MonoBehaviour
             JSONClass datasend = new JSONClass();
             datasend["class"] = "ChuyenHoaPhuongHoang";
             datasend["method"] = "XemThongTinDaoBay";
-            NetworkManager.ins.SendServer(datasend.ToString(), ok);
+            NetworkManager.ins.SendServer(datasend, ok);
             void ok(JSONNode json)
             {
                 if (AllMenu.ins.menu.ContainsKey(nameof(GiaoDienChuyenHoaRong))) return;

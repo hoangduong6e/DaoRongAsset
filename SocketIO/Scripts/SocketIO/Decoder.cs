@@ -25,8 +25,9 @@
  * THE SOFTWARE.
  */
 #endregion
-
+//#define SOCKET_IO_DEBUG
 //#define SOCKET_IO_DEBUG			// Uncomment this for debug
+using SimpleJSON;
 using System;
 using System.Collections;
 using System.Text;
@@ -35,6 +36,7 @@ using WebSocketSharp;
 
 namespace SocketIO
 {
+
 	public class Decoder
 	{
 		public Packet Decode(MessageEventArgs e)
@@ -46,6 +48,7 @@ namespace SocketIO
 				#endif
 
 				string data = e.Data;
+
 				Packet packet = new Packet();
 				int offset = 0;
 
@@ -73,9 +76,12 @@ namespace SocketIO
 						builder.Append(data [offset]);
 					}
 					packet.nsp = builder.ToString();
-				} else {
+				//	Debug.Log("packet.nsp: "+ packet.nsp);
+				} 
+                else {
 					packet.nsp = "/";
 				}
+
 
 				// look up id
 				char next = data [offset + 1];
@@ -91,6 +97,8 @@ namespace SocketIO
 						}
 					}
 					packet.id = int.Parse(builder.ToString());
+					
+						
 				}
 
 				// look up json data
@@ -98,9 +106,23 @@ namespace SocketIO
 					try {
 						#if SOCKET_IO_DEBUG
 						Debug.Log("[SocketIO] Parsing JSON: " + data.Substring(offset));
-						#endif
-						packet.json = new JSONObject(data.Substring(offset));
-					} catch (Exception ex) {
+#endif
+
+                        if (SocketIOComponent.dicPacket.ContainsKey(packet.id))
+                        {
+                          //  debug.Log("<color=lime>packet.id: " + packet.id + " Parse data JSONNode </color>");
+                            JSONNode json = JSONNode.Parse(data.Substring(offset));
+							packet.jsonnodeParse = json;
+                            SocketIOComponent.dicPacket.Remove(packet.id);
+                        }
+						else
+						{
+                            packet.json = new JSONObject(data.Substring(offset));
+                        }
+
+                        
+                        //Debug.Log("json parse packet = " + json.ToString());
+                    } catch (Exception ex) {
 						Debug.LogException(ex);
 					}
 				}
@@ -115,5 +137,5 @@ namespace SocketIO
 				throw new SocketIOException("Packet decoding failed: " + e.Data ,ex);
 			}
 		}
-	}
+    }
 }

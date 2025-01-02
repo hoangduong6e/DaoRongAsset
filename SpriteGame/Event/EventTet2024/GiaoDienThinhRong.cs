@@ -36,7 +36,7 @@ public class GiaoDienThinhRong : MonoBehaviour
         datasend["class"] = EventManager.ins.nameEvent;
         datasend["method"] = "DoiQuaGiaoDienThinhRong";
         datasend["data"]["keyqua"] = tf.gameObject.name;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "ok")

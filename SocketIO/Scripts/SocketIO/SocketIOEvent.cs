@@ -26,6 +26,8 @@
  */
 #endregion
 
+using SimpleJSON;
+
 namespace SocketIO
 {
 	public class SocketIOEvent

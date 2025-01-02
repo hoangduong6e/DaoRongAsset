@@ -82,7 +82,7 @@ public class infongoc : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         datasend["class"] = "Main";
         datasend["method"] = "XemShop";
         datasend["data"]["nameitem"] = nameitem;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
         void Ok(JSONNode json)
         {
             AllMenu.ins.OpenCreateMenu("infoitem", GameObject.FindGameObjectWithTag("trencung"));

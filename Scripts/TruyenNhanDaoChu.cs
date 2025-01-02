@@ -17,7 +17,7 @@ public class TruyenNhanDaoChu : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "TruyenNhan";
         datasend["method"] = "XemTruyenNhan";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
 
         void Ok(JSONNode jsonn)
         {
@@ -62,7 +62,7 @@ public class TruyenNhanDaoChu : MonoBehaviour
             datasend["class"] = "TruyenNhan";
             datasend["method"] = "ChonTruyenNhan";
             datasend["data"]["taikhoanchon"] = inputName.text;
-            NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+            NetworkManager.ins.SendServer(datasend, Ok, true);
 
             void Ok(JSONNode jsonn)
             {
@@ -89,7 +89,7 @@ public class TruyenNhanDaoChu : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "TruyenNhan";
         datasend["method"] = "XoaTruyenNhan";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
 
         void Ok(JSONNode jsonn)
         {
@@ -113,7 +113,7 @@ public class TruyenNhanDaoChu : MonoBehaviour
         datasend["class"] = "TruyenNhan";
         datasend["method"] = "NhanQuaTruyenNhan";
         datasend["data"]["qua"] = qua;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
 
         void Ok(JSONNode jsonn)
         {

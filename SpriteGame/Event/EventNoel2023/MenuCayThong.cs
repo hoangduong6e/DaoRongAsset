@@ -76,7 +76,7 @@ public class MenuCayThong : MonoBehaviour
         datasend["class"] = ev.nameEvent;
         datasend["method"] = "TrangTriCayThong";
         datasend["data"]["solanquay"] = solanquay.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -329,7 +329,7 @@ public class MenuCayThong : MonoBehaviour
         datasend["class"] = ev.nameEvent;
         datasend["method"] = "NhanQuaTichLuyGd2";
         datasend["data"]["mocqua"] = btnnhan.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -349,7 +349,7 @@ public class MenuCayThong : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = ev.nameEvent;
         datasend["method"] = "MenuDoiManh";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
 
         void Ok(JSONNode json)
         {
@@ -408,7 +408,7 @@ public class MenuCayThong : MonoBehaviour
         datasend["class"] = ev.nameEvent;
         datasend["method"] = "XemManhDoi";
         datasend["data"]["namemanh"] = namemanhchon;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
            //ebug.Log(json.ToString());
@@ -530,7 +530,7 @@ public class MenuCayThong : MonoBehaviour
         datasend["class"] = ev.nameEvent;
         datasend["method"] = "DoiQua";
         datasend["data"]["namemanh"] = namemanhchon;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -569,7 +569,7 @@ public class MenuCayThong : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = ev.nameEvent;
         datasend["method"] = "GetGiaoDienThangSaoTuanLong";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
 
         void Ok(JSONNode json)
         {
@@ -614,7 +614,7 @@ public class MenuCayThong : MonoBehaviour
         datasend["class"] = ev.nameEvent;
         datasend["method"] = "NhanQuaNhanTuanLong";
         datasend["data"]["vitri"] = objchon.transform.parent.GetSiblingIndex().ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
 
         void Ok(JSONNode json)
         {

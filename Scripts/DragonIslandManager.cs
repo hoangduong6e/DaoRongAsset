@@ -171,7 +171,7 @@ public class DragonIslandManager : MonoBehaviour
         datasend["method"] = "PhongChienTuong";
         datasend["data"]["idrong"] = id;
         //datasend["data"]["dao"] = CrGame.ins.DangODao.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -192,7 +192,7 @@ public class DragonIslandManager : MonoBehaviour
         datasend["method"] = "XemKhamNgoc";
         datasend["data"]["idrong"] = id;
         datasend["data"]["dao"] = dao;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -286,7 +286,7 @@ public class DragonIslandManager : MonoBehaviour
         datasend["method"] = "XemInfoRong";
         datasend["data"]["idrong"] = id;
         datasend["data"]["dao"] = dao;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -378,7 +378,7 @@ public class DragonIslandManager : MonoBehaviour
         datasend["method"] = "CatRong";
         datasend["data"]["idrong"] = id;
         datasend["data"]["dao"] = dao;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -414,7 +414,7 @@ public class DragonIslandManager : MonoBehaviour
         datasend["data"]["get"]["namerong"] = "";
         datasend["data"]["get"]["nameobject"] = "";
         datasend["data"]["get"]["tienhoa"] = "";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -455,7 +455,7 @@ public class DragonIslandManager : MonoBehaviour
         datasend["method"] = "ThaRong";
         datasend["data"]["idrong"] = id;
         //datasend["data"]["dao"] = CrGame.ins.DangODao.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -540,7 +540,7 @@ public class DragonIslandManager : MonoBehaviour
         datasend["data"]["namethucan"] = thucan;
         datasend["data"]["dangodao"] = dao.ToString();
         //datasend["data"]["dao"] = CrGame.ins.DangODao.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok,true);
+        NetworkManager.ins.SendServer(datasend, Ok,true);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -588,7 +588,7 @@ public class DragonIslandManager : MonoBehaviour
         datasend["data"]["namethucan"] = namethucan;
         datasend["data"]["dangodao"] = CrGame.ins.DangODao.ToString();
         //datasend["data"]["dao"] = CrGame.ins.DangODao.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")

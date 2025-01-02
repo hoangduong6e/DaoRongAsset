@@ -310,7 +310,7 @@ public class MenuRaKhoi : MonoBehaviour
         datasend["method"] = "ChonDao";
         datasend["data"]["hang"] = hang.ToString();
         datasend["data"]["cot"] = cot.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             debug.Log(json.ToString());
@@ -663,7 +663,7 @@ public class MenuRaKhoi : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = nameEvent;
         datasend["method"] = "ApTrung";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             debug.Log(json.ToString());
@@ -687,7 +687,7 @@ public class MenuRaKhoi : MonoBehaviour
             JSONClass datasend = new JSONClass();
             datasend["class"] = nameEvent;
             datasend["method"] = "NhanRongRua";
-            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+            NetworkManager.ins.SendServer(datasend, Ok);
             void Ok(JSONNode json)
             {
                 debug.Log(json.ToString());
@@ -761,7 +761,7 @@ public class MenuRaKhoi : MonoBehaviour
             JSONClass datasend = new JSONClass();
             datasend["class"] = nameEvent;
             datasend["method"] = "DanhXucTu";
-            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+            NetworkManager.ins.SendServer(datasend, Ok);
             void Ok(JSONNode json)
             {
                 debug.Log(json.ToString());
@@ -814,7 +814,7 @@ public class MenuRaKhoi : MonoBehaviour
                 JSONClass datasend = new JSONClass();
                 datasend["class"] = nameEvent;
                 datasend["method"] = "BoChay";
-                NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+                NetworkManager.ins.SendServer(datasend, Ok, true);
                 void Ok(JSONNode json)
                 {
                     debug.Log(json.ToString());
@@ -845,7 +845,7 @@ public class MenuRaKhoi : MonoBehaviour
             datasend["class"] = nameEvent;
             datasend["method"] = "KetQuaKetLieu";
             datasend["data"]["kq"] = kq.ToString();
-            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+            NetworkManager.ins.SendServer(datasend, Ok);
             void Ok(JSONNode json)
             {
                 //  debug.Log(json.ToString()) ;
@@ -1355,7 +1355,7 @@ public class MenuRaKhoi : MonoBehaviour
         datasend["method"] = "XemGiaMua";
         datasend["data"]["soluong"] = soluongMuaQueThu.ToString();
         datasend["data"]["nameitem"] = nameitemmua;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -1387,7 +1387,7 @@ public class MenuRaKhoi : MonoBehaviour
         datasend["data"]["soluong"] = soluongMuaQueThu.ToString();
         datasend["data"]["nameitem"] = nameitemmua;
 
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -1423,7 +1423,7 @@ public class MenuRaKhoi : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = nameEvent;
         datasend["method"] = "XemMuaKhoBau";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -1447,7 +1447,7 @@ public class MenuRaKhoi : MonoBehaviour
         datasend["class"] = nameEvent;
         datasend["method"] = "MuaKhoBau";
         datasend["data"]["nameitem"] = nameitem;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")

@@ -55,7 +55,7 @@ public class VongQuayRong : MonoBehaviour
         datasend["method"] = "xemTrungRong";
         datasend["data"]["nametrung"] = nametrung;
    
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode jsonn)
         {
             if (jsonn["status"].AsString == "0")

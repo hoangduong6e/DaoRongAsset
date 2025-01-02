@@ -83,7 +83,7 @@ public class Quan3ConSoc : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = MenuRaKhoi.nameEvent;
         datasend["method"] = "OpenMenu3ConSoc";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             debug.Log(json.ToString());
@@ -169,7 +169,7 @@ public class Quan3ConSoc : MonoBehaviour
         datasend["method"] = "XemInfoItem";
         datasend["data"]["nameitem"] = btnchon.name;
         datasend["data"]["tabchon"] = tabhientai.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -195,7 +195,7 @@ public class Quan3ConSoc : MonoBehaviour
         datasend["method"] = "XemXacNhan";
         datasend["data"]["nameitem"] = nameItemChon;
         datasend["data"]["tabchon"] = tabchon.ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -211,7 +211,7 @@ public class Quan3ConSoc : MonoBehaviour
             datasend["method"] = "MuaItem";
             datasend["data"]["nameitem"] = nameItemChon;
             datasend["data"]["tabchon"] = tabchon.ToString();
-            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+            NetworkManager.ins.SendServer(datasend, Ok);
             void Ok(JSONNode json)
             {
                 if (json["status"].AsString == "0")

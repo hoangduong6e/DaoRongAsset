@@ -188,7 +188,7 @@ public class MenuDoiHinh : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "Skill";
         datasend["method"] = "XemSkill";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "chuacoskill")
@@ -232,7 +232,7 @@ public class MenuDoiHinh : MonoBehaviour
         datasend["class"] = "Skill";
         datasend["method"] = "AddSkill";
         datasend["data"]["nameSkill"] = Skillchon.transform.parent.name;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].Value == "ok")
@@ -252,7 +252,7 @@ public class MenuDoiHinh : MonoBehaviour
         datasend["class"] = "Skill";
         datasend["method"] = "XoaSkill";
         datasend["data"]["oskill"] = (Skillchon.transform.parent.parent.transform.GetSiblingIndex() + 1).ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -272,7 +272,7 @@ public class MenuDoiHinh : MonoBehaviour
         datasend["class"] = "Skill";
         datasend["method"] = "XacNhanSkill";
         datasend["data"]["Key"] = "XoaHet";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -298,7 +298,7 @@ public class MenuDoiHinh : MonoBehaviour
         datasend["class"] = "Skill";
         datasend["method"] = "XacNhanSkill";
         datasend["data"]["Key"] = "XacNhan";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
@@ -317,7 +317,7 @@ public class MenuDoiHinh : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "Skill";
         datasend["method"] = "MoKhoaKyNang";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")

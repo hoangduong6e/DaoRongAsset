@@ -510,7 +510,7 @@ public class Inventory : MonoBehaviour
         datasend["data"]["sao"] = sao;
         datasend["data"]["name"] = nameRong;
 
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode jsonn)
         {
             if (jsonn["status"].AsString == "0")
@@ -651,7 +651,7 @@ public class Inventory : MonoBehaviour
         datasend["method"] = "xemGiaAddSlot";
         datasend["data"]["cap"] = soslothientai.ToString();
         datasend["data"]["tui"] = oslotnao;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -1101,7 +1101,7 @@ public class Inventory : MonoBehaviour
             datasend["data"]["idrong"] = CrGame.ins.TfrongInfo.gameObject.name;
             datasend["data"]["dao"] = CrGame.ins.DangODao.ToString();
             datasend["data"]["namenew"] = inputname.text;
-            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+            NetworkManager.ins.SendServer(datasend, Ok);
             void Ok(JSONNode json)
             {
                 if (json["status"].AsString == "0")

@@ -127,7 +127,7 @@ public class MenuPhongAn : MonoBehaviour
         datasend["class"] = ev.nameEvent;
         datasend["method"] = "KhoaItemPhongAn";
         datasend["data"]["nameitem"] = oitemdanhsach.transform.GetChild(0).name;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].Value == "0")
@@ -167,7 +167,7 @@ public class MenuPhongAn : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = ev.nameEvent;
         datasend["method"] = "CongHienPhongAn";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].Value == "0")
@@ -208,7 +208,7 @@ public class MenuPhongAn : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = ev.nameEvent;
         datasend["method"] = "GiaiPhongAn";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             GameObject allitemconghien = transform.GetChild(0).Find("allitemCongHien").gameObject;

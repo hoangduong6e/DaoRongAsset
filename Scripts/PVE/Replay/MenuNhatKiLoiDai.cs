@@ -154,7 +154,7 @@ public class MenuNhatKiLoiDai : MonoBehaviour
         datasend["class"] = "ReplayData";
         datasend["method"] = "ShareTranDau";
         datasend["data"]["idtrandau"] = idtrandau;
-        NetworkManager.ins.SendServer(datasend.ToString(), ok);
+        NetworkManager.ins.SendServer(datasend, ok);
         void ok(JSONNode json)
         {
             //if (json["status"].AsString == "0")

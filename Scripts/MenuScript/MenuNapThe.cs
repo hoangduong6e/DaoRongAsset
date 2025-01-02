@@ -67,7 +67,7 @@ public class MenuNapThe : MonoBehaviour
         datasend["data"]["serial"] = inputSeri.text;
         datasend["data"]["amount"] = MenhGia;
         CrGame.ins.panelLoadDao.SetActive(true);
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             CrGame.ins.OnThongBao(true, json["message"].AsString, true);

@@ -39,7 +39,7 @@ public class TayTuy : MonoBehaviour
         datasend["class"] = "TayTuy";
         datasend["method"] = "HoaBuiRong";
         datasend["data"]["id"] = idrong;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -134,7 +134,7 @@ public class TayTuy : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "TayTuy";
         datasend["method"] = "XemRongTayTuy";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -216,7 +216,7 @@ public class TayTuy : MonoBehaviour
             datasend["class"] = "TayTuy";
             datasend["method"] = "ChonRongTayTuy";
             datasend["data"]["id"] = id;
-            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+            NetworkManager.ins.SendServer(datasend, Ok);
             void Ok(JSONNode json)
             {
                 if (json["status"].AsString == "0")
@@ -291,7 +291,7 @@ public class TayTuy : MonoBehaviour
             datasend["method"] = "XemHoaBuiRong";
             datasend["data"]["id"] = id;
             datasend["data"]["dao"] = "false";
-            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+            NetworkManager.ins.SendServer(datasend, Ok);
             void Ok(JSONNode json)
             {
                 if (json["status"].AsString == "0")
@@ -443,7 +443,7 @@ public class TayTuy : MonoBehaviour
         datasend["method"] = "TayTuy";
         datasend["data"]["id"] = idrong;
         datasend["data"]["khoa"] = khoa;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode jsonn)
         {
             if (AllMenu.ins.menu.ContainsKey("MenuXacNhan")) AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
@@ -506,7 +506,7 @@ public class TayTuy : MonoBehaviour
         datasend["class"] = "TayTuy";
         datasend["method"] = "NhanThuocTinhMoi";
         datasend["data"]["id"] = idrong;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode jsonn)
         {
             if (jsonn["status"].AsString == "0")
@@ -577,7 +577,7 @@ public class TayTuy : MonoBehaviour
         datasend["method"] = "TangSaoTayTuy";
         datasend["data"]["id"] = idrong;
         datasend["data"]["namechiso"] = namechiso;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode jsonn)
         {
             if (jsonn["status"].AsString == "0")

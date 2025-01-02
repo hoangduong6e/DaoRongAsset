@@ -18,7 +18,7 @@ public class DauTruongDanhVong : MonoBehaviour
             JSONClass datasend = new JSONClass();
             datasend["class"] = "DauTruongThuThach";
             datasend["method"] = "GetDataDauTruongThuThach";
-            NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+            NetworkManager.ins.SendServer(datasend, Ok);
             void Ok(JSONNode json)
             {
                 if (json["status"].Value == "ok")
@@ -143,7 +143,7 @@ public class DauTruongDanhVong : MonoBehaviour
         datasend["method"] = "ChonRongThuThach";
         datasend["data"]["idrong"] = btnRong.name;
         datasend["data"]["vitri"] = btnRong.transform.GetSiblingIndex().ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].Value == "ok")
@@ -185,7 +185,7 @@ public class DauTruongDanhVong : MonoBehaviour
         datasend["class"] = "DauTruongThuThach";
         datasend["method"] = "ChonSkillThuThach";
         datasend["data"]["nameskill"] = btnSkill.name;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].Value == "ok")
@@ -212,7 +212,7 @@ public class DauTruongDanhVong : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "DauTruongThuThach";
         datasend["method"] = "XemXacNhanDoiHinh";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].Value == "ok")
@@ -231,7 +231,7 @@ public class DauTruongDanhVong : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "DauTruongThuThach";
         datasend["method"] = "XacNhanDoiHinhThuthach";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].Value == "ok")
@@ -292,7 +292,7 @@ public class DauTruongDanhVong : MonoBehaviour
         datasend["method"] = "TraRongThuThach";
         datasend["data"]["idrong"] = btnRong.name;
         datasend["data"]["vitri"] = btnRong.transform.GetSiblingIndex().ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].Value == "ok")
@@ -345,7 +345,7 @@ public class DauTruongDanhVong : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "DauTruongThuThach";
         datasend["method"] = "BatDauDauTruongThuThach";
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].Value == "ok")

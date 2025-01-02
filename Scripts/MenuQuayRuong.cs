@@ -22,7 +22,7 @@ public class MenuQuayRuong : MonoBehaviour
         datasend["class"] = "Main";
         datasend["method"] = "NhanQuaRuong";
         datasend["data"]["ruong"] = btnnhan.transform.parent.GetSiblingIndex().ToString();
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode jsonn)
         {
             if (jsonn["status"].AsString == "0")
@@ -47,7 +47,7 @@ public class MenuQuayRuong : MonoBehaviour
         datasend["class"] = "Main";
         datasend["method"] = "QuayRuong";
         datasend["data"]["nameRuong"] = nameRuong;
-        NetworkManager.ins.SendServer(datasend.ToString(), Ok);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode jsonn)
         {
             if (jsonn["status"].AsString == "0")

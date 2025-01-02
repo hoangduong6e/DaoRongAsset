@@ -47,7 +47,7 @@ namespace WebSocketSharp
     private string _data;
     private Opcode _opcode;
     private byte[] _rawData;
-
+  
     #endregion
 
     #region Internal Constructors

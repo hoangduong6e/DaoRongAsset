@@ -48,7 +48,7 @@ public class GiaoDienChuyenHoaRong : MonoBehaviour
         datasend["method"] = "ChuyenHoa";
         datasend["data"]["allrong"] = sdata;
         datasend["data"]["rongchon"] = nameSpriteRongChon[currentIndex];
-        NetworkManager.ins.SendServer(datasend.ToString(), ok);
+        NetworkManager.ins.SendServer(datasend, ok);
         void ok(JSONNode json)
         {
             debug.Log(json.ToString());
