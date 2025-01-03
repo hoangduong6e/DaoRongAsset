@@ -10,7 +10,7 @@ public class LanSu : MonoBehaviour
     void Start()
     {
         skill = GetComponentInChildren<ParticleSystem>();
-        controller = transform.parent.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+        controller = transform.parent.GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
     }
     public void UseSkill()
     {

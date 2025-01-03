@@ -29,6 +29,7 @@ public class BossXucTu : DragonPVEController
                 actionUpdate = null;
             }
         };
+        transform.parent.GetComponent<DraUpdateAnimator>().DragonPVEControllerr = this;
     }
     public override void Choang(float giay = 0.4F, bool setOnline = false)
     {
@@ -40,6 +41,7 @@ public class BossXucTu : DragonPVEController
     }
     protected override void Updatee()
     {
+        VienChinh.vienchinh.SetMucTieuTeamDo();
         Target = VienChinh.vienchinh.muctieudo.transform;
         if (actionUpdate != null) actionUpdate();
         //  debug.Log("parent: " + transform.parent.transform.position.x + ", tamxa: " + (Target.position.x - tamdanhxa));
@@ -140,7 +142,7 @@ public class BossXucTu : DragonPVEController
         {
             if (ronggan[i].name != "trudo" && ronggan[i].name != "truxanh")
             {
-                DragonPVEController chisodich = ronggan[i].transform.Find("SkillDra").GetComponent<DragonPVEController>();
+                DragonPVEController chisodich = ronggan[i].GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
 
                 if (!chimanggg)
                 {

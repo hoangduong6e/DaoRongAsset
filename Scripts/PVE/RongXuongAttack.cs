@@ -206,7 +206,7 @@ public class RongXuongAttack : DragonPVEController
         {
             if (ronggan[i].name != "trudo" && ronggan[i].name != "truxanh")
             {
-                DragonPVEController chisodich = ronggan[i].transform.Find("SkillDra").GetComponent<DragonPVEController>();
+                DragonPVEController chisodich = ronggan[i].GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
 
                 if (!chimanggg)
                 {
@@ -273,7 +273,7 @@ public class RongXuongAttack : DragonPVEController
         {
             for (int i = 1; i < teamdich.transform.childCount; i++)
             {
-                DragonPVEController chisodich = teamdich.transform.GetChild(i).transform.Find("SkillDra").GetComponent<DragonPVEController>();
+                DragonPVEController chisodich = teamdich.transform.GetChild(i).GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
 
                 if (!chimanggg)
                 {
@@ -303,7 +303,7 @@ public class RongXuongAttack : DragonPVEController
         
         if (Target.name != "trudo" && Target.name != "truxanh")
         {
-            DragonPVEController dra = Target.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+            DragonPVEController dra = Target.GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
             dra.MatMau(damee, this);
             dataLamCham data = new dataLamCham(5, "caylamcham");
 
@@ -323,7 +323,7 @@ public class RongXuongAttack : DragonPVEController
         {
             if (ronggan[i].name != "trudo" && ronggan[i].name != "truxanh")
             {
-                DragonPVEController chisodich = ronggan[i].transform.Find("SkillDra").GetComponent<DragonPVEController>();
+                DragonPVEController chisodich = ronggan[i].GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
 
                 if (!chimanggg)
                 {
@@ -361,7 +361,7 @@ public class RongXuongAttack : DragonPVEController
 
         if (Target.name != "trudo" && Target.name != "truxanh")
         {
-            DragonPVEController dra = Target.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+            DragonPVEController dra = Target.GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
             dra.MatMau(damee, this);
           //  dra.LamChamABS(5, "caylamcham");
         }
@@ -391,7 +391,7 @@ public class RongXuongAttack : DragonPVEController
 
         if (Target.name != "trudo" && Target.name != "truxanh")
         {
-            DragonPVEController dra = Target.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+            DragonPVEController dra = Target.GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
             dra.MatMau(damee, this);
         }
         else
@@ -408,7 +408,7 @@ public class RongXuongAttack : DragonPVEController
         {
             if (ronggan[i].name != "trudo" && ronggan[i].name != "truxanh")
             {
-                DragonPVEController chisodich = ronggan[i].transform.Find("SkillDra").GetComponent<DragonPVEController>();
+                DragonPVEController chisodich = ronggan[i].GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
 
                 if (!chimanggg)
                 {

@@ -8,7 +8,7 @@ public class XucTu : MonoBehaviour
     DragonPVEController controller;
     void Start()
     {
-        controller = transform.parent.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+        controller = transform.parent.GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
     }
     public void UpdateAnimAttack()
     {

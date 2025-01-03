@@ -936,7 +936,7 @@ public class MenuRaKhoi : MonoBehaviour
         GameObject LanSu = Instantiate(GetObjectLanSu(nameBoss), transform.position, Quaternion.identity);
         LanSu.transform.SetParent(VienChinh.vienchinh.TeamDo.transform, false);
         LanSu.transform.position = VienChinh.vienchinh.TeamDo.transform.position;
-        DragonPVEController dragonPVEController = LanSu.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+        DragonPVEController dragonPVEController = LanSu.GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
         dragonPVEController.dame = dame;
         //   dragonPVEController.giapso = 200;
         // dragonPVEController.xuyengiap = 99999;

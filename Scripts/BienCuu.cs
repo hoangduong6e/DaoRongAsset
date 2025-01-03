@@ -20,7 +20,7 @@ public class BienCuu : MonoBehaviour
     {
         animcuu = transform.GetChild(1).GetComponent<Animator>();
         Transform parent = transform.parent;
-       // chiso = parent.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+       // chiso = parent.GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
         GameObject allManhRong = parent.transform.GetChild(0).gameObject;
         if (transform.position.y >= VienChinh.vienchinh.TruXanh.transform.position.y + -1.5f)
         {

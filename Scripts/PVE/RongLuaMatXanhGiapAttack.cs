@@ -92,7 +92,7 @@ public class RongLuaMatXanhGiapAttack : DragonPVEController
         float damee = dame;
         if (Target.name != "trudo" && Target.name != "truxanh")
         {
-            DragonPVEController chisodich = Target.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+            DragonPVEController chisodich = Target.GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
             if (nameobj == "RongLuaMatXanhSapphire")
             {
                 if (CrGame.ins.NgayDem == "Dem")

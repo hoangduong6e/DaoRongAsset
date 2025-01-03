@@ -13,6 +13,8 @@ using System.IO;
 using System;
 
 using Random = UnityEngine.Random;
+using System.Diagnostics;
+using System.IO.Compression;
 
 [SerializeField]
 public class postSend
@@ -73,19 +75,21 @@ public class NetworkManager : MonoBehaviour
     public int solanrequest = 0;
     public void SendServer(JSONClass dataa, CallbackServerResult call, bool setisSend = false)
     {
+        Stopwatch stopwatch = new Stopwatch(); // Tạo đối tượng Stopwatch
+        stopwatch.Start();
         if (!isSend && !setisSend) return;
 
         //StartCoroutine(Load());
 
         //IEnumerator Load()
         //{
-        //   // debug.Log("LoginFacebook.ins.keyAes: " + LoginFacebook.ins.keyAes + ", LoginFacebook.ins.IVAes: " + LoginFacebook.ins.IVAes);
-        //    postSend p = new postSend(AesEncryption.Encrypt(dataa), LoginFacebook.ins.id); // Dữ liệu cần gửi
+        //    // debug.Log("LoginFacebook.ins.keyAes: " + LoginFacebook.ins.keyAes + ", LoginFacebook.ins.IVAes: " + LoginFacebook.ins.IVAes);
+        //    postSend p = new postSend(AesEncryption.Encrypt(dataa.ToString()), LoginFacebook.ins.id); // Dữ liệu cần gửi
         //    string data = JsonUtility.ToJson(p); // Chuyển đổi đối tượng thành chuỗi JSON
 
         //    // Tạo request POST
         //    var request = new UnityWebRequest(CrGame.ins.ServerName + "RequestSend23", "POST");
-        //    debug.Log("sendddd: " + dataa.ToString());
+        //   // debug.Log("sendddd: " + dataa.ToString());
 
         //    // Chuyển đổi chuỗi JSON thành mảng byte và thiết lập nội dung yêu cầu
         //    byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(data);
@@ -112,20 +116,13 @@ public class NetworkManager : MonoBehaviour
         //    else
         //    {
         //        // Nếu thành công, parse và trả về kết quả
-        //     //   debug.Log(request.downloadHandler.text);
+        //        //   debug.Log(request.downloadHandler.text);
         //        JSONNode json = JSON.Parse(AesEncryption.Decrypt(request.downloadHandler.text));
         //        call(json); // Trả về dữ liệu đã nhận từ server
 
         //        solanrequest = json["solanrequest"].AsInt;
-
-        //        socket.Emit("testttttt", JSONObject.CreateStringObject(AesEncryption.Encrypt(dataa)), (response) =>
-        //        {
-        //            // Xử lý phản hồi từ server
-        //            solanrequest = json["solanrequest"].AsInt;
-        //            Debug.Log("Server response: " + response.ToString());
-        //            call(json); // Trả về dữ liệu đã nhận từ server
-        //            isSend = true;
-        //        });
+        //        stopwatch.Stop();
+        //        debug.LogWarning("Time phản hồi: " + stopwatch.ElapsedMilliseconds + " ms");
         //    }
 
         //    // Dọn dẹp
@@ -136,9 +133,9 @@ public class NetworkManager : MonoBehaviour
         //}
 
 
-       // JSONObject.
+        // JSONObject.
 
-       
+
         //socket.Emit("SendRequest", JSONObject.CreateStringObject(AesEncryption.Encrypt(dataa)), (response) =>
         //{
         //    Debug.Log("Server response: " + response.ToString());
@@ -150,57 +147,21 @@ public class NetworkManager : MonoBehaviour
         //    isSend = true;
         //});
 
-      //  JSONNode json = JSON.Parse(dataa);
-      //  JSONClass jsonclass = json.AsObject;
-       // Debug.Log("json gui la: " + jsonclass.ToString());
-        socket.EmitWithJSONClass("SendRequest", dataa, (response) =>
+        //  JSONNode json = JSON.Parse(dataa);
+        //  JSONClass jsonclass = json.AsObject;
+        // Debug.Log("json gui la: " + jsonclass.ToString());
+
+
+        socket.EmitWithJSONClass("SendRequest",dataa, (response) =>
         {
-             debug.Log("Server response: " + response.ToString());
-            //Debug.Log("Server responseeee: " + response[0].str);
-            // JSONNode json = JSON.Parse(AesEncryption.Decrypt(response[0].str));
-            // solanrequest = json["solanrequest"].AsInt;
-            // JSONNode json = JSON.Parse(response[0].ToString());
-            call(response[0]); // Trả về dữ liệu đã nhận từ server
+            stopwatch.Stop(); // Dừng đếm thời gian khi nhận được phản hồi
+            debug.Log("Server response: " + response.ToString());
+            call(response[0]);
             isSend = true;
+            debug.Log("Time phản hồi new: " + stopwatch.ElapsedMilliseconds + " ms");
+            CrGame.ins.panelLoadDao.SetActive(false);
         });
 
-
-        //StartCoroutine(Send());
-        //IEnumerator Send()
-        //{
-        //    if (!setisSend) StartCoroutine(StartSend());
-        //    //crgame.OnThongBao(true, "Đang Mời...", false);
-        //    //   UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "SendRequest/data/" + data + "/key/" + LoginFacebook.ins.key+"/taikhoan/"+LoginFacebook.ins.id);
-
-        //    data = AesEncryption.Encrypt(data);
-        //    UnityWebRequest www = new UnityWebRequest(CrGame.ins.ServerName + "RequestSend23/data/" + data + "/taikhoan/" + LoginFacebook.ins.id);
-        //    www.downloadHandler = new DownloadHandlerBuffer();
-        //    www.SetRequestHeader("Authorization", "Bearer " + LoginFacebook.token);
-        //    yield return www.SendWebRequest();
-
-        //    if (www.result != UnityWebRequest.Result.Success)
-        //    {
-        //        debug.Log(www.error);
-        //        //   CrGame.ins.OnThongBaoNhanh("Không thể kết nối tới máy chủ!");
-        //        JSONClass jsonerror = new JSONClass();
-        //        jsonerror["status"] = "1";
-        //        jsonerror["message"] = "Không thể kết nối tới máy chủ";
-        //        call(jsonerror);
-        //    }
-        //    else
-        //    {
-        //        // Show results as text
-        //        // debug.Log(www.downloadHandler.text);
-
-        //        JSONNode json = JSON.Parse(www.downloadHandler.text);
-
-        //        //StopCoroutine(StartSend());
-
-        //        call(json);
-        //    }
-        //    CrGame.ins.panelLoadDao.SetActive(false);
-        //    isSend = true;
-        //}
     }
     IEnumerator StartSend()
     {
@@ -552,7 +513,7 @@ public class NetworkManager : MonoBehaviour
         //            yield return new WaitUntil(()=>vienchinh.TeamDo.transform.childCount > 1);
         //            yield return new WaitForSeconds(0.5f);
         //            debug.Log("Tăng scale khổng tước lên 1.5");
-        //            //DragonPVEController khongtuoc = vienchinh.TeamDo.transform.GetChild(1).transform.Find("SkillDra").GetComponent<DragonPVEController>();
+        //            //DragonPVEController khongtuoc = vienchinh.TeamDo.transform.GetChild(1).GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
         //            //Vector3 vec = khongtuoc.transform.parent.transform.localScale;
         //            //vec = new Vector3(vec.x * 1.3f, vec.y * 1.3f);
         //            //khongtuoc.transform.parent.localScale = vec;
@@ -1100,7 +1061,7 @@ public class NetworkManager : MonoBehaviour
                 {
                     for (int i = 1; i < vienchinh.TeamXanh.transform.childCount; i++)
                     {
-                        DragonPVEController dragonPVEController = vienchinh.TeamXanh.transform.GetChild(i).transform.Find("SkillDra").GetComponent<DragonPVEController>();
+                        DragonPVEController dragonPVEController = vienchinh.TeamXanh.transform.GetChild(i).GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
                         if (dragonPVEController != null)
                         {
                             dataLamCham data = new dataLamCham(float.Parse(CatDauNgoacKep(e.data["useskill"]["timeskill"].ToString())), "", 0, "0.7+0.7+1.3",false,true);
@@ -1114,7 +1075,7 @@ public class NetworkManager : MonoBehaviour
                 //{
                 //    for (int i = 1; i < vienchinh.TeamDo.transform.childCount; i++)
                 //    {
-                //        DragonPVEController dragonPVEController = vienchinh.TeamDo.transform.GetChild(i).transform.Find("SkillDra").GetComponent<DragonPVEController>();
+                //        DragonPVEController dragonPVEController = vienchinh.TeamDo.transform.GetChild(i).GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
                 //        if (dragonPVEController != null)
                 //        {
                 //            dataLamCham data = new dataLamCham(float.Parse(CatDauNgoacKep(e.data["useskill"]["timeskill"].ToString())), "", 2, "0",false,true);
@@ -2227,7 +2188,7 @@ public class NetworkManager : MonoBehaviour
                         //debug.Log("quai ok 0 ");
                         GameObject instance = Instantiate(Resources.Load("GameData/QuaiVienChinh/" + namequai) as GameObject, new Vector3(vienchinh.TruDo.transform.position.x + 400, vienchinh.TruDo.transform.position.y + Random.Range(-200, -50)), Quaternion.identity) as GameObject;
                         instance.transform.SetParent(vienchinh.TeamDo.transform, false);
-                        DragonPVEController chiso = instance.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+                        DragonPVEController chiso = instance.GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
                         int level = int.Parse(CrGame.ins.txtLevel.text);
                         if (namequai != "TinhTinhLuaDo" && namequai != "BossHalloween")
                         {

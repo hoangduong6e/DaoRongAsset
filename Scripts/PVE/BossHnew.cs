@@ -192,7 +192,7 @@ public class BossHnew : DragonPVEController
         {
             if (ronggan[i].name != "trudo" && ronggan[i].name != "truxanh")
             {
-                DragonPVEController dra = ronggan[i].transform.Find("SkillDra").GetComponent<DragonPVEController>();
+                DragonPVEController dra = ronggan[i].GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
 
                 dra.MatMau(damee, this);
                 //  if (daylui) dra.DayLuiABS();

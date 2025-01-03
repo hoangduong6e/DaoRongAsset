@@ -36,7 +36,7 @@ public class LoginFacebook : MonoBehaviour
 public static string http = "http";
 #elif UNITY_IOS || UNITY_ANDROID
     // Khi build trên iOS hoặc Android
-    public static string http = "http";
+    public static string http = "https";
 #else
 // Các trường hợp còn lại (bao gồm Unity Editor trên Windows)
 public static string http = "https";

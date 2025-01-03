@@ -68,7 +68,7 @@ public class RongTuanLongAttack : DragonPVEController
 
         if (Target.name != "trudo" && Target.name != "truxanh")
         {
-            DragonPVEController dra = Target.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+            DragonPVEController dra = Target.GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
             dra.MatMau(damee, this);
         }
         else

@@ -62,7 +62,7 @@ public class RongKhongTuocAttack : DragonPVEController
         if (Target.name != "trudo" && Target.name != "truxanh")
         {
             float damee = dame;
-            DragonPVEController chisodich = Target.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+            DragonPVEController chisodich = Target.GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
             if (Random.Range(1, 100) <= _ChiMang)
             {
                 damee *= 5;
@@ -170,7 +170,7 @@ public class RongKhongTuocAttack : DragonPVEController
                 {
                     if (Random.Range(0, 100) < tilelamcham)
                     {
-                        DragonPVEController chisoo = teamdich.transform.GetChild(i).transform.Find("SkillDra").GetComponent<DragonPVEController>();
+                        DragonPVEController chisoo = teamdich.transform.GetChild(i).GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
                         chisoo.MatMau(saorong * 7, this);
                         dataLamCham data = new dataLamCham(timetan, "caylamcham");
                         chisoo.LamChamABS(data);

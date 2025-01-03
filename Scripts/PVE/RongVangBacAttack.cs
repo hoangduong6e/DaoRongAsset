@@ -54,7 +54,7 @@ public class RongVangBacAttack : DragonPVEController
         {
             if (ronggan[i].name != "trudo" && ronggan[i].name != "truxanh")
             {
-                DragonPVEController chisodich = ronggan[i].transform.Find("SkillDra").GetComponent<DragonPVEController>();
+                DragonPVEController chisodich = ronggan[i].GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
 
                 if (!chimanggg)
                 {

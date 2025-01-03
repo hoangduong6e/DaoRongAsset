@@ -124,7 +124,7 @@ public class BossTGAttack : DragonPVEController
        // debug.Log("Target.name " + Target.name);
         if (Target.name != "trudo" && Target.name != "truxanh")
         {
-            DragonPVEController dra = Target.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+            DragonPVEController dra = Target.GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
             dra.MatMau(99999, this);
         }
         else
@@ -143,7 +143,7 @@ public class BossTGAttack : DragonPVEController
         //{
         //    if (ronggan[i].name != "trudo" && ronggan[i].name != "truxanh")
         //    {
-        //        DragonPVEController dra = ronggan[i].transform.Find("SkillDra").GetComponent<DragonPVEController>();
+        //        DragonPVEController dra = ronggan[i].GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
 
         //        dra.MatMau(damee, this);
         //        //  if (daylui) dra.DayLuiABS();

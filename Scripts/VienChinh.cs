@@ -374,7 +374,7 @@ public class VienChinh : MonoBehaviour
                         dra.AnimWin();
                     }
 
-                   // DragonPVEController dra = VienChinh.vienchinh.TeamXanh.transform.GetChild(i).transform.Find("SkillDra").GetComponent<DragonPVEController>();
+                   // DragonPVEController dra = VienChinh.vienchinh.TeamXanh.transform.GetChild(i).GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
                    //if (dra != null) dra.AnimWin();
             
                     //Destroy(TeamXanh.transform.GetChild(i).gameObject);
@@ -977,7 +977,8 @@ public class VienChinh : MonoBehaviour
         // Trả camera về vị trí gốc
         CrGame.ins.transform.localPosition = originalPosition;
     }
-
+    private object locktimmuctieudo = new object();  // Một đối tượng để khóa
+    private object locktimmuctieuxanh = new object();  // Một đối tượng để khóa
 
     private void Update()
     {
@@ -997,6 +998,8 @@ public class VienChinh : MonoBehaviour
         //        cam.transform.position = Clampcamera(cam.transform.position + difrence);
         //    }
         //}    
+        if (muctieudo == null) SetMucTieuTeamDo();
+        if (muctieuxanh == null) SetMucTieuTeamXanh();
         if (EventSystem.current.currentSelectedGameObject == null)
         {
             if (Input.GetMouseButtonDown(0))
@@ -1048,9 +1051,10 @@ public class VienChinh : MonoBehaviour
     void FixedUpdate()
     {
         ReplayData.time += Time.fixedDeltaTime * ReplayData.speedReplay;
-        SetMucTieuTeamDo();
-        SetMucTieuTeamXanh();
+        //SetMucTieuTeamDo();
+        //SetMucTieuTeamXanh();
     }
+   
     //public void SetMucTieuTeamDo()
     //{
     //    if (TeamXanh.transform.childCount > 1)
@@ -1101,70 +1105,78 @@ public class VienChinh : MonoBehaviour
     //}
     public void SetMucTieuTeamDo()
     {
-        int childCount = TeamXanh.transform.childCount;
-
-        if (childCount > 1)
+        lock(locktimmuctieudo)
         {
-            float maxXPosition = float.MinValue;
-            Transform selectedChild = null;
+            int childCount = TeamXanh.transform.childCount;
 
-            for (short i = 1; i < childCount; i++)
+            if (childCount > 1)
             {
-                Transform childTransform = TeamXanh.transform.GetChild(i);
-                float childXPosition = childTransform.position.x;
+                float maxXPosition = float.MinValue;
+                Transform selectedChild = null;
 
-                if (childXPosition > maxXPosition)
+                for (short i = 1; i < childCount; i++)
                 {
-                    maxXPosition = childXPosition;
-                    selectedChild = childTransform;
+                    Transform childTransform = TeamXanh.transform.GetChild(i);
+                    float childXPosition = childTransform.position.x;
+
+                    if (childXPosition > maxXPosition)
+                    {
+                        maxXPosition = childXPosition;
+                        selectedChild = childTransform;
+                    }
                 }
+
+                muctieudo = selectedChild != null ? selectedChild.gameObject : null;
+            }
+            else
+            {
+                muctieudo = TeamXanh.transform.GetChild(0).gameObject;
             }
 
-            muctieudo = selectedChild != null ? selectedChild.gameObject : null;
-        }
-        else
-        {
-            muctieudo = TeamXanh.transform.GetChild(0).gameObject;
-        }
-
-        if (muctieudo == null)
-        {
-            muctieudo = childCount > 1 ? TeamXanh.transform.GetChild(1).gameObject : TeamXanh.transform.GetChild(0).gameObject;
-        }
+            if (muctieudo == null)
+            {
+                muctieudo = childCount > 1 ? TeamXanh.transform.GetChild(1).gameObject : TeamXanh.transform.GetChild(0).gameObject;
+            }
+        }    
+   
     }
 
     public void SetMucTieuTeamXanh()
     {
-        int childCount = TeamDo.transform.childCount;
-
-        if (childCount > 1)
+        lock (locktimmuctieuxanh)
         {
-            float minXPosition = TruDo.transform.position.x;
-            Transform selectedChild = null;
+            int childCount = TeamDo.transform.childCount;
 
-            for (short i = 1; i < childCount; i++)
+            if (childCount > 1)
             {
-                Transform childTransform = TeamDo.transform.GetChild(i);
-                float childXPosition = childTransform.position.x;
+                float minXPosition = TruDo.transform.position.x;
+                Transform selectedChild = null;
 
-                if (childXPosition < minXPosition)
+                for (short i = 1; i < childCount; i++)
                 {
-                    minXPosition = childXPosition;
-                    selectedChild = childTransform;
+                    Transform childTransform = TeamDo.transform.GetChild(i);
+                    float childXPosition = childTransform.position.x;
+
+                    if (childXPosition < minXPosition)
+                    {
+                        minXPosition = childXPosition;
+                        selectedChild = childTransform;
+                    }
                 }
+
+                muctieuxanh = selectedChild != null ? selectedChild.gameObject : null;
+            }
+            else
+            {
+                muctieuxanh = TeamDo.transform.GetChild(0).gameObject;
             }
 
-            muctieuxanh = selectedChild != null ? selectedChild.gameObject : null;
+            if (muctieuxanh == null)
+            {
+                muctieuxanh = childCount > 1 ? TeamDo.transform.GetChild(1).gameObject : TeamDo.transform.GetChild(0).gameObject;
+            }
         }
-        else
-        {
-            muctieuxanh = TeamDo.transform.GetChild(0).gameObject;
-        }
-
-        if (muctieuxanh == null)
-        {
-            muctieuxanh = childCount > 1 ? TeamDo.transform.GetChild(1).gameObject : TeamDo.transform.GetChild(0).gameObject;
-        }
+        
     }
 
     public void CloseVienchinh()
@@ -1396,7 +1408,7 @@ public class VienChinh : MonoBehaviour
             if (team == "TeamDo") vienchinh.HienIconSkill(time, "Xanh", "iconCuongLoanXanh");
             for (int i = 1; i < teammm.transform.childCount; i++)
             {
-                DragonPVEController cs = teammm.transform.GetChild(i).transform.Find("SkillDra").GetComponent<DragonPVEController>();
+                DragonPVEController cs = teammm.transform.GetChild(i).GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
                 //   cs.DayLui("TeamDo",0.5f);
                 cs.newDame(cs.dame + cs.dame * phantramdame / 100, time, -200);
                 cs.MatMau(cs.hp * 30 / 100, cs);
@@ -1458,7 +1470,7 @@ public class VienChinh : MonoBehaviour
                 }
                 for (int i = 1; i < vienchinh.TeamXanh.transform.childCount; i++)
                 {
-                    DragonPVEController dra = vienchinh.TeamXanh.transform.GetChild(i).transform.Find("SkillDra").GetComponent<DragonPVEController>();
+                    DragonPVEController dra = vienchinh.TeamXanh.transform.GetChild(i).GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
                     if (dra.nameobj == "RongHacLong")
                     {
                         HacLongAttack haclong = dra.GetComponent<HacLongAttack>();
@@ -1483,7 +1495,7 @@ public class VienChinh : MonoBehaviour
         {
             for (int i = 1; i < vienchinh.TeamDo.transform.childCount; i++)
             {
-                DragonPVEController dragonPVEController = vienchinh.TeamDo.transform.GetChild(i).transform.Find("SkillDra").GetComponent<DragonPVEController>();
+                DragonPVEController dragonPVEController = vienchinh.TeamDo.transform.GetChild(i).GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
                 if (dragonPVEController != null)
                 {
                     // ChiSo cs = vienchinh.TeamDo.transform.GetChild(i).GetComponent<ChiSo>();
@@ -1562,7 +1574,7 @@ public class VienChinh : MonoBehaviour
                     debug.LogError("Team Xanh kích hoạt skill hưng phấn");
                     for (int i = 1; i < TeamXanh.transform.childCount; i++)
                     {
-                        DragonPVEController cs = TeamXanh.transform.GetChild(i).transform.Find("SkillDra").GetComponent<DragonPVEController>();
+                        DragonPVEController cs = TeamXanh.transform.GetChild(i).GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
                         if (cs != null)
                         {
                             //Animator anim = TeamXanh.transform.GetChild(i).GetComponent<Animator>();
@@ -1583,7 +1595,7 @@ public class VienChinh : MonoBehaviour
                     debug.LogError("Team Đỏ kích hoạt skill hưng phấn");
                     for (int i = 1; i < TeamDo.transform.childCount; i++)
                     {
-                        DragonPVEController cs = TeamDo.transform.GetChild(i).transform.Find("SkillDra").GetComponent<DragonPVEController>();
+                        DragonPVEController cs = TeamDo.transform.GetChild(i).GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
                         if (cs != null)
                         {
                             //Animator anim = TeamXanh.transform.GetChild(i).GetComponent<Animator>();

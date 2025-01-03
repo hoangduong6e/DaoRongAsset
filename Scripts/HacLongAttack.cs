@@ -299,7 +299,7 @@ public partial class HacLongAttack : DragonPVEController
 
         if (Target.name != "trudo" && Target.name != "truxanh")
         {
-            DragonPVEController dra = Target.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+            DragonPVEController dra = Target.GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
             dra.MatMau(damee, this);
             //dataLamCham data = new dataLamCham(5, "caylamcham");
 
@@ -539,7 +539,7 @@ public partial class HacLongAttack : DragonPVEController
        debug.Log("DoatMenhOk, TargetDoatMenh: " + TargetDoatMenh);
         if (TargetDoatMenh != null)
         {
-            DragonPVEController dra = TargetDoatMenh.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+            DragonPVEController dra = TargetDoatMenh.GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
 
             Debug.Log("Doat menh rong " + dra.nameobj);
             if (VienChinh.vienchinh.chedodau == CheDoDau.VienChinh ||

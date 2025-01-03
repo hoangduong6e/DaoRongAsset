@@ -178,7 +178,10 @@ public abstract class DragonPVEController : MonoBehaviour
         ABSAnimatorRun();
         stateAnimAttack = 0;
         stateAnimIdle = 0;
-        if(setAnim) anim.Play(animplay);
+        if(setAnim)
+        {
+            anim.Play(animplay);
+        }
         //  ReplayData.AddStateAnimator(gameObject.name, animplay);
     }    
     public void AnimatorAttack()
@@ -315,6 +318,8 @@ public abstract class DragonPVEController : MonoBehaviour
                 return hp;
             }
         }
+       // VienChinh.vienchinh.SetMucTieuTeamDo();//setmuctieuuu
+        //VienChinh.vienchinh.SetMucTieuTeamXanh();
 
         //  debug.Log("chedodau "+ VienChinh.vienchinh.chedodau);
         //if (VienChinh.vienchinh.chedodau == "SoloKhongTuoc")
@@ -737,10 +742,11 @@ public abstract class DragonPVEController : MonoBehaviour
         if (team == Team.TeamXanh)
         {
             GiaoDienPVP.ins.RongChet(transform.parent.name);
-         //   if(VienChinh.vienchinh.muctieuxanh.name == id) VienChinh.vienchinh.SetMucTieuTeamDo();//
+           
+            //   if(VienChinh.vienchinh.muctieuxanh.name == id) VienChinh.vienchinh.SetMucTieuTeamDo();//
 
         }
-    //   else if (VienChinh.vienchinh.muctieudo.name == id) VienChinh.vienchinh.SetMucTieuTeamXanh();//
+        //   else if (VienChinh.vienchinh.muctieudo.name == id) VienChinh.vienchinh.SetMucTieuTeamXanh();//
         //if (Target.transform.parent.name == "TeamDo")
         //{
         //    GiaoDienPVP.ins.RongChet(id);

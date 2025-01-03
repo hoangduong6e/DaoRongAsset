@@ -58,7 +58,7 @@ public class BossTG : MonoBehaviour
             else
             {
 
-                DragonPVEController cs = NetworkManager.ins.vienchinh.TeamDo.transform.GetChild(1).transform.Find("SkillDra").GetComponent<DragonPVEController>();
+                DragonPVEController cs = NetworkManager.ins.vienchinh.TeamDo.transform.GetChild(1).GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
                 cs.ImgHp.fillAmount = fillamount;
                 cs.hp = hp;
               //  cs.Maxhp

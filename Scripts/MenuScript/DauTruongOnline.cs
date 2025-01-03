@@ -148,7 +148,7 @@ public class DauTruongOnline : MonoBehaviour
                 debug.Log("dra nulll id: " + e.data["UpdateDra"]["id"].str);
                 return;
             }
-            DragonPVEController dragonPVEController = dra.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+            DragonPVEController dragonPVEController = dra.GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
             if (e.data["UpdateDra"]["daylui"])
             {
                 //debug.Log("day luiii " + e.data["UpdateDra"]["daylui"].ToString());

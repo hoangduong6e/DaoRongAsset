@@ -313,8 +313,6 @@ public class ReplayData : MonoBehaviour
         }
     }
 
-
-
     //public static bool test()
     //{
     //    debug.Log("test " + time);
@@ -360,7 +358,6 @@ public class ReplayData : MonoBehaviour
     //    return "abc";
     //}
     public static bool dangupdate = false;
-
     public static void UpdateReplayData(Action action, string thangthua)
     {
         if (dangupdate) return;

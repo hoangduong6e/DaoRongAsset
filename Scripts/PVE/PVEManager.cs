@@ -199,6 +199,8 @@ public class PVEManager : MonoBehaviour
         {
             ReplayData.AddNewDragon(id, team, nameObject, randomvec, data["sao"].ToString());
         }
+      //  VienChinh.vienchinh.SetMucTieuTeamDo();//setmuctieuuu
+       // VienChinh.vienchinh.SetMucTieuTeamXanh();
         return rongtrieuhoi;
     }
 
@@ -277,12 +279,12 @@ public class PVEManager : MonoBehaviour
         // Thêm hành động vào actionUpdate dựa trên team
         if (nameteam == "TeamXanh")
         {
-            dragonPVEController.actionUpdate += MoveTeamDo;
+            dragonPVEController.actionUpdate += MoveTeamXanh;
          //   dragonPVEController.team = Team.TeamXanh;
         }
         else
         {
-            dragonPVEController.actionUpdate += MoveTeamXanh;
+            dragonPVEController.actionUpdate += MoveTeamDo;
            // dragonPVEController.team = Team.TeamDo;
             if (Setting.cauhinh == CauHinh.CauHinhCao) dragonPVEController.actionUpdate += TruHienRongTeamDo;
         }
@@ -294,27 +296,9 @@ public class PVEManager : MonoBehaviour
         }
 
         // Định nghĩa các hành động cần thiết
+     
+
         void MoveTeamXanh()
-        {
-            dragonPVEController.Target = VienChinh.vienchinh.muctieudo.transform;
-
-            Vector3 targetPosition = dragonPVEController.Target.position;
-            float tamdanhxa = dragonPVEController.tamdanhxa;
-            float speed = dragonPVEController.speed * Time.deltaTime;
-
-            if (parent.position.x > targetPosition.x + tamdanhxa)
-            {
-                parent.position += Vector3.left * speed;
-                if (!dragonPVEController.DanganimAttack) dragonPVEController.AnimatorRun();
-            }
-            else
-            {
-                dragonPVEController.AnimatorAttack();
-            }
-
-        }
-
-        void MoveTeamDo()
         {
             dragonPVEController.Target = VienChinh.vienchinh.muctieuxanh.transform;
 
@@ -328,12 +312,60 @@ public class PVEManager : MonoBehaviour
             if (parent.position.x < targetPosition.x - tamdanhxa)
             {
                 parent.position += Vector3.right * speed;
-                if(!dragonPVEController.DanganimAttack) dragonPVEController.AnimatorRun();
+                if(!dragonPVEController.DanganimAttack)
+                {
+                    dragonPVEController.AnimatorRun();
+                    if (parent.position.x > VienChinh.vienchinh.muctieudo.transform.position.x)
+                    {
+                        VienChinh.vienchinh.SetMucTieuTeamXanh();//setmuctieuuu
+                       // Debug.Log("SetMucTieuTeamXanhgg");
+                    }
+                }
+                //VienChinh.vienchinh.SetMucTieuTeamXanh();//setmuctieuuu
+               // Debug.Log("parent: " + parent.position.x + " muctieudo: " + VienChinh.vienchinh.muctieudo.transform.position.x);
+               
+
             }
             else
             {
                 dragonPVEController.AnimatorAttack();
             }
+        }
+
+        void MoveTeamDo()
+        {
+            dragonPVEController.Target = VienChinh.vienchinh.muctieudo.transform;
+
+            Vector3 targetPosition = dragonPVEController.Target.position;
+            float tamdanhxa = dragonPVEController.tamdanhxa;
+            float speed = dragonPVEController.speed * Time.deltaTime;
+
+            if (parent.position.x > targetPosition.x + tamdanhxa)
+            {
+                parent.position += Vector3.left * speed;
+                if (!dragonPVEController.DanganimAttack)
+                {
+                    dragonPVEController.AnimatorRun();
+
+                    if (parent.position.x < VienChinh.vienchinh.muctieuxanh.transform.position.x)
+                    {
+                        VienChinh.vienchinh.SetMucTieuTeamDo();//setmuctieuuu
+                      //  Debug.Log("SetmucTieuTeamDo");
+                    }
+
+                    Debug.Log("parent: " + parent.position.x + " muctieuxanh: " + VienChinh.vienchinh.muctieuxanh.transform.position.x);
+                }
+                // VienChinh.vienchinh.SetMucTieuTeamDo();//setmuctieuuu
+
+                
+
+            }
+            else
+            {
+                dragonPVEController.AnimatorAttack();
+            }
+
+
         }
 
         void Record()
@@ -614,7 +646,6 @@ public class PVEManager : MonoBehaviour
 
             return null;
     }
-
 
     //public static void InstantiateHieuUngChu(string nameeff, Transform tfins,float destroy = 2f,bool setOnline = false)
     //{

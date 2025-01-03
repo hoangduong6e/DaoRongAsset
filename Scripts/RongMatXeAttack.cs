@@ -157,7 +157,7 @@ public class RongMatXeAttack : DragonPVEController
 
         if (Target.name != "trudo" && Target.name != "truxanh")
         {
-            DragonPVEController dra = Target.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+            DragonPVEController dra = Target.GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
           //  Debug.Log("nameobj " + dra.nameobj);
             if(dra.nameobj.Contains("RongXuong") || dra.nameobj.Contains("RongMaTroi"))
             {
