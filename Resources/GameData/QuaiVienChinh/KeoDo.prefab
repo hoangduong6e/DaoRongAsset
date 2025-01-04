@@ -166,7 +166,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4802004602047351756
 Transform:
   m_ObjectHideFlags: 0
@@ -519,21 +519,27 @@ MonoBehaviour:
   Maxhp: 2000
   speed: 1.2
   tamdanhxa: 2
-  chimang: 0
   netranh: 0
-  huthp: 0
+  maxhuthp: 0
   giapso: 0
   giapphantram: 0
   xuyengiap: 0
   hpgiap: 0
   maxhpgiap: 0
+  huthp: 0
+  chimang: 0
   Target: {fileID: 0}
   anim: {fileID: 0}
+  stateAnimIdle: 0
   maxStateIdle: 2
   maxStateAttack: 2
   skillObj:
   - {fileID: 6675955446849477665}
   ImgHp: {fileID: 4724868485517192148}
+  idrong: 
+  team: 0
+  thongke: 1
+  DanganimAttack: 0
 --- !u!1 &7739182171475060038
 GameObject:
   m_ObjectHideFlags: 0

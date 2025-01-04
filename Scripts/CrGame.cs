@@ -377,7 +377,7 @@ public class CrGame : MonoBehaviour
         StartCoroutine(delay());
         IEnumerator delay()
         {
-            yield return new WaitForSeconds(0.4f);
+            yield return new WaitForSeconds(0.1f);
 
             JSONClass datasend = new JSONClass();
             datasend["class"] = "EventNoel2023";
@@ -429,7 +429,7 @@ public class CrGame : MonoBehaviour
         StartCoroutine(delay());
         IEnumerator delay()
         {
-            yield return new WaitForSeconds(0.4f);
+            yield return new WaitForSeconds(0.1f);
 
             JSONClass datasend = new JSONClass();
             datasend["class"] = "EventHalloween2024";
@@ -493,7 +493,7 @@ public class CrGame : MonoBehaviour
         StartCoroutine(delay());
         IEnumerator delay()
         {
-            yield return new WaitForSeconds(0.4f);
+            yield return new WaitForSeconds(0.1f);
 
             JSONClass datasend = new JSONClass();
             datasend["class"] = MenuRaKhoi.nameEvent;
