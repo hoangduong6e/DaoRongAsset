@@ -77,7 +77,7 @@ public class NetworkManager : MonoBehaviour
     {
         Stopwatch stopwatch = new Stopwatch(); // Tạo đối tượng Stopwatch
         stopwatch.Start();
-        if (!isSend && !setisSend) return;
+     //   if (!isSend && !setisSend) return;
 
         //StartCoroutine(Load());
 
@@ -151,13 +151,12 @@ public class NetworkManager : MonoBehaviour
         //  JSONClass jsonclass = json.AsObject;
         // Debug.Log("json gui la: " + jsonclass.ToString());
 
-
-        socket.EmitWithJSONClass("SendRequest",dataa, (response) =>
+        socket.EmitWithJSONClass(!setisSend ? "SendRequest" : "SendRequest2", dataa, (response) =>
         {
             stopwatch.Stop(); // Dừng đếm thời gian khi nhận được phản hồi
             debug.Log("Server response: " + response.ToString());
             call(response[0]);
-            isSend = true;
+          //  isSend = true;
             debug.Log("Time phản hồi new: " + stopwatch.ElapsedMilliseconds + " ms");
             CrGame.ins.panelLoadDao.SetActive(false);
         });

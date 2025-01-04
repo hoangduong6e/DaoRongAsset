@@ -787,7 +787,7 @@ public class MenuGiapRong : MonoBehaviour
         datasend["class"] = "Main";
         datasend["method"] = "XemShop";
         datasend["data"]["nameitem"] = nameitem;
-        NetworkManager.ins.SendServer(datasend, Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             CrGame.ins.OnThongBaoNhanh(json["thongtin"].AsString);

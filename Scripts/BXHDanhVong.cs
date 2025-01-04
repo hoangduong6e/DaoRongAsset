@@ -275,7 +275,7 @@ public class BXHDanhVong : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "LanSu";
         datasend["method"] = "GetBXHBossTGTheoToc";
-        NetworkManager.ins.SendServer(datasend, Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             debug.Log(json.ToString());

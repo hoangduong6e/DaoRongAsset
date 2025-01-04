@@ -124,7 +124,7 @@ public class GiaoDienLanSu : MonoBehaviour
             datasend["class"] = "LanSu";
             datasend["method"] = "KetQua";
             datasend["data"]["kq"] = kq.ToString();
-            NetworkManager.ins.SendServer(datasend, Ok, true);
+            NetworkManager.ins.SendServer(datasend, Ok);
             void Ok(JSONNode json)
             {
                 if (json["status"].AsString == "0")

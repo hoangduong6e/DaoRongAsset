@@ -488,7 +488,7 @@ public class VienChinh : MonoBehaviour
             JSONClass datasend = new JSONClass();
             datasend["class"] = "DauTruongThuThach";
             datasend["method"] = "WinDauTruongThuThach";
-            NetworkManager.ins.SendServer(datasend, Ok,true);
+            NetworkManager.ins.SendServer(datasend, Ok);
             void Ok(JSONNode json)
             {
                 if (json["status"].Value == "ok")
@@ -651,7 +651,7 @@ public class VienChinh : MonoBehaviour
             JSONClass datasend = new JSONClass();
             datasend["class"] = "DauTruongThuThach";
             datasend["method"] = "ThuaDauTruongThuThach";
-            NetworkManager.ins.SendServer(datasend, Ok,true);
+            NetworkManager.ins.SendServer(datasend, Ok);
             void Ok(JSONNode json)
             {
                 if (json["status"].Value == "ok")
@@ -848,7 +848,7 @@ public class VienChinh : MonoBehaviour
         datasend["class"] = "DragonIsland";
         datasend["method"] = "KetQuaSolo";
         datasend["data"]["ketqua"] = s;
-        NetworkManager.ins.SendServer(datasend, Ok,true);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json) { }
         SetAnimWinAllDra();
         StartCoroutine(delay());

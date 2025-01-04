@@ -565,7 +565,7 @@ public class CrGame : MonoBehaviour
         datasend["class"] = "Main";
         datasend["method"] = "NangCapThanLong";
         datasend["data"]["name"] = btnNangCap.name;
-        NetworkManager.ins.SendServer(datasend, Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].Value == "ok")

@@ -814,7 +814,7 @@ public class MenuRaKhoi : MonoBehaviour
                 JSONClass datasend = new JSONClass();
                 datasend["class"] = nameEvent;
                 datasend["method"] = "BoChay";
-                NetworkManager.ins.SendServer(datasend, Ok, true);
+                NetworkManager.ins.SendServer(datasend, Ok);
                 void Ok(JSONNode json)
                 {
                     debug.Log(json.ToString());
@@ -1355,7 +1355,7 @@ public class MenuRaKhoi : MonoBehaviour
         datasend["method"] = "XemGiaMua";
         datasend["data"]["soluong"] = soluongMuaQueThu.ToString();
         datasend["data"]["nameitem"] = nameitemmua;
-        NetworkManager.ins.SendServer(datasend, Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -1387,7 +1387,7 @@ public class MenuRaKhoi : MonoBehaviour
         datasend["data"]["soluong"] = soluongMuaQueThu.ToString();
         datasend["data"]["nameitem"] = nameitemmua;
 
-        NetworkManager.ins.SendServer(datasend, Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")

@@ -18,7 +18,7 @@ public class itemRuong : MonoBehaviour
             datasend["class"] = "Main";
             datasend["method"] = "UseItem";
             datasend["data"]["nameitem"] = nameruong;
-            NetworkManager.ins.SendServer(datasend, Ok,true);
+            NetworkManager.ins.SendServer(datasend, Ok);
             void Ok(JSONNode json)
             {
                 if (json["status"].AsString == "0")

@@ -110,7 +110,7 @@ public class LoiDai : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = "Main";
         datasend["method"] = "MuaLuotDau2kc";
-        NetworkManager.ins.SendServer(datasend, Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok);
 
         void Ok(JSONNode jsonn)
         {
