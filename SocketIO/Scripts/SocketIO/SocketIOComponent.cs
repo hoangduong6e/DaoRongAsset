@@ -174,10 +174,17 @@ namespace SocketIO
 
 			// GC expired acks
 			if(ackList.Count == 0) { return; }
-           // Debug.Log("packet id: " + ackList[0].packetId);
-            if (DateTime.Now.Subtract(ackList[0].time).TotalSeconds < ackExpirationTime){ return; }
+            Debug.Log("ackList[0].time: " + DateTime.Now.Subtract(ackList[0].time).TotalSeconds);
+			double sec = DateTime.Now.Subtract(ackList[0].time).TotalSeconds;
+
+            if (sec >= 3)
+			{
+				crgame.panelLoadDao.SetActive(true);
+			}	
+            if (sec < ackExpirationTime){ return; }
 			ackList.RemoveAt(0);
-		}
+            crgame.panelLoadDao.SetActive(false);
+        }
 
 		public void OnDestroy()
 		{
