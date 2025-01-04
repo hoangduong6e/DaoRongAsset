@@ -177,13 +177,13 @@ namespace SocketIO
             Debug.Log("ackList[0].time: " + DateTime.Now.Subtract(ackList[0].time).TotalSeconds);
 			double sec = DateTime.Now.Subtract(ackList[0].time).TotalSeconds;
 
-            if (sec >= 3)
-			{
-				crgame.panelLoadDao.SetActive(true);
-			}	
+   //         if (sec >= 3)
+			//{
+			//	crgame.panelLoadDao.SetActive(true);
+			//}	
             if (sec < ackExpirationTime){ return; }
 			ackList.RemoveAt(0);
-            crgame.panelLoadDao.SetActive(false);
+          //  crgame.panelLoadDao.SetActive(false);
         }
 
 		public void OnDestroy()
