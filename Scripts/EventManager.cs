@@ -260,6 +260,30 @@ public abstract class EventManager : MonoBehaviour
         return mn;
     }
 
+    public static GameObject OpenMenuNhanDuocItem(string namequa, string hienthi, LoaiItem itemgi)
+    {
+        GameObject mn = Instantiate(Inventory.LoadObjectResource("GameData/Event/PanelHienQua"), CrGame.ins.trencung.position, Quaternion.identity);
+        mn.transform.SetParent(CrGame.ins.trencung.transform, false);
+        //  mn.transform.position = parnet.transform.position;
+        Image imgqua = mn.transform.Find("imgqua").GetComponent<Image>();
+        Text txt = mn.transform.Find("txt").GetComponent<Text>();
+        if (itemgi == LoaiItem.rong)
+        {
+            imgqua.sprite = Inventory.LoadSpriteRong(namequa);
+        }
+        else if (itemgi == LoaiItem.item)
+        {
+            imgqua.sprite = Inventory.LoadSprite(namequa);
+        }
+        imgqua.SetNativeSize();
+        txt.text = hienthi;
+        StartDelay2(() => {
+            Button btn = mn.GetComponent<Button>();
+            btn.onClick.AddListener(delegate { Destroy(mn); });
+        }, 0.5f);
+        return mn;
+    }
+
     public Sprite GetSpriteAll(string namequa, LoaiItem itemgi)
     {
         if (itemgi == LoaiItem.rong)
