@@ -246,11 +246,13 @@ public class MenuTienHoaRong : MonoBehaviour
             datasend["class"] = "TienHoaRong";
             datasend["method"] = "TienHoa";
             NetworkManager.ins.SendServer(datasend, Ok);
-            void Ok(JSONNode json)
+            async void Ok(JSONNode json)
             {
                 if (json["status"].AsString == "0")
                 {
                     debug.Log(json.ToString());
+                    GameObject g2 = Instantiate(await DownLoadAssetBundle.OpenMenuBundleAsync("animtienhoa"), transform.position, Quaternion.identity);
+                    g2.SetActive(false);
                     gameObject.SetActive(false);
                     duocexitpaneltoi = false;
                     for (int i = 0; i < Inventory.ins.TuiRong.transform.childCount - 1; i++)
@@ -307,16 +309,22 @@ public class MenuTienHoaRong : MonoBehaviour
                         };
 
                     };
-                    EventManager.StartDelay2(() => {
+                    //EventManager.StartDelay2(() => {
 
 
+                    //    GetRonggdGiaoDien.GetComponent<Animator>().Play("Evolution");
+                    //    GameObject g = Instantiate(DownLoadAssetBundle.OpenMenuBundle("animtienhoa"), transform.position, Quaternion.identity);
+                    //    Destroy(g, 4f);
+                    //    //g.transform.position = CrGame.ins.transform.position;
+
+                    //}, 1f);
+                    EventManager.StartDelay2(actionAnim,2);
+                     void actionAnim()
+                    {
                         GetRonggdGiaoDien.GetComponent<Animator>().Play("Evolution");
-                        GameObject g = Instantiate(DownLoadAssetBundle.MenuBundle["animtienhoa"], transform.position, Quaternion.identity);
-                        Destroy(g, 4f);
-                        //g.transform.position = CrGame.ins.transform.position;
-
-                    }, 1f);
-
+                        g2.SetActive(true);
+                        Destroy(g2, 1f);
+                    }
                 }
                 else
                 {

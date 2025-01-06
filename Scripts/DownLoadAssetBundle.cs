@@ -4,10 +4,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using static UnityEditor.AddressableAssets.Build.Layout.BuildLayout;
 
 public class DownLoadAssetBundle : MonoBehaviour
 {
@@ -25,7 +27,7 @@ public class DownLoadAssetBundle : MonoBehaviour
    // public static Dictionary<string, GameObject> ObjectRong = new Dictionary<string, GameObject>();
 
     public static AssetBundle bundleDragon;
-     public static Dictionary<string, GameObject> MenuBundle = new Dictionary<string, GameObject>();
+     public static Dictionary<string, AssetBundle> MenuBundle = new Dictionary<string, AssetBundle>();
 
     private void Start()
     {
@@ -146,9 +148,11 @@ public class DownLoadAssetBundle : MonoBehaviour
             {
                 AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(www);
 
-                UnityEngine.Object[] allAssets = bundle.LoadAllAssets();
-                GameObject obj = allAssets[0] as GameObject;
-                MenuBundle.Add(namemenu, obj);
+                //UnityEngine.Object[] allAssets = bundle.LoadAllAssets();
+               // GameObject obj = allAssets[0] as GameObject;
+
+
+                MenuBundle.Add(namemenu, bundle);
 
                 int process2 = Mathf.FloorToInt(process);
                 for (int i = process2; i < 99; i++)
@@ -163,6 +167,56 @@ public class DownLoadAssetBundle : MonoBehaviour
                 CrGame.ins.menulogin.SetActive(false);
                 thanhcong();
             }
+        }
+    }
+
+    public static GameObject OpenMenuBundle(string namemenu)
+    {
+        if (!MenuBundle.ContainsKey(namemenu)) return null;
+        UnityEngine.Object[] allAssets = MenuBundle[namemenu].LoadAllAssets();
+        GameObject obj = allAssets[0] as GameObject;
+
+        return obj;
+    }
+
+
+
+    public static async Task<GameObject> OpenMenuBundleAsync(string namemenu)
+    {
+        // Kiểm tra xem AssetBundle có tồn tại trong MenuBundle hay không
+        if (!MenuBundle.ContainsKey(namemenu))
+        {
+            debug.LogWarning($"MenuBundle không chứa AssetBundle với tên: {namemenu}");
+            return null;
+        }
+
+        // Lấy AssetBundle
+        AssetBundle bundle = MenuBundle[namemenu];
+
+        // Tải tất cả tài nguyên không đồng bộ
+        AssetBundleRequest request = bundle.LoadAllAssetsAsync();
+
+        // Chờ hoàn thành
+        while (!request.isDone)
+        {
+            float progress = request.progress * 100; // Chuyển thành phần trăm
+            debug.Log($"OpenMenuBundleAsync: {progress:F2}%"); // Hiển thị log
+            await Task.Yield(); // Chuyển luồng để tránh chặn
+        }
+
+        // Lấy tất cả tài nguyên đã tải
+        UnityEngine.Object[] allAssets = request.allAssets;
+
+        if (allAssets.Length > 0)
+        {
+            // Chuyển đổi tài nguyên đầu tiên thành GameObject (nếu có)
+            GameObject obj = allAssets[0] as GameObject;
+            return obj;
+        }
+        else
+        {
+            debug.LogError($"Không có tài nguyên nào trong AssetBundle: {namemenu}");
+            return null;
         }
     }
 

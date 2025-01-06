@@ -37,20 +37,25 @@ public class MenuTrieuHoiHacLong : MonoBehaviour
     }
     public void TrieuHoi()
     {
-        GameObject g = Instantiate(DownLoadAssetBundle.MenuBundle["paneltrieuhoihaclong"], transform.position, Quaternion.identity);
+        ActionTrieuHoi();
+    }
+
+    private async void ActionTrieuHoi()
+    {
+        GameObject g = Instantiate(await DownLoadAssetBundle.OpenMenuBundleAsync("paneltrieuhoihaclong"), transform.position, Quaternion.identity);
         AnimCodeFrame animCodeFrame = g.GetComponent<AnimCodeFrame>();
         GameObject g2 = AllMenu.ins.GetRonggdGiaoDien("RongHacLong2", transform.GetChild(1), 1, false, "RongGiaoDien", new Vector3(65, 65));
         EventManager.StartDelay2(() => {
             transform.GetChild(0).gameObject.SetActive(false);
 
         }, 2f);
-      
+
 
         g2.gameObject.SetActive(false);
         g.transform.SetParent(CrGame.ins.trencung.transform, false);
         g.gameObject.SetActive(true);
-     //   Volume volume = GameObject.Find("bloom").GetComponent<Volume>();  // Tham chiếu đến Volume
-      //  Bloom bloomEffect;  // Tham chiếu đến hiệu ứng Bloom
+        //   Volume volume = GameObject.Find("bloom").GetComponent<Volume>();  // Tham chiếu đến Volume
+        //  Bloom bloomEffect;  // Tham chiếu đến hiệu ứng Bloom
 
 
         void AnimTrieuHoiDone(string s)
@@ -65,30 +70,7 @@ public class MenuTrieuHoiHacLong : MonoBehaviour
             Destroy(g);
         }
         animCodeFrame.action = AnimTrieuHoiDone;
-        //StartCoroutine(delay());
-        //IEnumerator delay()
-        //{
-        //    yield return new WaitForSeconds(2f);
-        //    transform.GetChild(0).gameObject.SetActive(false);
-        //    yield return new WaitForSeconds(3.25f);
-
-        //    yield return new WaitForSeconds(0.05f);
-        //    bloomEffect.threshold.value = 0f;
-        //    EventManager.StartDelay2(() => { bloomEffect.threshold.value = 1.3f; }, 0.3f);
-        //    g2.gameObject.SetActive(true);
-        //    yield return new WaitForSeconds(0.3f);
-
-
-        //    g2.transform.LeanScale(new Vector3(80, 80),0.25f);// nhỏ dần
-        //    yield return new WaitForSeconds(0.25f); // nhỏ dần xong
-
-        //    g2.transform.LeanScale(new Vector3(100, 100), 0.5f);// to lên
-
-
-
-
-        //}
-    }
+    }    
     public void ExitMenu()
     {
         AllMenu.ins.DestroyMenu("MenuTrieuHoiHacLong");
