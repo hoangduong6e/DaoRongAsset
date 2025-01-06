@@ -246,12 +246,12 @@ public class MenuTienHoaRong : MonoBehaviour
             datasend["class"] = "TienHoaRong";
             datasend["method"] = "TienHoa";
             NetworkManager.ins.SendServer(datasend, Ok);
-            async void Ok(JSONNode json)
+             void Ok(JSONNode json)
             {
                 if (json["status"].AsString == "0")
                 {
                     debug.Log(json.ToString());
-                    GameObject g2 = Instantiate(await DownLoadAssetBundle.OpenMenuBundleAsync("animtienhoa"), transform.position, Quaternion.identity);
+                    GameObject g2 = Instantiate(DownLoadAssetBundle.OpenMenuBundle("animtienhoa"), transform.position, Quaternion.identity);
                     g2.SetActive(false);
                     gameObject.SetActive(false);
                     duocexitpaneltoi = false;
