@@ -862,33 +862,6 @@ public class MenuEventNoel2023 : EventManager
             }
         }
     }
-    public void OpenMenuNhiemvu()
-    {
-        JSONClass datasend = new JSONClass();
-        datasend["class"] = "EventTrungThu2023";
-        datasend["method"] = "GetNhiemVu";
-        NetworkManager.ins.SendServer(datasend, Ok);
-        void Ok(JSONNode json)
-        {
-            if (json["status"].AsString == "0")
-            {
-                GameObject MenuNhiemVu = GetCreateMenu("MenuNhiemVu", giaodiennut1.transform);
-                GameObject AllNhiemVu = MenuNhiemVu.transform.GetChild(1).transform.GetChild(0).transform.GetChild(0).gameObject;
-                for (int i = 0; i < json["allNhiemvu"].Count; i++)
-                {
-                    Text txttiendo = AllNhiemVu.transform.GetChild(i).transform.GetChild(1).GetComponent<Text>();
-                    if (int.Parse(json["allNhiemvu"][i]["dalam"].Value) >= int.Parse(json["allNhiemvu"][i]["maxnhiemvu"].Value))
-                    {
-                        txttiendo.text = "<color=#00ff00ff>" + json["allNhiemvu"][i]["dalam"].Value + "/" + json["allNhiemvu"][i]["maxnhiemvu"].Value + "</color>";
-                    }
-                    else
-                    {
-                        txttiendo.text = "<color=#ff0000ff>" + json["allNhiemvu"][i]["dalam"].Value + "/" + json["allNhiemvu"][i]["maxnhiemvu"].Value + "</color>";
-                    }
-                } 
-            }
-        }
-    }
     public void VeNha()
     {
        // giaodiennut1.transform.SetParent(gameObject.transform);
@@ -903,13 +876,6 @@ public class MenuEventNoel2023 : EventManager
         gameObject.SetActive(false);
         Destroy(giaodiennut1);
         AllMenu.ins.DestroyMenu("MenuEventNoel2023");
-    }
-    public void OpenMenuDoiManhRong(string namerong)
-    {
-        AudioManager.PlaySound("soundClick");
-        MenuTrieuHoiRongVangBac mn = AllMenu.ins.GetCreateMenu("MenuTrieuHoiRongVangBac", giaodiennut1, false, giaodiennut1.transform.childCount - 1).GetComponent<MenuTrieuHoiRongVangBac>();
-        mn.Setnamerong = namerong;
-        mn.gameObject.SetActive(true);
     }
     bool sangtrang = false; int trang = 1, trangg = 1; float top, topcuoi;
     public void XemBXH()
@@ -926,6 +892,7 @@ public class MenuEventNoel2023 : EventManager
             if (json["status"].AsString == "0")
             {
                 GameObject menu = GetCreateMenu("MenuTop", giaodiennut1.transform, false);
+                menu.transform.SetAsLastSibling();
                 //    menuevent["MenuTop"] = menu;
                 // GameObject menu = GetCreateMenu("MenuTop",gameObject,false,3);
                 if (json["alltop"].Count > 0)

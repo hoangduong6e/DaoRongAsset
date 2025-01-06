@@ -529,9 +529,57 @@ public abstract class EventManager : MonoBehaviour
         }
     }
 
+
     private void ExitDoiManh()
     {
         EventManager.ins.DestroyMenu("MenuDoiManh");
+    }
+
+
+    public void OpenMenuNhiemvu()
+    {
+        AudioManager.SoundClick();
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = nameEvent;
+        datasend["method"] = "GetNhiemVu";
+        NetworkManager.ins.SendServer(datasend, Ok);
+        void Ok(JSONNode json)
+        {
+            debug.Log(json.ToString());
+            if (json["status"].AsString == "0")
+            {
+                GameObject MenuNhiemVu = AllMenu.ins.GetCreateMenu("MenuNhiemVuEvent", CrGame.ins.trencung.gameObject, true);
+                GameObject AllNhiemVu = MenuNhiemVu.transform.GetChild(1).transform.GetChild(0).transform.GetChild(0).gameObject;
+                GameObject obj = AllNhiemVu.transform.GetChild(0).gameObject;
+                for (int i = 0; i < json["allNhiemvu"].Count; i++)
+                {
+                    //debug.Log(json["allNhiemvu"][i].ToString());
+                    GameObject instan = Instantiate(obj, transform.position, Quaternion.identity);
+                    instan.transform.SetParent(AllNhiemVu.transform, false);
+                    Text txtnv = instan.transform.GetChild(0).GetComponent<Text>();
+                    txtnv.text = json["allNhiemvu"][i]["namenhiemvu"].Value;
+
+                    Text txttiendo = instan.transform.GetChild(1).GetComponent<Text>();
+                    Text txtphanthuong = instan.transform.GetChild(2).GetComponent<Text>();
+                    if (int.Parse(json["allNhiemvu"][i]["dalam"].Value) >= int.Parse(json["allNhiemvu"][i]["maxnhiemvu"].Value))
+                    {
+                        txttiendo.text = "<color=#00ff00ff>" + GamIns.FormatCash(json["allNhiemvu"][i]["dalam"].AsInt) + "/" + GamIns.FormatCash(json["allNhiemvu"][i]["maxnhiemvu"].AsInt) + "</color>";
+                    }
+                    else
+                    {
+                        txttiendo.text = "<color=#ff0000ff>" + GamIns.FormatCash(json["allNhiemvu"][i]["dalam"].AsInt) + "/" + GamIns.FormatCash(json["allNhiemvu"][i]["maxnhiemvu"].AsInt) + "</color>";
+                    }
+                    txtphanthuong.text = json["allNhiemvu"][i]["qua"]["soluong"].AsString;
+                    Image img = instan.transform.GetChild(3).GetComponent<Image>();
+                    img.sprite = GetSprite(json["allNhiemvu"][i]["qua"]["name"].AsString);
+
+                    img.SetNativeSize();
+                    instan.SetActive(true);
+                }
+                MenuNhiemVu.transform.GetChild(0).transform.Find("btnExit").GetComponent<Button>().onClick.AddListener(delegate { AllMenu.ins.DestroyMenu("MenuNhiemVuEvent"); });
+
+            }
+        }
     }
 }
 

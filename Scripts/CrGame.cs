@@ -63,12 +63,16 @@ public class CrGame : MonoBehaviour
         void ok()
         {
 
-
-
-            // DownLoadAssetBundle.MenuBundle["animTienHoa"].SetActive(true);
         }
 
-
+        DownLoadAssetBundle.ins.DownLoadMenu("paneltrieuhoihaclong", ok2, false);
+        void ok2()
+        {
+            //DownLoadAssetBundle.MenuBundle["paneltrieuhoihaclong"].SetActive(true);
+            //GameObject g = Instantiate(DownLoadAssetBundle.MenuBundle["paneltrieuhoihaclong"], transform.position, Quaternion.identity);
+            //g.transform.SetParent(trencung.transform,false);
+            //g.gameObject.SetActive(true);
+        }
 
 
         //// Lấy thời gian hiện tại ở múi giờ của máy tính

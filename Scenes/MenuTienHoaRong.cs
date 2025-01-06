@@ -509,7 +509,7 @@ public class MenuTienHoaRong : MonoBehaviour
                 CrGame.ins.OnThongBaoNhanh("Bạn đã đạt giới hạn trong ngày, quay lại vào ngày mai nhé!",3);
                 return;
             }    
-            EventManager.OpenThongBaoChon("Hôm nay bạn đã thu thập <color=lime>" + solongkhidathuthap + "/" + gioihan + "</color> "+ allnamecolor[tablongkhi] + ", lần hấp thụ này sẽ chỉ nhận được giới hạn "+(gioihan-solongkhidathuthap) +" long khí nữa", Okk);
+            EventManager.OpenThongBaoChon("Hôm nay bạn đã thu thập <color=lime>" + solongkhidathuthap + "/" + gioihan + "</color> "+ allnamecolor[tablongkhi] + ", lần hấp thụ này sẽ chỉ nhận được giới hạn "+(gioihan-solongkhidathuthap) +" long khí nữa!", Okk);
            
         }    
        else
