@@ -9,7 +9,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
-using static UnityEditor.AddressableAssets.Build.Layout.BuildLayout;
 
 public class DownLoadAssetBundle : MonoBehaviour
 {
