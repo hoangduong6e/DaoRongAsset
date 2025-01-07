@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class MenuTienHoaRong : MonoBehaviour
 {
@@ -50,6 +51,26 @@ public class MenuTienHoaRong : MonoBehaviour
         g.transform.Find("txtvangyeucau").GetComponent<Text>().text = "Yêu cầu: " + data["vangyeucau"].AsString;
         dataLongKhi = data["data"]["LongKhi"];
         gioiHanLongKhi = data["gioihanlongkhithuthap"];
+
+        alltab = data["arrTabLongKhi"];
+        allnamecolor = data["allNameColorLongKhi"];
+
+        GameObject item = contentTabLongKhi.transform.GetChild(0).gameObject;
+        for (int i = 0; i < alltab.Count; i++)
+        {
+            GameObject ins = Instantiate(item, transform.position, Quaternion.identity);
+            ins.transform.SetParent(contentTabLongKhi.transform, false);
+            Image img = ins.transform.GetChild(1).GetComponent<Image>();
+            img.sprite = Inventory.LoadSprite(alltab[i]);
+            img.SetNativeSize();
+            ins.gameObject.SetActive(true);
+            if(i == 0)
+            {
+                Image imgkhung = ins.transform.GetChild(0).GetComponent<Image>();
+                imgkhung.sprite = ochon;
+            }
+        }
+        item.transform.SetAsLastSibling();
     }
     private void LoadItemYeuCau(JSONNode data)
     {
@@ -355,8 +376,8 @@ public class MenuTienHoaRong : MonoBehaviour
   //  private JSONNode LongKhiCoTheThuThap;
     [SerializeField] GameObject menulongkhi;
 
-    private string[] alltab = new string[] {"BangLongKhi","QuangLongKhi"};
-    private string[] allnamecolor = new string[] { "<color=cyan>Băng Long Khí</color>", "<color=yellow>Quang Long Khí</color>" };
+    private JSONNode alltab;
+    private JSONNode allnamecolor;
     public void OpenMenuLongKhi()
     {
         tablongkhi = 0;
@@ -378,13 +399,14 @@ public class MenuTienHoaRong : MonoBehaviour
     }
     [SerializeField] Sprite ochon, ochuachon;
     [SerializeField] Button btnhapthu;
+    [SerializeField] GameObject contentTabLongKhi;
     public void ChonTabLongKhi()
     {
         if (danghapthu) return;
         GameObject btnchon = EventSystem.current.currentSelectedGameObject;
         int index = btnchon.transform.parent.transform.GetSiblingIndex();
       
-        if (index < alltab.Length)
+        if (index < alltab.Count)
         {
             btnchon.transform.parent.transform.parent.transform.GetChild(tablongkhi).GetChild(0).GetComponent<Image>().sprite = ochuachon;
             tablongkhi = (byte)index;

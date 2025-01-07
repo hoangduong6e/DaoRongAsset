@@ -22,7 +22,7 @@ public class MenuTrieuHoiHacLong : MonoBehaviour
         {
             Image img = AllManh.transform.GetChild(i).GetComponent<Image>();
             string namee = allO.transform.GetChild(i).name;
-           // debug.Log(namee);
+            // debug.Log(namee);
             if (NetworkManager.ins.inventory.ListItemThuong.ContainsKey("item" + namee))
             {
                 img.sprite = Inventory.LoadSprite(namee);
@@ -30,19 +30,28 @@ public class MenuTrieuHoiHacLong : MonoBehaviour
                 comanh += 1;
             }
         }
-        if(comanh >= 6)
+        if (comanh >= 6)
         {
+            CrGame.ins.panelLoadDao.SetActive(true);
             btnTrieuHoi.gameObject.SetActive(true);
-        }    
+            LoadHieuUng();
+        }
     }
+
+    async void LoadHieuUng()
+    {
+        hieuungtrieuhoi = await DownLoadAssetBundle.OpenMenuBundleAsync("paneltrieuhoihaclong");
+        CrGame.ins.panelLoadDao.SetActive(false);
+    }
+    GameObject hieuungtrieuhoi;
     public void TrieuHoi()
     {
         ActionTrieuHoi();
     }
 
-    private async void ActionTrieuHoi()
+    private void ActionTrieuHoi()
     {
-        GameObject g = Instantiate(await DownLoadAssetBundle.OpenMenuBundleAsync("paneltrieuhoihaclong"), transform.position, Quaternion.identity);
+        GameObject g = Instantiate(hieuungtrieuhoi, transform.position, Quaternion.identity);
         AnimCodeFrame animCodeFrame = g.GetComponent<AnimCodeFrame>();
         GameObject g2 = AllMenu.ins.GetRonggdGiaoDien("RongHacLong2", transform.GetChild(1), 1, false, "RongGiaoDien", new Vector3(65, 65));
         EventManager.StartDelay2(() => {
