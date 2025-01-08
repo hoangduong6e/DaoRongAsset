@@ -14,6 +14,10 @@ public class MenuTrieuHoiHacLong : MonoBehaviour
     public GameObject animmokhoakinang;
     void Start()
     {
+
+      
+
+
         GameObject g = transform.GetChild(0).gameObject;
         GameObject allO = g.transform.Find("allO").gameObject;
         GameObject AllManh = g.transform.Find("AllManh").gameObject;
@@ -38,19 +42,23 @@ public class MenuTrieuHoiHacLong : MonoBehaviour
         }
     }
 
-    async void LoadHieuUng()
+    public async void LoadHieuUng()
     {
-        hieuungtrieuhoi = await DownLoadAssetBundle.OpenMenuBundleAsync("paneltrieuhoihaclong");
-        CrGame.ins.panelLoadDao.SetActive(false);
+        if (DownLoadAssetBundle.MenuBundle.ContainsKey("paneltrieuhoihaclong"))
+        {
+            hieuungtrieuhoi = await DownLoadAssetBundle.OpenMenuBundleAsync("paneltrieuhoihaclong");
+            CrGame.ins.panelLoadDao.SetActive(false);
+        }
+   
     }
     GameObject hieuungtrieuhoi;
     public void TrieuHoi()
     {
-        ActionTrieuHoi();
-    }
-
-    private void ActionTrieuHoi()
-    {
+        if(hieuungtrieuhoi == null)
+        {
+            CrGame.ins.OnThongBaoNhanh("Hiệu ứng đang được xử lý!");
+            return;
+        }    
         GameObject g = Instantiate(hieuungtrieuhoi, transform.position, Quaternion.identity);
         AnimCodeFrame animCodeFrame = g.GetComponent<AnimCodeFrame>();
         GameObject g2 = AllMenu.ins.GetRonggdGiaoDien("RongHacLong2", transform.GetChild(1), 1, false, "RongGiaoDien", new Vector3(65, 65));
@@ -79,7 +87,7 @@ public class MenuTrieuHoiHacLong : MonoBehaviour
             Destroy(g);
         }
         animCodeFrame.action = AnimTrieuHoiDone;
-    }    
+    }
     public void ExitMenu()
     {
         AllMenu.ins.DestroyMenu("MenuTrieuHoiHacLong");

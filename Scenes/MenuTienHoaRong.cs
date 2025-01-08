@@ -1,14 +1,8 @@
 ﻿using SimpleJSON;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Rendering;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 
 public class MenuTienHoaRong : MonoBehaviour
 {
@@ -40,6 +34,8 @@ public class MenuTienHoaRong : MonoBehaviour
         }
         LoadTab(0);
 
+        CrGame.ins.panelLoadDao.SetActive(true);
+        LoadHieuUng();
     }
 
     public void ParseData(JSONNode data)
@@ -134,7 +130,7 @@ public class MenuTienHoaRong : MonoBehaviour
                     string nameimg = itemdra.transform.GetChild(0).GetComponent<Image>().sprite.name;
 
 
-                    if (itemdra.nameObjectDragon == "RongTuanLong" && itemdra.txtSao.text == "30") SetRong();
+                    if (nameimg == "RongTuanLong2" && itemdra.txtSao.text == "30") SetRong();
 
 
                     void SetRong()
@@ -186,7 +182,19 @@ public class MenuTienHoaRong : MonoBehaviour
         string idrong = objitem.transform.parent.name;
         CrGame.ins.ChiSoRong(idrong);
     }
+    GameObject animtienhoa;
+
+    public async void LoadHieuUng()
+    {
+        if (DownLoadAssetBundle.MenuBundle.ContainsKey("animtienhoa"))
+        {
+            animtienhoa = await DownLoadAssetBundle.OpenMenuBundleAsync("animtienhoa");
+            CrGame.ins.panelLoadDao.SetActive(false);
+        }
+       
+    }    
     private int thuthapduocmax;
+    [SerializeField] Button btnTienHoa;
     public void ChonRong()
     {
         GameObject btnchonrong = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
@@ -246,7 +254,7 @@ public class MenuTienHoaRong : MonoBehaviour
                     vitriRong = g.transform.Find("daucong").transform.GetChild(0);
                     vitriRong.GetComponent<Image>().color = new Color32(255, 255, 255, 0);
                     AllMenu.ins.LoadRongGiaoDien("RongTuanLong2", vitriRong, 1, false, "RongGiaoDien", new Vector3(100, 100));
-
+                    btnTienHoa.interactable = true;
                 }
                 else
                 {
@@ -261,7 +269,7 @@ public class MenuTienHoaRong : MonoBehaviour
     }
     public void TienHoa()
     {
-        if (DownLoadAssetBundle.MenuBundle.ContainsKey("animtienhoa"))
+        if (animtienhoa != null)
         {
             JSONClass datasend = new JSONClass();
             datasend["class"] = "TienHoaRong";
@@ -272,9 +280,10 @@ public class MenuTienHoaRong : MonoBehaviour
                 if (json["status"].AsString == "0")
                 {
                     debug.Log(json.ToString());
-                    GameObject g2 = Instantiate(DownLoadAssetBundle.OpenMenuBundle("animtienhoa"), transform.position, Quaternion.identity);
+                    btnTienHoa.interactable = false;
+                    GameObject g2 = Instantiate(animtienhoa, transform.position, Quaternion.identity);
                     g2.SetActive(false);
-                    gameObject.SetActive(false);
+                    transform.GetChild(0).gameObject.SetActive(false);
                     duocexitpaneltoi = false;
                     for (int i = 0; i < Inventory.ins.TuiRong.transform.childCount - 1; i++)
                     {
@@ -339,12 +348,12 @@ public class MenuTienHoaRong : MonoBehaviour
                     //    //g.transform.position = CrGame.ins.transform.position;
 
                     //}, 1f);
-                    EventManager.StartDelay2(actionAnim,2);
+                    EventManager.StartDelay2(actionAnim,1);
                      void actionAnim()
                     {
                         GetRonggdGiaoDien.GetComponent<Animator>().Play("Evolution");
                         g2.SetActive(true);
-                        Destroy(g2, 1f);
+                        Destroy(g2, 3.5f);
                     }
                 }
                 else
@@ -356,7 +365,7 @@ public class MenuTienHoaRong : MonoBehaviour
         }
         else
         {
-            CrGame.ins.OnThongBaoNhanh("Đang xử lý!");
+            CrGame.ins.OnThongBaoNhanh("Hiệu ứng đang được xử lý!");
         }
     }
     bool duocexitpaneltoi = false;
@@ -367,7 +376,7 @@ public class MenuTienHoaRong : MonoBehaviour
         {
             Destroy(panetoidan.transform.GetChild(i).gameObject);
         }
-        gameObject.SetActive(true);
+        transform.GetChild(0).gameObject.SetActive(true);
         panetoidan.SetActive(false);
     }
     private byte tablongkhi = 0;

@@ -27,14 +27,12 @@ public class DownLoadAssetBundle : MonoBehaviour
 
     public static AssetBundle bundleDragon;
      public static Dictionary<string, AssetBundle> MenuBundle = new Dictionary<string, AssetBundle>();
+     //public static Dictionary<string, Action> downloadMenuDone = new Dictionary<string, Action>();
+
 
     private void Start()
     {
         ins = this;
-        //StartCoroutine(DownLoadAllRong());
-        //DownLoadObjectRong("rongvang2");
-        //  linkdown = link + linkdown;
-       // StartCoroutine(DownLoadMenu("abc"));
     }
     public static string SetLinkDown { set { link = value; linkdown = "https://" + link + linkdown;} }
     public void DownAssetBundleAnimator(Image img, string namekhung)

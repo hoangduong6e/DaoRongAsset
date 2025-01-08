@@ -360,6 +360,7 @@ public class MenuCayThong : MonoBehaviour
             if (json["status"].Value == "0")
             {
                 GameObject menuQuaThangSao = ev.GetCreateMenu("MenuNhanQuaThangSao", transform, false);
+                menuQuaThangSao.transform.SetAsLastSibling();
                 menuQuaThangSao.transform.Find("btnExit").GetComponent<Button>().onClick.AddListener(ExitMenuQuaNangSao);
                 GameObject ContentManh = menuQuaThangSao.transform.GetChild(0).transform.GetChild(1).transform.GetChild(0).transform.GetChild(0).gameObject;
 

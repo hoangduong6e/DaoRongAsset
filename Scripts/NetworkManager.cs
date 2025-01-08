@@ -220,7 +220,36 @@ public class NetworkManager : MonoBehaviour
             {
                 CrGame.ins.OnThongBaoNhanh(e.data["emitevent"]["message"].str);
             }
-        }    
+        }
+
+        else if (e.data["downloadmenu"])
+        {
+            debug.Log("download menu " + e.data["downloadmenu"]["namemenu"].str);
+
+            if(e.data["downloadmenu"]["namemenu"].str == "paneltrieuhoihaclong")
+            {
+                if (!DownLoadAssetBundle.MenuBundle.ContainsKey("paneltrieuhoihaclong")) DownLoadAssetBundle.ins.DownLoadMenu("paneltrieuhoihaclong", ok2, false) ;
+                void ok2()
+                {
+                    if (AllMenu.ins.menu.ContainsKey("MenuTrieuHoiHacLong"))
+                    {
+                        AllMenu.ins.menu["MenuTrieuHoiHacLong"].GetComponent<MenuTrieuHoiHacLong>().LoadHieuUng();
+                    }
+                }
+            }
+            else if (e.data["downloadmenu"]["namemenu"].str == "animtienhoa")
+            {
+                DownLoadAssetBundle.ins.DownLoadMenu("animtienhoa", ok, false);
+                void ok()
+                {
+                    if (AllMenu.ins.menu.ContainsKey("MenuTienHoaRong"))
+                    {
+                        AllMenu.ins.menu["MenuTienHoaRong"].GetComponent<MenuTienHoaRong>().LoadHieuUng();
+                    }
+                }
+            }
+        }
+      
         //if (e.data["TangThiep"])
         //{
         //    debug.Log("tangthiep");
