@@ -62,6 +62,11 @@ public class XemPhoBan : MonoBehaviour
     }
     public void VaoMap()
     {
+        if(int.Parse(CrGame.ins.giaodien.transform.Find("btnQuaOnline").transform.GetChild(1).transform.GetChild(0).GetComponent<Text>().text) >= 99)
+        {
+            CrGame.ins.OnThongBaoNhanh("Hộp quà đã đầy, hãy nhận quà trước!");
+            return;
+        }    
         infolevel.CloseMenu();
       //  NetworkManager.ins.vienchinh.chedodau = CheDoDau.VienChinh;
         gameObject.SetActive(false);

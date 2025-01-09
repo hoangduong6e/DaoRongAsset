@@ -84,7 +84,7 @@ public class PVEManager : MonoBehaviour
                             { DraHeight.HacLong, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(2.6f,2.9f), VienChinh.vienchinh.TruXanh.transform.position.z) },
                             { DraHeight.LMX_PH_2DAU, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y +Random.Range(-0.3f,1.2f), VienChinh.vienchinh.TruXanh.transform.position.z) },
                             { DraHeight.RongLua, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0.3f,1f), VienChinh.vienchinh.TruXanh.transform.position.z) },
-                            { DraHeight.PH, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-0.3f,1.2f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.PH, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0.2f,1.8f), VienChinh.vienchinh.TruXanh.transform.position.z) },
                             { DraHeight._2DAU, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y +Random.Range(-0.5f,0.8f), VienChinh.vienchinh.TruXanh.transform.position.z) },
                             { DraHeight.MaThach, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y +Random.Range(-0.8f,0f), VienChinh.vienchinh.TruXanh.transform.position.z) },
 
@@ -109,7 +109,7 @@ public class PVEManager : MonoBehaviour
                             { DraHeight.HacLong, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(2.6f,2.9f), VienChinh.vienchinh.TruDo.transform.position.z) },
                             { DraHeight.LMX_PH_2DAU, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y +Random.Range(-0.3f,1.2f), VienChinh.vienchinh.TruDo.transform.position.z) },
                             { DraHeight.RongLua, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(1.3f,1.5f), VienChinh.vienchinh.TruDo.transform.position.z) },
-                            { DraHeight.PH, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-0.3f,1.2f), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.PH, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0.2f,1.8f), VienChinh.vienchinh.TruDo.transform.position.z) },
                             { DraHeight._2DAU, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + +Random.Range(-0.5f,0.8f), VienChinh.vienchinh.TruDo.transform.position.z) },
                             { DraHeight.MaThach, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + +Random.Range(-0.8f,0f), VienChinh.vienchinh.TruDo.transform.position.z) },
 
@@ -353,7 +353,7 @@ public class PVEManager : MonoBehaviour
                       //  Debug.Log("SetmucTieuTeamDo");
                     }
 
-                    Debug.Log("parent: " + parent.position.x + " muctieuxanh: " + VienChinh.vienchinh.muctieuxanh.transform.position.x);
+                  //  Debug.Log("parent: " + parent.position.x + " muctieuxanh: " + VienChinh.vienchinh.muctieuxanh.transform.position.x);
                 }
                 // VienChinh.vienchinh.SetMucTieuTeamDo();//setmuctieuuu
 

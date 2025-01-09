@@ -69,6 +69,7 @@ public class GiaoDienLanSu : MonoBehaviour
             debug.Log(json.ToString());
             if (json["status"].AsString == "0")
             {
+                if (!AllMenu.ins.menu.ContainsKey("GiaoDienLanSu")) return;
                 VienChinh.vienchinh.GetDoiHinh("BossLanSu", CheDoDau.LanSu);
 
                 NetworkManager.ins.vienchinh.TruDo.SetActive(true);
@@ -86,6 +87,7 @@ public class GiaoDienLanSu : MonoBehaviour
                 CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
             }
         }
+
     }
     public void Muabuff()
     {
@@ -124,7 +126,7 @@ public class GiaoDienLanSu : MonoBehaviour
             datasend["class"] = "LanSu";
             datasend["method"] = "KetQua";
             datasend["data"]["kq"] = kq.ToString();
-            NetworkManager.ins.SendServer(datasend, Ok);
+            NetworkManager.ins.SendServer(datasend, Ok,true);
             void Ok(JSONNode json)
             {
                 if (json["status"].AsString == "0")
@@ -394,7 +396,6 @@ public class GiaoDienLanSu : MonoBehaviour
 
     public void VeNha()
     {
-    
         AudioManager.SetSoundBg("nhacnen0");
 
         GameObject Dao = CrGame.ins.AllDao.transform.Find("BGDao" + CrGame.ins.DangODao).gameObject;

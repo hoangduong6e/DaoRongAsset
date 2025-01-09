@@ -488,7 +488,7 @@ public class VienChinh : MonoBehaviour
             JSONClass datasend = new JSONClass();
             datasend["class"] = "DauTruongThuThach";
             datasend["method"] = "WinDauTruongThuThach";
-            NetworkManager.ins.SendServer(datasend, Ok);
+            NetworkManager.ins.SendServer(datasend, Ok,true);
             void Ok(JSONNode json)
             {
                 if (json["status"].Value == "ok")
@@ -651,7 +651,7 @@ public class VienChinh : MonoBehaviour
             JSONClass datasend = new JSONClass();
             datasend["class"] = "DauTruongThuThach";
             datasend["method"] = "ThuaDauTruongThuThach";
-            NetworkManager.ins.SendServer(datasend, Ok);
+            NetworkManager.ins.SendServer(datasend, Ok,true);
             void Ok(JSONNode json)
             {
                 if (json["status"].Value == "ok")
@@ -1781,12 +1781,19 @@ public class VienChinh : MonoBehaviour
         }
         private static void TaoDoiHinh(SocketIOEvent e)
         {
+            //debug.Log("che do dau " + e.data["chedodau"].str);
+          //  CheDoDau chedodau = (CheDoDau)Enum.Parse(typeof(CheDoDau), e.data["chedodau"].str);
+            
+            //if(chedodau == CheDoDau.LanSu)
+            //{
+            //    if (!AllMenu.ins.menu.ContainsKey("GiaoDienLanSu")) return;
+            //}
             GiaoDienPVP gdpvp = AllMenu.ins.GetCreateMenu("GiaoDienPVP").GetComponent<GiaoDienPVP>();
             for (int i = 0; i < e.data["doihinh"].Count; i++)
             {
-                string[] id = e.data["doihinh"][i]["id"].ToString().Split('"');
-                string[] nameObject = e.data["doihinh"][i]["nameobject"].ToString().Split('"');
-                gdpvp.AddItemRongDanh(nameObject[1], id[1], int.Parse(e.data["doihinh"][i]["sao"].ToString()), int.Parse(e.data["doihinh"][i]["tienhoa"].ToString()), i);
+                string id = e.data["doihinh"][i]["id"].str;
+                string nameObject = e.data["doihinh"][i]["nameobject"].str;
+                gdpvp.AddItemRongDanh(nameObject, id, int.Parse(e.data["doihinh"][i]["sao"].ToString()), int.Parse(e.data["doihinh"][i]["tienhoa"].ToString()), i);
             }
             GiaoDienPVP.ins.LoadSkill(e.data["skill"]);
             gdpvp.maxtime = float.Parse(GamIns.CatDauNgoacKep(e.data["time"].ToString())) * 60;

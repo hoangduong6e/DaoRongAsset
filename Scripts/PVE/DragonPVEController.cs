@@ -290,15 +290,15 @@ public abstract class DragonPVEController : MonoBehaviour
         }
         //string team = gameObject.transform.parent.transform.parent.name;
         float giappt = giapphantram;
-
+       // debug.Log("giáp phần trăm ban đầu của " + nameobj + " Team " + team.ToString() + " là " + giappt);
 
         if (team == Team.TeamXanh)
         {
             giappt += VienChinh.vienchinh.buffgiapallxanh;
         }
         else giappt += VienChinh.vienchinh.buffgiapalldo;
-
-
+         
+      //  debug.Log("giáp phần trăm sau khi cộng của " + nameobj + " Team " + team.ToString() + " là " + giappt);
         if (giappt > 0) maumat -= maumat / 100 * giappt;
         if (maumat < 0) maumat = 0;
 
@@ -482,7 +482,11 @@ public abstract class DragonPVEController : MonoBehaviour
         netranh = float.Parse(data["chiso"]["netranh"].ToString());
         chimang = float.Parse(data["chiso"]["tilechimang"].ToString());
         giapso = float.Parse(data["chiso"]["giapso"].ToString());
+
+       // debug.Log("giáp phần trăm ban đầu parse của " + nameobj + " Team " + team.ToString() + " là " + data["chiso"]["giapphantram"].ToString());
         giapphantram = float.Parse(data["chiso"]["giapphantram"].ToString());
+       
+
         xuyengiap = float.Parse(data["chiso"]["xuyengiap"].ToString());
         saorong = byte.Parse(data["sao"].ToString());
         //   speed = float.Parse(data["chisoget"]["tocchay"].ToString());

@@ -30,7 +30,7 @@ public class NetworkManager : MonoBehaviour
 {
     public SocketIOComponent socket;
     public GameObject go;public Inventory inventory;LaiRong lairong;public VienChinh vienchinh;HopQua hopqua;ThuyenThucAn thuyen;
-    [HideInInspector] public Friend friend;public GameObject Thongbao, TextThongbao;[HideInInspector] public LoiDai loidai;//QuaTangHangNgay quatanghangngay;
+    [HideInInspector] public Friend friend; [HideInInspector] public LoiDai loidai;//QuaTangHangNgay quatanghangngay;
     public GameObject menuLoiDai;[HideInInspector] public int LevelNhaAp = 0;
     public NhiemVu Nhiemvu;//public DauTruongOnline dautruong;
     public delegate void CallbackServerResult(JSONNode json);
@@ -1692,30 +1692,6 @@ public class NetworkManager : MonoBehaviour
         }
         return;
     }
-    IEnumerator OnThongBaoChay(string s)
-    {
-        if(TextThongbao.activeSelf == false)
-        {
-            Text txttb = TextThongbao.transform.GetChild(0).GetComponent<Text>();
-            txttb.text = s;
-            Thongbao.SetActive(true);
-            TextThongbao.SetActive(true);
-            yield return new WaitForSeconds(11);
-            Thongbao.SetActive(false);
-            TextThongbao.SetActive(false);
-        }
-        else
-        {
-            yield return new WaitForSeconds(10);
-            Text txttb = TextThongbao.transform.GetChild(0).GetComponent<Text>();
-            txttb.text = s;
-            Thongbao.SetActive(true);
-            TextThongbao.SetActive(true);
-            yield return new WaitForSeconds(11);
-            Thongbao.SetActive(false);
-            TextThongbao.SetActive(false);
-        }
-    }
     List<string> listThongBao = new List<string>();
     void OnThongBao(SocketIOEvent e)
     {
@@ -1756,7 +1732,9 @@ public class NetworkManager : MonoBehaviour
         }
         if (e.data["thongbaochay"])
         {
-            StartCoroutine(OnThongBaoChay(CatDauNgoacKep(e.data["thongbaochay"].ToString())));
+            AnnouncementManager announcementManager = GetComponent<AnnouncementManager>();
+            announcementManager.ShowAnnouncement(e.data["thongbaochay"].str);
+           // StartCoroutine(OnThongBaoChay(CatDauNgoacKep(e.data["thongbaochay"].ToString())));
         }
         //if (e.data["catrongthanhcong"])
         //{

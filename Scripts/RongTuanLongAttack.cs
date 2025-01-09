@@ -2,6 +2,11 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 public class RongTuanLongAttack : DragonPVEController
 {
+
+    private float getBuffGiap { get {
+            if (saorong < 30) return saorong;
+            else return 35;
+                } }
     public override void AbsStart()
     {
         //  debug.Log("AbsStart");
@@ -9,13 +14,13 @@ public class RongTuanLongAttack : DragonPVEController
         if (team == Team.TeamXanh)
         {
             VienChinh.vienchinh.HienIconSkill(300, "Xanh", "iconKhienTuanLongXanh");
-            VienChinh.vienchinh.SetBuffGiapall(saorong, team);
+            VienChinh.vienchinh.SetBuffGiapall(getBuffGiap, team);
         }
         else
         {
           //  ImgHp.sprite = VienChinh.vienchinh.thanhmaudo;
             VienChinh.vienchinh.HienIconSkill(300, "Do", "iconKhienTuanLongDo");
-            VienChinh.vienchinh.SetBuffGiapall(saorong, team);
+            VienChinh.vienchinh.SetBuffGiapall(getBuffGiap, team);
         }
 
         Transform khien = transform.Find("khientuanlong");
@@ -115,12 +120,12 @@ public class RongTuanLongAttack : DragonPVEController
         if (team == Team.TeamDo)
         {
             VienChinh.vienchinh.TaticonSkill("iconKhienTuanLongDo", "Do");
-            VienChinh.vienchinh.SetBuffGiapall(-saorong, team);
+            VienChinh.vienchinh.SetBuffGiapall(-getBuffGiap, team);
         }
         else
         {
             VienChinh.vienchinh.TaticonSkill("iconKhienTuanLongXanh", "Xanh");
-            VienChinh.vienchinh.SetBuffGiapall(-saorong, team);
+            VienChinh.vienchinh.SetBuffGiapall(-getBuffGiap, team);
         }
     }
     public override void BienCuuABS(float time)

@@ -763,8 +763,9 @@ public class MenuEventNoel2023 : EventManager
        
         if (imgbinhnangluong.sprite.name == "BinhNangLuongCap1")
         {
-            if (soBinhNangLuongCap1 > 0 && TongSoBinhNangLuong < maxgiam)
+            if (soBinhNangLuongCap1 > 0 && TongSoBinhNangLuong < maxgiam || i < 0)
             {
+                if (i > soBinhNangLuongCap1) i = soBinhNangLuongCap1 - BinhNangLuongCap1Chon;
                 BinhNangLuongCap1Chon += (short)i;
                 if (BinhNangLuongCap1Chon <= 0)
                 {
@@ -779,8 +780,9 @@ public class MenuEventNoel2023 : EventManager
         }
         else if (imgbinhnangluong.sprite.name == "BinhNangLuongCap2")
         {
-            if (soBinhNangLuongCap2 > 0 && TongSoBinhNangLuong < maxgiam)
+            if (soBinhNangLuongCap2 > 0 && TongSoBinhNangLuong < maxgiam || i < 0)
             {
+                if (i > soBinhNangLuongCap2) i = soBinhNangLuongCap2 - BinhNangLuongCap2Chon;
                 BinhNangLuongCap2Chon += (short)i;
                 if (BinhNangLuongCap2Chon <= 0)
                 {

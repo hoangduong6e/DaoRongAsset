@@ -97,7 +97,7 @@ public class MenuQuayRuong : MonoBehaviour
                             }
                             Oquay.transform.GetChild(i).transform.GetChild(0).gameObject.SetActive(false);
                             hieuungbay.SetActive(true);
-                            Inventory.ins.AddItem(nameRuong, -1);
+                            //Inventory.ins.AddItem(nameRuong, -1);
                             btnquay.interactable = true;
                             btnexit.SetActive(true);
                             VienXanh.SetActive(false);

@@ -17,6 +17,7 @@ public partial class HacLongAttack : DragonPVEController
     private float chiMangCuongNo = 5, HutHpChoToanDoi = 25;
     public Transform TargetDoatMenh;
 
+    byte indexskill = 0;
     Dictionary<string, Action<object[]>> methodMap;
     protected override void ABSAwake()
     {
@@ -39,9 +40,11 @@ public partial class HacLongAttack : DragonPVEController
         {
             GiaoDienPVP.ins.OSkill.SetActive(true);
             Transform oskill = GiaoDienPVP.ins.OSkill.transform.GetChild(1);
+
+
             for (int i = 0; i < oskill.transform.childCount; i++)
             {
-                if (!oskill.transform.GetChild(i).gameObject.activeSelf)
+                if (!oskill.transform.GetChild(i).gameObject.activeSelf || oskill.transform.GetChild(i).gameObject.name == "DienKienTuThan")
                 {
                     oskill.transform.GetChild(i).gameObject.SetActive(true);
                     oskill.transform.GetChild(i).gameObject.name = "DienKienTuThan";
@@ -54,10 +57,12 @@ public partial class HacLongAttack : DragonPVEController
                     oskill.GetChild(i).GetComponent<Button>().interactable = true;
                     oskill.GetChild(i).transform.GetChild(1).gameObject.SetActive(false);
                     VienChinh.vienchinh.timeskill[i] = 0;
+                    indexskill = (byte)i;
                     break;
                 }
 
             }
+
         }
         else
         {
@@ -491,6 +496,8 @@ public partial class HacLongAttack : DragonPVEController
        
     }
 
+
+
     public void DoatMenh(bool setonline = false)
     {
         EventManager.StartDelay2(() => { SDDoatMenh(setonline); }, 1.2f);
@@ -564,7 +571,7 @@ public partial class HacLongAttack : DragonPVEController
     {
         if(team == Team.TeamDo) return;
       //  if(VienChinh.vienchinh.chedodau == CheDoDau.Online)
-        VienChinh.vienchinh.timeskill[2] = timeCDskill;
+        VienChinh.vienchinh.timeskill[indexskill] = timeCDskill;
     }
 
     //private void OnDisable()
@@ -576,12 +583,17 @@ public partial class HacLongAttack : DragonPVEController
 
     protected override void Die()
     {
+
         SDDoatMenh();
         Transform parent = transform.parent;
         parent.gameObject.SetActive(false);
         parent.SetParent(VienChinh.vienchinh.ObjSkill.transform);
+        VienChinh.vienchinh.SetMucTieuTeamDo();
+        VienChinh.vienchinh.SetMucTieuTeamXanh();
+        HapHuyetBiDong(-1);
         Destroy(parent.gameObject, 5);
-       // base.Die();
+     
+        // base.Die();
     }
     public override void FuncInvokeOnline(string namefunc, params object[] parameters)
     {
