@@ -98,7 +98,7 @@ public class MenuEventNoel2023 : EventManager
         {
             giaodiennut1.transform.Find("Info").transform.GetChild(1).gameObject.SetActive(true);
         }
-        giaodiennut1.transform.Find("txtDay").GetComponent<Text>().text = "Ngày " + json["data"]["ngaydangnhap"].AsString;
+        giaodiennut1.transform.Find("txtDay").GetComponent<Text>().text =json["ngay"].AsString;
         AudioManager.SetSoundBg("nhacnoel");
     }
     private void LoadMocNv(JSONNode json)
