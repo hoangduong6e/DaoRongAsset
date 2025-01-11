@@ -41,7 +41,7 @@ public class BossXucTu : DragonPVEController
     }
     protected override void Updatee()
     {
-        VienChinh.vienchinh.SetMucTieuTeamDo();
+     //   VienChinh.vienchinh.SetMucTieuTeamDo();
         Target = VienChinh.vienchinh.muctieudo.transform;
         if (actionUpdate != null) actionUpdate();
         //  debug.Log("parent: " + transform.parent.transform.position.x + ", tamxa: " + (Target.position.x - tamdanhxa));

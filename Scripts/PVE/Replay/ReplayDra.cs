@@ -62,22 +62,22 @@ public class ReplayDra : MonoBehaviour
         {
             transform.position = new Vector3(ReplayData.NodeDataPosition[nameobj][i]["x"].AsFloat, transform.position.y, 90);
 
-            VienChinh.vienchinh.SetMucTieuTeamDo();
-            VienChinh.vienchinh.SetMucTieuTeamXanh();
-            if (dragonPVEController.team == Team.TeamXanh)
-            {
-                if (transform.position.x > VienChinh.vienchinh.muctieudo.transform.position.x)
-                {
-                    VienChinh.vienchinh.SetMucTieuTeamXanh();//setmuctieuuu
-                }
-            }
-            else
-            {
-                if (transform.position.x < VienChinh.vienchinh.muctieuxanh.transform.position.x)
-                {
-                    VienChinh.vienchinh.SetMucTieuTeamDo();//setmuctieuuu
-                }
-            }
+         //   VienChinh.vienchinh.SetMucTieuTeamDo();
+         //   VienChinh.vienchinh.SetMucTieuTeamXanh();
+            //if (dragonPVEController.team == Team.TeamXanh)
+            //{
+            //    if (transform.position.x > VienChinh.vienchinh.muctieudo.transform.position.x)
+            //    {
+            //        VienChinh.vienchinh.SetMucTieuTeamXanh();//setmuctieuuu
+            //    }
+            //}
+            //else
+            //{
+            //    if (transform.position.x < VienChinh.vienchinh.muctieuxanh.transform.position.x)
+            //    {
+            //        VienChinh.vienchinh.SetMucTieuTeamDo();//setmuctieuuu
+            //    }
+            //}
         }
         if (ReplayData.CheckData(nameobj, "anim",i)) dragonPVEController.PlayAnimReplay(ReplayData.NodeDataPosition[nameobj][i]["anim"].AsString);
         if(setFloatAnim)

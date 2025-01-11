@@ -41,7 +41,7 @@ public class LanSuAttack : DragonPVEController
     }
     protected override void Updatee()
     {
-        VienChinh.vienchinh.SetMucTieuTeamDo();
+        //VienChinh.vienchinh.SetMucTieuTeamDo();
         Target = VienChinh.vienchinh.muctieudo.transform;
         if (actionUpdate != null) actionUpdate();
        

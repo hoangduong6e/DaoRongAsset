@@ -317,7 +317,7 @@ public class PVEManager : MonoBehaviour
                     dragonPVEController.AnimatorRun();
                     if (parent.position.x > VienChinh.vienchinh.muctieudo.transform.position.x)
                     {
-                        VienChinh.vienchinh.SetMucTieuTeamDo();//setmuctieuuu
+                      //  VienChinh.vienchinh.SetMucTieuTeamDo();//setmuctieuuu
                        // Debug.Log("SetMucTieuTeamXanhgg");
                     }
                 }
@@ -349,7 +349,7 @@ public class PVEManager : MonoBehaviour
 
                     if (parent.position.x < VienChinh.vienchinh.muctieuxanh.transform.position.x)
                     {
-                        VienChinh.vienchinh.SetMucTieuTeamXanh();//setmuctieuuu
+                       // VienChinh.vienchinh.SetMucTieuTeamXanh();//setmuctieuuu
                       //  Debug.Log("SetmucTieuTeamDo");
                     }
 

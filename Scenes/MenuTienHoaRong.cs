@@ -186,12 +186,14 @@ public class MenuTienHoaRong : MonoBehaviour
 
     public async void LoadHieuUng()
     {
+       
         if (DownLoadAssetBundle.MenuBundle.ContainsKey("animtienhoa"))
         {
+            CrGame.ins.panelLoadDao.SetActive(true);
             animtienhoa = await DownLoadAssetBundle.OpenMenuBundleAsync("animtienhoa");
             CrGame.ins.panelLoadDao.SetActive(false);
         }
-       
+       // else CrGame.ins.panelLoadDao.SetActive(false);
     }    
     private int thuthapduocmax;
     [SerializeField] Button btnTienHoa;

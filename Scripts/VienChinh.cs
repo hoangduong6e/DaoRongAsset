@@ -1080,11 +1080,9 @@ public class VienChinh : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (muctieudo == null) SetMucTieuTeamDo();
-        if (muctieuxanh == null) SetMucTieuTeamXanh();
         ReplayData.time += Time.fixedDeltaTime * ReplayData.speedReplay;
-        //SetMucTieuTeamDo();
-        //SetMucTieuTeamXanh();
+        SetMucTieuTeamDo();
+        SetMucTieuTeamXanh();
     }
    
     //public void SetMucTieuTeamDo()

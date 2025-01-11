@@ -607,8 +607,8 @@ public partial class HacLongAttack : DragonPVEController
         Transform parent = transform.parent;
         parent.gameObject.SetActive(false);
         parent.SetParent(VienChinh.vienchinh.ObjSkill.transform);
-        VienChinh.vienchinh.SetMucTieuTeamDo();
-        VienChinh.vienchinh.SetMucTieuTeamXanh();
+     //   VienChinh.vienchinh.SetMucTieuTeamDo();
+     //   VienChinh.vienchinh.SetMucTieuTeamXanh();
         HapHuyetBiDong(-1);
 
         Transform oskill = GiaoDienPVP.ins.OSkill.transform.GetChild(1);

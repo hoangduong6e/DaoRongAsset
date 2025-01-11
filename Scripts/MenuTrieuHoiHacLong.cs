@@ -33,7 +33,7 @@ public class MenuTrieuHoiHacLong : MonoBehaviour
         }
         if (comanh >= 6)
         {
-            CrGame.ins.panelLoadDao.SetActive(true);
+          
             btnTrieuHoi.gameObject.SetActive(true);
             LoadHieuUng();
         }
@@ -41,12 +41,14 @@ public class MenuTrieuHoiHacLong : MonoBehaviour
 
     public async void LoadHieuUng()
     {
+        
         if (DownLoadAssetBundle.MenuBundle.ContainsKey("paneltrieuhoihaclong"))
         {
+            CrGame.ins.panelLoadDao.SetActive(true);
             hieuungtrieuhoi = await DownLoadAssetBundle.OpenMenuBundleAsync("paneltrieuhoihaclong");
             CrGame.ins.panelLoadDao.SetActive(false);
         }
-   
+
     }
     GameObject hieuungtrieuhoi;
     public void TrieuHoi()
