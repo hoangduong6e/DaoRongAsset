@@ -68,20 +68,24 @@ public class RongPhuongHoangAttack : DragonPVEController
         {
             if (ronggan[i].name != "trudo" && ronggan[i].name != "truxanh")
             {
-                DragonPVEController chisodich = ronggan[i].GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
-
-                if(!chimanggg)
+                if (ronggan[i] != null)
                 {
-                    if (Random.Range(1, 100) <= _ChiMang)
+                    DragonPVEController chisodich = ronggan[i].GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
+
+                    if (!chimanggg)
                     {
-                        chimanggg = true;
-                        chisodich.MatMau(damee * 5, this);
-                        PVEManager.InstantiateHieuUngChu("chimang", transform);
+                        if (Random.Range(1, 100) <= _ChiMang)
+                        {
+                            chimanggg = true;
+                            chisodich.MatMau(damee * 5, this);
+                            PVEManager.InstantiateHieuUngChu("chimang", transform);
+                        }
                     }
-                }    
-               
-                chisodich.MatMau(damee, this);
-                if (daylui) chisodich.DayLuiABS();
+
+                    chisodich.MatMau(damee, this);
+                    if (daylui) chisodich.DayLuiABS();
+                }
+                
 
             }
             else

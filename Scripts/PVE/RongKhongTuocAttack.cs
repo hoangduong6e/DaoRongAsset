@@ -90,6 +90,18 @@ public class RongKhongTuocAttack : DragonPVEController
         }
      //   gameObject.SetActive(false);
     }
+    protected override void Die()
+    {
+        if (team == Team.TeamXanh)
+        {
+            VienChinh.vienchinh.TaticonSkill("iconKhongTuocXanh", "Xanh");
+        }
+        else
+        {
+            VienChinh.vienchinh.TaticonSkill("iconKhongTuocDo", "Do");
+        }
+        base.Die();
+    }
     public override void ABSAnimatorRun()
     {
         animplay = "Walking";
@@ -176,7 +188,7 @@ public class RongKhongTuocAttack : DragonPVEController
                         chisoo.LamChamABS(data);
                     }
                 }
-                if (teamdich.name == "TeamDo")
+                if (team == Team.TeamXanh)
                 {
                     VienChinh.vienchinh.HienIconSkill(timelamcham, "Xanh", "iconKhongTuocXanh");
                 }

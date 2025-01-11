@@ -53,6 +53,10 @@ public class VienChinh : MonoBehaviour
     public float[] timeskill;
     public float buffgiapallxanh { get; private set; }
     public float buffgiapalldo { get; private set; }
+
+    public float buffhuthpallxanh { get; private set; }
+    public float buffhuthpalldo { get; private set; }
+
     public GameObject muctieuxanh, muctieudo, PoolEffect, ObjSkill;
     public static VienChinh vienchinh;
     public CheDoDau chedodau;
@@ -70,12 +74,32 @@ public class VienChinh : MonoBehaviour
         if (team == Team.TeamDo)
         {
             buffgiapalldo += set;
+            if (buffgiapalldo > 85) buffgiapalldo = 85;
+            else if (buffgiapalldo < 0) buffgiapalldo = 0;
             debug.Log("buff giáp all đỏ" + buffgiapalldo);
         }
         else
         {
             buffgiapallxanh += set;
+            if (buffgiapallxanh > 85) buffgiapallxanh = 85;
+            else if(buffgiapallxanh < 0) buffgiapallxanh= 0;
             debug.Log("buff giáp all xanh" + buffgiapallxanh);
+        }
+    }
+
+    public void SetBuffHutHpall(float set, Team team)
+    {
+        if (team == Team.TeamDo)
+        {
+            buffhuthpalldo += set;
+            if (buffhuthpalldo < 0) buffhuthpalldo = 0;
+            debug.Log("buff hút hp all đỏ" + buffhuthpalldo);
+        }
+        else
+        {
+            buffhuthpallxanh += set;
+           if (buffhuthpallxanh < 0) buffhuthpallxanh = 0;
+            debug.Log("buff hút hp all xanh" + buffhuthpallxanh);
         }
     }
 
@@ -241,6 +265,11 @@ public class VienChinh : MonoBehaviour
         GiaoDienPVP.ins.panelBatdau.SetActive(true);
         giaodienPvp.transform.GetChild(6).gameObject.SetActive(true);
         giaodienPvp.transform.GetChild(7).gameObject.SetActive(true);
+
+        buffgiapallxanh = 0;
+        buffgiapalldo = 0;
+        buffhuthpallxanh = 0;
+        buffhuthpalldo = 0;
     }
     //public GameObject TestGetGiaoDienPvp()
     //{
@@ -850,6 +879,8 @@ public class VienChinh : MonoBehaviour
         datasend["data"]["ketqua"] = s;
         NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json) { }
+
+        GiaoDienPVP.ins.btnSetting.SetActive(false);
         SetAnimWinAllDra();
         StartCoroutine(delay());
         IEnumerator delay()
@@ -998,8 +1029,7 @@ public class VienChinh : MonoBehaviour
         //        cam.transform.position = Clampcamera(cam.transform.position + difrence);
         //    }
         //}    
-        if (muctieudo == null) SetMucTieuTeamDo();
-        if (muctieuxanh == null) SetMucTieuTeamXanh();
+
         if (EventSystem.current.currentSelectedGameObject == null)
         {
             if (Input.GetMouseButtonDown(0))
@@ -1050,6 +1080,8 @@ public class VienChinh : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (muctieudo == null) SetMucTieuTeamDo();
+        if (muctieuxanh == null) SetMucTieuTeamXanh();
         ReplayData.time += Time.fixedDeltaTime * ReplayData.speedReplay;
         //SetMucTieuTeamDo();
         //SetMucTieuTeamXanh();

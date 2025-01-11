@@ -442,7 +442,7 @@ public abstract class EventManager : MonoBehaviour
                 {
                     img.sprite = GetSprite(nameitem);
                 }
-                else if (json["manhdoi"]["itemcan"][i]["loaiitem"].AsString == "Item")
+                else if (json["manhdoi"]["itemcan"][i]["loaiitem"].AsString == "Item" || json["manhdoi"]["itemcan"][i]["loaiitem"].AsString == "ItemNgoc")
                 {
                     img.sprite = Inventory.LoadSprite(nameitem);
                 }

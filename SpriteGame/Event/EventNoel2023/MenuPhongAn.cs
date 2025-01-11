@@ -47,6 +47,8 @@ public class MenuPhongAn : MonoBehaviour
             {
                 imgItem.sprite = Inventory.LoadSprite(json["GiaoDienPhongAn"]["DanhSachKhoBau"][i]["nameitem"].AsString);
                 txtsoitem.text = json["GiaoDienPhongAn"]["DanhSachKhoBau"][i]["soluong"].AsString;
+                imgItem.SetNativeSize();
+                GamIns.ResizeItem(imgItem, 100);
             }
             else if (json["GiaoDienPhongAn"]["DanhSachKhoBau"][i]["itemgi"].AsString == "rong")
             {
@@ -56,11 +58,15 @@ public class MenuPhongAn : MonoBehaviour
                 imgItem.transform.localScale = scale;
                 imgItem.sprite = Inventory.LoadSpriteRong(json["GiaoDienPhongAn"]["DanhSachKhoBau"][i]["nameitem"].AsString + "1");
                 txtsoitem.text = json["GiaoDienPhongAn"]["DanhSachKhoBau"][i]["sao"].AsString + " sao";
+                imgItem.SetNativeSize();
+    
             }
-            imgItem.SetNativeSize();
+         
+          
             newObjKhoBau.gameObject.SetActive(true);
             newObjKhoBau.name = json["GiaoDienPhongAn"]["DanhSachKhoBau"][i]["nameitem"].AsString;
             imgItem.name = json["yeucaungoctraiKhoBau"][json["GiaoDienPhongAn"]["DanhSachKhoBau"][i]["nameitem"].AsString].AsString;
+        
         }
         if (json["GiaoDienPhongAn"]["itemkhoa"].AsString != "")
         {

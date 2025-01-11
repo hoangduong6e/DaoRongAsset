@@ -72,6 +72,7 @@ public class MenuTrungSinhRong : MonoBehaviour
                               || itemdra.nameObjectDragon == "RongMaThach1" && nameimg == "RongMaThach12"
                               || itemdra.nameObjectDragon == "RongMaThach2" && nameimg == "RongMaThach22"
                               || itemdra.nameObjectDragon == "RongMaThach3" && nameimg == "RongMaThach32"
+                              || itemdra.nameObjectDragon == "RongHacLong" && nameimg == "RongHacLong2"
                              ) 
                     {
 
@@ -161,6 +162,13 @@ public class MenuTrungSinhRong : MonoBehaviour
                               || itemdra.nameObjectDragon == "RongMaThach3" && nameimg == "RongMaThach32")
                         {
                             if (int.Parse(itemdra.txtSao.text) >= 10 && int.Parse(itemdra.txtSao.text) <= 22)
+                            {
+                                SetRong();
+                            }
+                        }
+                        else if (itemdra.nameObjectDragon == "RongHacLong" && nameimg == "RongHacLong2")
+                        {
+                            if (int.Parse(itemdra.txtSao.text) >= 16 && int.Parse(itemdra.txtSao.text) <= 29)
                             {
                                 SetRong();
                             }

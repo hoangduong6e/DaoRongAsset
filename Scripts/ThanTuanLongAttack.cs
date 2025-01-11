@@ -47,7 +47,7 @@ public class ThanTuanLongAttack : DragonPVEController
     public override void LamChamABS(dataLamCham data)
     {
         data.eff = "";
-        data.chia = 2;
+        data.chia = 1;
         LamChamDefault(data);
     }
     protected override void ABSAwake()

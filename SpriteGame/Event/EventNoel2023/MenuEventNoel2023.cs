@@ -11,13 +11,14 @@ public class MenuEventNoel2023 : EventManager
     Vector3 dragOrigin; Camera cam; SpriteRenderer imgMap;
     float MapMinX, MapMaxX, mapMiny, MapMaxY;
 
-    public GameObject btnHopQua { get; private set; } bool drag;
+    //public GameObject btnHopQua { get; private set; } 
+    bool drag;
     public GameObject giaodiennut1;
     private float timeSec = 0;
     public Text txttime; 
     private bool dem = false;
     public byte vitrichon;
-    public Sprite[] allitemEvent;
+   // public Sprite[] allitemEvent;
     public Transform BtnKeo;
     private int BinhNangLuongCap1Chon,
      BinhNangLuongCap2Chon, SoBinhSuDung;
@@ -25,6 +26,7 @@ public class MenuEventNoel2023 : EventManager
     // Start is called before the first frame update
     protected override void ABSAwake()
     {
+        
         cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
 
         btnHopQua = CrGame.ins.giaodien.transform.Find("btnQuaOnline").gameObject;
@@ -43,6 +45,7 @@ public class MenuEventNoel2023 : EventManager
 
     private void OnEnable()
     {
+       
         if (Friend.ins.QuaNha) Friend.ins.GoHome();
 
         GameObject trencung = GameObject.FindGameObjectWithTag("trencung").gameObject;
@@ -54,8 +57,8 @@ public class MenuEventNoel2023 : EventManager
 
         CrGame.ins.giaodien.SetActive(false);
 
-        Camera.main.orthographicSize = 5;
-        cam.GetComponent<ZoomCamera>().enabled = false;
+     
+      
         GameObject img = gameObject.transform.GetChild(0).gameObject;
         cam.transform.position = new Vector3(img.transform.position.x, img.transform.position.y, -10);
         CrGame.ins.AllDao.transform.Find("BGDao" + CrGame.ins.DangODao).gameObject.SetActive(false);
@@ -399,15 +402,7 @@ public class MenuEventNoel2023 : EventManager
                     }
                     else if (json["qua"][i]["loaiitem"].Value == "ItemEvent")
                     {
-                        for (int a = 0; a < allitemEvent.Length; a++)
-                        {
-                            if (allitemEvent[a].name == json["qua"][i]["nameitem"].Value)
-                            {
-                                imgqua.sprite = allitemEvent[a];
-                                break;
-                            }
-                        }
-
+                        imgqua.sprite = GetSprite(json["qua"][i]["nameitem"].AsString);
                         txtsoluong.text = json["qua"][i]["soluong"].Value;
                         imgqua.SetNativeSize();
                     }
@@ -760,7 +755,7 @@ public class MenuEventNoel2023 : EventManager
         Image imgbinhnangluong = menubonphan.transform.GetChild(2).transform.GetChild(0).GetComponent<Image>();
 
         int TongSoBinhNangLuong = BinhNangLuongCap1Chon + BinhNangLuongCap2Chon;
-       
+        if (SoBinhSuDung + (short)i > maxgiam) i = (int)maxgiam - SoBinhSuDung;
         if (imgbinhnangluong.sprite.name == "BinhNangLuongCap1")
         {
             if (soBinhNangLuongCap1 > 0 && TongSoBinhNangLuong < maxgiam || i < 0)
@@ -866,7 +861,8 @@ public class MenuEventNoel2023 : EventManager
     }
     public void VeNha()
     {
-       // giaodiennut1.transform.SetParent(gameObject.transform);
+        // giaodiennut1.transform.SetParent(gameObject.transform);
+        cam.GetComponent<ZoomCamera>().enabled = true;
         CrGame.ins.AllDao.transform.Find("BGDao"+CrGame.ins.DangODao).gameObject.SetActive(true);
         Vector3 vec = CrGame.ins.AllDao.transform.Find("BGDao" + CrGame.ins.DangODao).transform.position;
         vec.z = -10;
@@ -970,6 +966,11 @@ public class MenuEventNoel2023 : EventManager
                 btn.onClick.RemoveAllListeners();
                 btn.onClick.AddListener(delegate { sangtrangtop(1); });
                 menu.SetActive(true);
+
+                if(LoginFacebook.ins.NameServer != "daorongsv1.shop")
+                {
+                    menu.transform.GetChild(0).transform.Find("MenuPhanThuong").transform.GetChild(0).GetComponent<Image>().sprite = GetSprite("bxhsv23");
+                }
             }
             else CrGame.ins.OnThongBaoNhanh(json["status"].Value);
         }

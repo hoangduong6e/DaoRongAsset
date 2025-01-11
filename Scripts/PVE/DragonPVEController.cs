@@ -42,6 +42,8 @@ public abstract class DragonPVEController : MonoBehaviour
         maxhpgiap = 0;
     // protected bool battu;
 
+
+
     [SerializeField]
     private float huthp = 0, chimang = 0;
     //public string animIdlle;
@@ -49,7 +51,8 @@ public abstract class DragonPVEController : MonoBehaviour
     {
         get
         {
-            return huthp;
+            if (team == Team.TeamXanh) return huthp + VienChinh.vienchinh.buffhuthpallxanh;
+            else return huthp + VienChinh.vienchinh.buffhuthpalldo;
         }
         set
         {
@@ -75,7 +78,6 @@ public abstract class DragonPVEController : MonoBehaviour
             }
         }
     }
-
     public string nameobj { get; protected set; }
     protected byte saorong;
     //public Transform dra;
@@ -274,6 +276,8 @@ public abstract class DragonPVEController : MonoBehaviour
     //}
     public float GetHpTru(float maumat, DragonPVEController cs,bool setonline = false)
     {
+        string color = (team == Team.TeamXanh) ? "<color=lime>" + team.ToString() + "</color>" : "<color=red>" + team.ToString() + "</color>";
+     
         if (setonline)
         {
             TruMau();
@@ -282,7 +286,7 @@ public abstract class DragonPVEController : MonoBehaviour
         if(thongke)ThongKeDame.AddThongKe(new ThongKeDame.CData(team.ToString(), nameobj,idrong, maumat, ThongKeDame.EType.chongchiu));
         if (cs != null)
         {
-            if (cs.huthp > 0)
+            if (cs._HutHp > 0)
             {
                 cs.HutMau();
             }
@@ -290,18 +294,20 @@ public abstract class DragonPVEController : MonoBehaviour
         }
         //string team = gameObject.transform.parent.transform.parent.name;
         float giappt = giapphantram;
-       // debug.Log("giáp phần trăm ban đầu của " + nameobj + " Team " + team.ToString() + " là " + giappt);
 
+     //   debug.Log("giáp phần trăm ban đầu của " + nameobj + " " + color + " là " + giappt);
+ 
         if (team == Team.TeamXanh)
         {
             giappt += VienChinh.vienchinh.buffgiapallxanh;
         }
         else giappt += VienChinh.vienchinh.buffgiapalldo;
-         
-      //  debug.Log("giáp phần trăm sau khi cộng của " + nameobj + " Team " + team.ToString() + " là " + giappt);
-        if (giappt > 0) maumat -= maumat / 100 * giappt;
-        if (maumat < 0) maumat = 0;
+        if (giappt > 85) giappt = 85;
 
+     //   debug.Log("giáp phần trăm sau khi cộng của " + nameobj + " " + color + " là " + giappt);
+        if (giappt > 0) maumat -= maumat / 100 * giappt;
+        // if (maumat < 0) maumat = 0;
+       // debug.Log("máu mất " + color + " " + maumat);
         if (!setonline)
         {
             if (VienChinh.vienchinh.chedodau == CheDoDau.Online)
@@ -407,7 +413,8 @@ public abstract class DragonPVEController : MonoBehaviour
     }
     public void HutMau()
     {
-        float conghp = dame * huthp / 100;
+        
+        float conghp = dame * _HutHp / 100;
         if (VienChinh.vienchinh.chedodau == CheDoDau.Online)
         {
             JSONObject newjson = new JSONObject();

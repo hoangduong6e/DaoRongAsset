@@ -370,6 +370,8 @@ public class CrGame : MonoBehaviour
         StartCoroutine(delay());
         IEnumerator delay()
         {
+            GetComponent<ZoomCamera>().enabled = false;
+            Camera.main.orthographicSize = 5;
             yield return new WaitForSeconds(0.1f);
 
             JSONClass datasend = new JSONClass();

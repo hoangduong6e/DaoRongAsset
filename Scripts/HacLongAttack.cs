@@ -21,10 +21,11 @@ public partial class HacLongAttack : DragonPVEController
     Dictionary<string, Action<object[]>> methodMap;
     protected override void ABSAwake()
     {
-
+   
     }
     public override void AbsStart()
     {
+        LoadTimeCDSkill();
         methodMap = new Dictionary<string, Action<object[]>>
          {
              { "CuongNo", args => CuongNo((bool)args[0]) },
@@ -73,6 +74,25 @@ public partial class HacLongAttack : DragonPVEController
         }
         LoadAllChiSo();
         StartBiDong();
+    }
+    private void LoadTimeCDSkill()
+    {
+        if (saorong <= 15) timeCDskill = 43;
+        else if (saorong == 16) timeCDskill = 42;
+        else if (saorong == 17) timeCDskill = 41;
+        else if (saorong == 18) timeCDskill = 40;
+        else if (saorong == 19) timeCDskill = 36;
+        else if (saorong == 20) timeCDskill = 35;
+        else if (saorong == 21) timeCDskill = 34;
+        else if (saorong == 22) timeCDskill = 33;
+        else if (saorong == 23) timeCDskill = 32;
+        else if (saorong == 24) timeCDskill = 28;
+        else if (saorong == 25) timeCDskill = 27;
+        else if (saorong == 26) timeCDskill = 26;
+        else if (saorong == 27) timeCDskill = 25;
+        else if (saorong == 28) timeCDskill = 24;
+        else if (saorong == 29) timeCDskill = 23;
+        else if (saorong == 30) timeCDskill = 20;
     }
     private void LoadAllChiSo()
     {
@@ -249,20 +269,21 @@ public partial class HacLongAttack : DragonPVEController
             if (timeHapHuyet <= -1)
             {
                 isHapHuyet = false;
+                VienChinh.vienchinh.SetBuffHutHpall(-HutHpChoToanDoi, team);
                 _HutHp = maxhuthp;
-                Transform TeamTf = null;
-                if (team == Team.TeamDo) TeamTf = VienChinh.vienchinh.TeamDo.transform;
-                else TeamTf = VienChinh.vienchinh.TeamXanh.transform;
+                //Transform TeamTf = null;
+                //if (team == Team.TeamDo) TeamTf = VienChinh.vienchinh.TeamDo.transform;
+                //else TeamTf = VienChinh.vienchinh.TeamXanh.transform;
 
-                for (int i = 1; i < TeamTf.transform.childCount; i++)
-                {
-                    Transform skilldra = TeamTf.transform.GetChild(i).transform.Find("SkillDra");
-                    if (skilldra != null)
-                    {
-                        DragonPVEController dra = skilldra.GetComponent<DragonPVEController>();
-                        dra._HutHp = maxhuthp;
-                    }
-                }
+                //for (int i = 1; i < TeamTf.transform.childCount; i++)
+                //{
+                //    Transform skilldra = TeamTf.transform.GetChild(i).transform.Find("SkillDra");
+                //    if (skilldra != null)
+                //    {
+                //        DragonPVEController dra = skilldra.GetComponent<DragonPVEController>();
+                //        dra._HutHp = maxhuthp;
+                //    }
+                //}
 
             }
         }
@@ -426,7 +447,7 @@ public partial class HacLongAttack : DragonPVEController
         _ChiMang += chiMangCuongNo;
         GiaoDienPVP.ins.SetPanelToi = true;
     }
-    private void Shake()
+    public static void Shake()
     {
         VienChinh.vienchinh.StartCoroutine(Shakee());
         IEnumerator Shakee()
@@ -446,7 +467,7 @@ public partial class HacLongAttack : DragonPVEController
         setAnim = true;
         //   walking = true;
         battu = false;
-      
+        animplay = "Flying";
         anim.Play(animplay);
     }
     public void HapHuyet(bool setonline)
@@ -464,21 +485,23 @@ public partial class HacLongAttack : DragonPVEController
 
         EventManager.StartDelay2(()=>{
 
-             StartCoroutine(VienChinh.vienchinh.CreateHieuUngSkillsBuff(team, "HapHuyetHacLong"));
+        StartCoroutine(VienChinh.vienchinh.CreateHieuUngSkillsBuff(team, "HapHuyetHacLong"));
         _HutHp = 100;
-        Transform TeamTf = null;
-        if(team == Team.TeamDo) TeamTf = VienChinh.vienchinh.TeamDo.transform;
-        else TeamTf = VienChinh.vienchinh.TeamXanh.transform;
+            //Transform TeamTf = null;
+            //if(team == Team.TeamDo) TeamTf = VienChinh.vienchinh.TeamDo.transform;
+            //else TeamTf = VienChinh.vienchinh.TeamXanh.transform;
 
-        for (int i = 1; i < TeamTf.transform.childCount; i++)
-        {
-           Transform skilldra = TeamTf.transform.GetChild(i).transform.Find("SkillDra");
-           if(skilldra != null)
-           {
-              DragonPVEController dra = skilldra.GetComponent<DragonPVEController>();
-              dra._HutHp += HutHpChoToanDoi;
-           }
-        }
+            //for (int i = 1; i < TeamTf.transform.childCount; i++)
+            //{
+            //   Transform skilldra = TeamTf.transform.GetChild(i).transform.Find("SkillDra");
+            //   if(skilldra != null)
+            //   {
+            //      DragonPVEController dra = skilldra.GetComponent<DragonPVEController>();
+            //      dra._HutHp += HutHpChoToanDoi;
+            //   }
+            //}
+
+        VienChinh.vienchinh.SetBuffHutHpall(HutHpChoToanDoi,team);
         timeHapHuyet = MaxtimeHapHuyet;
         isHapHuyet = true;
         if (team == Team.TeamXanh)
@@ -495,14 +518,10 @@ public partial class HacLongAttack : DragonPVEController
             },1f);
        
     }
-
-
-
     public void DoatMenh(bool setonline = false)
     {
         EventManager.StartDelay2(() => { SDDoatMenh(setonline); }, 1.2f);
     }
-
 
     private void SDDoatMenh(bool setonline = false)
     {
@@ -591,8 +610,27 @@ public partial class HacLongAttack : DragonPVEController
         VienChinh.vienchinh.SetMucTieuTeamDo();
         VienChinh.vienchinh.SetMucTieuTeamXanh();
         HapHuyetBiDong(-1);
+
+        Transform oskill = GiaoDienPVP.ins.OSkill.transform.GetChild(1);
+
+        if(team == Team.TeamXanh)
+        {
+            for (int i = 0; i < oskill.transform.childCount; i++)
+            {
+                if (oskill.transform.GetChild(i).gameObject.name == "DienKienTuThan")
+                {
+                    oskill.transform.GetChild(i).gameObject.SetActive(false);
+
+                    break;
+                }
+
+            }
+
+        }
+
         Destroy(parent.gameObject, 5);
      
+
         // base.Die();
     }
     public override void FuncInvokeOnline(string namefunc, params object[] parameters)

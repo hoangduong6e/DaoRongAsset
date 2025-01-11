@@ -4,9 +4,9 @@ using UnityEngine;
 public class ZoomCamera : MonoBehaviour
 {
     Vector3 touchStart;
-
+    public float luu = 5;
     float zoomOutMin = 3.7f;
-    private float zoomOutMax = 5;float luu = 5;
+    private float zoomOutMax = 5;
     public bool duoczoom = true;
 
     private float zoomSpeed = 4f;

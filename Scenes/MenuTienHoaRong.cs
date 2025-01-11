@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class MenuTienHoaRong : MonoBehaviour
 {
     // Start is called before the first frame update
-    [SerializeField] GameObject menuChonRong, contentItemRong, ObjItemRong, ObjRongChon, contentRongChon, panetoidan, ContentItemYeuCau;
+    [SerializeField] GameObject menuChonRong, contentItemRong, ObjItemRong, ObjRongChon, contentRongChon, panetoidan, ContentItemYeuCau,imgchisotienhoa;
     private Transform vitriRong;
     private string[] allRong = new string[] { "ThanTuanLong" };
 
@@ -281,6 +281,8 @@ public class MenuTienHoaRong : MonoBehaviour
                 {
                     debug.Log(json.ToString());
                     btnTienHoa.interactable = false;
+                    AudioManager.SoundBg.Stop();
+                    AudioManager.PlaySound("thantuanlong");
                     GameObject g2 = Instantiate(animtienhoa, transform.position, Quaternion.identity);
                     g2.SetActive(false);
                     transform.GetChild(0).gameObject.SetActive(false);
@@ -312,6 +314,8 @@ public class MenuTienHoaRong : MonoBehaviour
                     // SortingGroup group = RongChon.GetComponent<SortingGroup>();
                     // group.sortingLayerName = "trencung";
                     TienHoa tienhoa = GetRonggdGiaoDien.GetComponent<TienHoa>();
+                    EventManager.StartDelay2(() => { MenuTrieuHoiHacLong.StartShake(); }, 3);
+                  
                     tienhoa.DoneAnimTienHoa = () =>
                     {
                         tienhoa.DoneAnimTienHoa = null;
@@ -319,6 +323,17 @@ public class MenuTienHoaRong : MonoBehaviour
                         GameObject Rongtienhoa = AllMenu.ins.GetRonggdGiaoDien("ThanTuanLong2", panetoidan.transform, 1, false, "trencung", new Vector3(95, 95));
                         Rongtienhoa.GetComponent<Animator>().Play("Evolution");
                         TienHoa tienhoa2 = Rongtienhoa.GetComponent<TienHoa>();
+
+
+                        Vector3 vechientai = Rongtienhoa.transform.position;
+
+                        Rongtienhoa.transform.LeanMove(new Vector3(vechientai.x, vechientai.y + 1.8f, vechientai.z), 1.5f);
+
+                        EventManager.StartDelay2(() => {
+                            imgchisotienhoa.transform.SetParent(panetoidan.transform);
+                            imgchisotienhoa.SetActive(true);
+                        }, 0.5f);
+                   
                         tienhoa2.DoneAnimTienHoa = () =>
                         {
                             //done
@@ -333,9 +348,14 @@ public class MenuTienHoaRong : MonoBehaviour
                             {
                                 Destroy(vitriRong.transform.GetChild(i).gameObject);
                             }
+                          
+
+                          
+
 
                             vitriRong.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
-
+                           // EventManager.StartDelay2(() => { AudioManager.SetSoundBg("nhacnen0"); }, 2);
+                          
                         };
 
                     };
@@ -378,6 +398,9 @@ public class MenuTienHoaRong : MonoBehaviour
         }
         transform.GetChild(0).gameObject.SetActive(true);
         panetoidan.SetActive(false);
+        imgchisotienhoa.transform.SetParent(transform);
+        imgchisotienhoa.gameObject.SetActive(false);
+        AudioManager.SetSoundBg("nhacnen0");
     }
     private byte tablongkhi = 0;
     private JSONNode dataLongKhi;
@@ -427,11 +450,11 @@ public class MenuTienHoaRong : MonoBehaviour
 
     private void LoadTabLongKhi()
     {
-        int solongkhidathuthap = dataLongKhi[alltab[tablongkhi] + "ThuThap"].AsInt;
+        int solongkhidathuthap = dataLongKhi["LongKhiThuThapTrongNgay"].AsInt;
         Text txtlongkhi = menulongkhi.transform.Find("txtlongkhithuthap").GetComponent<Text>();
         int gioihan = gioiHanLongKhi[alltab[tablongkhi]].AsInt;
         string thuthap = (solongkhidathuthap >= gioihan) ? "<color=red>" + solongkhidathuthap + "/" + gioihan + "</color>" : "<color=lime>" + solongkhidathuthap + "/" + gioihan + "</color>";
-        txtlongkhi.text = "Số "+ allnamecolor[tablongkhi] + " đã thu thập hôm nay: " + thuthap;
+        txtlongkhi.text = "Số Long Khí đã thu thập hôm nay: " + thuthap;
         Image imglongkhi = menulongkhi.transform.Find("imglongkhi").GetComponent<Image>();
         imglongkhi.sprite = Inventory.LoadSprite(alltab[tablongkhi]);
         imglongkhi.SetNativeSize();
@@ -539,7 +562,7 @@ public class MenuTienHoaRong : MonoBehaviour
         if (danghapthu) return;
         // if(thuthapduocmax)
         int gioihan = gioiHanLongKhi[alltab[tablongkhi]].AsInt;
-        int solongkhidathuthap = dataLongKhi[alltab[tablongkhi] + "ThuThap"].AsInt;
+        int solongkhidathuthap = dataLongKhi["LongKhiThuThapTrongNgay"].AsInt;
         if (gioihan - solongkhidathuthap < thuthapduocmax)
         {
            
@@ -598,12 +621,12 @@ public class MenuTienHoaRong : MonoBehaviour
                         EventManager.OpenMenuNhanDuocItem(json["nameitem"].AsString, "x" + json["soluong"].AsString, LoaiItem.item);
                         danghapthu = false;
 
-                        dataLongKhi[alltab[tablongkhi] + "ThuThap"] = json["soluongdathuthap"];
-                        int solongkhidathuthap = dataLongKhi[alltab[tablongkhi] + "ThuThap"].AsInt;
+                        dataLongKhi["LongKhiThuThapTrongNgay"] = json["soluongdathuthap"];
+                        int solongkhidathuthap = dataLongKhi["LongKhiThuThapTrongNgay"].AsInt;
                         Text txtlongkhi = menulongkhi.transform.Find("txtlongkhithuthap").GetComponent<Text>();
                         int gioihan = gioiHanLongKhi[alltab[tablongkhi]].AsInt;
                         string thuthap = (solongkhidathuthap >= gioihan) ? "<color=red>" + solongkhidathuthap + "/" + gioihan + "</color>" : "<color=lime>" + solongkhidathuthap + "/" + gioihan + "</color>";
-                        txtlongkhi.text = "Số " + allnamecolor[tablongkhi] + " đã thu thập hôm nay: " + thuthap;
+                        txtlongkhi.text = "Số Long Khí đã thu thập hôm nay: " + thuthap;
                         if (Inventory.ins.TuiRong.transform.childCount > 1)
                         {
                             for (int i = 0; i < Inventory.ins.TuiRong.transform.childCount - 1; i++)

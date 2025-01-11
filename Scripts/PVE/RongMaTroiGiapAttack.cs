@@ -79,6 +79,16 @@ public class RongMaTroiGiapAttack : DragonPVEController
                 return;
             }
 
+            if (thongke) ThongKeDame.AddThongKe(new ThongKeDame.CData(team.ToString(), nameobj, idrong, maumat, ThongKeDame.EType.chongchiu));
+
+            if (cs != null)
+            {
+                if (cs._HutHp > 0)
+                {
+                    cs.HutMau();
+                }
+            }
+
             hpgiap -= maumat;
             float fillamount = (float)hpgiap / (float)maxhpgiap;
             fillGiap.fillAmount = fillamount;

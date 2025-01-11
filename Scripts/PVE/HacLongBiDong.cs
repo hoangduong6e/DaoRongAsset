@@ -47,13 +47,13 @@ public partial class HacLongAttack : DragonPVEController
     }
     private void UpdateBiDong()
     {
-        //if(BiDong)
+        //if (BiDong)
         //{
-        //    if(isCuongNoStart) // nếu như đã dùng skill cuồng nộ khi gặp địch lần đầu thì mới tính random skill tiếp theo
+        //    if (isCuongNoStart) // nếu như đã dùng skill cuồng nộ khi gặp địch lần đầu thì mới tính random skill tiếp theo
         //    {
-        //        if(timeCDbiDong > 0)
+        //        if (timeCDbiDong > 0)
         //        {
-        //             timeCDbiDong -= Time.deltaTime;
+        //            timeCDbiDong -= Time.deltaTime;
         //        }
         //        else
         //        {
@@ -67,33 +67,34 @@ public partial class HacLongAttack : DragonPVEController
     private void HapHuyetBiDong(float nhan = 1)
     {
         _HutHp = 60;
-        Transform TeamTf = null;
-        if (team == Team.TeamDo) TeamTf = VienChinh.vienchinh.TeamDo.transform;
-        else TeamTf = VienChinh.vienchinh.TeamXanh.transform;
-
-        for (int i = 1; i < TeamTf.transform.childCount; i++)
-        {
-            Transform skilldra = TeamTf.transform.GetChild(i).transform.Find("SkillDra");
-            if (skilldra != null)
-            {
-                DragonPVEController dra = skilldra.GetComponent<DragonPVEController>();
-                dra._HutHp += nhan * HutHpChoToanDoi;
-            }
-        }
-      
-        if(nhan == 1)
+        VienChinh.vienchinh.SetBuffHutHpall(HutHpChoToanDoi * nhan, team);
+        if (nhan == 1)
         {
             if (team == Team.TeamXanh)
             {
-                VienChinh.vienchinh.HienIconSkill(timeHapHuyet, "Xanh", "iconHapHuyetXanh");
+                VienChinh.vienchinh.HienIconSkill(999999, "Xanh", "iconHapHuyetXanh");
             }
             else
             {
                 //  ImgHp.sprite = VienChinh.vienchinh.thanhmaudo;
-                VienChinh.vienchinh.HienIconSkill(timeHapHuyet, "Do", "iconHapHuyetDo");
+                VienChinh.vienchinh.HienIconSkill(999999, "Do", "iconHapHuyetDo");
             }
+            VienChinh.vienchinh.SetBuffHutHpall(10,team);
             isHapHuyet = true;
         }
-     
+        else
+        {
+            if (team == Team.TeamXanh)
+            {
+                VienChinh.vienchinh.TaticonSkill("iconHapHuyetXanh","Xanh");
+            }
+            else
+            {
+                //  ImgHp.sprite = VienChinh.vienchinh.thanhmaudo;
+                VienChinh.vienchinh.TaticonSkill("iconHapHuyetDo", "Do");
+            }
+            VienChinh.vienchinh.SetBuffHutHpall(-10, team);
+            isHapHuyet = false;
+        }
     }
 }
