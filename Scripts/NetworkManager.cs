@@ -75,8 +75,8 @@ public class NetworkManager : MonoBehaviour
     public int solanrequest = 0;
     public void SendServer(JSONClass dataa, CallbackServerResult call, bool setisSend = false)
     {
-        Stopwatch stopwatch = new Stopwatch(); // Tạo đối tượng Stopwatch
-        stopwatch.Start();
+       // Stopwatch stopwatch = new Stopwatch(); // Tạo đối tượng Stopwatch
+     //   stopwatch.Start();
      //   if (!isSend && !setisSend) return;
 
         //StartCoroutine(Load());
@@ -153,11 +153,11 @@ public class NetworkManager : MonoBehaviour
 
         socket.EmitWithJSONClass(!setisSend ? "SendRequest" : "SendRequest2", dataa, (response) =>
         {
-            stopwatch.Stop(); // Dừng đếm thời gian khi nhận được phản hồi
+          //  stopwatch.Stop(); // Dừng đếm thời gian khi nhận được phản hồi
             debug.Log("Server response: " + response.ToString());
             call(response[0]);
           //  isSend = true;
-            debug.Log("Time phản hồi new: " + stopwatch.ElapsedMilliseconds + " ms");
+          //  debug.Log("Time phản hồi new: " + stopwatch.ElapsedMilliseconds + " ms");
             CrGame.ins.panelLoadDao.SetActive(false);
         });
 
@@ -249,7 +249,7 @@ public class NetworkManager : MonoBehaviour
                 }
             }
         }
-      
+
         //if (e.data["TangThiep"])
         //{
         //    debug.Log("tangthiep");
@@ -311,40 +311,40 @@ public class NetworkManager : MonoBehaviour
         //}
 
         // event tet 2024
-        //if (e.data["DotPhao"])
-        //{
-        //    debug.Log("dotphao");
-        //    StartCoroutine(delay());
-        //    IEnumerator delay()
-        //    {
-        //        int soluongphao = int.Parse(CatDauNgoacKep(e.data["soluongphao"].ToString()));
-        //        for (int i = 0; i < soluongphao; i++)
-        //        {
-        //            GameObject phao = Inventory.LoadObjectResource("GameData/EventTet2024/" + CatDauNgoacKep(e.data["DotPhao"].ToString()));
-        //            GameObject phaoo = Instantiate(phao, transform.position, Quaternion.identity);
-        //            phaoo.transform.position = new Vector3(phaoo.transform.position.x + Random.Range(-5, 5), transform.position.y - 4, 10);
-        //            //    phaoo.transform.GetChild(0).transform.position = new Vector3(phaoo.transform.GetChild(0).transform.position.x , phaoo.transform.GetChild(0).transform.position.y,10);
-        //            phaoo.SetActive(true);
-        //            if (i % 2 == 0)
-        //            {
-        //                AudioSource audio = phaoo.GetComponent<AudioSource>();
-        //                audio.Play();
-        //            }
-        //            //  phaoo.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
-        //            Destroy(phaoo, 1.5f);
-        //            yield return new WaitForSeconds(0.2f);
-        //        }
-        //    }
-        //}
-        //if (e.data["diemphaohoa"])
-        //{
-        //    if (AllMenu.ins.menu.ContainsKey("MenuEventTet2023"))
-        //    {
-        //        GameObject menutuoicay = AllMenu.ins.menu["MenuEventTet2023"].transform.GetChild(0).gameObject;
-        //        Text txtdiemphao = menutuoicay.transform.GetChild(7).transform.GetChild(0).GetComponent<Text>();
-        //        txtdiemphao.text = CatDauNgoacKep(e.data["diemphaohoa"].ToString());
-        //    }
-        //}
+        if (e.data["DotPhao"])
+        {
+            debug.Log("dotphao");
+            StartCoroutine(delay());
+            IEnumerator delay()
+            {
+                int soluongphao = int.Parse(CatDauNgoacKep(e.data["soluongphao"].ToString()));
+                for (int i = 0; i < soluongphao; i++)
+                {
+                    GameObject phao = Inventory.LoadObjectResource("GameData/EventTet2024/" + CatDauNgoacKep(e.data["DotPhao"].ToString()));
+                    GameObject phaoo = Instantiate(phao, transform.position, Quaternion.identity);
+                    phaoo.transform.position = new Vector3(phaoo.transform.position.x + Random.Range(-5, 5), transform.position.y - 4, 10);
+                    //    phaoo.transform.GetChild(0).transform.position = new Vector3(phaoo.transform.GetChild(0).transform.position.x , phaoo.transform.GetChild(0).transform.position.y,10);
+                    phaoo.SetActive(true);
+                    if (i % 2 == 0)
+                    {
+                        AudioSource audio = phaoo.GetComponent<AudioSource>();
+                        audio.Play();
+                    }
+                    //  phaoo.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+                    Destroy(phaoo, 1.5f);
+                    yield return new WaitForSeconds(0.2f);
+                }
+            }
+        }
+        if (e.data["diemphaohoa"])
+        {
+            if (AllMenu.ins.menu.ContainsKey("MenuEventTet2023"))
+            {
+                GameObject menutuoicay = AllMenu.ins.menu["MenuEventTet2023"].transform.GetChild(0).gameObject;
+                Text txtdiemphao = menutuoicay.transform.GetChild(7).transform.GetChild(0).GetComponent<Text>();
+                txtdiemphao.text = CatDauNgoacKep(e.data["diemphaohoa"].ToString());
+            }
+        }
         ////////////////////////
     }
     void LoiDai(SocketIOEvent e)

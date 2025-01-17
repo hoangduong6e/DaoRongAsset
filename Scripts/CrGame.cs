@@ -427,7 +427,7 @@ public class CrGame : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
 
             JSONClass datasend = new JSONClass();
-            datasend["class"] = "EventHalloween2024";
+            datasend["class"] = "EventTet2024";
             datasend["method"] = "GetData";
             NetworkManager.ins.SendServer(datasend, GetEventok);
         }
@@ -442,10 +442,10 @@ public class CrGame : MonoBehaviour
                 {
                     Friend.ins.GoHome();
                 }
-                 GameObject gdevent = AllMenu.ins.GetCreateMenu("MenuEventHalloween2024", AllMenu.ins.gameObject);//AllMenu.ins.transform.GetChild(AllMenu.ins.transform.childCount - 1).gameObject;
+                 GameObject gdevent = AllMenu.ins.GetCreateMenu("MenuEventTet2024", AllMenu.ins.gameObject);//AllMenu.ins.transform.GetChild(AllMenu.ins.transform.childCount - 1).gameObject;
                 // GameObject gdevent = AllMenu.ins.transform.Find("MenuEventHalloween2024").gameObject;
                     gdevent.SetActive(true);
-                    gdevent.GetComponent<MenuEventHalloween2024>().ParseData(json);
+                    gdevent.GetComponent<MenuEventTet2024>().ParseData(json);
                     DonDepDao();
 
                     menulogin.SetActive(false);

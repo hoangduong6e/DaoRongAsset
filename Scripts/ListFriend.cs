@@ -25,6 +25,7 @@ public class ListFriend : MonoBehaviour
                 JSONNode allfriend = json["data"]["allfriend"];
                 for (int i = 1; i < allfriend.Count; i++)
                 {
+                    Debug.Log("friend " + i + " " + allfriend[i].ToString());
                     GameObject Offriend = Instantiate(Ofriend, ContentFriend.transform.position, Quaternion.identity) as GameObject;
                     Offriend.transform.SetParent(ContentFriend.transform, false);
                     Image Avatar = Offriend.transform.GetChild(0).GetComponent<Image>();
