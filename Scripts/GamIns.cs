@@ -140,4 +140,8 @@ public class GamIns : MonoBehaviour
         // Điều chỉnh kích thước
         image.rectTransform.sizeDelta = new Vector2(originalWidth * minRatio, originalHeight * minRatio);
     }
+    public static GameObject Instantiate(GameObject g,Vector3 vec, Quaternion q)
+    {
+        return Instantiate(g,vec,q);
+    }
 }

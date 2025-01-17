@@ -22,6 +22,7 @@ public abstract class DragonIslandController : MonoBehaviour
 
     private bool xem = false, openinfo = false;
 
+    protected virtual float setRandomSpeed {get{return speed; }set{speed = value; } }
     protected Animator anim;
     protected Transform chayvedao;
     protected GameObject hieuungboi;
@@ -49,7 +50,7 @@ public abstract class DragonIslandController : MonoBehaviour
     {
         vitribongY = gameObject.transform.position.y - bongrong.transform.position.y;
         rigid = GetComponent<Rigidbody2D>();
-        speed = Random.Range(0.3f, 0.75f);
+        setRandomSpeed = Random.Range(0.3f, 0.75f);
         //txtNameRong.transform.parent.transform.Find("BieuCamRong").transform.SetParent(transform.);
         //RanRun();
         //GameObject CanvasDraIsland = Instantiate(Inventory.ins.GetObj("CanvasDraIsland"), transform.position, Quaternion.identity);
@@ -272,7 +273,7 @@ public abstract class DragonIslandController : MonoBehaviour
         {
             time = 0;
             maxtime = Random.Range(2, 4);
-            speed = Random.Range(0.3f, 0.75f);
+            setRandomSpeed = Random.Range(0.3f, 0.75f);
             RanRun();
         }
         if (dichuyen)
@@ -346,7 +347,7 @@ public abstract class DragonIslandController : MonoBehaviour
     }
     protected abstract void ScanFood();
     protected abstract void GioiHanDiChuyen();
-    protected void RanDiChuyen()
+    protected  virtual void RanDiChuyen()
     {
         byte randichuyen = (byte)Random.Range(1, 16);
         switch (randichuyen)
