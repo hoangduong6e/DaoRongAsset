@@ -160,4 +160,25 @@ public class ConLan : DragonIslandController
         solandap += 1;
          Debug.Log("Đập " + solandap);
     }
+
+    public class Create
+    {
+        public Create(JSONObject data)
+        {
+            
+            GameObject instan = Inventory.LoadObjectResource("GameData/EventTet2024/ConLan");
+            GameObject Dao = CrGame.ins.AllDao.transform.Find("BGDao" + int.Parse(data["ConLan"]["dao"].ToString())).gameObject;
+            GameObject RongDao = Dao.transform.Find("RongDao").gameObject;
+            if(!RongDao.transform.Find("ConLan"))
+            {
+                GameObject conLan = Instantiate(instan, Vector3.zero, Quaternion.identity, RongDao.transform);
+                conLan.name = "ConLan";
+                conLan.transform.Find("Canvas").transform.localScale = new Vector3(0.02f,0.02f);
+            }
+           
+
+         //   conLan.transform.SetParent(RongDao.transform, false);
+        }
+
+    }    
 }

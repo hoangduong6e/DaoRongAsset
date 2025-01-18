@@ -252,11 +252,7 @@ public class NetworkManager : MonoBehaviour
         else if(e.data["ConLan"])
         {
             debug.Log("có con lân");
-          GameObject instan = Inventory.LoadObjectResource("GameData/EventTet2024/ConLan");
-        GameObject conLan = Instantiate(instan,Vector3.zero,Quaternion.identity);
-          GameObject Dao = CrGame.ins.AllDao.transform.Find("BGDao" + int.Parse(e.data["ConLan"]["dao"].ToString())).gameObject;
-          GameObject RongDao = Dao.transform.Find("RongDao").gameObject;
-        conLan.transform.SetParent(RongDao.transform,false);
+            ConLan.Create conlan = new ConLan.Create(e.data);
         }
         //if (e.data["TangThiep"])
         //{
