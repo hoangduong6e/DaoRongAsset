@@ -1,8 +1,10 @@
+using SimpleJSON;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
-public class ConLan : DragonIslandController
+public abstract class KeLangThang : DragonIslandController
 {
+    public string ID {get;protected set; }
+    public string nameObject {get;protected set; }
     byte solandap = 0;
     float nhan = 1;
     protected override float setRandomSpeed
@@ -153,32 +155,37 @@ public class ConLan : DragonIslandController
     }
     public void Click()
     {
-        nhan = 4f + solandap / 2;
+        nhan = 4f + solandap / 4;
         speed = nhan;
        
         anim.Play("Run");
         solandap += 1;
          Debug.Log("Đập " + solandap);
-    }
 
-    public class Create
-    {
-        public Create(JSONObject data)
-        {
-            
-            GameObject instan = Inventory.LoadObjectResource("GameData/EventTet2024/ConLan");
-            GameObject Dao = CrGame.ins.AllDao.transform.Find("BGDao" + int.Parse(data["ConLan"]["dao"].ToString())).gameObject;
-            GameObject RongDao = Dao.transform.Find("RongDao").gameObject;
-            if(!RongDao.transform.Find("ConLan"))
+        NetworkManager.ins.socket.EmitWithJSONClass("DapKeLangThang",GetInfoKLT(),(data)=>{
+            debug.Log("response " + data.ToString());
+            JSONNode json = data[0];
+            if(json["status"].AsString == "1")
             {
-                GameObject conLan = Instantiate(instan, Vector3.zero, Quaternion.identity, RongDao.transform);
-                conLan.name = "ConLan";
-                conLan.transform.Find("Canvas").transform.localScale = new Vector3(0.02f,0.02f);
+                CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
             }
-           
-
-         //   conLan.transform.SetParent(RongDao.transform, false);
-        }
-
-    }    
+            else if(json["status"].AsString == "2")
+            {
+                destroy();
+            }
+        });
+    }
+    public JSONClass GetInfoKLT()
+    {
+        JSONClass json = new JSONClass();
+        json["dao"] = CrGame.ins.DangODao.ToString();
+        json["id"] = ID;
+        json["nameobject"] = nameObject;
+        return json;
+    }
+    private void destroy()
+    {
+        Destroy(gameObject);
+    }
+    
 }

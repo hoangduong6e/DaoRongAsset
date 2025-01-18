@@ -249,10 +249,11 @@ public class NetworkManager : MonoBehaviour
                 }
             }
         }
-        else if(e.data["ConLan"])
+        else if(e.data["KeLangThang"])
         {
-            debug.Log("có con lân");
-            ConLan.Create conlan = new ConLan.Create(e.data);
+            debug.Log("có KeLangThang");
+
+           KeLangThangManager.CreateAllKeLangThang(e.data);
         }
         //if (e.data["TangThiep"])
         //{
