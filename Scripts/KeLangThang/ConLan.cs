@@ -3,17 +3,19 @@ using UnityEngine;
 
 public class ConLan:KeLangThang
 {
- 
+  
     public class Builder
     {
         ConLan _conLan;
         public Builder(JSONObject data)
         {
-             GameObject instan = Inventory.LoadObjectResource("GameData/EventTet2024/ConLan");
+             GameObject instan = KeLangThangManager.ins.LoadObject("ConLan");
             GameObject Dao = CrGame.ins.AllDao.transform.Find("BGDao" + int.Parse(data["dao"].ToString())).gameObject;
-            GameObject RongDao = Dao.transform.Find("RongDao").gameObject;
-            string id = data["id"].str;
-            if(!RongDao.transform.Find(id))
+            if(Dao != null)
+            {
+                   GameObject RongDao = Dao.transform.Find("RongDao").gameObject;
+                string id = data["id"].str;
+             if(!RongDao.transform.Find(id))
             {
                 GameObject conLan = Instantiate(instan, Vector3.zero, Quaternion.identity, RongDao.transform);
                 conLan.name = id;
@@ -26,6 +28,8 @@ public class ConLan:KeLangThang
                 _conLan.nameObject = data["nameobject"].str;
 
             }
+            }
+         
         }
         public ConLan Build()
         {
