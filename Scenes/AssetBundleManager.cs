@@ -98,7 +98,7 @@ public class AssetBundleManager : MonoBehaviour
         yield break;
     }
 
-    byte[] decryptedData = null;
+    byte[] decryptedData = null;//
 
     // Đọc và giải mã dữ liệu trong try-catch
     try
