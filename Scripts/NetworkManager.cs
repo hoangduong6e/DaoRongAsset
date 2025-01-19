@@ -210,7 +210,7 @@ public class NetworkManager : MonoBehaviour
             if (e.data["message"].str != "") CrGame.ins.OnThongBaoNhanh(e.data["message"].str, 3);
 
         }
-        if (e.data["emitevent"])
+        else if (e.data["emitevent"])
         {
             if(MenuEventTrungThu2024.inss != null)
             {
@@ -257,6 +257,18 @@ public class NetworkManager : MonoBehaviour
         else if (e.data["timeKLT"])
         {
             KeLangThangManager.ins.SetTimeKLT(float.Parse(e.data["timeKLT"].ToString()));
+        }
+        else if (e.data["ItemFly"])
+        {
+            float x = float.Parse(e.data["ItemFly"]["x"].ToString());
+            float y = float.Parse(e.data["ItemFly"]["y"].ToString());
+            Vector3 vec = new Vector3(x, y);
+            if(x == 0 && y == 0)
+            {
+                vec = GamIns.GetTransformMouse();
+            }
+            
+            ItemFly.CreateItemFly(Inventory.LoadSprite(e.data["ItemFly"]["name"].str), vec);
         }
         //if (e.data["TangThiep"])
         //{
