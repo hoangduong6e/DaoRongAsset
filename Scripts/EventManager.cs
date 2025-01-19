@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-
+using XLua;
+[LuaCallCSharp]
 public abstract class EventManager : MonoBehaviour
 {
     public string nameEvent;

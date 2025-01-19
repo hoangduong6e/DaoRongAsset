@@ -9,7 +9,8 @@ using System.Security.Cryptography;
 using System.Globalization;
 using System.Threading;
 using System;
-
+using XLua;
+[LuaCallCSharp]
 public class CrGame : MonoBehaviour
 {
     public GameObject[] GDien;
