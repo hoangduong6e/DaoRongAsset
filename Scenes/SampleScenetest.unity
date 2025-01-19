@@ -11661,7 +11661,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 50.600098, y: 114.2}
+  m_AnchoredPosition: {x: 50.600098, y: -43.6}
   m_SizeDelta: {x: 133, y: 133}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &391079934
@@ -16335,19 +16335,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90912338900b06d469867304da316bbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RestoreButton: {fileID: 0}
-  skimcuong:
-  - com.memobi.studio.300kimcuong
-  - com.memobi.studio.1500kimcuong
-  - com.memobi.studio.3500kimcuong
-  sokimcuong:
-  - 300
-  - 1500
-  - 3500
-  sotien:
-  - "19.000\u0110"
-  - "99.000\u0110"
-  - "199.000\u0110"
 --- !u!114 &519420047
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16376,7 +16363,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   btnKeLangThang: {fileID: 391079932}
+  btnThongBao: {fileID: 201586951}
   txtTime: {fileID: 1936296207}
+  id_KLT: []
+  timeInSeconds: 120
 --- !u!1 &526063580
 GameObject:
   m_ObjectHideFlags: 0
@@ -61307,7 +61297,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1936296204
 RectTransform:
   m_ObjectHideFlags: 0
@@ -61390,7 +61380,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 00:00:00
+  m_Text: 
 --- !u!222 &1936296208
 CanvasRenderer:
   m_ObjectHideFlags: 0

@@ -6,7 +6,7 @@ public abstract class KeLangThang : DragonIslandController
     public string ID {get;protected set; }
     public string nameObject {get;protected set; }
     byte solandap = 0;
-    float nhan = 1;
+    protected float nhan = 1;
     protected override float setRandomSpeed
     {
         get{return speed; }
@@ -153,8 +153,10 @@ public abstract class KeLangThang : DragonIslandController
         }
         UpdateAnimator();
     }
+    bool die = false;
     public void Click()
     {
+        if (die) return;
         nhan = 4f + solandap / 4;
         speed = nhan;
        
@@ -168,9 +170,11 @@ public abstract class KeLangThang : DragonIslandController
             if(json["status"].AsString == "1")
             {
                 CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+
             }
             else if(json["status"].AsString == "2")
             {
+                ItemFly.CreateItemFly(null,transform.position);
                 destroy();
             }
         });
@@ -185,7 +189,11 @@ public abstract class KeLangThang : DragonIslandController
     }
     private void destroy()
     {
-        Destroy(gameObject);
+        die = true;
+        KeLangThangManager.ins.id_KLT.Remove(ID);
+
+        transform.LeanScale(new Vector3(), 0.5f);
+        Destroy(gameObject,0.5f);
     }
     
 }

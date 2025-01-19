@@ -6,16 +6,17 @@ public class ConLan:KeLangThang
   
     public class Builder
     {
-        ConLan _conLan;
+        ConLan _conLan = null;
         public Builder(JSONObject data)
         {
              GameObject instan = KeLangThangManager.ins.LoadObject("ConLan");
-            GameObject Dao = CrGame.ins.AllDao.transform.Find("BGDao" + int.Parse(data["dao"].ToString())).gameObject;
-            if(Dao != null)
+            Transform Dao = CrGame.ins.AllDao.transform.Find("BGDao" + int.Parse(data["dao"].ToString()));
+            if (Dao != null)
             {
-                   GameObject RongDao = Dao.transform.Find("RongDao").gameObject;
-                string id = data["id"].str;
-             if(!RongDao.transform.Find(id))
+              GameObject RongDao = Dao.transform.Find("RongDao").gameObject;
+             string id = data["id"].str;
+
+            if(!RongDao.transform.Find(id))
             {
                 GameObject conLan = Instantiate(instan, Vector3.zero, Quaternion.identity, RongDao.transform);
                 conLan.name = id;
@@ -26,6 +27,11 @@ public class ConLan:KeLangThang
                 _conLan = conLan.GetComponent<ConLan>();
                 _conLan.ID = id;
                 _conLan.nameObject = data["nameobject"].str;
+                    if (data["nhan"])
+                    {
+                        _conLan.nhan = float.Parse(data["nhan"].ToString());
+                        _conLan.speed = _conLan.nhan;
+                    }
 
             }
             }

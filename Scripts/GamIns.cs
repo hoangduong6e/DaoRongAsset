@@ -144,4 +144,6 @@ public class GamIns : MonoBehaviour
     {
         return Instantiate(g,vec,q);
     }
+
+   
 }

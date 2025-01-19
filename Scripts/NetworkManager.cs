@@ -251,9 +251,12 @@ public class NetworkManager : MonoBehaviour
         }
         else if(e.data["KeLangThang"])
         {
-            debug.Log("có KeLangThang");
-
+            debug.Log("Tao kelangthang");
            KeLangThangManager.CreateAllKeLangThang(e.data);
+        }
+        else if (e.data["timeKLT"])
+        {
+            KeLangThangManager.ins.SetTimeKLT(float.Parse(e.data["timeKLT"].ToString()));
         }
         //if (e.data["TangThiep"])
         //{
