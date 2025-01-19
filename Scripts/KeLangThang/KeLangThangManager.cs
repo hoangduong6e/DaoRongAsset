@@ -64,6 +64,7 @@ public class KeLangThangManager : MonoBehaviour
     }
     private void CheckDaoHienTai()
     {
+        if (daoXuatHien.Count == 0) return;
         if (daoXuatHien.Peek() - 1 == CrGame.ins.DangODao)
         {
             daoXuatHien.Dequeue();

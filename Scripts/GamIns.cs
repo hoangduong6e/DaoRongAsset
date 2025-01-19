@@ -144,6 +144,62 @@ public class GamIns : MonoBehaviour
     {
         return Instantiate(g,vec,q);
     }
+    public static Vector3 GetTransformMouse()
+    {
+        Vector3 worldPosition = new Vector3();
+#if UNITY_EDITOR
+        // Lấy vị trí chuột trên màn hình
+        Vector3 mousePos = Input.mousePosition;
 
-   
+        // Chuyển từ không gian 2D của màn hình sang không gian 3D
+         worldPosition = Camera.main.ScreenToWorldPoint(mousePos);
+
+        // Nếu bạn muốn chỉ lấy tọa độ trên mặt phẳng 2D (ví dụ: XY plane)
+        worldPosition.z = 0;
+
+        // In ra vị trí chuột trong không gian 3D
+        //     Debug.Log("Mouse Position in 3D space: " + worldPosition);
+#else
+
+        if (Input.touchCount > 0) // Kiểm tra xem có touch nào không
+        {
+            // Lấy vị trí của touch đầu tiên
+            Touch touch = Input.GetTouch(0);
+
+            // Vị trí touch trong không gian màn hình 2D
+            Vector3 touchPos = touch.position;
+
+            // Chuyển từ không gian màn hình sang không gian 3D
+            worldPosition = Camera.main.ScreenToWorldPoint(touchPos);
+
+            // Nếu bạn muốn chỉ lấy tọa độ trên mặt phẳng 2D (ví dụ: XY plane)
+            worldPosition.z = 0;
+
+            // In ra vị trí touch trong không gian 3D
+         //   Debug.Log("Touch Position in 3D space: " + worldPosition);
+        }
+    
+#endif
+        return worldPosition;
+    }
+
+}
+
+public static class Image2
+{
+    public static Image Resize(this Image image, float size)
+    {
+        // Lấy kích thước gốc của image
+        float originalWidth = image.rectTransform.rect.width;
+        float originalHeight = image.rectTransform.rect.height;
+
+        // Tính toán tỉ lệ thu nhỏ
+        float widthRatio = size / originalWidth;
+        float heightRatio = size / originalHeight;
+        float minRatio = Mathf.Min(widthRatio, heightRatio);
+
+        // Điều chỉnh kích thước
+        image.rectTransform.sizeDelta = new Vector2(originalWidth * minRatio, originalHeight * minRatio);
+        return image;
+    }
 }

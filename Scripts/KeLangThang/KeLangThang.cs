@@ -174,7 +174,7 @@ public abstract class KeLangThang : DragonIslandController
             }
             else if(json["status"].AsString == "2")
             {
-                ItemFly.CreateItemFly(null,transform.position);
+              //  ItemFly.CreateItemFly(Inventory.LoadSprite("tui"),transform.position);
                 destroy();
             }
         });

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -40,9 +41,16 @@ public class ItemFly : MonoBehaviour
         });
     }
 
-    public static GameObject CreateItemFly(Image imgitem,Vector3 vec = new Vector3())
+    public static GameObject CreateItemFly(Sprite sprite,Vector3 vec = new Vector3())
     {
         GameObject ins = Instantiate(Inventory.ins.GetObj("ItemFly"), vec, Quaternion.identity, CrGame.ins.trencung);
+        if(sprite != null)
+        {
+            Image img = ins.transform.GetChild(0).GetComponent<Image>();
+            img.sprite = sprite;
+            img.SetNativeSize();
+            img.Resize(85);
+        }
         return ins;
     }
 }
