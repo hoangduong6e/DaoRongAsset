@@ -1,3 +1,4 @@
+using SimpleJSON;
 using System;
 using System.Collections;
 using System.IO;
@@ -8,13 +9,10 @@ using UnityEngine.Networking;
 
 public class AssetBundleManager : MonoBehaviour
 {
-    private string encryptionKey = "1111111111111111"; // Khóa mã hóa, cần 16, 24 hoặc 32 ký tự
+    public static JSONNode infoasbundle;
+    private static string encryptionKey = "1111111111111111"; // Khóa mã hóa, cần 16, 24 hoặc 32 ký tự
 
-    // Đường dẫn đầy đủ tới file được lưu trong `persistentDataPath`
-    private string GetEncryptedFilePath(string fileName) => Path.Combine(Application.persistentDataPath, fileName);
-
-    // Hàm mã hóa dữ liệu
-    private byte[] EncryptData(byte[] data)
+    public static byte[] EncryptData(byte[] data)
     {
         using (Aes aesAlg = Aes.Create())
         {
@@ -31,10 +29,11 @@ public class AssetBundleManager : MonoBehaviour
                 return ms.ToArray();
             }
         }
+
     }
 
     // Hàm giải mã dữ liệu
-    private byte[] DecryptData(byte[] encryptedData)
+    public static byte[] DecryptData(byte[] encryptedData)
     {
         using (Aes aesAlg = Aes.Create())
         {
@@ -56,81 +55,106 @@ public class AssetBundleManager : MonoBehaviour
         }
     }
 
+    
+    // Đường dẫn đầy đủ tới file được lưu trong `persistentDataPath`
+    private string GetEncryptedFilePath(string fileName) => Path.Combine(Application.persistentDataPath, fileName);
+
+    // Hàm mã hóa dữ liệu
+
     // Tải `AssetBundle` từ server
-    public IEnumerator DownloadAssetBundle(string url, string fileName, Action onSuccess = null, Action<string> onError = null)
+    public IEnumerator DownloadAssetBundle(string url, string fileName, Action onSuccess = null, Action<string> onError = null, Action<float> updateProcess = null)
     {
         using (UnityWebRequest www = UnityWebRequest.Get(url))
         {
-            yield return www.SendWebRequest();
+            // Bắt đầu tải AssetBundle
+            www.SendWebRequest();
 
+            // Theo dõi tiến trình tải xuống
+            while (!www.isDone)
+            {
+                // Nếu có hàm callback updateProcess, gọi để cập nhật tiến trình
+                updateProcess?.Invoke(www.downloadProgress); // downloadProgress trả về giá trị từ 0.0f đến 1.0f
+               // debug.Log($"Downloading... {www.downloadProgress * 100f}%");
+
+                yield return null; // Đợi đến khung hình tiếp theo
+            }
+
+            // Khi quá trình tải hoàn tất, gọi callback với tiến trình = 1.0
+            updateProcess?.Invoke(1f);
+
+            // Kiểm tra kết quả tải xuống
             if (www.result == UnityWebRequest.Result.Success)
             {
                 try
                 {
-                    byte[] encryptedData = EncryptData(www.downloadHandler.data);
-                    File.WriteAllBytes(GetEncryptedFilePath(fileName), encryptedData);
-                    Debug.Log($"AssetBundle downloaded and encrypted as {fileName}");
-                    onSuccess?.Invoke();
+                    byte[] encryptedData = EncryptData(www.downloadHandler.data); // Mã hóa dữ liệu tải xuống
+                    File.WriteAllBytes(GetEncryptedFilePath(fileName), encryptedData); // Ghi dữ liệu vào file
+                    debug.Log($"AssetBundle downloaded and encrypted as {fileName}");
+                    onSuccess?.Invoke(); // Gọi callback thành công
                 }
                 catch (Exception e)
                 {
-                    Debug.LogError($"Error encrypting or saving AssetBundle: {e.Message}");
-                    onError?.Invoke(e.Message);
+                    debug.LogError($"Error encrypting or saving AssetBundle: {e.Message}");
+                    onError?.Invoke(e.Message); // Gọi callback khi lỗi
                 }
             }
             else
             {
-                Debug.LogError($"Error downloading AssetBundle: {www.error}");
-                onError?.Invoke(www.error);
+                debug.LogError($"Error downloading AssetBundle: {www.error}");
+                onError?.Invoke(www.error); // Gọi callback khi lỗi tải xuống
             }
         }
     }
 
     // Tải `AssetBundle` từ bộ nhớ
 
-
-   public IEnumerator LoadAssetBundle(string fileName, Action<AssetBundle> onSuccess, Action<string> onError)
-{
-    string filePath = GetEncryptedFilePath(fileName);
-
-    if (!File.Exists(filePath))
+    private bool CheckFileContains(string fileName)
     {
-        Debug.LogError($"AssetBundle file not found: {filePath}");
-        onError?.Invoke("File not found");
-        yield break;
-    }
+        string filePath = GetEncryptedFilePath(fileName);
 
-    byte[] decryptedData = null;//
-
-    // Đọc và giải mã dữ liệu trong try-catch
-    try
+        return File.Exists(filePath);
+    }    
+    public IEnumerator LoadAssetBundle(string fileName, Action<AssetBundle> onSuccess, Action<string> onError)
     {
-        byte[] encryptedData = File.ReadAllBytes(filePath);
-        decryptedData = DecryptData(encryptedData);
-    }
-    catch (Exception e)
-    {
-        Debug.LogError($"Error decrypting AssetBundle: {e.Message}");
-        onError?.Invoke(e.Message);
-        yield break;
-    }
+        string filePath = GetEncryptedFilePath(fileName);
 
-    // Tải AssetBundle từ dữ liệu đã giải mã
-    AssetBundleCreateRequest request = AssetBundle.LoadFromMemoryAsync(decryptedData);
-    yield return request;
+        if (!File.Exists(filePath))
+        {
+            debug.LogError($"AssetBundle file not found: {filePath}");
+            onError?.Invoke("File not found");
+            yield break;
+        }
 
-    if (request.assetBundle != null)
-    {
-        Debug.Log($"AssetBundle {fileName} loaded successfully");
-        onSuccess?.Invoke(request.assetBundle);
-    }
-    else
-    {
-        Debug.LogError($"Failed to load AssetBundle: {fileName}");
-        onError?.Invoke("Failed to load AssetBundle");
-    }
-}
+        byte[] decryptedData = null;//
 
+        // Đọc và giải mã dữ liệu trong try-catch
+        try
+        {
+            byte[] encryptedData = File.ReadAllBytes(filePath);
+            decryptedData = DecryptData(encryptedData);
+        }
+        catch (Exception e)
+        {
+            debug.LogError($"Error decrypting AssetBundle: {e.Message}");
+            onError?.Invoke(e.Message);
+            yield break;
+        }
+
+        // Tải AssetBundle từ dữ liệu đã giải mã
+        AssetBundleCreateRequest request = AssetBundle.LoadFromMemoryAsync(decryptedData);
+        yield return request;
+
+        if (request.assetBundle != null)
+        {
+            debug.Log($"AssetBundle {fileName} loaded successfully");
+            onSuccess?.Invoke(request.assetBundle);
+        }
+        else
+        {
+            debug.LogError($"Failed to load AssetBundle: {fileName}");
+            onError?.Invoke("Failed to load AssetBundle");
+        }
+    }
 
     // Xóa `AssetBundle` khỏi bộ nhớ
     public void DeleteAssetBundle(string fileName)
@@ -140,50 +164,68 @@ public class AssetBundleManager : MonoBehaviour
         if (File.Exists(filePath))
         {
             File.Delete(filePath);
-            Debug.Log($"Deleted AssetBundle file: {filePath}");
+            debug.Log($"Deleted AssetBundle file: {filePath}");
         }
         else
         {
-            Debug.LogWarning($"File not found for deletion: {filePath}");
+            debug.LogWarning($"File not found for deletion: {filePath}");
         }
     }
-
+    public static AssetBundleManager ins;
     // Test ví dụ
+    private void Awake()
+    {
+        ins = this;
+    }
     private void Start()
     {
-        string testUrl = "https://daorongmobile.online/DaoRongData2/IOS/animtienhoa"; // URL của AssetBundle
+        string testUrl = "https://daorongmobile.online/DaoRongData3/IOS/animtienhoa"; // URL của AssetBundle
         string testFileName = "animtienhoa";
 
-        //StartCoroutine(DownloadAssetBundle(testUrl, testFileName, 
-        //    onSuccess: () => Debug.Log("Download and save successful"),
-        //    onError: (error) => Debug.LogError($"Download error: {error}")
+
+        debug.Log(CheckFileContains(testFileName) ? "Đã tổn tại file " + testFileName : "Không tồn tại file: " + testFileName);
+        //StartCoroutine(DownloadAssetBundle(testUrl, testFileName,
+        //    onSuccess: () => debug.Log("Download and save successful"),
+        //    onError: (error) => debug.LogError($"Download error: {error}"),
+        //    updateProcess: (update) => debug.Log($"Download process: {update}")
         //));
 
-
-        //StartCoroutine(DownloadAssetBundleKoMaHoa(testUrl, testFileName,
-        //    onSuccess: () => Debug.Log("Download and save successful"),
-        //    onError: (error) => Debug.LogError($"Download error: {error}")
-        //));
+        StartCoroutine(DownloadAssetBundleKoMaHoa(testUrl, testFileName,
+            onSuccess: () => debug.Log("Download and save successful"),
+            onError: (error) => debug.LogError($"Download error: {error}"),
+            updateProcess: (update) => debug.Log($"Download process: {update}")
+        ));
         StartCoroutine(LoadAssetBundle(testFileName, 
             onSuccess: (assetBundle) =>
             {
-                Debug.Log("AssetBundle loaded successfully");
+                debug.Log("AssetBundle loaded successfully");
                 // Sử dụng AssetBundle ở đây, ví dụ:
                 GameObject prefab = assetBundle.LoadAsset<GameObject>("animtienhoa");
                 Instantiate(prefab);
             },
-            onError: (error) => Debug.LogError($"Load error: {error}")
+            onError: (error) => debug.LogError($"Load error: {error}")
         ));
+
+
     }
 
 
-    public IEnumerator DownloadAssetBundleKoMaHoa(string url, string fileName, Action onSuccess = null, Action<string> onError = null)
+    public IEnumerator DownloadAssetBundleKoMaHoa(string url, string fileName, Action onSuccess = null, Action<string> onError = null, Action<float> updateProcess = null)
     {
         using (UnityWebRequest www = UnityWebRequest.Get(url))
         {
             // Bắt đầu yêu cầu tải xuống
             yield return www.SendWebRequest();
 
+            // Theo dõi tiến trình tải xuống
+            while (!www.isDone)
+            {
+                // Nếu có hàm callback updateProcess, gọi để cập nhật tiến trình
+                updateProcess?.Invoke(www.downloadProgress); // downloadProgress trả về giá trị từ 0.0f đến 1.0f
+                                                             // debug.Log($"Downloading... {www.downloadProgress * 100f}%");
+
+                yield return null; // Đợi đến khung hình tiếp theo
+            }
             // Kiểm tra kết quả tải
             if (www.result == UnityWebRequest.Result.Success)
             {
@@ -191,20 +233,20 @@ public class AssetBundleManager : MonoBehaviour
                 {
                     // Lưu dữ liệu tải về vào file trực tiếp (không mã hóa)
                     File.WriteAllBytes(GetFilePath(fileName), www.downloadHandler.data);
-                    Debug.Log($"AssetBundle downloaded and saved as {fileName}");
+                    debug.Log($"AssetBundle downloaded and saved as {fileName}");
                     onSuccess?.Invoke(); // Gọi callback thành công (nếu có)
                 }
                 catch (Exception e)
                 {
                     // Xử lý lỗi khi lưu file
-                    Debug.LogError($"Error saving AssetBundle: {e.Message}");
+                    debug.LogError($"Error saving AssetBundle: {e.Message}");
                     onError?.Invoke(e.Message); // Gọi callback lỗi (nếu có)
                 }
             }
             else
             {
                 // Xử lý lỗi tải xuống
-                Debug.LogError($"Error downloading AssetBundle: {www.error}");
+                debug.LogError($"Error downloading AssetBundle: {www.error}");
                 onError?.Invoke(www.error); // Gọi callback lỗi (nếu có)
             }
         }
@@ -217,4 +259,42 @@ public class AssetBundleManager : MonoBehaviour
         return Path.Combine(Application.persistentDataPath, fileName);
     }
 
+
+    public IEnumerator CheckAndDownLoadAll(Action Success = null,Action<string> onError = null, Action<float> updateProcess = null)
+    {
+        float process = 0;
+        for (int i = 0; i < infoasbundle.Count;i++)
+        {
+            string id = infoasbundle[i]["id"].AsString;
+            string ver = infoasbundle[i]["ver"].AsString;
+            string name = infoasbundle[i]["name"].AsString;
+            string namefile = id;
+            if (!CheckFileContains(namefile))
+            { 
+                yield return DownloadAssetBundleKoMaHoa(DownLoadAssetBundle.linkdown + name, namefile, ThanhCong,Error, UpdateProcess);
+            }
+        }
+        void ThanhCong()
+        {
+            debug.Log("tải thành công");
+            Success?.Invoke();
+        }
+        void Error(string err)
+        {
+            onError?.Invoke(err);
+        }
+        void UpdateProcess(float f)
+        {
+            process += f;
+            double invoke = System.Math.Round(process * 100f / infoasbundle.Count, 2);
+            debug.Log("invoke: " + invoke);
+            updateProcess?.Invoke(f);
+        }
+    }
 }
+
+
+//1 cái thì 100
+//2 cái thì 200
+//5 cái thì 500
+

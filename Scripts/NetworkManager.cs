@@ -18,7 +18,7 @@ using Random = UnityEngine.Random;
 public class postSend
 {
     public string data, taikhoan;
-    public postSend(string Data,string TaiKhoan)
+    public postSend(string Data, string TaiKhoan)
     {
         taikhoan = TaiKhoan;
         data = Data;
@@ -29,9 +29,9 @@ public class postSend
 public class NetworkManager : MonoBehaviour
 {
     public SocketIOComponent socket;
-    public GameObject go;public Inventory inventory;LaiRong lairong;public VienChinh vienchinh;HopQua hopqua;ThuyenThucAn thuyen;
+    public GameObject go; public Inventory inventory; LaiRong lairong; public VienChinh vienchinh; HopQua hopqua; ThuyenThucAn thuyen;
     [HideInInspector] public Friend friend; [HideInInspector] public LoiDai loidai;//QuaTangHangNgay quatanghangngay;
-    public GameObject menuLoiDai;[HideInInspector] public int LevelNhaAp = 0;
+    public GameObject menuLoiDai; [HideInInspector] public int LevelNhaAp = 0;
     public NhiemVu Nhiemvu;//public DauTruongOnline dautruong;
     public delegate void CallbackServerResult(JSONNode json);
     public static NetworkManager ins;
@@ -43,7 +43,7 @@ public class NetworkManager : MonoBehaviour
     void Start()
     {
         ins = this;
-         friend = GetComponent<Friend>();
+        friend = GetComponent<Friend>();
         socket = go.GetComponent<SocketIOComponent>();
         socket.On("duocthuhoach", DcThuHoach);
         socket.On("quacongtrinh", quaCongtrinh);
@@ -65,10 +65,10 @@ public class NetworkManager : MonoBehaviour
         socket.On("updateMoney", UpdateMoney);
         socket.On("Event", Event);
         hopqua = GameObject.Find("btnQuaOnline").GetComponent<HopQua>();
-      //  quatanghangngay = GetComponent<QuaTangHangNgay>();
+        //  quatanghangngay = GetComponent<QuaTangHangNgay>();
         thuyen = GetComponent<ThuyenThucAn>();
         loidai = menuLoiDai.GetComponent<LoiDai>();
-     //   vienchinh = GameObject.FindGameObjectWithTag("vienchinh").GetComponent<VienChinh>();
+        //   vienchinh = GameObject.FindGameObjectWithTag("vienchinh").GetComponent<VienChinh>();
     }
     public static bool isSend = true;
 
@@ -77,11 +77,11 @@ public class NetworkManager : MonoBehaviour
     {
         socket.EmitWithJSONClass(!setisSend ? "SendRequest" : "SendRequest2", dataa, (response) =>
         {
-          //  stopwatch.Stop(); // Dừng đếm thời gian khi nhận được phản hồi
+            //  stopwatch.Stop(); // Dừng đếm thời gian khi nhận được phản hồi
             debug.Log("Server response: " + response.ToString());
             call(response[0]);
-          //  isSend = true;
-          //  debug.Log("Time phản hồi new: " + stopwatch.ElapsedMilliseconds + " ms");
+            //  isSend = true;
+            //  debug.Log("Time phản hồi new: " + stopwatch.ElapsedMilliseconds + " ms");
             CrGame.ins.panelLoadDao.SetActive(false);
         });
 
@@ -150,7 +150,7 @@ public class NetworkManager : MonoBehaviour
         }
         else if (e.data["emitevent"])
         {
-            if(MenuEventTrungThu2024.inss != null)
+            if (MenuEventTrungThu2024.inss != null)
             {
                 MenuEventTrungThu2024.inss.EmitEvent(e.data);
             }
@@ -164,9 +164,9 @@ public class NetworkManager : MonoBehaviour
         {
             debug.Log("download menu " + e.data["downloadmenu"]["namemenu"].str);
 
-            if(e.data["downloadmenu"]["namemenu"].str == "paneltrieuhoihaclong")
+            if (e.data["downloadmenu"]["namemenu"].str == "paneltrieuhoihaclong")
             {
-                if (!DownLoadAssetBundle.MenuBundle.ContainsKey("paneltrieuhoihaclong")) DownLoadAssetBundle.ins.DownLoadMenu("paneltrieuhoihaclong", ok2, false) ;
+                if (!DownLoadAssetBundle.MenuBundle.ContainsKey("paneltrieuhoihaclong")) DownLoadAssetBundle.ins.DownLoadMenu("paneltrieuhoihaclong", ok2, false);
                 void ok2()
                 {
                     if (AllMenu.ins.menu.ContainsKey("MenuTrieuHoiHacLong"))
@@ -187,10 +187,10 @@ public class NetworkManager : MonoBehaviour
                 }
             }
         }
-        else if(e.data["KeLangThang"])
+        else if (e.data["KeLangThang"])
         {
             debug.Log("Tao kelangthang");
-           KeLangThangManager.CreateAllKeLangThang(e.data);
+            KeLangThangManager.CreateAllKeLangThang(e.data);
         }
         else if (e.data["timeKLT"])
         {
@@ -201,11 +201,11 @@ public class NetworkManager : MonoBehaviour
             float x = float.Parse(e.data["ItemFly"]["x"].ToString());
             float y = float.Parse(e.data["ItemFly"]["y"].ToString());
             Vector3 vec = new Vector3(x, y);
-            if(x == 0 && y == 0)
+            if (x == 0 && y == 0)
             {
                 vec = GamIns.GetTransformMouse();
             }
-            
+
             ItemFly.CreateItemFly(Inventory.LoadSprite(e.data["ItemFly"]["name"].str), vec);
         }
         //if (e.data["TangThiep"])
@@ -307,7 +307,7 @@ public class NetworkManager : MonoBehaviour
     }
     void LoiDai(SocketIOEvent e)
     {
-        if(e.data["usertop"])
+        if (e.data["usertop"])
         {
             if (!loidai.gameObject.activeSelf) return;
             StartCoroutine(delay());
@@ -322,19 +322,19 @@ public class NetworkManager : MonoBehaviour
                 menuLoiDai.SetActive(true);
                 CrGame.ins.menulogin.SetActive(false);
                 AudioManager.SetSoundBg("nhacnen1");
-             //   debug.Log(e.data["usertop"]["usertop"]);
+                //   debug.Log(e.data["usertop"]["usertop"]);
                 for (int i = 0; i < e.data["usertop"]["usertop"].Count; i++)
                 {
-                    if(menuLoiDai.activeSelf)
+                    if (menuLoiDai.activeSelf)
                     {
                         if (e.data["usertop"]["usertop"][i]["tenhienthi"])
                         {
                             string tenhienthi = CatDauNgoacKep(e.data["usertop"]["usertop"][i]["tenhienthi"].ToString());
                             string idfb = CatDauNgoacKep(e.data["usertop"]["usertop"][i]["idfb"].ToString());
                             string top = e.data["usertop"]["usertop"][i]["top"].ToString();
-                            if(i == 0)
+                            if (i == 0)
                             {
-                                loidai.CreateUserTop(0, tenhienthi, top, idfb, CatDauNgoacKep(e.data["usertop"]["usertop"][i]["chientuong"].ToString()),byte.Parse(e.data["usertop"]["usertop"][i]["sao"].ToString()));
+                                loidai.CreateUserTop(0, tenhienthi, top, idfb, CatDauNgoacKep(e.data["usertop"]["usertop"][i]["chientuong"].ToString()), byte.Parse(e.data["usertop"]["usertop"][i]["sao"].ToString()));
                             }
                             else
                             {
@@ -351,7 +351,7 @@ public class NetworkManager : MonoBehaviour
                 }
             }
         }
-        if(e.data["danhloidai"])
+        if (e.data["danhloidai"])
         {
             ReplayData.Record = bool.Parse(GamIns.CatDauNgoacKep(e.data["Record"].ToString()));
             ReplayData.ResetReplayData();
@@ -361,18 +361,18 @@ public class NetworkManager : MonoBehaviour
             Text txtProgress = Progress.transform.GetChild(0).GetComponent<Text>();
             GiaoDienPVP giaoDien = AllMenu.ins.GetCreateMenu("GiaoDienPVP").GetComponent<GiaoDienPVP>();
             giaoDien.btnSetting.SetActive(false);
-         //   giaoDien.time = 0;
-           // debug.Log("ok 1");
+            //   giaoDien.time = 0;
+            // debug.Log("ok 1");
             for (int i = 0; i < e.data["danhloidai"]["doihinh"].Count; i++)
             {
                 string[] id = e.data["danhloidai"]["doihinh"][i]["id"].ToString().Split('"');
                 string[] nameObject = e.data["danhloidai"]["doihinh"][i]["nameobject"].ToString().Split('"');
                 giaoDien.AddItemRongDanh(nameObject[1], id[1], int.Parse(e.data["danhloidai"]["doihinh"][i]["sao"].ToString()), int.Parse(e.data["danhloidai"]["doihinh"][i]["tienhoa"].ToString()), i);
-              //  debug.Log("AddItemRongDanh " + i);
+                //  debug.Log("AddItemRongDanh " + i);
             }
-         //   debug.Log("ok 1");
+            //   debug.Log("ok 1");
             GiaoDienPVP.ins.LoadSkill(e.data["danhloidai"]["skill"]);
-           /// debug.Log("ok 2");
+            /// debug.Log("ok 2");
             if (CatDauNgoacKep(e.data["danhloidai"]["icontoclenh"].ToString()) == "true") vienchinh.HienIconSkill(999, "Xanh", "iconTocLenhXanh");
             if (CatDauNgoacKep(e.data["danhloidai"]["iconcovip"].ToString()) == "true") vienchinh.HienIconSkill(999, "Xanh", "iconCoVipXanh");
             if (CatDauNgoacKep(e.data["danhloidai"]["iconhoathanlong"].ToString()) == "true") vienchinh.HienIconSkill(999, "Xanh", "iconHoaThanLongXanh");
@@ -390,15 +390,15 @@ public class NetworkManager : MonoBehaviour
                 int count = e.data["danhloidai"]["doihinhfriend"].Count;
                 CrGame.ins.menulogin.SetActive(false);
                 GiaoDienPVP.ins.transform.Find("btnTrieuHoiNhanh").gameObject.SetActive(true);
-               // AudioManager.SetSoundBg("");
+                // AudioManager.SetSoundBg("");
                 vienchinh.StartCoroutine(vienchinh.delayGame("nhacloidai"));
                 yield return new WaitForSeconds(3.5f);
-                for (int i = 0; i < count;i++)
+                for (int i = 0; i < count; i++)
                 {
-                   PVEManager.TrieuHoiDra(e.data["danhloidai"]["doihinhfriend"][i], "TeamDo");
-                 
+                    PVEManager.TrieuHoiDra(e.data["danhloidai"]["doihinhfriend"][i], "TeamDo");
+
                     yield return new WaitForSeconds(0.1f);
-                   
+
                 }
             }
         }
@@ -406,20 +406,20 @@ public class NetworkManager : MonoBehaviour
         {
             //    Image Progress = CrGame.ins.menulogin.transform.GetChild(0).GetComponent<Image>();
             //   Text txtProgress = Progress.transform.GetChild(0).GetComponent<Text>();
-       
+
             GiaoDienPVP.ins.SoDoihinh = 0;
             GiaoDienPVP.ins.maxtime = 60;
             GiaoDienPVP.ins.TxtTime.GetComponent<timePvp>().enabled = true;
-          //  txtProgress.text = "0%";
-          //  Progress.fillAmount = 0 / (float)100;
+            //  txtProgress.text = "0%";
+            //  Progress.fillAmount = 0 / (float)100;
             for (int i = 0; i < e.data["danhthuthach"]["doihinh"].Count; i++)
             {
                 string[] id = e.data["danhthuthach"]["doihinh"][i]["id"].ToString().Split('"');
                 string[] nameObject = e.data["danhthuthach"]["doihinh"][i]["nameobject"].ToString().Split('"');
                 GiaoDienPVP.ins.AddItemRongDanh(nameObject[1], id[1], int.Parse(e.data["danhthuthach"]["doihinh"][i]["sao"].ToString()), int.Parse(e.data["danhthuthach"]["doihinh"][i]["tienhoa"].ToString()), i);
-               // inventory.LoadRongCoBan(nameObject[1]);
+                // inventory.LoadRongCoBan(nameObject[1]);
             }
-       //     debug.Log(e.data["danhthuthach"]);
+            //     debug.Log(e.data["danhthuthach"]);
             TruVienChinh trux = vienchinh.TruXanh.GetComponent<TruVienChinh>();
             trux.allmau = 1;
             TruVienChinh trud = vienchinh.TruDo.GetComponent<TruVienChinh>(); trud.allmau = 1;
@@ -448,7 +448,7 @@ public class NetworkManager : MonoBehaviour
                 {
                     PVEManager.TrieuHoiDra(e.data["danhthuthach"]["doihinhfriend"][i], "TeamDo");
 
-                  
+
                     yield return new WaitForSeconds(0.1f);
 
                 }
@@ -558,14 +558,14 @@ public class NetworkManager : MonoBehaviour
         //        dra.tienhoa = byte.Parse(e.data["DoTrieuHoi"]["tienhoa"].ToString());
         //        chiso.dame = float.Parse(e.data["DoTrieuHoi"]["chiso"]["sucdanh"].ToString());
 
-            //        Destroy(hieuung);
-            //     //   debug.Log(int.Parse(e.data["DoTrieuHoi"]["tienhoa"].ToString()));
-            //       // anim.SetInteger("TienHoa", int.Parse(e.data["DoTrieuHoi"]["tienhoa"].ToString()));
-            //        rongtrieuhoi.SetActive(true);
-            //        anim.SetInteger("TienHoa", int.Parse(e.data["DoTrieuHoi"]["tienhoa"].ToString()));
-            //    }
-            //}
-    } 
+        //        Destroy(hieuung);
+        //     //   debug.Log(int.Parse(e.data["DoTrieuHoi"]["tienhoa"].ToString()));
+        //       // anim.SetInteger("TienHoa", int.Parse(e.data["DoTrieuHoi"]["tienhoa"].ToString()));
+        //        rongtrieuhoi.SetActive(true);
+        //        anim.SetInteger("TienHoa", int.Parse(e.data["DoTrieuHoi"]["tienhoa"].ToString()));
+        //    }
+        //}
+    }
     void Vienchinh(SocketIOEvent e)
     {
         VienChinh.HandleSocket.ParseData(e);
@@ -582,7 +582,7 @@ public class NetworkManager : MonoBehaviour
             string[] id = e.data["solochientuong"]["rongminh"]["id"].ToString().Split('"');
             string[] nameObject = e.data["solochientuong"]["rongminh"]["nameobject"].ToString().Split('"');
             string[] nameObjectfriend = e.data["solochientuong"]["rongfriend"]["nameobject"].ToString().Split('"');
-            GiaoDienPVP.ins.AddItemRongDanh(nameObject[1], id[1], int.Parse(e.data["solochientuong"]["rongminh"]["sao"].ToString()), int.Parse(e.data["solochientuong"]["rongminh"]["tienhoa"].ToString()),0);
+            GiaoDienPVP.ins.AddItemRongDanh(nameObject[1], id[1], int.Parse(e.data["solochientuong"]["rongminh"]["sao"].ToString()), int.Parse(e.data["solochientuong"]["rongminh"]["tienhoa"].ToString()), 0);
             GiaoDienPVP.ins.LoadSkill(e.data["skill"]);
 
             vienchinh.StartCoroutine(vienchinh.delayGame());
@@ -600,7 +600,7 @@ public class NetworkManager : MonoBehaviour
             //StartCoroutine(hieuungtrieuhoi(SGResources.Load("GameData/Rong/" + nameObject[1]) as GameObject));
             // StartCoroutine(trieuhoifriend(SGResources.Load("GameData/Rong/" + nameObjectfriend[1]) as GameObject));
             StartCoroutine(hieuungtrieuhoi());
-         //   StartCoroutine(trieuhoifriend(inventory.ObjectRong(nameObjectfriend[1])));
+            //   StartCoroutine(trieuhoifriend(inventory.ObjectRong(nameObjectfriend[1])));
             IEnumerator hieuungtrieuhoi()
             {
                 yield return new WaitForSeconds(4f);
@@ -609,7 +609,7 @@ public class NetworkManager : MonoBehaviour
                 GiaoDienPVP.ins.ContentItemRong.transform.GetChild(0).GetComponent<Button>().interactable = false;
             }
         }
-        if(e.data["Add"])
+        if (e.data["Add"])
         {
             if (CatDauNgoacKep(e.data["Add"].ToString()) != "")
             {
@@ -617,7 +617,7 @@ public class NetworkManager : MonoBehaviour
                 if (AllMenu.ins.menu.ContainsKey("menuFriend"))
                 {
                     ListFriend listfriend = AllMenu.ins.menu["menuFriend"].GetComponent<ListFriend>();
-                   
+
                     GameObject Ofriend = Instantiate(listfriend.Ofriend, listfriend.ContentFriend.transform.position, Quaternion.identity) as GameObject;
                     Ofriend.transform.SetParent(listfriend.ContentFriend.transform, false);
                     Image Avatar = Ofriend.transform.GetChild(0).GetComponent<Image>();
@@ -644,8 +644,8 @@ public class NetworkManager : MonoBehaviour
 
                     //Khung.sprite = Inventory.LoadSprite("Avatar" + CatDauNgoacKep(e.data["Add"]["coban"]["toc"].ToString()));
                     Ofriend.SetActive(true);
-                }    
-              
+                }
+
             }
             else
             {
@@ -653,38 +653,38 @@ public class NetworkManager : MonoBehaviour
             }
             return;
         }
-        if(e.data["Delete"])
+        if (e.data["Delete"])
         {
-            if(GameObject.Find(CatDauNgoacKep(e.data["Delete"].ToString())))
+            if (GameObject.Find(CatDauNgoacKep(e.data["Delete"].ToString())))
             {
                 Destroy(GameObject.Find(CatDauNgoacKep(e.data["Delete"].ToString())));
             }
             return;
         }
-        if(e.data["Tangqua"])
+        if (e.data["Tangqua"])
         {
             string[] cat = CatDauNgoacKep(e.data["Tangqua"]["nameitem"].ToString()).Split('*');
             if (cat[0] == "item")
             {
-                inventory.AddItem(cat[1],-int.Parse(e.data["Tangqua"]["soluong"].ToString()));
+                inventory.AddItem(cat[1], -int.Parse(e.data["Tangqua"]["soluong"].ToString()));
             }
             else
             {
                 Destroy(GameObject.Find(CatDauNgoacKep(e.data["Tangqua"]["idrong"].ToString())));
             }
             AllMenu.ins.DestroyMenu("MenuTangQua");
-         //   friend.menuTangQua.SetActive(false);
+            //   friend.menuTangQua.SetActive(false);
             return;
         }
-        if(e.data["XemQua"])
+        if (e.data["XemQua"])
         {
-            if(e.data["XemQua"]["nameitemthuong"])
+            if (e.data["XemQua"]["nameitemthuong"])
             {
                 // hopqua.imgQuaFriend.sprite = GameObject.Find("Sprite"+CatDauNgoacKep(e.data["XemQua"]["nameitemthuong"].ToString())).GetComponent<SpriteRenderer>().sprite;
                 hopqua.imgQuaFriend.sprite = Inventory.LoadSprite(CatDauNgoacKep(e.data["XemQua"]["nameitemthuong"].ToString()));//GameObject.Find(CatDauNgoacKep(e.data["XemQua"]["nameitemthuong"].ToString())).GetComponent<Image>().sprite;
                 hopqua.TxtSoLuongQua.text = "x" + e.data["XemQua"]["soluong"].ToString();
             }
-            if(e.data["XemQua"]["rong"])
+            if (e.data["XemQua"]["rong"])
             {
                 string nameobject = CatDauNgoacKep(e.data["XemQua"]["rong"]["nameobject"].ToString());
                 string tienhoa = e.data["XemQua"]["rong"]["tienhoa"].ToString();
@@ -730,9 +730,9 @@ public class NetworkManager : MonoBehaviour
                 float sothucan = float.Parse(CatDauNgoacKep(e.data["nhanqua"]["rong"]["timedoi"].ToString()));
                 string tenrong = CatDauNgoacKep(e.data["nhanqua"]["rong"]["namerong"].ToString());
                 string nameobject = CatDauNgoacKep(e.data["nhanqua"]["rong"]["nameobject"].ToString());
-                inventory.AddItemRong(id, nameitem, sao, level, exp, maxexp, tienhoa, sothucan, tenrong, nameobject, e.data["nhanqua"]["rong"]["hoangkim"], e.data["nhanqua"]["rong"]["ngoc"],false);
+                inventory.AddItemRong(id, nameitem, sao, level, exp, maxexp, tienhoa, sothucan, tenrong, nameobject, e.data["nhanqua"]["rong"]["hoangkim"], e.data["nhanqua"]["rong"]["ngoc"], false);
             }
-        
+
             hopqua.SoquaDanhan += 1;
             hopqua.imgQua[friend.quaxem].sprite = hopqua.ImgquaKhongDuocNhan;
             hopqua.imgQua[friend.quaxem].GetComponent<Button>().enabled = false;
@@ -758,7 +758,7 @@ public class NetworkManager : MonoBehaviour
             txtsoqua.text = hopqua.SoquaFriend.ToString();
             for (int i = 0; i < hopqua.boolqua.Length; i++)
             {
-                if(hopqua.boolqua[i] == "")
+                if (hopqua.boolqua[i] == "")
                 {
                     hopqua.imgQua[i].sprite = hopqua.imgquaDuocNhan;
                     hopqua.imgQua[i].GetComponent<Button>().enabled = true;
@@ -767,38 +767,38 @@ public class NetworkManager : MonoBehaviour
                 }
             }
         }
-        if(e.data["moidanhdautruong"])
+        if (e.data["moidanhdautruong"])
         {
             //debug.Log("co nguoi moi");
-            if(thuyen.ThuyenObject.activeInHierarchy)
+            if (thuyen.ThuyenObject.activeInHierarchy)
             {
                 ThongBaoChon tbc = AllMenu.ins.GetCreateMenu("MenuXacNhan", GameObject.Find("CanvasTrenCung")).GetComponent<ThongBaoChon>();
                 tbc.txtThongBao.text = CatDauNgoacKep(e.data["moidanhdautruong"]["thongbao"].ToString());
                 string id = CatDauNgoacKep(e.data["moidanhdautruong"]["id"].ToString());
                 tbc.btnChon.onClick.AddListener(() => VaoRoomDauTruong(id));
                 tbc.gameObject.SetActive(true);
-            }    
+            }
         }
 
-        if(e.data["RoomDauTruong"])
+        if (e.data["RoomDauTruong"])
         {
-            if(AllMenu.ins.menu.ContainsKey("MenuDauTruongOnIine"))
+            if (AllMenu.ins.menu.ContainsKey("MenuDauTruongOnIine"))
             {
-                DauTruongOnline dautruong = AllMenu.ins.menu["MenuDauTruongOnIine"].GetComponent<DauTruongOnline>(); 
+                DauTruongOnline dautruong = AllMenu.ins.menu["MenuDauTruongOnIine"].GetComponent<DauTruongOnline>();
                 for (int i = 0; i < 2; i++)
                 {
                     dautruong.btnMoi[i].SetActive(false);
-                   // debug.Log("co nguoi vao room1");
-                    dautruong.imgAvatar[i].gameObject.SetActive(true); 
-                   // debug.Log("co nguoi vao room2");
+                    // debug.Log("co nguoi vao room1");
+                    dautruong.imgAvatar[i].gameObject.SetActive(true);
+                    // debug.Log("co nguoi vao room2");
                     // friend.GetAvatarFriend(CatDauNgoacKep(e.data["RoomDauTruong"][i]["idfb"].ToString()), dautruong.imgAvatar[i]); debug.Log("co nguoi vao room3");
                     friend.LoadAvtFriend(GamIns.CatDauNgoacKep(e.data["RoomDauTruong"][i]["idfb"].ToString()), dautruong.imgAvatar[i], dautruong.imgAvatar[i].transform.GetChild(0).GetComponent<Image>());
-            //        dautruong.imgAvatar[i].transform.GetChild(0).GetComponent<Image>().sprite = Inventory.LoadSprite("Avatar" + CatDauNgoacKep(e.data["RoomDauTruong"][i]["toc"].ToString())); 
-                   // debug.Log("co nguoi vao room4");
+                    //        dautruong.imgAvatar[i].transform.GetChild(0).GetComponent<Image>().sprite = Inventory.LoadSprite("Avatar" + CatDauNgoacKep(e.data["RoomDauTruong"][i]["toc"].ToString())); 
+                    // debug.Log("co nguoi vao room4");
                     dautruong.imgAvatar[i].transform.GetChild(1).GetComponent<Text>().text = CatDauNgoacKep(e.data["RoomDauTruong"][i]["tenhienthi"].ToString());
                 }
             }
-          
+
         }
         else if (e.data["ThoatRoom"])
         {
@@ -808,8 +808,8 @@ public class NetworkManager : MonoBehaviour
                 int i = int.Parse(CatDauNgoacKep(e.data["ThoatRoom"].ToString()));
                 dautruong.btnMoi[i].SetActive(true);
                 dautruong.imgAvatar[i].gameObject.SetActive(false);
-            }    
-  
+            }
+
         }
     }
     public void VaoRoomDauTruong(string id)
@@ -836,18 +836,18 @@ public class NetworkManager : MonoBehaviour
                 {
                     trencung.transform.GetChild(i).gameObject.SetActive(false);
                 }
-                if(AllMenu.ins.menu.ContainsKey("menuPhoban"))
+                if (AllMenu.ins.menu.ContainsKey("menuPhoban"))
                 {
                     XemPhoBan xemphoban = AllMenu.ins.menu["menuPhoban"].GetComponent<XemPhoBan>();
                     xemphoban.gameObject.SetActive(false);
-                }    
-      
+                }
+
                 CrGame.ins.giaodien.SetActive(false);
                 DauTruongOnline dautruong = AllMenu.ins.menu["MenuDauTruongOnIine"].GetComponent<DauTruongOnline>();
                 dautruong = AllMenu.ins.menu["MenuDauTruongOnIine"].GetComponent<DauTruongOnline>();
                 CrGame.ins.OnThongBao(false);
                 dautruong.gameObject.SetActive(true);
-                if(AllMenu.ins.menu.ContainsKey("MenuXacNhan")) AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
+                if (AllMenu.ins.menu.ContainsKey("MenuXacNhan")) AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
 
                 dautruong.coroom = true;
             }
@@ -858,8 +858,8 @@ public class NetworkManager : MonoBehaviour
                 {
                     AllMenu.ins.menu["MenuDauTruongOnIine"].GetComponent<DauTruongOnline>().coroom = false;
                 }
-            } 
-                
+            }
+
 
 
         }
@@ -914,8 +914,8 @@ public class NetworkManager : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
         GameObject add = Instantiate(vitribay.gameObject, vitribay.transform.position, Quaternion.identity);
         add.name = "delayhiento";
-        Destroy(add,2.2f);
-       // add.name = vitribay.name;
+        Destroy(add, 2.2f);
+        // add.name = vitribay.name;
         add.SetActive(true);
         add.transform.SetParent(CrGame.ins.trencung.transform, false);
 
@@ -926,9 +926,9 @@ public class NetworkManager : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
         add.transform.LeanScale(new Vector3(add.transform.localScale.x / 1.2f, add.transform.localScale.y / 1.2f, add.transform.position.z), 0.3f);
 
-      
+
         yield return new WaitForSeconds(1.9f);
-       
+
         if (activeseft) vitribay.SetActive(true);
     }
     void UpdateMoney(SocketIOEvent e)
@@ -959,17 +959,17 @@ public class NetworkManager : MonoBehaviour
         {
             GiaoDienPVP.ins.OSkill.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().fillAmount = float.Parse(CatDauNgoacKep(e.data["updateNoKhi"].ToString())) / 150;
             GiaoDienPVP.ins.OSkill.transform.GetChild(0).transform.GetChild(1).GetComponent<Text>().text = CatDauNgoacKep(e.data["updateNoKhi"].ToString());
-            if(AllMenu.ins.menu.ContainsKey("MenuXacNhan")) AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
+            if (AllMenu.ins.menu.ContainsKey("MenuXacNhan")) AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
         }
         else if (e.data["ThanLong"])
         {
             GameObject daoo = CrGame.ins.AllDao.transform.Find("BGDao2").gameObject;
             if (e.data["ThanLong"]["TuyetThanLong"])
             {
-               
+
                 GameObject BeThanLong = daoo.transform.Find("BeTuyetThanLong").gameObject;
                 Animator anim = BeThanLong.transform.GetChild(0).GetComponent<Animator>();
-                if(CatDauNgoacKep(e.data["ThanLong"]["TuyetThanLong"].ToString()) == "doi")
+                if (CatDauNgoacKep(e.data["ThanLong"]["TuyetThanLong"].ToString()) == "doi")
                 {
                     anim.SetBool("Doi", true);
                     BeThanLong.transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(true);
@@ -1021,12 +1021,12 @@ public class NetworkManager : MonoBehaviour
             string nhiemvuj = CatDauNgoacKep(e.data["updatenhiemvu"]["nhiemvu"].ToString());
             string sonhiemvu = CatDauNgoacKep(e.data["updatenhiemvu"]["sonhiemvu"].ToString());
             string namenhiemvu = CatDauNgoacKep(e.data["updatenhiemvu"]["namenv"].ToString());
-            Nhiemvu.UpdateNhiemVu(namenhiemvu,sonhiemvu,nhiemvuj);
+            Nhiemvu.UpdateNhiemVu(namenhiemvu, sonhiemvu, nhiemvuj);
         }
         else if (e.data["useskill"])
         {
             //e.data["useskill"]["nameskill"] = JSONObject.CreateStringObject("");
-             int index = int.Parse(CatDauNgoacKep(e.data["useskill"]["index"].ToString()));
+            int index = int.Parse(CatDauNgoacKep(e.data["useskill"]["index"].ToString()));
             // Transform oskill = GiaoDienPVP.ins.OSkill.transform.GetChild(1);
             //  oskill.GetChild(index).transform.GetChild(1).gameObject.SetActive(true);
 
@@ -1035,14 +1035,14 @@ public class NetworkManager : MonoBehaviour
 
             GiaoDienPVP.ins.OSkill.transform.GetChild(0).transform.GetChild(1).GetComponent<Text>().text = CatDauNgoacKep(e.data["useskill"]["sonokhi"].ToString());
 
-           
+
             vienchinh.timeskill[index] = float.Parse(CatDauNgoacKep(e.data["useskill"]["time"].ToString()));
 
             vienchinh.HieuUngSkill("Skill" + CatDauNgoacKep(e.data["useskill"]["nameskill"].ToString()), float.Parse(CatDauNgoacKep(e.data["useskill"]["satthuong"].ToString())), float.Parse(CatDauNgoacKep(e.data["useskill"]["level"].ToString())));
-            
+
             if (nameskill == "SamNo")
             {
-                vienchinh.HienIconSkill(float.Parse(CatDauNgoacKep(e.data["useskill"]["timeskill"].ToString())),"Xanh", "iconSamNoXanh");
+                vienchinh.HienIconSkill(float.Parse(CatDauNgoacKep(e.data["useskill"]["timeskill"].ToString())), "Xanh", "iconSamNoXanh");
                 if (vienchinh.TeamXanh.transform.childCount > 1)
                 {
                     for (int i = 1; i < vienchinh.TeamXanh.transform.childCount; i++)
@@ -1050,13 +1050,13 @@ public class NetworkManager : MonoBehaviour
                         DragonPVEController dragonPVEController = vienchinh.TeamXanh.transform.GetChild(i).GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
                         if (dragonPVEController != null)
                         {
-                            dataLamCham data = new dataLamCham(float.Parse(CatDauNgoacKep(e.data["useskill"]["timeskill"].ToString())), "", 0, "0.7+0.7+1.3",false,true);
+                            dataLamCham data = new dataLamCham(float.Parse(CatDauNgoacKep(e.data["useskill"]["timeskill"].ToString())), "", 0, "0.7+0.7+1.3", false, true);
                             dragonPVEController.LamChamABS(data);// [speed][speedrun][speedAttack]
                         }
                         else break;
                     }
                 }
-             //   debug.Log("samno ok1");
+                //   debug.Log("samno ok1");
                 //if (vienchinh.TeamDo.transform.childCount > 1)
                 //{
                 //    for (int i = 1; i < vienchinh.TeamDo.transform.childCount; i++)
@@ -1070,13 +1070,13 @@ public class NetworkManager : MonoBehaviour
                 //        else break;
                 //    }
                 //}
-             //   debug.Log("samno ok2");
+                //   debug.Log("samno ok2");
             }
             else if (nameskill == "DatBom")
             {
 
             }
-            else if(nameskill == "BienCuu")
+            else if (nameskill == "BienCuu")
             {
                 if (vienchinh.chedodau == CheDoDau.BossTG) return;
                 float level = float.Parse(CatDauNgoacKep(e.data["useskill"]["level"].ToString()));
@@ -1147,8 +1147,8 @@ public class NetworkManager : MonoBehaviour
                 }
                 if (send) DauTruongOnline.ins.AddUpdateData(newjson, true);
 
-            }   
-            else if(nameskill == "CuongLoan")
+            }
+            else if (nameskill == "CuongLoan")
             {
                 //float phantramdame = 20 + float.Parse(CatDauNgoacKep(e.data["useskill"]["level"].ToString())) * 2;
                 //float time = 3 + float.Parse(CatDauNgoacKep(e.data["useskill"]["level"].ToString())) * 0.2f;
@@ -1163,17 +1163,17 @@ public class NetworkManager : MonoBehaviour
             }
             else
             {
-               
+
             }
-         //   vienchinh.nokhi -= int.Parse(CatDauNgoacKep(e.data["useskill"]["nokhi"].ToString()));
+            //   vienchinh.nokhi -= int.Parse(CatDauNgoacKep(e.data["useskill"]["nokhi"].ToString()));
             return;
         }
         else if (e.data["DuocXemQuangCao"])
         {
-//#if UNITY_EDITOR || UNITY_ANDROID
+            //#if UNITY_EDITOR || UNITY_ANDROID
             GetComponent<Admobb>().RequestRewardedVideo();
-        //    CrGame.ins.BtnXemQuangCao.SetActive(true);
-//#endif
+            //    CrGame.ins.BtnXemQuangCao.SetActive(true);
+            //#endif
         }
         else if (e.data["TimeQuaOnline"])
         {
@@ -1183,13 +1183,13 @@ public class NetworkManager : MonoBehaviour
             timequa.gameObject.SetActive(true);
             timequa.timerIsRunning = true;
             Image img = timequa.transform.parent.GetChild(0).GetComponent<Image>();
-            img.sprite = Inventory.LoadSprite(CatDauNgoacKep(e.data["NameQuaOnl"].ToString()));img.SetNativeSize();
+            img.sprite = Inventory.LoadSprite(CatDauNgoacKep(e.data["NameQuaOnl"].ToString())); img.SetNativeSize();
             timequa.transform.parent.GetChild(2).gameObject.SetActive(false);
         }
         else if (e.data["mokhoaNhiemvu"])
         {
             debug.Log("Mo Khoa nhiem vu thanh cong");
-            if(e.data["mokhoaNhiemvu"]["nhiemvuhangngay"])
+            if (e.data["mokhoaNhiemvu"]["nhiemvuhangngay"])
             {
                 Nhiemvu.QuaNhanHangNgay.SetActive(true);
                 Nhiemvu.ContentNVHangNgay.transform.GetChild(Nhiemvu.ContentNVHangNgay.transform.childCount - 1).gameObject.SetActive(false);
@@ -1278,7 +1278,7 @@ public class NetworkManager : MonoBehaviour
         {
             string nameitem = CatDauNgoacKep(e.data["xoaitem"]["nameitem"].ToString());
             int soluong = int.Parse(CatDauNgoacKep(e.data["xoaitem"]["soluong"].ToString()));
-            inventory.AddItem(nameitem,-soluong);
+            inventory.AddItem(nameitem, -soluong);
         }
         else if (e.data["additem"])
         {
@@ -1293,13 +1293,13 @@ public class NetworkManager : MonoBehaviour
             StartCoroutine(delay());
             IEnumerator delay()
             {
-                yield return new WaitForSeconds(Random.Range(0.02f,0.1f));
+                yield return new WaitForSeconds(Random.Range(0.02f, 0.1f));
 
                 yield return new WaitUntil(checkk);
                 if (!AllMenu.ins.menu.ContainsKey("MenuThanhTuu"))
                 {
                     EventManager.OpenThongBaoChon(e.data["UpdateThanhTuu"]["thongbao"].str.Replace("\\n", "\n"), () => {
-                        MenuThanhTuu menu = AllMenu.ins.GetCreateMenu("MenuThanhTuu", CrGame.ins.trencung.gameObject, false,CrGame.ins.panelLoadDao.transform.GetSiblingIndex()).GetComponent<MenuThanhTuu>();
+                        MenuThanhTuu menu = AllMenu.ins.GetCreateMenu("MenuThanhTuu", CrGame.ins.trencung.gameObject, false, CrGame.ins.panelLoadDao.transform.GetSiblingIndex()).GetComponent<MenuThanhTuu>();
                         menu.nameThanhTuuGet = e.data["UpdateThanhTuu"]["namethanhtuu"].str;
                         menu.gameObject.SetActive(true);
                         MenuThanhTuu.thanhtuuEmitHoanThanh = new List<string>();
@@ -1308,11 +1308,11 @@ public class NetworkManager : MonoBehaviour
             }
             bool checkk()
             {
-               // debug.Log("checkkkkkkkkkkkkkkkk" + " length " + MenuThanhTuu.thanhtuuEmitHoanThanh.Count  +" str "+ MenuThanhTuu.thanhtuuEmitHoanThanh[0]);
-                if(MenuThanhTuu.thanhtuuEmitHoanThanh.Count > 0)
+                // debug.Log("checkkkkkkkkkkkkkkkk" + " length " + MenuThanhTuu.thanhtuuEmitHoanThanh.Count  +" str "+ MenuThanhTuu.thanhtuuEmitHoanThanh[0]);
+                if (MenuThanhTuu.thanhtuuEmitHoanThanh.Count > 0)
                 {
                     if (MenuThanhTuu.thanhtuuEmitHoanThanh[0] == str) return true;
-                }    
+                }
                 return false;
             }
             void btnHuy()
@@ -1320,19 +1320,19 @@ public class NetworkManager : MonoBehaviour
                 MenuThanhTuu.thanhtuuEmitHoanThanh.Remove(str);
                 StopCoroutine(delay());
             }
-        
+
         }
     }
     void Info(SocketIOEvent e)
     {
         debug.Log("[SocketIO] Open received: " + e.name + " " + e.data);
-   
-        if(e.data["infoct"])
+
+        if (e.data["infoct"])
         {
             AllMenu.ins.menu["infoct"].transform.GetChild(0).GetComponent<Text>().text = CatDauNgoacKep(e.data["infoct"].ToString()).Replace("\\n", "\n");
             return;
         }
-        if(e.data["xemnangcapthucan"])
+        if (e.data["xemnangcapthucan"])
         {
             Ui UI;
             UI = AllMenu.ins.GetCreateMenu("MenuNangCapItem", null, true).GetComponent<Ui>();
@@ -1369,19 +1369,19 @@ public class NetworkManager : MonoBehaviour
             else UI.btnNangCapThucAn[1].interactable = true;
             return;
         }
-        if(e.data["quadao"])
+        if (e.data["quadao"])
         {
-            if(CatDauNgoacKep(e.data["quadao"].ToString()) == "thanhcong")
+            if (CatDauNgoacKep(e.data["quadao"].ToString()) == "thanhcong")
             {
                 if (AllMenu.ins.transform.Find("BtnSangDao"))
                 {
                     AllMenu.ins.transform.Find("BtnSangDao").transform.SetParent(CrGame.ins.giaodien.transform);
                 }
-            
+
 
                 //load data dao
-                 
-                Dao dao = CrGame.ins.AllDao.transform.Find("BGDao"+CrGame.ins.DangODao).GetComponent<Dao>();
+
+                Dao dao = CrGame.ins.AllDao.transform.Find("BGDao" + CrGame.ins.DangODao).GetComponent<Dao>();
 
                 DragonIslandManager.DungThucAn = dao.transform.Find("ThucAn").gameObject;
                 int i = dao.transform.GetSiblingIndex();
@@ -1391,7 +1391,7 @@ public class NetworkManager : MonoBehaviour
 
 
                     CrGame.ins.leveldao[i] = byte.Parse(CatDauNgoacKep(e.data["datadao"]["leveldao"].ToString()));
-                   // debug.LogError(e.data["datadao"]["congtrinh"]);
+                    // debug.LogError(e.data["datadao"]["congtrinh"]);
                     Image imgCapDao = CrGame.ins.FindObject(dao.gameObject, "btnCapDao").GetComponent<Image>();
                     imgCapDao.sprite = Inventory.LoadSprite("Dao" + CrGame.ins.leveldao[i]);
                     imgCapDao.SetNativeSize();
@@ -1408,7 +1408,7 @@ public class NetworkManager : MonoBehaviour
                     CrGame.ins.OnThongBao(true, "Đang lấy dữ liệu Rồng...", false);
                     for (int j = 0; j < e.data["datadao"]["rong"].Count; j++)
                     {
-                         debug.Log("rong " + j);
+                        debug.Log("rong " + j);
                         DragonIslandManager.ParseDragonIsland(JSON.Parse(e.data["datadao"]["rong"][j].ToString()), CrGame.ins.DangODao);
                     }
 
@@ -1419,7 +1419,7 @@ public class NetworkManager : MonoBehaviour
                         NuiLua.Instance.MauNgoc = (_mauNgoc)Enum.Parse(typeof(_mauNgoc), GamIns.CatDauNgoacKep(e.data["datadao"]["namengoc"].ToString()));
                         // debug.Log("Time nui than bi dao " + i + ": " + CrGame.ins.timeNuiThanBi);
                     }
-                    if (e.data["datadao"]["itemEvent"])  DragonIslandManager.InsAllItemDao(JSON.Parse(e.data["datadao"]["itemEvent"].ToString()), CrGame.ins.DangODao);
+                    if (e.data["datadao"]["itemEvent"]) DragonIslandManager.InsAllItemDao(JSON.Parse(e.data["datadao"]["itemEvent"].ToString()), CrGame.ins.DangODao);
                     //if (e.data["datadao"]["itemEvent"])
                     //{
                     //    for (int j = 0; j < e.data["datadao"]["itemEvent"].Count; j++)
@@ -1440,9 +1440,9 @@ public class NetworkManager : MonoBehaviour
                             Destroy(trangtri.GetComponent<Button>());
                             trangtri.transform.SetParent(objecttrangtridao.transform);
                             float x = 0, y = 0;
-                            float.TryParse(GamIns.CatDauNgoacKep(e.data["datadao"]["trangtri"][j]["x"].ToString(),true),out x);
-                            float.TryParse(GamIns.CatDauNgoacKep(e.data["datadao"]["trangtri"][j]["y"].ToString(),true),out y);
-                           // float.TryParse(float.Parse(CatDauNgoacKep(e.data["datadao"]["trangtri"][j]["x"].ToString()), out y);
+                            float.TryParse(GamIns.CatDauNgoacKep(e.data["datadao"]["trangtri"][j]["x"].ToString(), true), out x);
+                            float.TryParse(GamIns.CatDauNgoacKep(e.data["datadao"]["trangtri"][j]["y"].ToString(), true), out y);
+                            // float.TryParse(float.Parse(CatDauNgoacKep(e.data["datadao"]["trangtri"][j]["x"].ToString()), out y);
                             trangtri.transform.position = new Vector3(x, y, 0);
                             trangtri.transform.GetChild(1).gameObject.SetActive(true);
                             trangtri.GetComponent<Image>().enabled = false;
@@ -1452,7 +1452,7 @@ public class NetworkManager : MonoBehaviour
                             {
                                 trangtri.transform.GetChild(1).GetComponent<Animator>().runtimeAnimatorController = Inventory.LoadAnimator("TocLenh" + CatDauNgoacKep(e.data["coban"]["toc"].ToString()));
                             }
-                          //  debug.LogError("trang tri " + j + " " + e.data["datadao"]["trangtri"][j]);
+                            //  debug.LogError("trang tri " + j + " " + e.data["datadao"]["trangtri"][j]);
                         }
                     }
                     //debug.LogError("load den day");
@@ -1463,18 +1463,18 @@ public class NetworkManager : MonoBehaviour
                         vang.transform.SetParent(CrGame.ins.FindObject(dao.gameObject, "itemroi").transform);
                         vang.SetActive(true);
                     }
-                
+
                 }
 
                 if (e.data["daobay"])
                 {
-                    if(GamIns.CatDauNgoacKep(e.data["daobay"].ToString()) == "true")
+                    if (GamIns.CatDauNgoacKep(e.data["daobay"].ToString()) == "true")
                     {
                         Transform daobay = dao.transform.Find("DaoBay");
                         if (daobay != null) daobay.gameObject.SetActive(true);
                     }
-                        
-            
+
+
 
                 }
 
@@ -1493,7 +1493,7 @@ public class NetworkManager : MonoBehaviour
                 txtnamedao.text = CatDauNgoacKep(e.data["quadao"]["namedao"].ToString());
                 CrGame.ins.giaodien.transform.Find("BtnSangDao").transform.SetParent(AllMenu.ins.transform);
 
-                if(e.data["quadao"]["giamodaokc"])
+                if (e.data["quadao"]["giamodaokc"])
                 {
                     GameObject objectmodao = CrGame.ins.MenuMoDao.transform.GetChild(0).transform.GetChild(0).transform.GetChild(5).gameObject;
 
@@ -1530,9 +1530,9 @@ public class NetworkManager : MonoBehaviour
             Text txtSoluong = qua.transform.GetChild(0).GetComponent<Text>();
             txtSoluong.text = CatDauNgoacKep(e.data["nhanquatanghangngay"]["soluong"].ToString());
             qua.transform.SetParent(quatanghangngay.quachon.transform);
-            quatanghangngay.soqua -= 1;quatanghangngay.load = false;
-            inventory.ScaleObject(qua,0.5f,0.5f);
-            if(CatDauNgoacKep(e.data["nhanquatanghangngay"]["namequa"].ToString()) != "Vang")
+            quatanghangngay.soqua -= 1; quatanghangngay.load = false;
+            inventory.ScaleObject(qua, 0.5f, 0.5f);
+            if (CatDauNgoacKep(e.data["nhanquatanghangngay"]["namequa"].ToString()) != "Vang")
             {
                 inventory.AddItem(CatDauNgoacKep(e.data["nhanquatanghangngay"]["namequa"].ToString()), int.Parse(e.data["nhanquatanghangngay"]["soluong"].ToString()));
             }
@@ -1544,7 +1544,7 @@ public class NetworkManager : MonoBehaviour
         }
         if (e.data["chisodao"])
         {
-          //  AllMenu.ins.OpenMenu("MenulInfoDao");
+            //  AllMenu.ins.OpenMenu("MenulInfoDao");
             InfoDao infodao = AllMenu.ins.menu["MenulInfoDao"].GetComponent<InfoDao>();
             infodao.txtNameDao.text = CatDauNgoacKep(e.data["chisodao"]["namedao"].ToString());
             infodao.txtRong.text = CatDauNgoacKep(e.data["chisodao"]["sorong"].ToString());
@@ -1566,7 +1566,7 @@ public class NetworkManager : MonoBehaviour
                 g.transform.position = imgItem.transform.position;
                 quabay = g.AddComponent<QuaBay>();
             }
-      
+
             if (add[0] != "funcItem")
             {
                 inventory.AddItem(add[0], int.Parse(add[1]));
@@ -1576,15 +1576,15 @@ public class NetworkManager : MonoBehaviour
 
                 quabay.vitribay = GameObject.FindGameObjectWithTag("hopqua");
             }
-         
+
             //GameObject.Find("MenuMua").SetActive(false);
-     
-          //  shop.transform.GetChild(0).gameObject.SetActive(false);
+
+            //  shop.transform.GetChild(0).gameObject.SetActive(false);
             shop.MenuMua.SetActive(false);
-           // AllMenu.ins.menu["MenuShop"].transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
+            // AllMenu.ins.menu["MenuShop"].transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
             //    CrGame.ins.OnThongBao(true,"Mua Thành Công",true);
-        //    CrGame.ins.OnThongBaoNhanh("Mua Thành Công",1);
-            if(vienchinh.dangdau)
+            //    CrGame.ins.OnThongBaoNhanh("Mua Thành Công",1);
+            if (vienchinh.dangdau)
             {
                 AllMenu.ins.menu["MenuShop"].SetActive(false);
                 GiaoDienPVP.ins.txtHuyenTinh.text = inventory.ListItemThuong["itemHuyenTinh"].transform.GetChild(0).GetComponent<Text>().text;
@@ -1595,7 +1595,7 @@ public class NetworkManager : MonoBehaviour
         if (e.data["congtrinh"])
         {
             string[] cat = CatDauNgoacKep(e.data["congtrinh"].ToString()).Split('+');
-            if(GameObject.Find("item" + cat[0]))
+            if (GameObject.Find("item" + cat[0]))
             {
                 ItemCongTrinh itemct = GameObject.Find("item" + cat[0]).GetComponent<ItemCongTrinh>();
                 itemct.Huy();
@@ -1604,37 +1604,37 @@ public class NetworkManager : MonoBehaviour
             inventory.menuTuiDo.SetActive(false);
             GameObject Dao = CrGame.ins.AllDao.transform.Find("BGDao" + CrGame.ins.DangODao).gameObject;
             CongTrinh ct = CrGame.ins.FindObject(Dao, "ObjectCongtrinh").transform.GetChild(int.Parse(cat[1])).GetComponent<CongTrinh>();
-            StartCoroutine(CreateHieuUngCongtrinh(ct,cat[0]));
+            StartCoroutine(CreateHieuUngCongtrinh(ct, cat[0]));
             return;
         }
-        if(e.data["rongquayra"])
+        if (e.data["rongquayra"])
         {
             VongQuayRong vongquayrong = AllMenu.ins.menu["MenuQuayRong"].GetComponent<VongQuayRong>();
             vongquayrong.btnExit.interactable = false;
             vongquayrong.btnQuay.interactable = false;
             vongquayrong.soquay = 0;
 
-            inventory.RemoveItem(vongquayrong.nameTrung,1);
+            inventory.RemoveItem(vongquayrong.nameTrung, 1);
             for (int i = 0; i < e.data["rongquayra"].Count; i++)
             {
                 //debug.Log(CatDauNgoacKep(e.data["rongquayra"][i].ToString()));
                 if (CatDauNgoacKep(e.data["rongquayra"][i].ToString()) != "null")
                 {
-                   // debug.Log("Oitem" + i + CatDauNgoacKep(e.data["rongquayra"][i]["nameobject"].ToString()));
+                    // debug.Log("Oitem" + i + CatDauNgoacKep(e.data["rongquayra"][i]["nameobject"].ToString()));
                     QuayRong quayrong = vongquayrong.ORong[i].transform.GetChild(0).GetComponent<QuayRong>();
                     quayrong.RongQuayDuoc = GameObject.Find("Oitem" + i + CatDauNgoacKep(e.data["rongquayra"][i]["nameobject"].ToString()));
-                  //  debug.Log(quayrong.RongQuayDuoc.name);
+                    //  debug.Log(quayrong.RongQuayDuoc.name);
                     quayrong.imgRongQuay = quayrong.RongQuayDuoc.transform.GetChild(0).GetComponent<Image>();
                     string id = CatDauNgoacKep(e.data["rongquayra"][i]["id"].ToString());
                     string nameitem = CatDauNgoacKep(e.data["rongquayra"][i]["nameitem"].ToString());
                     byte sao = byte.Parse(CatDauNgoacKep(e.data["rongquayra"][i]["sao"].ToString()));
-                    int level = 0;int exp = 0;
+                    int level = 0; int exp = 0;
                     int maxexp = int.Parse(CatDauNgoacKep(e.data["rongquayra"][i]["maxexp"].ToString()));
                     byte tienhoa = byte.Parse(CatDauNgoacKep(e.data["rongquayra"][i]["tienhoa"].ToString()));
                     int sothucan = int.Parse(CatDauNgoacKep(e.data["rongquayra"][i]["timedoi"].ToString()));
                     string tenrong = CatDauNgoacKep(e.data["rongquayra"][i]["namerong"].ToString());
                     string nameobject = CatDauNgoacKep(e.data["rongquayra"][i]["nameobject"].ToString());
-                    inventory.AddItemRong(id,nameitem,sao,level,exp,maxexp,tienhoa,sothucan,tenrong,nameobject, e.data["rongquayra"][i]["hoangkim"], e.data["rongquayra"][i]["ngoc"], false);
+                    inventory.AddItemRong(id, nameitem, sao, level, exp, maxexp, tienhoa, sothucan, tenrong, nameobject, e.data["rongquayra"][i]["hoangkim"], e.data["rongquayra"][i]["ngoc"], false);
                     // debug.Log(quayrong.RongQuayDuoc.name);
                 }
             }
@@ -1675,8 +1675,8 @@ public class NetworkManager : MonoBehaviour
             Inventory.ins.StartCoroutine(delay());
             IEnumerator delay()
             {
-                yield return new WaitUntil(()=> listThongBao[0] == thongbao[1]);
-                
+                yield return new WaitUntil(() => listThongBao[0] == thongbao[1]);
+
                 // CrGame.ins.OnThongBao(bool.Parse(e.data["a"].ToString()), thongbao[1], bool.Parse(e.data["btok"].ToString()));
                 CrGame.ins.OnThongBaoNhanh(thongbao[1], float.Parse(e.data["tbnhanh"]["time"].ToString()));
                 yield return new WaitForSeconds(float.Parse(e.data["tbnhanh"]["time"].ToString()) - float.Parse(e.data["tbnhanh"]["time"].ToString()) / 1.4f);
@@ -1692,7 +1692,7 @@ public class NetworkManager : MonoBehaviour
         {
             AnnouncementManager announcementManager = GetComponent<AnnouncementManager>();
             announcementManager.ShowAnnouncement(e.data["thongbaochay"].str);
-           // StartCoroutine(OnThongBaoChay(CatDauNgoacKep(e.data["thongbaochay"].ToString())));
+            // StartCoroutine(OnThongBaoChay(CatDauNgoacKep(e.data["thongbaochay"].ToString())));
         }
         //if (e.data["catrongthanhcong"])
         //{
@@ -1745,7 +1745,7 @@ public class NetworkManager : MonoBehaviour
                     string[] nametv = e.data["qua"][i]["namerong"].ToString().Split('"');
                     hopqua.AddSlotQua(name[1], e.data["qua"][i]["sao"].ToString() + " Sao", nametv[1], true, int.Parse(e.data["qua"][i]["tienhoa"].ToString()));
                 }
-            
+
             }
             hopqua.btnNhanQua.interactable = true;
             return;
@@ -1759,14 +1759,14 @@ public class NetworkManager : MonoBehaviour
             StartCoroutine(CrGame.ins.offlencap(CrGame.ins.txtThangCap.text));
             if (CrGame.ins.PanelThangCap.activeSelf)
             {
-               // CrGame.ins.panelThangCap.transform.GetChild(1).transform.GetChild(0).GetComponent<ParticleSystem>().Play();
+                // CrGame.ins.panelThangCap.transform.GetChild(1).transform.GetChild(0).GetComponent<ParticleSystem>().Play();
                 StopCoroutine(CrGame.ins.offlencap(CrGame.ins.txtThangCap.text));
             }
             CrGame.ins.SetPanelThangCap(true);
-             
+
             float fillamount = float.Parse(e.data["lencap"]["exp"].ToString()) / (float)CrGame.ins.MaxExp;
             CrGame.ins.imgThanhLevel.fillAmount = fillamount;
-            
+
         }
         if (e.data["updateExp"])
         {
@@ -1782,7 +1782,7 @@ public class NetworkManager : MonoBehaviour
             hopqua.ThemQua(byte.Parse(e.data["quaconlai"].ToString()));
             for (int i = 0; i < e.data["nhanqua"]["qua"].Count; i++)
             {
-                 string nametrongqua = "";
+                string nametrongqua = "";
                 if (e.data["nhanqua"]["qua"][i]["namerong"])//ITEM Rong
                 {
                     //  debug.Log("addrong");
@@ -1791,14 +1791,14 @@ public class NetworkManager : MonoBehaviour
                 int.Parse(e.data["nhanqua"]["qua"][i]["level"].ToString()), int.Parse(e.data["nhanqua"]["qua"][i]["exp"].ToString()), int.Parse(e.data["nhanqua"]["qua"][i]["maxexp"].ToString()),
                 byte.Parse(e.data["nhanqua"]["qua"][i]["tienhoa"].ToString()), 0,
                 CatDauNgoacKep(e.data["nhanqua"]["qua"][i]["namerong"].ToString()),
-                CatDauNgoacKep(e.data["nhanqua"]["qua"][i]["nameobject"].ToString()), e.data["nhanqua"]["qua"][i]["hoangkim"], e.data["nhanqua"]["qua"][i]["ngoc"],false);
+                CatDauNgoacKep(e.data["nhanqua"]["qua"][i]["nameobject"].ToString()), e.data["nhanqua"]["qua"][i]["hoangkim"], e.data["nhanqua"]["qua"][i]["ngoc"], false);
                 }
                 else if (e.data["nhanqua"]["qua"][i]["name"] && e.data["nhanqua"]["qua"][i]["namethuyenthucan"] == false)//ITEM thuong
                 {
                     string namequa = CatDauNgoacKep(e.data["nhanqua"]["qua"][i]["name"].ToString());
-                   
+
                     nametrongqua = namequa;
-                    if(e.data["nhanqua"]["qua"][i]["name"].str != "Exp") inventory.AddItem(namequa, int.Parse(CatDauNgoacKep(e.data["nhanqua"]["qua"][i]["soluong"].ToString())));
+                    if (e.data["nhanqua"]["qua"][i]["name"].str != "Exp") inventory.AddItem(namequa, int.Parse(CatDauNgoacKep(e.data["nhanqua"]["qua"][i]["soluong"].ToString())));
 
                 }
                 else if (e.data["nhanqua"]["qua"][i]["namethuyenthucan"])//ITEM ThuyenThucAn
@@ -1849,11 +1849,11 @@ public class NetworkManager : MonoBehaviour
         //            GameObject objtuibinhtieuhoa = CrGame.ins.tuithucAn.transform.parent.transform.parent.transform.parent.transform.GetChild(5).transform.GetChild(0).transform.GetChild(0).gameObject;
         //            objtuibinhtieuhoa.transform.Find(namethucan).gameObject.SetActive(false);
         //        }    
-              
+
         //    }
-            
+
         //    thuyen.StartCoroutine(thuyen.bay(Inventory.LoadSprite(namethucan), int.Parse(e.data["dropthucan"]["soluong"].ToString())));
-        
+
         //    return;
         //}
         if (e.data["doiten"])
@@ -1882,33 +1882,33 @@ public class NetworkManager : MonoBehaviour
                 quabay.enabled = true;
                 break;
             }
-           // else Destroy(hopqua.Slot.transform.GetChild(j).gameObject);
+            // else Destroy(hopqua.Slot.transform.GetChild(j).gameObject);
         }
     }
     public void PlayerOnline()
     {
 
-         socket.Emit("Login", JSONObject.CreateStringObject(LoginFacebook.ins.id));
-      
-        
+        socket.Emit("Login", JSONObject.CreateStringObject(LoginFacebook.ins.id));
+
+
     }
     void OnlaiThanhcong(SocketIOEvent e)
     {
-         debug.Log("[SocketIO] Open received: " + e.name + " " + e.data);
-        if(e.data["banrong"])
+        debug.Log("[SocketIO] Open received: " + e.name + " " + e.data);
+        if (e.data["banrong"])
         {
             string Rongban = CatDauNgoacKep(e.data["banrong"].ToString());
             for (int i = 0; i < inventory.TuiRong.transform.childCount; i++)
             {
                 if (inventory.TuiRong.transform.GetChild(i).transform.childCount > 0)
                 {
-                    if(inventory.TuiRong.transform.GetChild(i).transform.GetChild(0).name == Rongban)
+                    if (inventory.TuiRong.transform.GetChild(i).transform.GetChild(0).name == Rongban)
                     {
                         Destroy(inventory.TuiRong.transform.GetChild(i).transform.GetChild(0).gameObject);
                         AllMenu.ins.menu["MenuBanRong"].SetActive(false);
-                        if(AllMenu.ins.menu.ContainsKey("MenuLaiRong"))
+                        if (AllMenu.ins.menu.ContainsKey("MenuLaiRong"))
                         {
-                            if(AllMenu.ins.menu["MenuLaiRong"].activeSelf)
+                            if (AllMenu.ins.menu["MenuLaiRong"].activeSelf)
                             {
                                 lairong.Catrongxuong(0);
                                 lairong.Catrongxuong(1);
@@ -1930,11 +1930,11 @@ public class NetworkManager : MonoBehaviour
             GameObject objlaira = AllMenu.ins.menu["MenuLaiRong"].transform.GetChild(0).transform.GetChild(3).transform.GetChild(2).transform.GetChild(2).transform.GetChild(0).gameObject;
             //Animator anim = lairong.spritelaira.GetComponent<Animator>();
             AllMenu.ins.LoadRongGiaoDien(nameObject[1] + "1", objlaira.transform.GetChild(0));
-           // anim.runtimeAnimatorController = Inventory.LoadAnimator( nameObject[1]);
+            // anim.runtimeAnimatorController = Inventory.LoadAnimator( nameObject[1]);
             lairong.idrongvualai = id[1];
             //anim.SetInteger("TienHoa", 1);
-            inventory.AddItemRong(id[1], nameItem[1], byte.Parse(e.data["additem"]["sao"].ToString()), 
-                int.Parse(e.data["additem"]["level"].ToString()), int.Parse(e.data["additem"]["exp"].ToString()), 
+            inventory.AddItemRong(id[1], nameItem[1], byte.Parse(e.data["additem"]["sao"].ToString()),
+                int.Parse(e.data["additem"]["level"].ToString()), int.Parse(e.data["additem"]["exp"].ToString()),
                 int.Parse(e.data["additem"]["maxexp"].ToString()),
                 byte.Parse(e.data["additem"]["tienhoa"].ToString()),
                 float.Parse(e.data["additem"]["timedoi"].ToString()),
@@ -1947,7 +1947,7 @@ public class NetworkManager : MonoBehaviour
             string[] Nameitemtru = e.data["yeucaulai"]["nameitemcan"].ToString().Split('"');
             inventory.AddItem(Nameitemtru[1], -int.Parse(e.data["yeucaulai"]["gia"].ToString()));
             int sohuyentinh = inventory.GetItem("HuyenTinh");
-            if(sohuyentinh >= int.Parse(e.data["giachucphuc"].ToString()))
+            if (sohuyentinh >= int.Parse(e.data["giachucphuc"].ToString()))
             {
                 lairong.btnChucPhuc.SetActive(true);
             }
@@ -1965,7 +1965,7 @@ public class NetworkManager : MonoBehaviour
                 else if (e.data["chiso"][i]["giamthoigian"])
                 {
                     string cong = CatDauNgoacKep(e.data["chiso"][i]["giamthoigian"]["cong"].ToString());
-                    lairong.HienChiSo("giamthoigian","-"+ cong + "s");
+                    lairong.HienChiSo("giamthoigian", "-" + cong + "s");
                 }
                 else if (e.data["chiso"][i]["rotvatpham"])
                 {
@@ -1975,7 +1975,7 @@ public class NetworkManager : MonoBehaviour
                 else if (e.data["chiso"][i]["satthuong"])
                 {
                     string cong = CatDauNgoacKep(e.data["chiso"][i]["satthuong"]["cong"].ToString());
-                    lairong.HienChiSo("satthuong", "+" +cong);
+                    lairong.HienChiSo("satthuong", "+" + cong);
                 }
                 else if (e.data["chiso"][i]["phantramexp"])
                 {
@@ -1986,13 +1986,13 @@ public class NetworkManager : MonoBehaviour
 
             return;
         }
-        if(e.data["chucphuc"])
+        if (e.data["chucphuc"])
         {
             lairong.imgitemGiaLai.gameObject.SetActive(false);
             lairong.banRongCatRong.SetActive(false);
             lairong.btnExit.SetActive(false);
             lairong.nutcatlai[0].interactable = false; lairong.nutcatlai[1].interactable = false;
-            inventory.AddItem("HuyenTinh",-int.Parse(e.data["chucphuc"]["truhuyentinh"].ToString()));
+            inventory.AddItem("HuyenTinh", -int.Parse(e.data["chucphuc"]["truhuyentinh"].ToString()));
             lairong.HieuUngChucPhuc.SetActive(true);
             StartCoroutine(delay());
             IEnumerator delay()
@@ -2037,14 +2037,14 @@ public class NetworkManager : MonoBehaviour
 
             for (int i = 0; i < inventory.TuiRong.transform.childCount; i++)
             {
-                if(inventory.TuiRong.transform.GetChild(i).transform.childCount > 0)
+                if (inventory.TuiRong.transform.GetChild(i).transform.childCount > 0)
                 {
                     if (inventory.TuiRong.transform.GetChild(i).transform.GetChild(0).name == lairong.idrongvualai)
                     {
                         ItemDragon idra = inventory.TuiRong.transform.GetChild(i).transform.GetChild(0).GetComponent<ItemDragon>();
                         idra.txtSao.text = (lairong.Saoronglai + 1) + "";
                         break;
-                    }    
+                    }
                 }
             }
             lairong.banRongCatRong.transform.GetChild(0).GetComponent<Button>().interactable = true;
@@ -2054,7 +2054,7 @@ public class NetworkManager : MonoBehaviour
         if (e.data["dotrangtri"])
         {
             //GameObject.Find(CatDauNgoacKep(e.data["dotrangtri"][0].ToString())
-            GameObject trangtri = Instantiate(Inventory.LoadObjectResource("GameData/Item/" + CatDauNgoacKep(e.data["dotrangtri"][0].ToString())) as GameObject, new Vector3(float.Parse(CatDauNgoacKep(e.data["dotrangtri"][1].ToString())), float.Parse(CatDauNgoacKep(e.data["dotrangtri"][2].ToString())),0), Quaternion.identity) as GameObject;
+            GameObject trangtri = Instantiate(Inventory.LoadObjectResource("GameData/Item/" + CatDauNgoacKep(e.data["dotrangtri"][0].ToString())) as GameObject, new Vector3(float.Parse(CatDauNgoacKep(e.data["dotrangtri"][1].ToString())), float.Parse(CatDauNgoacKep(e.data["dotrangtri"][2].ToString())), 0), Quaternion.identity) as GameObject;
             Destroy(trangtri.GetComponent<ItemTrangTri>());
             Destroy(trangtri.GetComponent<EventTrigger>());
             Destroy(trangtri.GetComponent<Button>());
@@ -2064,8 +2064,8 @@ public class NetworkManager : MonoBehaviour
             inventory.ScaleObject(trangtri, 0.52f, 0.5100001f);
             trangtri.transform.GetChild(1).gameObject.SetActive(true);
             trangtri.transform.GetChild(0).gameObject.SetActive(false);
-           // debug.LogError(CrGame.ins.khungAvatar.GetComponent<Image>().sprite.name.Substring(6));
-            if(CatDauNgoacKep(e.data["dotrangtri"][0].ToString()) == "TocLenh")
+            // debug.LogError(CrGame.ins.khungAvatar.GetComponent<Image>().sprite.name.Substring(6));
+            if (CatDauNgoacKep(e.data["dotrangtri"][0].ToString()) == "TocLenh")
             {
                 trangtri.transform.GetChild(1).GetComponent<Animator>().runtimeAnimatorController = Inventory.LoadAnimator("TocLenh" + CrGame.ins.khungAvatar.GetComponent<Image>().sprite.name.Substring(6));
             }
@@ -2093,7 +2093,7 @@ public class NetworkManager : MonoBehaviour
             IEnumerator CreateHieuUng()
             {
                 //CrGame.ins.MenuNangCapItem.SetActive(false);
-              //  AllMenu.ins.menu["MenuNangCapItem"].SetActive(false);
+                //  AllMenu.ins.menu["MenuNangCapItem"].SetActive(false);
                 AllMenu.ins.DestroyMenu("MenuNangCapItem");
                 GameObject hieuung = Instantiate(Inventory.ins.GetObj("HieuUng1"), new Vector3(btnnangcapdao.transform.position.x, btnnangcapdao.transform.position.y + 0.5f), Quaternion.identity) as GameObject;
                 Vector3 Scale; Scale = hieuung.transform.localScale;
@@ -2109,9 +2109,9 @@ public class NetworkManager : MonoBehaviour
     }
     void GetitemLai(SocketIOEvent e)
     {
-      //  debug.Log("[SocketIO] Open received: " + e.name + " " + e.data);
+        //  debug.Log("[SocketIO] Open received: " + e.name + " " + e.data);
         // debug.Log(e.data["ItemrongLai"][0]["nameitem"]);
-        if(e.data["itemlai"])
+        if (e.data["itemlai"])
         {
             lairong = AllMenu.ins.menu["MenuLaiRong"].GetComponent<LaiRong>();
             lairong.txtChiSo.text = CatDauNgoacKep(e.data["itemlai"]["ItemrongLai"][0].ToString());
@@ -2139,8 +2139,8 @@ public class NetworkManager : MonoBehaviour
         }
         if (e.data["quai"])
         {
-           // GameObject prefab = vienchinh.transform.GetChild(1).gameObject;
-            StartCoroutine (delay());
+            // GameObject prefab = vienchinh.transform.GetChild(1).gameObject;
+            StartCoroutine(delay());
             IEnumerator delay()
             {
                 yield return new WaitForSeconds(2);
@@ -2167,21 +2167,21 @@ public class NetworkManager : MonoBehaviour
                             chiso.Maxhp = chiso.hp;
                             instance.transform.position = new Vector3(instance.transform.position.x, instance.transform.position.y + 2, instance.transform.position.z);
                         }
-                     //   debug.Log("quai ok 1");
+                        //   debug.Log("quai ok 1");
                         chiso.speed = float.Parse(GamIns.CatDauNgoacKep(e.data["quai"][i]["speed"].ToString()));
 
                         chiso._HutHp = float.Parse(e.data["quai"][i]["hutmau"].ToString());
                         chiso.netranh = float.Parse(e.data["quai"][i]["netranh"].ToString());
                         chiso._ChiMang = float.Parse(e.data["quai"][i]["tilechimang"].ToString());
-                     //   debug.Log("quai ok 2");
+                        //   debug.Log("quai ok 2");
                         instance.GetComponent<DraUpdateAnimator>().CreateChamDo();
-                      //  debug.Log("quai ok 3");
+                        //  debug.Log("quai ok 3");
                         instance.SetActive(true);
-                 
-                      //  debug.Log("quai ok");
+
+                        //  debug.Log("quai ok");
                         yield return new WaitForSeconds(1);
-                    }    
-                  
+                    }
+
 
                     //    for (int j = 0; j < prefab.transform.childCount; j++)
                     //    {
@@ -2240,7 +2240,7 @@ public class NetworkManager : MonoBehaviour
             // doihinh.Xoahet();
             // doihinh.MaxDoiHinh = int.Parse(e.data["rongchinhchien"]["maxdoihinh"].ToString());
             //  debug.Log("maxdoihinh " + int.Parse(e.data["rongchinhchien"]["maxdoihinh"].ToString()));
-            if(doihinh.ContentItem.transform.childCount == 0)
+            if (doihinh.ContentItem.transform.childCount == 0)
             {
                 doihinh.TaoSlotTrong(int.Parse(e.data["rongchinhchien"]["maxdoihinh"].ToString()));
             }
@@ -2255,13 +2255,13 @@ public class NetworkManager : MonoBehaviour
             }
             for (int i = 0; i < e.data["rongchinhchien"]["doihinh"].Count; i++)
             {
-                if(e.data["rongchinhchien"]["doihinh"][i]["nameobject"])
+                if (e.data["rongchinhchien"]["doihinh"][i]["nameobject"])
                 {
                     byte sao = byte.Parse(e.data["rongchinhchien"]["doihinh"][i]["sao"].ToString());
                     Sprite sprite = Inventory.LoadSpriteRong(CatDauNgoacKep(e.data["rongchinhchien"]["doihinh"][i]["nameobject"].ToString()) + e.data["rongchinhchien"]["doihinh"][i]["tienhoa"].ToString(), sao);
                     string id = CatDauNgoacKep(e.data["rongchinhchien"]["doihinh"][i]["id"].ToString());
                     doihinh.LoadDoihinh(id, sprite, e.data["rongchinhchien"]["doihinh"][i]["sao"].ToString(), i);
-                }    
+                }
             }
             for (int i = 0; i < e.data["rongchinhchien"]["allrong"].Count; i++)
             {
@@ -2286,14 +2286,14 @@ public class NetworkManager : MonoBehaviour
             {
                 doihinh.Xoa1Rong();
             }
-            if (e.data["editdoihinh"]["save"]) 
+            if (e.data["editdoihinh"]["save"])
             {
                 int j = 0;
-                for (int i = 0; i < doihinh.ContentDoiHinh.transform.childCount;i++)
+                for (int i = 0; i < doihinh.ContentDoiHinh.transform.childCount; i++)
                 {
                     if (doihinh.ContentDoiHinh.transform.GetChild(j).childCount == 0)
                     {
-                       doihinh.ContentDoiHinh.transform.GetChild(j).transform.SetSiblingIndex(doihinh.ContentDoiHinh.transform.childCount - 1);
+                        doihinh.ContentDoiHinh.transform.GetChild(j).transform.SetSiblingIndex(doihinh.ContentDoiHinh.transform.childCount - 1);
                     }
                     else
                     {
@@ -2303,7 +2303,7 @@ public class NetworkManager : MonoBehaviour
             }
             if (e.data["editdoihinh"]["xoahet"])
             {
-                 //  doihinh.Xoahet();
+                //  doihinh.Xoahet();
                 // doihinh.TaoSlotTrong(int.Parse(e.data["editdoihinh"]["maxdoihinh"].ToString()));
                 for (int i = 0; i < doihinh.ContentDoiHinh.transform.childCount; i++)
                 {
@@ -2335,12 +2335,12 @@ public class NetworkManager : MonoBehaviour
 
     void LoginSuccess(SocketIOEvent e)/////////////////////////////////////////////////////////
     {
-       debug.Log("[SocketIO] Open received: " + e.name + " " + e.data);
+        debug.Log("[SocketIO] Open received: " + e.name + " " + e.data);
         Time.timeScale = 1;
         if (e.data["trangthai"])
         {
             string[] status = e.data["trangthai"].ToString().Split('"');
-            CrGame.ins.OnThongBao(true,status[1]);
+            CrGame.ins.OnThongBao(true, status[1]);
             if (status[1] == "Tài khoản đang đăng nhập ở nơi khác") socket.Close();
             StartCoroutine(delayy());
             IEnumerator delayy()
@@ -2354,96 +2354,130 @@ public class NetworkManager : MonoBehaviour
         {
             if (LoginFacebook.ins.isLogin == false)
             {
-             //   int sodao = CrGame.ins.AllDao.transform.childCount;
+                //   int sodao = CrGame.ins.AllDao.transform.childCount;
                 CrGame.ins.leveldao = new byte[CrGame.ins.sodao];
                 LoginFacebook.ins.isLogin = true;
                 CrGame.ins.menulogin.SetActive(true);
-                  Image maskload = CrGame.ins.menulogin.transform.GetChild(0).GetComponent<Image>();
-                  Text txtload = CrGame.ins.menulogin.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>();
+                Image maskload = CrGame.ins.menulogin.transform.GetChild(0).GetComponent<Image>();
+                Text txtload = CrGame.ins.menulogin.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>();
 
                 //  for (int i = 0; i < e.data["dao"].Count; i++)
-#if UNITY_EDITOR
-                if (EditorScript.editorGetData)
-                {
-                    debug.Log("Load tu editor");
-                    string assetBundleDirectory;
+                //#if UNITY_EDITOR
+                //                if (EditorScript.editorGetData)
+                //                {
+                //                    debug.Log("Load tu editor");
+                //                    string assetBundleDirectory;
 
-#if UNITY_EDITOR_WIN
-                    assetBundleDirectory = @"C:\Dao Rong Mobile Asset GitHub\AssetsBundles\Android";
-#elif UNITY_EDITOR_OSX
-    assetBundleDirectory = "/Users/nguyenngochoangduong/DRUnityIOS/AssetsBundles/IOS";
-#else
-    assetBundleDirectory = "Unknown OS";///
-#endif
+                //#if UNITY_EDITOR_WIN
+                //                    assetBundleDirectory = @"C:\Dao Rong Mobile Asset GitHub\AssetsBundles\Android";
+                //#elif UNITY_EDITOR_OSX
+                //    assetBundleDirectory = "/Users/nguyenngochoangduong/DRUnityIOS/AssetsBundles/IOS";
+                //#else
+                //    assetBundleDirectory = "Unknown OS";///
+                //#endif
 
-                    debug.Log("Asset Bundle Directory: " + assetBundleDirectory);
+                //                    debug.Log("Asset Bundle Directory: " + assetBundleDirectory);
 
-                    // Combine the directory path with the bundle name
-                    string bundlePath = Path.Combine(assetBundleDirectory, "alldragon");
+                //                    // Combine the directory path with the bundle name
+                //                    string bundlePath = Path.Combine(assetBundleDirectory, "alldragon");
 
-                    // Load the AssetBundle
-                    AssetBundle assetBundle = AssetBundle.LoadFromFile(bundlePath);
+                //                    // Load the AssetBundle
+                //                    AssetBundle assetBundle = AssetBundle.LoadFromFile(bundlePath);
 
-                    if (assetBundle == null)
-                    {
-                        debug.LogError("Failed to load AssetBundle!");
-                        return;
-                    }
-                    DownLoadAssetBundle.bundleDragon = assetBundle;
-                    StartCoroutine(delayParse());
-                }
-                else DownLoadData();
+                //                    if (assetBundle == null)
+                //                    {
+                //                        debug.LogError("Failed to load AssetBundle!");
+                //                        return;
+                //                    }
+                //                    DownLoadAssetBundle.bundleDragon = assetBundle;
+                //                    StartCoroutine(delayParse());
+                //                }
+                //                else DownLoadData();
 
-#elif UNITY_ANDROID || UNITY_IOS
-                DownLoadData();
+                //#elif UNITY_ANDROID || UNITY_IOS
+                //                DownLoadData();
 
-#endif
-                void DownLoadData()
-                {
-                    float process = 50;
-                    StartCoroutine(DownLoadAllRong());
-                    IEnumerator DownLoadAllRong()
-                    {
-                        //  string nameasset = "manh" + gameObject.name.ToLower();
-                        UnityWebRequest www = UnityWebRequestAssetBundle.GetAssetBundle(DownLoadAssetBundle.linkdown + "alldragon");
-                        // DownloadHandler handle = www.downloadHandler;
-                        www.SendWebRequest();
-                        while (!www.isDone)
-                        {
-                            process = 50 + (www.downloadProgress * 100f) / 2;
-                            debug.Log("Downloading... " + process + "%");
-                            txtload.text = "Đang tải dữ liệu: " + System.Math.Round(process, 2) + "%";
-                            maskload.fillAmount = (float)process / 100;
-                            yield return new WaitForSeconds(.01f);
-                        }
-                        if (www.result != UnityWebRequest.Result.Success)
-                        {
-                            debug.Log(www.error);
-                        }
-                        else
-                        {
-                            AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(www);
-                            DownLoadAssetBundle.bundleDragon = bundle;
-                            // bundle.Unload()
-                            int process2 = Mathf.FloorToInt(process);
-                            for (int i = process2; i < 99; i++)
-                            {
-                                process += 1;
-                                txtload.text = "Đang tải dữ liệu: " + System.Math.Round(process, 2) + "%";
-                                maskload.fillAmount = (float)process / 100;
+                //#endif
+                //DownLoadData();
+                //void DownLoadData()
+                //{
+                //    float process = 50;
+                //    StartCoroutine(DownLoadAllRong());
+                //    IEnumerator DownLoadAllRong()
+                //    {
+                //        //  string nameasset = "manh" + gameObject.name.ToLower();
+                //        UnityWebRequest www = UnityWebRequestAssetBundle.GetAssetBundle(DownLoadAssetBundle.linkdown + "alldragon");
+                //        // DownloadHandler handle = www.downloadHandler;
+                //        www.SendWebRequest();
+                //        while (!www.isDone)
+                //        {
+                //            process = 50 + (www.downloadProgress * 100f) / 2;
+                //            debug.Log("Downloading... " + process + "%");
+                //            txtload.text = "Đang tải dữ liệu: " + System.Math.Round(process, 2) + "%";
+                //            maskload.fillAmount = (float)process / 100;
+                //            yield return new WaitForSeconds(.01f);
+                //        }
+                //        if (www.result != UnityWebRequest.Result.Success)
+                //        {
+                //            debug.Log(www.error);
+                //        }
+                //        else
+                //        {
 
-                                yield return new WaitForSeconds(0.01f);
+                //            AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(www);
+                //            DownLoadAssetBundle.bundleDragon = bundle;
+                //            // bundle.Unload()
+                //            int process2 = Mathf.FloorToInt(process);
+                //            for (int i = process2; i < 99; i++)
+                //            {
+                //                process += 1;
+                //                txtload.text = "Đang tải dữ liệu: " + System.Math.Round(process, 2) + "%";
+                //                maskload.fillAmount = (float)process / 100;
 
-                            }
-                            StartCoroutine(delayParse());
-                        }
-                    }
-                }
+                //                yield return new WaitForSeconds(0.01f);
+
+                //            }
+                //            StartCoroutine(delayParse());
+                //        }
+                //    }
+                //}
                 //  StartCoroutine(DownLoadAssetBundle.ins.DownLoadAllRong());
+
+
+                StartCoroutine(delayParse());
 
                 IEnumerator delayParse()
                 {
-                    yield return new WaitUntil(()=>DownLoadAssetBundle.bundleDragon != null);
+
+                    // yield return   AssetBundleManager.ins.DownloadAssetBundleKoMaHoa(DownLoadAssetBundle.linkdown + "alldragon", "alldragon",
+                    //onSuccess: () => debug.Log("Download and save successful"),
+                    //onError: (error) => debug.LogError($"Download error: {error}"),
+                    //updateProcess: (update) => debug.Log($"Download process hehe: {update}")
+                    // );
+
+
+
+                    yield return AssetBundleManager.ins.CheckAndDownLoadAll(null,null, UpdateProcess);
+
+
+                    void UpdateProcess(float f)
+                    {
+                        txtload.text = "Đang tải dữ liệu: " + f + "%";
+                        maskload.fillAmount = (float)f / 100;
+                    }
+                    yield return AssetBundleManager.ins.LoadAssetBundle("mn0",
+            onSuccess: (assetBundle) =>
+            {
+                debug.Log("AssetBundle alldragon loaded successfully");
+                // Sử dụng AssetBundle ở đây, ví dụ:
+                // GameObject prefab = assetBundle.LoadAsset<GameObject>("animtienhoa");
+                // Instantiate(prefab);
+
+                DownLoadAssetBundle.bundleDragon = assetBundle;
+            },
+            onError: (error) => debug.LogError($"Load error: {error}"));
+
+                    yield return new WaitUntil(() => DownLoadAssetBundle.bundleDragon != null);
                     for (int i = 0; i < 1; i++)
                     {
                         GameObject dao = CrGame.ins.AllDao.transform.Find("BGDao" + i).gameObject;
@@ -2461,15 +2495,15 @@ public class NetworkManager : MonoBehaviour
                             ct.nameCongtrinh = namect[1]; ct.levelCongtrinh = capct; //ct.LoadImg();
                             if (i == 0) ct.LoadImg();
 
-                         
+
                         }
 
                         if (e.data["dao"][i]["timeNuiThanBi"])
-                        { 
+                        {
                             debug.Log("namengoc: " + GamIns.CatDauNgoacKep(e.data["dao"][i]["namengoc"].ToString()));
                             CrGame.ins.timeNuiThanBi = float.Parse(e.data["dao"][i]["timeNuiThanBi"].ToString());
-                                         NuiLua.Instance.MauNgoc = (_mauNgoc)Enum.Parse(typeof(_mauNgoc), GamIns.CatDauNgoacKep(e.data["dao"][i]["namengoc"].ToString()));
-                           // debug.Log("Time nui than bi dao " + i + ": " + CrGame.ins.timeNuiThanBi);
+                            NuiLua.Instance.MauNgoc = (_mauNgoc)Enum.Parse(typeof(_mauNgoc), GamIns.CatDauNgoacKep(e.data["dao"][i]["namengoc"].ToString()));
+                            // debug.Log("Time nui than bi dao " + i + ": " + CrGame.ins.timeNuiThanBi);
                         }
 
 
@@ -2480,11 +2514,11 @@ public class NetworkManager : MonoBehaviour
                         {
                             // JSONNode newjson = 
                             //   debug.LogError("new json " + test);
-                          //  debug.Log(JSON.Parse(e.data["dao"][i]["rong"][j].ToString().ToString()));
+                            //  debug.Log(JSON.Parse(e.data["dao"][i]["rong"][j].ToString().ToString()));
                             DragonIslandManager.ParseDragonIsland(JSON.Parse(e.data["dao"][i]["rong"][j].ToString()), 0);
 
                         }
-                        if(e.data["dao"][i]["itemEvent"]) DragonIslandManager.InsAllItemDao(JSON.Parse(e.data["dao"][i]["itemEvent"].ToString()), 0);
+                        if (e.data["dao"][i]["itemEvent"]) DragonIslandManager.InsAllItemDao(JSON.Parse(e.data["dao"][i]["itemEvent"].ToString()), 0);
 
                         //if (e.data["dao"][i]["itemEvent"])
                         //{
@@ -2514,8 +2548,8 @@ public class NetworkManager : MonoBehaviour
                                 trangtri.transform.SetParent(objecttrangtridao.transform);
                                 //  debug.Log("trang tri dao " + i + " " + j + " 4");
                                 float x = 0, y = 0;
-                                float.TryParse(GamIns.CatDauNgoacKep(e.data["dao"][i]["trangtri"][j]["x"].ToString(),true),out x);
-                                float.TryParse(GamIns.CatDauNgoacKep(e.data["dao"][i]["trangtri"][j]["y"].ToString(),true),out y);
+                                float.TryParse(GamIns.CatDauNgoacKep(e.data["dao"][i]["trangtri"][j]["x"].ToString(), true), out x);
+                                float.TryParse(GamIns.CatDauNgoacKep(e.data["dao"][i]["trangtri"][j]["y"].ToString(), true), out y);
                                 trangtri.transform.position = new Vector3(x, y, 0);
                                 trangtri.transform.GetChild(1).gameObject.SetActive(true);
                                 // debug.Log("trang tri dao " + i + " " + j + " 5");
@@ -2552,10 +2586,10 @@ public class NetworkManager : MonoBehaviour
                         if (e.data["item"]["itemrong"][i]["lock"])
                         {
                             lockk = bool.Parse(e.data["item"]["itemrong"][i]["lock"].ToString());
-                        }    
+                        }
                         inventory.AddItemRongByindex(i - 1, id[1], nameitem[1], byte.Parse(e.data["item"]["itemrong"][i]["sao"].ToString()),
                             int.Parse(e.data["item"]["itemrong"][i]["level"].ToString()), int.Parse(e.data["item"]["itemrong"][i]["exp"].ToString()), int.Parse(e.data["item"]["itemrong"][i]["maxexp"].ToString()),
-                            byte.Parse(e.data["item"]["itemrong"][i]["tienhoa"].ToString()), 0, namerong[1], nameObject[1], e.data["item"]["itemrong"][i]["hoangkim"], e.data["item"]["itemrong"][i]["ngoc"],lockk);
+                            byte.Parse(e.data["item"]["itemrong"][i]["tienhoa"].ToString()), 0, namerong[1], nameObject[1], e.data["item"]["itemrong"][i]["hoangkim"], e.data["item"]["itemrong"][i]["ngoc"], lockk);
                     }//GetData Item Rồng
                     for (int i = 0; i < e.data["item"]["itemthucan"].Count; i++)
                     {
@@ -2565,7 +2599,7 @@ public class NetworkManager : MonoBehaviour
 
                         if (int.Parse(e.data["item"]["itemthucan"][i]["soluong"].ToString()) > 0)
                         {
-                        
+
                             inventory.AddItem(nameThucAn[1], int.Parse(e.data["item"]["itemthucan"][i]["soluong"].ToString()));
                             for (int j = 0; j < CrGame.ins.tuithucAn.transform.childCount; j++)
                             {
@@ -2598,7 +2632,7 @@ public class NetworkManager : MonoBehaviour
                     CrGame.ins.OnThongBao(true, "Đang tải itemm...", false);
                     for (int i = 1; i < e.data["item"]["itemthuong"].Count; i++)
                     {
-                       // debug.Log(e.data["item"]["itemthuong"][i]["soluong"].ToString());
+                        // debug.Log(e.data["item"]["itemthuong"][i]["soluong"].ToString());
                         string[] nameitem = e.data["item"]["itemthuong"][i]["name"].ToString().Split('"');
                         double number = double.Parse(e.data["item"]["itemthuong"][i]["soluong"].ToString());
                         int result = (int)number;
@@ -2869,7 +2903,7 @@ public class NetworkManager : MonoBehaviour
     void Nangctthanhcong(SocketIOEvent e)
     {
         //debug.Log("[SocketIO] Open received: " + e.name + " " + e.data);
-        if(e.data["nhaaptrung"])
+        if (e.data["nhaaptrung"])
         {
             CrGame.ins.OnThongBao(true, CatDauNgoacKep(e.data["nhaaptrung"]["trangthai"].ToString()), true);
             if (CatDauNgoacKep(e.data["nhaaptrung"]["trangthai"].ToString()) == "thành công")
@@ -2877,7 +2911,7 @@ public class NetworkManager : MonoBehaviour
                 StartCoroutine(CreateHieuUngNhaAp());
             }
         }
-        if(e.data["congtrinh"])
+        if (e.data["congtrinh"])
         {
             string[] status = e.data["congtrinh"]["trangthai"].ToString().Split('"');
             if (status[1] == "thành công")
@@ -2898,7 +2932,7 @@ public class NetworkManager : MonoBehaviour
     public string CatDauNgoacKep(string s)
     {
         string[] cat = s.Split('"');
-        if(cat.Length > 1)
+        if (cat.Length > 1)
         {
             return cat[1];
         }
@@ -2921,12 +2955,12 @@ public class NetworkManager : MonoBehaviour
         CrGame.ins.OnThongBao(false);
         AllMenu.ins.DestroyMenu("MenuNangCapItem");
         yield return new WaitForSeconds(1.5f);
-       // SpriteRong spritect = GameObject.Find("SpriteNhaApTrung").GetComponent<SpriteRong>();
+        // SpriteRong spritect = GameObject.Find("SpriteNhaApTrung").GetComponent<SpriteRong>();
         Image imgNHaApTrung = NHaAPTrung.GetComponent<Image>();
-       StartCoroutine( LoadSpriteNhApTrung(imgNHaApTrung, LevelNhaAp / 5));
+        StartCoroutine(LoadSpriteNhApTrung(imgNHaApTrung, LevelNhaAp / 5));
         Destroy(hieuung);
     }
-    IEnumerator CreateHieuUngCongtrinh(CongTrinh ct,string namect)
+    IEnumerator CreateHieuUngCongtrinh(CongTrinh ct, string namect)
     {
         //CongTrinh ct = CrGame.ins.VungCongTrinh.GetComponent<CongTrinh>();
         GameObject hieuung = Instantiate(Inventory.ins.GetObj("HieuUng1"), new Vector3(ct.transform.position.x, ct.transform.position.y + 1f), Quaternion.identity) as GameObject;
@@ -2952,12 +2986,12 @@ public class NetworkManager : MonoBehaviour
             emit = false;
             socket.Close();
             CrGame.ins.OnThongBao(true, "Đang kết nối...");
-           // Time.timeScale = 0;
+            // Time.timeScale = 0;
             StartCoroutine(matketnoi());
-        
+
             //Invoke("Time0", 10f);
-        }    
-        
+        }
+
     }
     IEnumerator matketnoi()
     {
@@ -2966,18 +3000,18 @@ public class NetworkManager : MonoBehaviour
     }
     void Time0()
     {
-         Time.timeScale = 0;
+        Time.timeScale = 0;
         //Application.LoadLevel(0);
     }
-    bool login = false,emit = false;
+    bool login = false, emit = false;
     void ConnectSuccess(SocketIOEvent e)
     {
         debug.Log("[SocketIO] Open received: " + e.name);
         //CrGame.ins.OnThongBao(false);
-        if(emit == false)
+        if (emit == false)
         {
             socket.Emit("Login", JSONObject.CreateStringObject(LoginFacebook.ins.id));
-            login = true;emit = true;
+            login = true; emit = true;
         }
     }
     void RongDoi(SocketIOEvent e)
@@ -2987,14 +3021,14 @@ public class NetworkManager : MonoBehaviour
         {
             DragonIslandManager.RongDoi(JSON.Parse(e.data.ToString()));
         }
-        if(e.data["vangroi"])
+        if (e.data["vangroi"])
         {
             debug.Log("[SocketIO] Open received: " + e.name + " " + e.data);
             int dao = int.Parse(CatDauNgoacKep(e.data["vangroi"]["dao"].ToString()));
             string id = CatDauNgoacKep(e.data["vangroi"]["idrong"].ToString());
             GameObject Rong = CrGame.ins.FindRongDao(dao, id);
             Vector3 tf = new Vector3();
-            if(Rong.activeInHierarchy == false)
+            if (Rong.activeInHierarchy == false)
             {
                 tf = new Vector3(int.Parse(e.data["vangroi"]["x"].ToString()), int.Parse(e.data["vangroi"]["y"].ToString()));
             }
@@ -3068,7 +3102,7 @@ public class NetworkManager : MonoBehaviour
                     itemRong.name = "rongdoi-" + id[1];
                     Image imgRong = itemRong.transform.GetChild(0).GetComponent<Image>();
                     string[] Dohiemcuarong = nameitem[1].Split('-');
-                    imgRong.sprite = Inventory.LoadSpriteRong(nameObject[1] + e.data["openmenudoirong"][i]["tienhoa"].ToString(),byte.Parse(e.data["openmenudoirong"][i]["sao"].ToString()));
+                    imgRong.sprite = Inventory.LoadSpriteRong(nameObject[1] + e.data["openmenudoirong"][i]["tienhoa"].ToString(), byte.Parse(e.data["openmenudoirong"][i]["sao"].ToString()));
                     if (Dohiemcuarong[1] != "")
                     {
                         Text txtHiem = imgRong.transform.GetChild(0).GetComponent<Text>();
@@ -3110,7 +3144,7 @@ public class NetworkManager : MonoBehaviour
             string nameobj = CatDauNgoacKep(e.data["DoiRong"]["RongCat"]["nameobject"].ToString());
 
             GameObject itemrongxoa = GameObject.Find(CatDauNgoacKep(e.data["DoiRong"]["RongTha"]["id"].ToString()));
-            inventory.AddItemRong(idrongcat, nameitem, sao, level, exp, maxexp, tienhoa, 0, tenrong, nameobj, e.data["DoiRong"]["RongCat"]["hoangkim"], e.data["DoiRong"]["RongCat"]["ngoc"],false);
+            inventory.AddItemRong(idrongcat, nameitem, sao, level, exp, maxexp, tienhoa, 0, tenrong, nameobj, e.data["DoiRong"]["RongCat"]["hoangkim"], e.data["DoiRong"]["RongCat"]["ngoc"], false);
             //inventory.AddItemRongByindex(itemrongxoa.transform.parent.GetSiblingIndex(), idrongcat, nameitem, sao, level, exp, maxexp, tienhoa, 0, tenrong, nameobj);
             Destroy(itemrongxoa);
 
@@ -3124,7 +3158,7 @@ public class NetworkManager : MonoBehaviour
             //byte tienhoatha = byte.Parse(CatDauNgoacKep(e.data["DoiRong"]["RongTha"]["tienhoa"].ToString()));
             //string tenrongtha = CatDauNgoacKep(e.data["DoiRong"]["RongTha"]["namerong"].ToString());
 
-          //  GameObject Dao = CrGame.ins.AllDao.transform.Find("BGDao" + CrGame.ins.DangODao).gameObject;
+            //  GameObject Dao = CrGame.ins.AllDao.transform.Find("BGDao" + CrGame.ins.DangODao).gameObject;
 
             //GameObject rong = Instantiate(inventory.ObjectRong(nameobjtha), new Vector3(Dao.transform.position.x - Random.Range(-3, 3), Dao.transform.position.y + Random.Range(-2.5f, 2.5f), 0), Quaternion.identity) as GameObject;
             //Animator anim = rong.GetComponent<Animator>();
@@ -3160,7 +3194,7 @@ public class NetworkManager : MonoBehaviour
             //}
             //rong.gameObject.SetActive(true);
             DragonIslandManager.ParseDragonIsland(JSON.Parse(e.data["DoiRong"]["RongTha"].ToString()), CrGame.ins.DangODao, vecrongcat);
-            if(AllMenu.ins.menu.ContainsKey("MenuXacNhan")) AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
+            if (AllMenu.ins.menu.ContainsKey("MenuXacNhan")) AllMenu.ins.menu["MenuXacNhan"].SetActive(false);
             rongdoi.SetActive(false);
         }
     }
@@ -3169,11 +3203,11 @@ public class NetworkManager : MonoBehaviour
         debug.Log("[SocketIO] dc thu hoach: " + e.name + " " + e.data);
         int dao = int.Parse(e.data["dao"].ToString());
         //  GameObject congtrinhdao = GameObject.Find("ObjectCongtrinh" + e.data["dao"].ToString());
-        GameObject daoo = CrGame.ins.AllDao.transform.Find("BGDao"+ dao).gameObject;
-   //     debug.Log(daoo.name);
+        GameObject daoo = CrGame.ins.AllDao.transform.Find("BGDao" + dao).gameObject;
+        //     debug.Log(daoo.name);
         CongTrinh ct = CrGame.ins.FindObject(daoo, "ObjectCongtrinh").transform.GetChild(int.Parse(e.data["idcongtrinh"].ToString())).GetComponent<CongTrinh>();//congtrinhdao.transform.GetChild(int.Parse(e.data["idcongtrinh"].ToString())).GetComponent<CongTrinh>();
-                                                                                                                                                            // ct.DuocThuHoach(int.Parse(e.data["dao"].ToString()));
-      //  debug.LogError("xem thu hoach " + ct.Xemthuhoach);
+                                                                                                                                                                // ct.DuocThuHoach(int.Parse(e.data["dao"].ToString()));
+                                                                                                                                                                //  debug.LogError("xem thu hoach " + ct.Xemthuhoach);
         if (ct.Xemthuhoach == false)
         {
             ct.dcthuhoach = Instantiate(Inventory.ins.GetEffect("DuocThuHoach"), new Vector3(ct.transform.position.x, ct.transform.position.y - 0.3f), Quaternion.identity) as GameObject;
@@ -3187,9 +3221,9 @@ public class NetworkManager : MonoBehaviour
     }
     public void quaCongtrinh(SocketIOEvent e)
     {
-       debug.Log("[SocketIO] Open received: " + e.name + " " + e.data);
+        debug.Log("[SocketIO] Open received: " + e.name + " " + e.data);
         // inventory.AddItem("ThachAnh", int.Parse(e.data["ThachAnh"].ToString()));
-        if(e.data["quacongtrinh"])
+        if (e.data["quacongtrinh"])
         {
             AudioManager.PlaySound("sound1");
             CongTrinh congtrinh = CrGame.ins.VungCongTrinh.GetComponent<CongTrinh>();
@@ -3214,10 +3248,10 @@ public class NetworkManager : MonoBehaviour
 [SerializeField]
 public class jsonitemRong
 {
-    public string nameItem,tenrong;
+    public string nameItem, tenrong;
     public byte Sao;
     public byte levelrong;
-    public int exp,maxexp;
+    public int exp, maxexp;
     public byte tienhoa;
     public float sothucAn;
     public string timetieuhoa;

@@ -13,7 +13,7 @@ local allnamemanh = { "DauLongVan", "ThanLongVan", "ChanLongVan", "DuoiLongVan",
 local btnTrieuHoi
 -- Hàm khởi tạo
 function start()
-    print("LuaBehaviour Awake!")
+   -- print("LuaBehaviour Awake!")
     btnExit:GetComponent("Button").onClick:AddListener(function()-- btnExit là gameObject đã gán vào injections trong luabehavior
 		print("clicked, you input is ")
         CS.AllMenu.ins:DestroyMenu("MenuTrieuHoiRong")
@@ -54,9 +54,9 @@ function start()
         end
 
         -- Debug giá trị RGBA của màu sắc đã gán
-        print("Child " .. i .. " color: R=" .. img.color.r .. ", G=" .. img.color.g .. ", B=" .. img.color.b .. ", A=" .. img.color.a)
+       -- print("Child " .. i .. " color: R=" .. img.color.r .. ", G=" .. img.color.g .. ", B=" .. img.color.b .. ", A=" .. img.color.a)
     end
-    print("số item có: ".. soluongmanhco)
+    --print("số item có: ".. soluongmanhco)
     -- Kiểm tra điều kiện và cập nhật interactable của btnTrieuHoi
     if soluongmanhco == 5 then
         btnTrieuHoi.interactable = true
@@ -68,9 +68,9 @@ end
 
 function ClickTrieuHoi()
     local method = 'Main'
-local nameClass = 'Testt'
-local keyData = { 'nametrangtri', 'key2' }
-local valueData = { 'DoiNguSac', 'value2' }
+local nameClass = 'TrieuHoiRongEventTet'
+local keyData = { 'namerong', 'key2' }
+local valueData = { 'longvan', 'value2' }
 
 --Định nghĩa callback Lua
 local function myCallback(response)
@@ -87,8 +87,8 @@ local func = load(L)  -- Đảm bảo rằng load được gọi thay vì loadst
 if func then
     local T = func()  -- Thực thi hàm Lua để nhận bảng Lua
     -- Truy xuất giá trị trong bảng Lua
-    print(T.message)
-    if T.status == 0 then
+    --print(T.message)
+    if T.status == "0" then
         btnTrieuHoi.interactable = false
         CS.CrGame.ins:OnThongBaoNhanh("Triệu hồi oke", 2)
         local HieuUngTrieuHoi = self.transform:GetChild(0):GetChild(4).gameObject;
@@ -104,7 +104,7 @@ if func then
             local img = g:GetComponent(typeof(CS.UnityEngine.UI.Image))
             img.sprite = CS.Inventory.LoadSpriteRong(T.namerong)
             img:SetNativeSize()
-
+            TruItem()
             HieuUngTrieuHoi:SetActive(false);
 
             CS.EventManager.StartDelay2(function ()
@@ -126,6 +126,13 @@ end
 
 -- Gọi phương thức SendRequestLua trong C#, và truyền callback Lua vào
 XluaNetwork:SendRequest(method, nameClass, keyData, valueData, myCallback)
+end
+
+function TruItem()
+    for i = 1, #allnamemanh do
+        print('trừ mảnh: '.. allnamemanh[i])
+        CS.Inventory.ins:AddItem(allnamemanh[i],-1)
+    end
 end
 -- Hàm update
 -- function update()

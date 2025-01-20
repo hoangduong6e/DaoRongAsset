@@ -734,6 +734,7 @@ public static string http = "https";
                 }
                // debug.Log(json["linkdown"].AsString);
                 DownLoadAssetBundle.SetLinkDown = json["linkdown"].AsString;
+                AssetBundleManager.infoasbundle = json["infoasbundle"];
                 PanelLoadDao(false);
             //    btnloginfb.SetActive(true);
                 btnLoginThuong.SetActive(true);

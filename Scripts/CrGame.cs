@@ -1987,7 +1987,6 @@ public class CrGame : MonoBehaviour
             }
         }
     }
-
     public static string EncryptString(string Message, string Passphrase) // Hamma khoa chuoi
 
     {
