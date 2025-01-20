@@ -29,11 +29,9 @@
 //#define SOCKET_IO_DEBUG			// Uncomment this for debug
 using SimpleJSON;
 using System;
-using System.Collections;
 using System.Text;
 using UnityEngine;
 using WebSocketSharp;
-
 namespace SocketIO
 {
 
@@ -115,7 +113,30 @@ namespace SocketIO
 							packet.jsonnodeParse = json;
                             SocketIOComponent.dicPacket.Remove(packet.id);
                         }
-						else
+                        else if (SocketIOComponent.dicPacketLua.ContainsKey(packet.id))
+                        {
+							string str = data.Substring(offset); ;
+                            if (str.StartsWith("[") && str.EndsWith("]"))
+                            {
+                                str = str.Substring(1, str.Length - 2);  // Cắt bỏ dấu đầu và cuối
+                            }
+                            str = str.Replace("\\", "");
+                            if (str.StartsWith("[") && str.EndsWith("]"))
+                            {
+                                str = str.Substring(1, str.Length - 2);  // Cắt bỏ dấu đầu và cuối
+                            }
+                            if (str.StartsWith("\"") && str.EndsWith("\""))
+                            {
+                                // Loại bỏ dấu nháy kép ở đầu và cuối, thay thế bằng dấu nháy đơn
+                                str = str.Substring(1, str.Length - 2);  // Cắt bỏ dấu đầu và cuối
+                            }
+
+                            packet.str = str;
+                            // debug.Log("<color=lime>packet.id: " + packet.id + " Parse dataSTR </color> " + packet.str);
+                            SocketIOComponent.dicPacketLua.Remove(packet.id);
+
+                        }
+                        else
 						{
                             packet.json = new JSONObject(data.Substring(offset));
                         }

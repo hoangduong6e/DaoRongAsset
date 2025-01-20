@@ -2,7 +2,7 @@ using System.IO;
 
 namespace SimpleJSON
 {
-	public class JSONData : JSONNode
+    public class JSONData : JSONNode
 	{
 		private string m_Data;
 

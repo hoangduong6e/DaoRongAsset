@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-
 namespace SimpleJSON
 {
-	public class JSONNode
+    public class JSONNode
 	{
 		public virtual JSONNode this[int aIndex]
 		{
@@ -191,7 +190,6 @@ namespace SimpleJSON
                 }
                 else
                 {
-                    // Trả về null hoặc một giá trị mặc định phù hợp với ứng dụng của bạn
                     return true;
                 }
             }

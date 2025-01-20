@@ -1,10 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-
 namespace SimpleJSON
 {
-	public class JSONArray : JSONNode, IEnumerable
+    public class JSONArray : JSONNode, IEnumerable
 	{
 		private List<JSONNode> m_List = new List<JSONNode>();
 

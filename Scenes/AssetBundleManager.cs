@@ -87,6 +87,8 @@ public class AssetBundleManager : MonoBehaviour
     }
 
     // Tải `AssetBundle` từ bộ nhớ
+
+
    public IEnumerator LoadAssetBundle(string fileName, Action<AssetBundle> onSuccess, Action<string> onError)
 {
     string filePath = GetEncryptedFilePath(fileName);
@@ -150,13 +152,18 @@ public class AssetBundleManager : MonoBehaviour
     private void Start()
     {
         string testUrl = "https://daorongmobile.online/DaoRongData2/IOS/animtienhoa"; // URL của AssetBundle
-        string testFileName = "animatorkhungavttrungthu2024";
+        string testFileName = "animtienhoa";
 
-        StartCoroutine(DownloadAssetBundle(testUrl, testFileName, 
-            onSuccess: () => Debug.Log("Download and save successful"),
-            onError: (error) => Debug.LogError($"Download error: {error}")
-        ));
+        //StartCoroutine(DownloadAssetBundle(testUrl, testFileName, 
+        //    onSuccess: () => Debug.Log("Download and save successful"),
+        //    onError: (error) => Debug.LogError($"Download error: {error}")
+        //));
 
+
+        //StartCoroutine(DownloadAssetBundleKoMaHoa(testUrl, testFileName,
+        //    onSuccess: () => Debug.Log("Download and save successful"),
+        //    onError: (error) => Debug.LogError($"Download error: {error}")
+        //));
         StartCoroutine(LoadAssetBundle(testFileName, 
             onSuccess: (assetBundle) =>
             {
@@ -168,4 +175,46 @@ public class AssetBundleManager : MonoBehaviour
             onError: (error) => Debug.LogError($"Load error: {error}")
         ));
     }
+
+
+    public IEnumerator DownloadAssetBundleKoMaHoa(string url, string fileName, Action onSuccess = null, Action<string> onError = null)
+    {
+        using (UnityWebRequest www = UnityWebRequest.Get(url))
+        {
+            // Bắt đầu yêu cầu tải xuống
+            yield return www.SendWebRequest();
+
+            // Kiểm tra kết quả tải
+            if (www.result == UnityWebRequest.Result.Success)
+            {
+                try
+                {
+                    // Lưu dữ liệu tải về vào file trực tiếp (không mã hóa)
+                    File.WriteAllBytes(GetFilePath(fileName), www.downloadHandler.data);
+                    Debug.Log($"AssetBundle downloaded and saved as {fileName}");
+                    onSuccess?.Invoke(); // Gọi callback thành công (nếu có)
+                }
+                catch (Exception e)
+                {
+                    // Xử lý lỗi khi lưu file
+                    Debug.LogError($"Error saving AssetBundle: {e.Message}");
+                    onError?.Invoke(e.Message); // Gọi callback lỗi (nếu có)
+                }
+            }
+            else
+            {
+                // Xử lý lỗi tải xuống
+                Debug.LogError($"Error downloading AssetBundle: {www.error}");
+                onError?.Invoke(www.error); // Gọi callback lỗi (nếu có)
+            }
+        }
+    }
+
+    // Hàm hỗ trợ lấy đường dẫn lưu file
+    private string GetFilePath(string fileName)
+    {
+        // Đường dẫn lưu file trong Application.persistentDataPath
+        return Path.Combine(Application.persistentDataPath, fileName);
+    }
+
 }

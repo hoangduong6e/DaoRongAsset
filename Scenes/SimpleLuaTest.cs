@@ -11,45 +11,19 @@ public class SimpleLuaTest : MonoBehaviour
     private LuaEnv luaEnv; // Môi trường Lua
  //      private string url = "https://daorongmobile.online/test/testlua.txt";
     // Phương thức nhận tham số từ Lua
-    public void SendRequestLua(string method, string nameClass, List<string> keyData, List<string> valueData, LuaFunction callback)
-    {
-        // In các tham số nhận được từ Lua
-        Debug.Log("Method: " + method);
-        Debug.Log("Class: " + nameClass);
 
-        // Tạo JSON gửi đi
-        JSONClass datasend = new JSONClass();
-        datasend["class"] = method;
-        datasend["method"] = nameClass;
-
-        for (int i = 0; i < keyData.Count; i++)
-        {
-            Debug.Log("Key: " + keyData[i] + ", Value: " + valueData[i]);
-            datasend["data"][keyData[i]] = valueData[i];
-        }
-
-        // Gọi NetworkManager để gửi dữ liệu (giả sử SendServer có callback)
-        NetworkManager.ins.SendServer(datasend, (response) => 
-        {
-            // Sau khi nhận được phản hồi từ server, gọi callback Lua
-            callback?.Call(response.ToString());
-        });
-     
-    }
-
-    // Hàm callback này sẽ được gọi từ Lua sau khi xử lý
-    public void CallBack(string response)
-    {
-       // Debug.Log("Received callback with response: " + response);
-    }
 
     private void Start()
     {
+        luaEnv = new LuaEnv(); // Khởi tạo môi trường Lua
+
+ //       luaEnv.Global.Set("SendRequestLua", (System.Action<string, string, List<string>, List<string>, LuaFunction>)SendRequestLua);
+    //    luaEnv.Global.Set("CallBack", (System.Action<string>)CallBack);
+    //    luaEnv.Global.Set("StartDeLay2", (Action<Action, float>)EventManager.StartDelay2);
         EventManager.StartDelay2(()=>{
 
             StartCoroutine(LoadText());
             },5f);
-        
     }
 
     private void OnDestroy()
@@ -84,12 +58,10 @@ public class SimpleLuaTest : MonoBehaviour
             string text = www.downloadHandler.text;
             Debug.Log("Nội dung tệp tải về: " + text);
  
-                          luaEnv = new LuaEnv(); // Khởi tạo môi trường Lua
+                      
 
         // Đăng ký phương thức SendRequestLua và CallBack để Lua có thể gọi
-        luaEnv.Global.Set("SendRequestLua", (System.Action<string, string, List<string>, List<string>, LuaFunction>)SendRequestLua);
-        luaEnv.Global.Set("CallBack", (System.Action<string>)CallBack);
-         luaEnv.Global.Set("StartDeLay2", (Action<Action,float>)EventManager.StartDelay2);
+    
      //   luaEnv.Global.Set("OnThongBaoNhanh", (System.Action<string,float,bool>)CrGame.ins.OnThongBaoNhanh);
 
         // Đoạn script Lua gọi phương thức C#

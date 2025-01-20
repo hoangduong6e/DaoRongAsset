@@ -11,10 +11,8 @@ using SimpleJSON;
 using System.Collections.Generic;
 using System.IO;
 using System;
-
+using XLua;
 using Random = UnityEngine.Random;
-using System.Diagnostics;
-using System.IO.Compression;
 
 [SerializeField]
 public class postSend
@@ -26,6 +24,8 @@ public class postSend
         data = Data;
     }
 }
+
+[LuaCallCSharp]
 public class NetworkManager : MonoBehaviour
 {
     public SocketIOComponent socket;
@@ -75,82 +75,6 @@ public class NetworkManager : MonoBehaviour
     public int solanrequest = 0;
     public void SendServer(JSONClass dataa, CallbackServerResult call, bool setisSend = false)
     {
-       // Stopwatch stopwatch = new Stopwatch(); // Tạo đối tượng Stopwatch
-     //   stopwatch.Start();
-     //   if (!isSend && !setisSend) return;
-
-        //StartCoroutine(Load());
-
-        //IEnumerator Load()
-        //{
-        //    // debug.Log("LoginFacebook.ins.keyAes: " + LoginFacebook.ins.keyAes + ", LoginFacebook.ins.IVAes: " + LoginFacebook.ins.IVAes);
-        //    postSend p = new postSend(AesEncryption.Encrypt(dataa.ToString()), LoginFacebook.ins.id); // Dữ liệu cần gửi
-        //    string data = JsonUtility.ToJson(p); // Chuyển đổi đối tượng thành chuỗi JSON
-
-        //    // Tạo request POST
-        //    var request = new UnityWebRequest(CrGame.ins.ServerName + "RequestSend23", "POST");
-        //   // debug.Log("sendddd: " + dataa.ToString());
-
-        //    // Chuyển đổi chuỗi JSON thành mảng byte và thiết lập nội dung yêu cầu
-        //    byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(data);
-        //    request.uploadHandler = new UploadHandlerRaw(bodyRaw);
-        //    request.downloadHandler = new DownloadHandlerBuffer();
-
-        //    // Thiết lập headers
-        //    request.SetRequestHeader("Content-Type", "application/json");
-        //    // Nếu cần gửi token trong header
-        //    request.SetRequestHeader("Authorization", "Bearer " + LoginFacebook.token);  // Ví dụ về Authorization header nếu có
-
-        //    // Gửi yêu cầu
-        //    yield return request.SendWebRequest();
-
-        //    // Kiểm tra lỗi (cập nhật với result trong các phiên bản mới của Unity)
-        //    if (request.result != UnityWebRequest.Result.Success)
-        //    {
-        //        debug.Log("Request failed: " + request.error); // Hiển thị lỗi
-        //        JSONClass jsonerror = new JSONClass();
-        //        jsonerror["status"] = "1";
-        //        jsonerror["message"] = "Không thể kết nối tới máy chủ";
-        //        call(jsonerror); // Trả về kết quả lỗi
-        //    }
-        //    else
-        //    {
-        //        // Nếu thành công, parse và trả về kết quả
-        //        //   debug.Log(request.downloadHandler.text);
-        //        JSONNode json = JSON.Parse(AesEncryption.Decrypt(request.downloadHandler.text));
-        //        call(json); // Trả về dữ liệu đã nhận từ server
-
-        //        solanrequest = json["solanrequest"].AsInt;
-        //        stopwatch.Stop();
-        //        debug.LogWarning("Time phản hồi: " + stopwatch.ElapsedMilliseconds + " ms");
-        //    }
-
-        //    // Dọn dẹp
-        //    request.Dispose();
-        //    isSend = true;
-
-        //    CrGame.ins.panelLoadDao.SetActive(false);
-        //}
-
-
-        // JSONObject.
-
-
-        //socket.Emit("SendRequest", JSONObject.CreateStringObject(AesEncryption.Encrypt(dataa)), (response) =>
-        //{
-        //    Debug.Log("Server response: " + response.ToString());
-        //    Debug.Log("Server responseeee: " + response[0].str);
-        //    JSONNode json = JSON.Parse(AesEncryption.Decrypt(response[0].str));
-        //    solanrequest = json["solanrequest"].AsInt;
-
-        //    call(json); // Trả về dữ liệu đã nhận từ server
-        //    isSend = true;
-        //});
-
-        //  JSONNode json = JSON.Parse(dataa);
-        //  JSONClass jsonclass = json.AsObject;
-        // Debug.Log("json gui la: " + jsonclass.ToString());
-
         socket.EmitWithJSONClass(!setisSend ? "SendRequest" : "SendRequest2", dataa, (response) =>
         {
           //  stopwatch.Stop(); // Dừng đếm thời gian khi nhận được phản hồi
@@ -158,6 +82,20 @@ public class NetworkManager : MonoBehaviour
             call(response[0]);
           //  isSend = true;
           //  debug.Log("Time phản hồi new: " + stopwatch.ElapsedMilliseconds + " ms");
+            CrGame.ins.panelLoadDao.SetActive(false);
+        });
+
+    }
+
+    public void SendServerLua(JSONClass dataa, Action<string> call)
+    {
+        socket.EmitWithLua("LuaSendRequest", dataa, (response) =>
+        {
+            //  stopwatch.Stop(); // Dừng đếm thời gian khi nhận được phản hồi
+            debug.Log("Server response Lua: " + response.ToString());
+            call(response);
+            //  isSend = true;
+            //  debug.Log("Time phản hồi new: " + stopwatch.ElapsedMilliseconds + " ms");
             CrGame.ins.panelLoadDao.SetActive(false);
         });
 

@@ -1,6 +1,7 @@
+
 namespace SimpleJSON
 {
-	internal class JSONLazyCreator : JSONNode
+    internal class JSONLazyCreator : JSONNode
 	{
 		private JSONNode m_Node;
 

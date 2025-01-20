@@ -1,6 +1,7 @@
+
 namespace SimpleJSON
 {
-	public enum JSONBinaryTag
+    public enum JSONBinaryTag
 	{
 		Array = 1,
 		Class,

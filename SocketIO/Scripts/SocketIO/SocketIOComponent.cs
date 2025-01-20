@@ -93,6 +93,7 @@ namespace SocketIO
 
 
         public static Dictionary<int, bool> dicPacket = new Dictionary<int, bool>();
+        public static Dictionary<int, bool> dicPacketLua = new Dictionary<int, bool>();
 
 
         #region Unity interface
@@ -280,6 +281,16 @@ namespace SocketIO
             ackList.Add(ack);
 		
         }
+        public void EmitWithLua(string ev, JSONClass data, Action<string> action)
+        {
+            EmitPacket(new Packet(EnginePacketType.MESSAGE, SocketPacketType.EVENT, 0, "/", ++packetId, new JSONObject(string.Format("[\"{0}\",{1}]", ev, data.ToString()))));
+            Ack ack = new Ack(packetId, action);
+
+            dicPacketLua.Add(packetId, true);
+            //debug.Log("<color=red>packet.id: " + packetId + " Send data </color>");
+            ackList.Add(ack);
+
+        }
 
         #endregion
 
@@ -376,7 +387,7 @@ namespace SocketIO
 #endif
 
             Packet packet = decoder.Decode(e);
-           // Debug.Log("packetid ONNN: " + packetId + " jsonnode: " + packet.jsonnode);
+         //  Debug.Log("packetid ONNN: " + packetId + " str: " + packet.str);
             //PacketJSONNode packettt = decoder.DecodeJSONNode(e);
             switch (packet.enginePacketType) {
 				case EnginePacketType.OPEN: 	HandleOpen(packet);		break;
@@ -411,7 +422,7 @@ namespace SocketIO
 		
 		private void HandleMessage(Packet packet)
 		{
-			if(packet.json == null && packet.jsonnodeParse == null) { return; }
+			if(packet.json == null && packet.jsonnodeParse == null && packet.str == null) { return; }
 
 			if(packet.socketPacketType == SocketPacketType.ACK){
 				for(int i = 0; i < ackList.Count; i++){
@@ -471,11 +482,16 @@ namespace SocketIO
 				if(ackList[i].packetId != packet.id){ continue; }
 				ack = ackList[i];
 				ackList.RemoveAt(i);
+			//	Debug.Log("packet.str: " + packet.str);
 				if(packet.jsonnodeParse != null)
 				{
                     ack.Invoke(packet.jsonnodeParse);
-                }	
-			    else
+                }
+                else if (packet.str != null)
+                {
+                    ack.Invoke(packet.str);
+                }
+                else
 				{
                     ack.Invoke(packet.json);
                 }

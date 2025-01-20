@@ -38,8 +38,9 @@ namespace SocketIO
 
         public System.Action<JSONObject> action;
         public System.Action<JSONNode> actionnode;
+        public System.Action<string> actionstr;
 
-		 
+
 
         public Ack(int packetId, System.Action<JSONObject> action)
 		{
@@ -55,6 +56,14 @@ namespace SocketIO
             this.actionnode = action;
         }
 
+
+        public Ack(int packetId, System.Action<string> action)
+        {
+            this.packetId = packetId;
+            this.time = DateTime.Now;
+            this.actionstr = action;
+        }
+
         public void Invoke(JSONObject ev)
 		{
 			action.Invoke(ev);
@@ -63,8 +72,11 @@ namespace SocketIO
         {
             actionnode.Invoke(ev);
         }
+        public void Invoke(string ev)
+        {
+            actionstr.Invoke(ev);
+        }
 
-      
 
         public override string ToString()
 		{

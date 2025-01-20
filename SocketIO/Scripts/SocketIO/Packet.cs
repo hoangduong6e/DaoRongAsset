@@ -40,6 +40,7 @@ namespace SocketIO
 		public int id;
 		public JSONObject json;
 		public JSONNode jsonnodeParse = null;
+		public string str = null;
 
 
         public Packet() : this(EnginePacketType.UNKNOWN, SocketPacketType.UNKNOWN, -1, "/", -1, null) { }

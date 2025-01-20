@@ -1,0 +1,133 @@
+-- Định nghĩa lớp LuaBehaviour
+LuaBehaviour = LuaBehaviour or {}
+
+local xluaMethod = CS.XluaMethod()-- tạo instance của class XluaMethod để gọi các hàm không static
+
+local XluaNetwork = CS.XluaNetwork();-- tạo instance của class XluaMethod để gọi các hàm không static
+
+local XluaJSONNode = CS.XluaJSONNode();
+-- Mảng các tên manh rồng
+local allnamemanh = { "DauLongVan", "ThanLongVan", "ChanLongVan", "DuoiLongVan", "VayLongVan" }
+
+
+local btnTrieuHoi
+-- Hàm khởi tạo
+function start()
+    print("LuaBehaviour Awake!")
+    btnExit:GetComponent("Button").onClick:AddListener(function()-- btnExit là gameObject đã gán vào injections trong luabehavior
+		print("clicked, you input is ")
+        CS.AllMenu.ins:DestroyMenu("MenuTrieuHoiRong")
+	end)
+
+    btnTrieuHoi = self.transform:GetChild(0):GetChild(3):GetComponent(typeof(CS.UnityEngine.UI.Button))
+    -- `self.transform` là transform của GameObject hiện tại
+    
+
+    btnTrieuHoi.onClick:AddListener(ClickTrieuHoi)
+    local AllmanhRong = self.transform:GetChild(0):GetChild(2).gameObject
+
+    -- Set btnTrieuHoi.interactable = false ban đầu
+    btnTrieuHoi.interactable = false
+
+
+
+    local soluongmanhco = 0
+
+    -- Duyệt tất cả con của AllmanhRong
+    for i = 0, AllmanhRong.transform.childCount - 1 do
+        local child = AllmanhRong.transform:GetChild(i)
+        local img = child:GetComponent(typeof(CS.UnityEngine.UI.Image))
+
+        -- Cập nhật sprite
+        img.sprite = CS.Inventory.LoadSprite(allnamemanh[i + 1])  -- Lua index bắt đầu từ 1, trong khi C# bắt đầu từ 0
+
+        -- Kiểm tra nếu item có trong inventory
+        local key = "item" .. allnamemanh[i + 1]
+        if CS.Inventory.ins.ListItemThuong:ContainsKey(key) then
+            print(allnamemanh[i + 1])
+            -- Đặt màu sắc trắng cho hình ảnh
+            xluaMethod:SetColor(img,255,255,255,255)
+            soluongmanhco = soluongmanhco + 1
+        else
+            -- Đặt màu sắc xám cho hình ảnh
+            xluaMethod:SetColor(img,125,125,125,181)
+        end
+
+        -- Debug giá trị RGBA của màu sắc đã gán
+        print("Child " .. i .. " color: R=" .. img.color.r .. ", G=" .. img.color.g .. ", B=" .. img.color.b .. ", A=" .. img.color.a)
+    end
+    print("số item có: ".. soluongmanhco)
+    -- Kiểm tra điều kiện và cập nhật interactable của btnTrieuHoi
+    if soluongmanhco == 5 then
+        btnTrieuHoi.interactable = true
+    else
+        btnTrieuHoi.interactable = false
+    end
+end
+
+
+function ClickTrieuHoi()
+    local method = 'Main'
+local nameClass = 'Testt'
+local keyData = { 'nametrangtri', 'key2' }
+local valueData = { 'DoiNguSac', 'value2' }
+
+--Định nghĩa callback Lua
+local function myCallback(response)
+   --local str = XluaJSONNode:str(response,'message');
+   --local str2 = XluaJSONNode:str(response,{'data','tuiluongthuc'});
+    print('Lua received callback data: '.. response)
+
+-- Chuyển đổi JSON thành Lua table
+local L = "return "..response:gsub('("[^"]-"):','[%1]=')  -- Thay dấu ':' bằng '='
+
+-- Sử dụng load thay vì loadstring
+local func = load(L)  -- Đảm bảo rằng load được gọi thay vì loadstring
+
+if func then
+    local T = func()  -- Thực thi hàm Lua để nhận bảng Lua
+    -- Truy xuất giá trị trong bảng Lua
+    print(T.message)
+    if T.status == 0 then
+        btnTrieuHoi.interactable = false
+        CS.CrGame.ins:OnThongBaoNhanh("Triệu hồi oke", 2)
+        local HieuUngTrieuHoi = self.transform:GetChild(0):GetChild(4).gameObject;
+        HieuUngTrieuHoi:SetActive(true);
+        CS.EventManager.StartDelay2(function()
+            local g = CS.UnityEngine.Object.Instantiate(self.transform:GetChild(1).gameObject, self.transform.position, CS.UnityEngine.Quaternion.identity)
+            g.transform:SetParent(CS.UnityEngine.GameObject.FindGameObjectWithTag("trencung").transform, false)
+
+            -- Set active
+            g.gameObject:SetActive(true)
+            
+            -- Get Image component and set sprite
+            local img = g:GetComponent(typeof(CS.UnityEngine.UI.Image))
+            img.sprite = CS.Inventory.LoadSpriteRong(T.namerong)
+            img:SetNativeSize()
+
+            HieuUngTrieuHoi:SetActive(false);
+
+            CS.EventManager.StartDelay2(function ()
+                local quabay = img:GetComponent(typeof(CS.QuaBay))
+                quabay.vitribay = CS.UnityEngine.GameObject.FindGameObjectWithTag("hopqua")
+                quabay.enabled = true
+                CS.AllMenu.ins:DestroyMenu("MenuTrieuHoiRong")
+            end,0.1)
+        
+        end, 0.5)
+    else
+        CS.CrGame.ins:OnThongBaoNhanh(T.message, 2)
+    end
+else
+    print("Error loading Lua code")
+end
+
+end
+
+-- Gọi phương thức SendRequestLua trong C#, và truyền callback Lua vào
+XluaNetwork:SendRequest(method, nameClass, keyData, valueData, myCallback)
+end
+-- Hàm update
+-- function update()
+--     print("LuaBehaviour Update!")
+-- end

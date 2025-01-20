@@ -5,7 +5,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
-
+using XLua;
+[LuaCallCSharp]
 public class Inventory : MonoBehaviour
 {
     //public Hashtable ListItemThuong = new Hashtable();
