@@ -54,17 +54,13 @@ public class CrGame : MonoBehaviour
     }
     private void Awake()
     {
+        menulogin = LoginFacebook.ins.CanvasLogin;
         ins = this;
+       
     }
     void Start()
     {
-
-
-     
-
-     
-
-
+       
         //// Lấy thời gian hiện tại ở múi giờ của máy tính
         //DateTime currentTime = DateTime.UtcNow;
 

@@ -1,7 +1,9 @@
-using SimpleJSON;
+﻿using SimpleJSON;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using UnityEngine.Rendering;
 using XLua;
@@ -15,21 +17,21 @@ public class AllMenu : MonoBehaviour
     public GameObject GetRongGiaoDien(string namerong, Transform tf, float scaleX = 1, bool wps = true, string layername = "RongGiaoDien", Vector3 scale = new Vector3())
     {
         //GameObject mn = Instantiate(Inventory.LoadObjectResource("GameData/Menu/" + namemenu) as GameObject, transform.position, Quaternion.identity);
-        if(tf != null)
+        if (tf != null)
         {
             for (int i = 0; i < tf.transform.childCount; i++)
             {
                 Destroy(tf.transform.GetChild(i).gameObject);
             }
-        }    
-       
+        }
+
         GameObject Rong = Instantiate(Inventory.GetObjRong(namerong), transform.position, Quaternion.identity);
-        if(tf != null)
+        if (tf != null)
         {
             Rong.transform.SetParent(tf.transform, wps);
             Rong.transform.position = tf.transform.position;
-        }    
-     
+        }
+
         SortingGroup group = Rong.GetComponent<SortingGroup>();
         group.sortingLayerName = layername;
 
@@ -47,11 +49,11 @@ public class AllMenu : MonoBehaviour
             Rong.transform.localScale = new Vector3(scale.x * scaleX, scale.y, Rong.transform.localScale.z);
         }
 
-      
-      //  bong.transform.position = vecbongcu;
+
+        //  bong.transform.position = vecbongcu;
         return Rong;
 
-        
+
         //GameObject Bong = Instantiate(bong, transform.position, Quaternion.identity);
         //Bong.transform.SetParent(tf.transform);
         //Bong.transform.position = bong.transform.position;
@@ -92,10 +94,10 @@ public class AllMenu : MonoBehaviour
 
         // debug.Log("Transfrom bong " + YVecBong);
     }
-    public void LoadRongGiaoDien(string namerong,Transform tf,float scaleX = 1,bool wps = true,string layername = "RongGiaoDien",Vector3 scale = new Vector3())
+    public void LoadRongGiaoDien(string namerong, Transform tf, float scaleX = 1, bool wps = true, string layername = "RongGiaoDien", Vector3 scale = new Vector3())
     {
-        GetRonggdGiaoDien(namerong,tf,scaleX,wps,layername,scale);
-    }    
+        GetRonggdGiaoDien(namerong, tf, scaleX, wps, layername, scale);
+    }
     private void Start()
     {
         ins = this;
@@ -114,20 +116,20 @@ public class AllMenu : MonoBehaviour
     }
     public void OpenMenu(string namemenu)
     {
-        if(menu.ContainsKey(namemenu))
+        if (menu.ContainsKey(namemenu))
         {
             menu[namemenu].SetActive(true);
         }
         else
         {
-            GameObject mn = Instantiate(Inventory.LoadObjectResource("GameData/Menu/" + namemenu) as GameObject,transform.position,Quaternion.identity);
+            GameObject mn = Instantiate(Inventory.LoadObjectResource("GameData/Menu/" + namemenu) as GameObject, transform.position, Quaternion.identity);
             menu.Add(namemenu, mn);
-            mn.transform.SetParent(gameObject.transform,false);
+            mn.transform.SetParent(gameObject.transform, false);
             mn.transform.SetSiblingIndex(1);
             mn.transform.position = gameObject.transform.position;
             mn.SetActive(true);
             //  Resources.UnloadAsset(mn);
-         //   Resources.UnloadUnusedAssets();
+            //   Resources.UnloadUnusedAssets();
         }
     }
     public void OpenMenuTrenCung(string namemenu)
@@ -142,9 +144,9 @@ public class AllMenu : MonoBehaviour
             menu.Add(namemenu, mn);
             mn.transform.SetParent(GameObject.FindGameObjectWithTag("trencung").transform, false);
             mn.transform.SetSiblingIndex(1);
-         //   mn.transform.position = parnet.transform.position;
+            //   mn.transform.position = parnet.transform.position;
             mn.SetActive(true);
-           // Resources.UnloadUnusedAssets();
+            // Resources.UnloadUnusedAssets();
         }
     }
     public void OpenCreateMenu(string namemenu, GameObject parnet = null, bool active = true)
@@ -165,22 +167,22 @@ public class AllMenu : MonoBehaviour
             mn.transform.SetSiblingIndex(1);
             mn.transform.position = parnet.transform.position;
             mn.SetActive(active);
-          //  Resources.UnloadUnusedAssets();
+            //  Resources.UnloadUnusedAssets();
         }
     }
-    public GameObject GetCreateMenu(string namemenu, GameObject parnet = null, bool active = true,int index = 1)
+    public GameObject GetCreateMenu(string namemenu, GameObject parnet = null, bool active = true, int index = 1)
     {
         GameObject g = null;
         if (menu.ContainsKey(namemenu))
         {
             menu[namemenu].SetActive(active);
             g = menu[namemenu];
-            if(parnet != null)
+            if (parnet != null)
             {
                 g.transform.SetParent(parnet.transform, false);
                 g.transform.position = parnet.transform.position;
             }
-  
+
         }
         else
         {
@@ -194,7 +196,7 @@ public class AllMenu : MonoBehaviour
             mn.transform.position = parnet.transform.position;
             mn.SetActive(active);
             g = mn;
-          //  Resources.UnloadUnusedAssets();
+            //  Resources.UnloadUnusedAssets();
         }
         g.transform.SetSiblingIndex(index);
         return g;
@@ -228,7 +230,7 @@ public class AllMenu : MonoBehaviour
     void ResultGiapRong(JSONNode json)
     {
         // OpenMenu("MenuGiapRong");
-        if(json["status"].AsString == "0")
+        if (json["status"].AsString == "0")
         {
             //   MenuGiapRong giap = transform.GetChild(transform.childCount - 1).GetComponent<MenuGiapRong>();
             //     giap.gameObject.SetActive(true);
@@ -239,4 +241,31 @@ public class AllMenu : MonoBehaviour
             CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
         }
     }
+    //public GameObject OpenMenuDisk(string id, Action<AssetBundle> callback = null)
+    //{
+    //    GameObject obj = null;
+    //    StartCoroutine(AssetBundleManager.ins.LoadAssetBundle(id,
+    //        onSuccess: (assetBundle) =>
+    //        {
+    //            UnityEngine.Object[] allAssets = assetBundle.GetAllAssetNames();
+
+    //            if (allAssets.Length > 0)
+    //            {
+    //                obj = allAssets[0] as GameObject;
+    //                Instantiate(obj);
+    //                callback?.Invoke(assetBundle);
+    //            }
+    //            else
+    //            {
+    //                Debug.LogError($"Không có tài nguyên nào trong AssetBundle: {id}");
+    //            }
+    //        },
+    //        onError: (error) =>
+    //        {
+    //            CrGame.ins.OnThongBaoNhanh("Không thể tải dữ liệu..");
+    //            Debug.LogError("Error loading AssetBundle: " + error);
+    //        }
+    //    ));
+    //    return obj;
+    //}
 }

@@ -1,13 +1,12 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using SimpleJSON;
 using System;
-using System.Net;
-using Unity.VisualScripting.Antlr3.Runtime;
+using System.IO;
+using UnityEditor;
 //using SIDGIN.Patcher.SceneManagment;
 //using SIDGIN.Patcher.Client;
 
@@ -31,6 +30,7 @@ public class LoginFacebook : MonoBehaviour
     public static LoginFacebook ins;
     public static string token = "";
     public static string thisServer = "";
+    public GameObject CanvasLogin;
 #if UNITY_EDITOR && UNITY_EDITOR_OSX
 // Chỉ Unity Editor trên macOS
 public static string http = "http";
@@ -64,6 +64,7 @@ public static string http = "https";
     // public static string ws { get {return (http == "https") } };
     private void Awake()
     {
+        DontDestroyOnLoad(CanvasLogin);
         //  LoadAllServer();
 #if UNITY_EDITOR_OSX
         if (ServerChinh.Contains("4444"))
@@ -1001,26 +1002,67 @@ public static string http = "https";
         }
 
     }
-   
+
+    //private IEnumerator BeginLoad()
+    //{
+    //     Application.backgroundLoadingPriority = UnityEngine.ThreadPriority.High;
+    //   // Application.backgroundLoadingPriority = ThreadPriority.Normal;
+    //    //SGAsyncOperation operation = SGSceneManager.LoadSceneAsync("SampleScenetest");
+    //    AsyncOperation operation = SceneManager.LoadSceneAsync("SampleScenetest");
+    //    while (!operation.isDone)
+    //    {
+    //        UpdateProgressUI(operation.progress * 100f);
+    //        yield return null;
+    //    }
+    //    UpdateProgressUI(operation.progress * 100f);
+    //}
+    public Text txtload;
     private IEnumerator BeginLoad()
     {
-         Application.backgroundLoadingPriority = UnityEngine.ThreadPriority.High;
-       // Application.backgroundLoadingPriority = ThreadPriority.Normal;
-        //SGAsyncOperation operation = SGSceneManager.LoadSceneAsync("SampleScenetest");
-        AsyncOperation operation = SceneManager.LoadSceneAsync("SampleScenetest");
+        string s = "Đang tải dữ liệu: ";
+        yield return AssetBundleManager.ins.CheckAndDownLoadAll(null, null, UpdateProcess, UpdateStatus);
+
+        void UpdateProcess(float f)
+        {
+            txtload.text = s + f + "%";
+            maskload.fillAmount = (float)f / 100;
+        }
+
+
+        Application.backgroundLoadingPriority = UnityEngine.ThreadPriority.High;
+        AssetBundle Asset = null;
+        // Tải AssetBundle
+        yield return AssetBundleManager.ins.LoadAssetBundle("mn2", Okkk, (str) => { debug.Log(str); });
+        void Okkk(AssetBundle asset)
+        {
+            Asset = asset;
+        }
+        string[] scenes = Asset.GetAllScenePaths();
+
+        string scene = Path.GetFileNameWithoutExtension(scenes[0]);
+        Application.backgroundLoadingPriority = UnityEngine.ThreadPriority.High;
+        AsyncOperation operation = SceneManager.LoadSceneAsync(scene);
+        // Tải scene từ AssetBundle
         while (!operation.isDone)
         {
             UpdateProgressUI(operation.progress * 100f);
             yield return null;
         }
-        UpdateProgressUI(operation.progress * 100f);
+        UpdateProgressUI(100);
+        void UpdateStatus(string str)
+        {
+            s = str;
+        }
+     //   CanvasLogin.gameObject.SetActive(false);
     }
+
+
     private void UpdateProgressUI(float progress)
     {
-        progress /= 2;
+    //    progress /= 2;
         if (maskload == null) return;
         maskload.fillAmount = (float)progress / (float)100;
-        txtLoad.text = "Đang tải dữ liệu " + Math.Round(progress,2) + "%";
+        txtLoad.text = "Đang giải nén.. " + Math.Round(progress,2) + "%";
     }
     //IEnumerator LoadYourAsyncScene()
     //{

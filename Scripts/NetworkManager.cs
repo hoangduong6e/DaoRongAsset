@@ -47,7 +47,7 @@ public class NetworkManager : MonoBehaviour
         socket = go.GetComponent<SocketIOComponent>();
         socket.On("duocthuhoach", DcThuHoach);
         socket.On("quacongtrinh", quaCongtrinh);
-        CrGame.ins.menulogin.SetActive(true);
+       // CrGame.ins.menulogin.SetActive(true);
         socket.On("open", ConnectSuccess);// ket noi server thanh cong
         socket.On("error", ConnectError);// ket noi server that bai
         socket.On("Tharongthanhcong", ThaRongOk);// ket noi server that bai
@@ -2357,7 +2357,7 @@ public class NetworkManager : MonoBehaviour
                 //   int sodao = CrGame.ins.AllDao.transform.childCount;
                 CrGame.ins.leveldao = new byte[CrGame.ins.sodao];
                 LoginFacebook.ins.isLogin = true;
-                CrGame.ins.menulogin.SetActive(true);
+               // CrGame.ins.menulogin.SetActive(true);
                 Image maskload = CrGame.ins.menulogin.transform.GetChild(0).GetComponent<Image>();
                 Text txtload = CrGame.ins.menulogin.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>();
 
@@ -2457,14 +2457,7 @@ public class NetworkManager : MonoBehaviour
 
 
 
-                    yield return AssetBundleManager.ins.CheckAndDownLoadAll(null,null, UpdateProcess);
-
-
-                    void UpdateProcess(float f)
-                    {
-                        txtload.text = "Đang tải dữ liệu: " + f + "%";
-                        maskload.fillAmount = (float)f / 100;
-                    }
+                   
                     yield return AssetBundleManager.ins.LoadAssetBundle("mn0",
             onSuccess: (assetBundle) =>
             {

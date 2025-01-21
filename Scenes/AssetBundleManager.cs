@@ -1,6 +1,7 @@
 using SimpleJSON;
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -190,21 +191,21 @@ public class AssetBundleManager : MonoBehaviour
         //    updateProcess: (update) => debug.Log($"Download process: {update}")
         //));
 
-        StartCoroutine(DownloadAssetBundleKoMaHoa(testUrl, testFileName,
-            onSuccess: () => debug.Log("Download and save successful"),
-            onError: (error) => debug.LogError($"Download error: {error}"),
-            updateProcess: (update) => debug.Log($"Download process: {update}")
-        ));
-        StartCoroutine(LoadAssetBundle(testFileName, 
-            onSuccess: (assetBundle) =>
-            {
-                debug.Log("AssetBundle loaded successfully");
-                // Sử dụng AssetBundle ở đây, ví dụ:
-                GameObject prefab = assetBundle.LoadAsset<GameObject>("animtienhoa");
-                Instantiate(prefab);
-            },
-            onError: (error) => debug.LogError($"Load error: {error}")
-        ));
+        //StartCoroutine(DownloadAssetBundleKoMaHoa(testUrl, testFileName,
+        //    onSuccess: () => debug.Log("Download and save successful"),
+        //    onError: (error) => debug.LogError($"Download error: {error}"),
+        //    updateProcess: (update) => debug.Log($"Download process: {update}")
+        //));
+        //StartCoroutine(LoadAssetBundle(testFileName, 
+        //    onSuccess: (assetBundle) =>
+        //    {
+        //        debug.Log("AssetBundle loaded successfully");
+        //        // Sử dụng AssetBundle ở đây, ví dụ:
+        //        GameObject prefab = assetBundle.LoadAsset<GameObject>("animtienhoa");
+        //        Instantiate(prefab);
+        //    },
+        //    onError: (error) => debug.LogError($"Load error: {error}")
+        //));
 
 
     }
@@ -215,14 +216,13 @@ public class AssetBundleManager : MonoBehaviour
         using (UnityWebRequest www = UnityWebRequest.Get(url))
         {
             // Bắt đầu yêu cầu tải xuống
-            yield return www.SendWebRequest();
-
+            www.SendWebRequest();
             // Theo dõi tiến trình tải xuống
             while (!www.isDone)
             {
                 // Nếu có hàm callback updateProcess, gọi để cập nhật tiến trình
                 updateProcess?.Invoke(www.downloadProgress); // downloadProgress trả về giá trị từ 0.0f đến 1.0f
-                                                             // debug.Log($"Downloading... {www.downloadProgress * 100f}%");
+                   debug.Log($"Downloading ko mã hóa... {www.downloadProgress * 100f}%");
 
                 yield return null; // Đợi đến khung hình tiếp theo
             }
@@ -260,20 +260,48 @@ public class AssetBundleManager : MonoBehaviour
     }
 
 
-    public IEnumerator CheckAndDownLoadAll(Action Success = null,Action<string> onError = null, Action<float> updateProcess = null)
+    public IEnumerator CheckAndDownLoadAll(Action Success = null,Action<string> onError = null, Action<float> updateProcess = null, Action<string> status = null)
     {
-        float process = 0;
+   //     updateText?.Invoke("Đang kiểm tra bản cập nhật...");
+        int count = infoasbundle.Count;
+        double process = 0;
         for (int i = 0; i < infoasbundle.Count;i++)
         {
+            string vercurrent = "0";
             string id = infoasbundle[i]["id"].AsString;
             string ver = infoasbundle[i]["ver"].AsString;
             string name = infoasbundle[i]["name"].AsString;
             string namefile = id;
-            if (!CheckFileContains(namefile))
-            { 
-                yield return DownloadAssetBundleKoMaHoa(DownLoadAssetBundle.linkdown + name, namefile, ThanhCong,Error, UpdateProcess);
+            if(PlayerPrefs.HasKey(namefile)) vercurrent = PlayerPrefs.GetString(namefile);
+            bool checkContainFile = CheckFileContains(namefile);
+            if (vercurrent != ver || !checkContainFile)
+            {
+                if(checkContainFile)
+                {
+                    DeleteAssetBundle(namefile);
+                    debug.Log("cập nhật: " + name);
+                    ChangeStatus("Đang cập nhật.. ");
+                }
+                else ChangeStatus("Đang tải dữ liệu: ");
+                //   updateText?.Invoke("Đang tải dữ liệu " + name + "...");
+                //  debug.Log("tải mới: " + name);
+                yield return DownloadAssetBundleKoMaHoa(DownLoadAssetBundle.linkdown + name, namefile, ThanhCong, Error, UpdateProcess);
+                process += Math.Floor((double)90 / count);
+                PlayerPrefs.SetString(namefile,ver);
+            
+            }
+            else count -= 1;
+
+            void UpdateProcess(float f)
+            {
+                double invoke = process + Math.Round(f * 100f / count, 2);
+                //process = 50 + invoke;
+                
+                debug.Log("invoke: " + invoke);
+                updateProcess?.Invoke((float)invoke);
             }
         }
+        updateProcess?.Invoke(100f);
         void ThanhCong()
         {
             debug.Log("tải thành công");
@@ -283,18 +311,10 @@ public class AssetBundleManager : MonoBehaviour
         {
             onError?.Invoke(err);
         }
-        void UpdateProcess(float f)
+       void ChangeStatus(string s)
         {
-            process += f;
-            double invoke = System.Math.Round(process * 100f / infoasbundle.Count, 2);
-            debug.Log("invoke: " + invoke);
-            updateProcess?.Invoke(f);
+            status?.Invoke(s);
         }
     }
 }
-
-
-//1 cái thì 100
-//2 cái thì 200
-//5 cái thì 500
 
