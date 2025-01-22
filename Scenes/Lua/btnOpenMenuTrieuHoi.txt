@@ -1,0 +1,15 @@
+﻿LuaBehaviour = LuaBehaviour or {}
+
+function start()
+   local btn = self.gameObject:AddComponent(typeof(CS.UnityEngine.UI.Button))
+   -- `self.transform` là transform của GameObject hiện tại
+   
+
+   btn.onClick:AddListener(onClick)
+end
+
+function onClick()
+   print('click triu hoi')
+
+   CS.AllMenu.ins:OpenMenuDisk('mn1');
+end

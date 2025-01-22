@@ -1,9 +1,6 @@
 ﻿using SimpleJSON;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using UnityEngine.Rendering;
 using XLua;
@@ -241,31 +238,27 @@ public class AllMenu : MonoBehaviour
             CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
         }
     }
-    //public GameObject OpenMenuDisk(string id, Action<AssetBundle> callback = null)
-    //{
-    //    GameObject obj = null;
-    //    StartCoroutine(AssetBundleManager.ins.LoadAssetBundle(id,
-    //        onSuccess: (assetBundle) =>
-    //        {
-    //            UnityEngine.Object[] allAssets = assetBundle.GetAllAssetNames();
+    public void OpenMenuDisk(string id,Transform parent = null)
+    {
+        StartCoroutine(AssetBundleManager.ins.LoadAssetBundle(id,
+            onSuccess: (assetBundle) =>
+            {
+           
+                debug.Log("AssetBundle " + id + " loaded successfully name: " + AssetBundleManager.infoasbundle[id].ToString());
+             //   debug.Log(AssetBundleManager.infoasbundle[id].ToString());
+              
+                // Sử dụng AssetBundle ở đây, ví dụ:
+                GameObject prefab = assetBundle.LoadAsset<GameObject>(AssetBundleManager.infoasbundle[id]["name"].AsString);
+                GameObject instan = Instantiate(prefab);
 
-    //            if (allAssets.Length > 0)
-    //            {
-    //                obj = allAssets[0] as GameObject;
-    //                Instantiate(obj);
-    //                callback?.Invoke(assetBundle);
-    //            }
-    //            else
-    //            {
-    //                Debug.LogError($"Không có tài nguyên nào trong AssetBundle: {id}");
-    //            }
-    //        },
-    //        onError: (error) =>
-    //        {
-    //            CrGame.ins.OnThongBaoNhanh("Không thể tải dữ liệu..");
-    //            Debug.LogError("Error loading AssetBundle: " + error);
-    //        }
-    //    ));
-    //    return obj;
-    //}
+                if (parent != null)
+                {
+                    instan.transform.SetParent(parent,false);
+                }
+                else instan.transform.SetParent(ins.transform,false);
+                instan.gameObject.SetActive(true);
+            },
+            onError: (error) => debug.LogError($"Load error: {error}")
+        ));
+    }
 }

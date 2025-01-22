@@ -1020,6 +1020,7 @@ public static string http = "https";
     private IEnumerator BeginLoad()
     {
         string s = "Đang tải dữ liệu: ";
+
         yield return AssetBundleManager.ins.CheckAndDownLoadAll(null, null, UpdateProcess, UpdateStatus);
 
         void UpdateProcess(float f)
@@ -1028,7 +1029,11 @@ public static string http = "https";
             maskload.fillAmount = (float)f / 100;
         }
 
-
+        void UpdateStatus(string str)
+        {
+            s = str;
+        }
+#if UNITY_EDITOR
         Application.backgroundLoadingPriority = UnityEngine.ThreadPriority.High;
         AssetBundle Asset = null;
         // Tải AssetBundle
@@ -1049,11 +1054,22 @@ public static string http = "https";
             yield return null;
         }
         UpdateProgressUI(100);
-        void UpdateStatus(string str)
+
+#else
+
+
+        Application.backgroundLoadingPriority = UnityEngine.ThreadPriority.High;
+        // Application.backgroundLoadingPriority = ThreadPriority.Normal;
+        //SGAsyncOperation operation = SGSceneManager.LoadSceneAsync("SampleScenetest");
+        AsyncOperation operation = SceneManager.LoadSceneAsync("SampleScenetest");
+        while (!operation.isDone)
         {
-            s = str;
+            UpdateProgressUI(operation.progress * 100f);
+            yield return null;
         }
-     //   CanvasLogin.gameObject.SetActive(false);
+        UpdateProgressUI(operation.progress * 100f);
+#endif
+        //   CanvasLogin.gameObject.SetActive(false);
     }
 
 

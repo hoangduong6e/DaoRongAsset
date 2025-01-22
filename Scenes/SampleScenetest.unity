@@ -136,6 +136,7 @@ GameObject:
   - component: {fileID: 674443}
   - component: {fileID: 674442}
   - component: {fileID: 674441}
+  - component: {fileID: 674445}
   m_Layer: 5
   m_Name: btn
   m_TagString: Untagged
@@ -237,18 +238,6 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-        - m_Target: {fileID: 1850188106}
-          m_TargetAssemblyTypeName: AllMenu, Assembly-CSharp
-          m_MethodName: OpenMenu
-          m_Mode: 5
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: MenuTrieuHoiRong
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &674443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -287,6 +276,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 674439}
   m_CullTransparentMesh: 0
+--- !u!114 &674445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 674439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9173d38911503c4a9a371b0760bdd15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  luaScript: {fileID: 4900000, guid: e157a0e46fc8ad34eb973eba9e6ef9f8, type: 3}
+  injections: []
 --- !u!1 &6177350
 GameObject:
   m_ObjectHideFlags: 0

@@ -180,11 +180,11 @@ public class AssetBundleManager : MonoBehaviour
     }
     private void Start()
     {
-        string testUrl = "https://daorongmobile.online/DaoRongData3/IOS/animtienhoa"; // URL của AssetBundle
-        string testFileName = "animtienhoa";
+        //string testUrl = "https://daorongmobile.online/DaoRongData3/IOS/animtienhoa"; // URL của AssetBundle
+        //string testFileName = "animtienhoa";
 
 
-        debug.Log(CheckFileContains(testFileName) ? "Đã tổn tại file " + testFileName : "Không tồn tại file: " + testFileName);
+        //debug.Log(CheckFileContains(testFileName) ? "Đã tổn tại file " + testFileName : "Không tồn tại file: " + testFileName);
         //StartCoroutine(DownloadAssetBundle(testUrl, testFileName,
         //    onSuccess: () => debug.Log("Download and save successful"),
         //    onError: (error) => debug.LogError($"Download error: {error}"),
@@ -262,21 +262,26 @@ public class AssetBundleManager : MonoBehaviour
 
     public IEnumerator CheckAndDownLoadAll(Action Success = null,Action<string> onError = null, Action<float> updateProcess = null, Action<string> status = null)
     {
-   //     updateText?.Invoke("Đang kiểm tra bản cập nhật...");
+        //     updateText?.Invoke("Đang kiểm tra bản cập nhật...");
+
+
         int count = infoasbundle.Count;
+            
         double process = 0;
-        for (int i = 0; i < infoasbundle.Count;i++)
+
+        foreach (string id in infoasbundle.AsObject.Keys)
         {
+            debug.Log("check id la: " + id);
             string vercurrent = "0";
-            string id = infoasbundle[i]["id"].AsString;
-            string ver = infoasbundle[i]["ver"].AsString;
-            string name = infoasbundle[i]["name"].AsString;
+          //  string id = infoasbundle[i]["id"].AsString;
+            string ver = infoasbundle[id]["ver"].AsString;
+            string name = infoasbundle[id]["name"].AsString;
             string namefile = id;
-            if(PlayerPrefs.HasKey(namefile)) vercurrent = PlayerPrefs.GetString(namefile);
+            if (PlayerPrefs.HasKey(namefile)) vercurrent = PlayerPrefs.GetString(namefile);
             bool checkContainFile = CheckFileContains(namefile);
             if (vercurrent != ver || !checkContainFile)
             {
-                if(checkContainFile)
+                if (checkContainFile)
                 {
                     DeleteAssetBundle(namefile);
                     debug.Log("cập nhật: " + name);
@@ -287,8 +292,8 @@ public class AssetBundleManager : MonoBehaviour
                 //  debug.Log("tải mới: " + name);
                 yield return DownloadAssetBundleKoMaHoa(DownLoadAssetBundle.linkdown + name, namefile, ThanhCong, Error, UpdateProcess);
                 process += Math.Floor((double)90 / count);
-                PlayerPrefs.SetString(namefile,ver);
-            
+                PlayerPrefs.SetString(namefile, ver);
+
             }
             else count -= 1;
 
@@ -296,12 +301,17 @@ public class AssetBundleManager : MonoBehaviour
             {
                 double invoke = process + Math.Round(f * 100f / count, 2);
                 //process = 50 + invoke;
-                
+
                 debug.Log("invoke: " + invoke);
                 updateProcess?.Invoke((float)invoke);
             }
         }
-        updateProcess?.Invoke(100f);
+
+        //    for (int i = 0; i < infoasbundle.Count;i++)
+        //{
+         
+        //}
+        if(process != 0) updateProcess?.Invoke(100f);
         void ThanhCong()
         {
             debug.Log("tải thành công");
