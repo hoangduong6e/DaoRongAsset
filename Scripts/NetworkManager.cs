@@ -2458,7 +2458,7 @@ public class NetworkManager : MonoBehaviour
 
 
                    
-                    yield return AssetBundleManager.ins.LoadAssetBundle("mn0",
+                    yield return AssetBundleManager.ins.LoadAssetBundle("alldragon",
             onSuccess: (assetBundle) =>
             {
                 debug.Log("AssetBundle alldragon loaded successfully");

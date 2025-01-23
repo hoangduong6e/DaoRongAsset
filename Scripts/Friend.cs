@@ -1,10 +1,7 @@
 ﻿
 using SimpleJSON;
-using System;
+
 using System.Collections;
-using System.IO;
-using System.IO.Compression;
-using System.Text;
 
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -217,19 +214,43 @@ public class Friend : MonoBehaviour
         StartCoroutine(DownloadImage());
         IEnumerator DownloadImage()
         {
+            debug.Log("name file animator la: " + namefile);
             UnityWebRequest request = UnityWebRequestTexture.GetTexture(LoginFacebook.http + "://" + LoginFacebook.ins.ServerChinh + "/LoadImage/namefolder/" + namefolder + "/name/" + namefile);
             yield return request.SendWebRequest();
             if (request.isNetworkError || request.isHttpError)
                 debug.Log(request.error);
             else
             {
-                debug.Log(request.downloadHandler.text + " " + namefile);
+              //  debug.Log(request.downloadHandler.text + " " + namefile);
+               
                 if (request.downloadHandler.text == "animation")
                 {
-                  //  debug.Log("Animationnnnnnnnn");
-                    // return;
-                  //  debug.Log("animator"+ namefile.ToLower());
-                  DownLoadAssetBundle.ins.DownAssetBundleAnimator(img, namefile);
+                     namefile = "animator" + namefile.ToLower();
+                    StartCoroutine(AssetBundleManager.ins.LoadAssetBundle(namefile,
+           onSuccess: (assetBundle) =>
+           {
+                 RuntimeAnimatorController tmpController = assetBundle.LoadAsset("Khung") as RuntimeAnimatorController;
+
+                 StartCoroutine(addAnim(tmpController));
+           },
+           onError: (error) => debug.LogError($"Load error: {error}")
+       ));
+
+                      IEnumerator addAnim(RuntimeAnimatorController anim)
+        {
+            Animator animator = null;
+            if (!img.GetComponent<Animator>())
+            {
+                animator = img.gameObject.AddComponent<Animator>();
+            }
+            else animator = img.GetComponent<Animator>();
+            animator.runtimeAnimatorController = anim;
+            yield return new WaitUntil(() => animator.runtimeAnimatorController != null);
+         //   yield return new WaitForSeconds(0.6f);
+            img.SetNativeSize();
+        }
+                  //  DownLoadAssetBundle.ins.DownAssetBundleAnimator(img, namefile);
+
                 }
                 else
                 {

@@ -443,4 +443,8 @@ public class MenuEventTet2024 : EventManager
        // gameObject.SetActive(false);
         AllMenu.ins.DestroyMenu("MenuEventTet2024");
     }
+    public void OpenMenuVanLong()
+    {
+        AllMenu.ins.OpenMenuDisk("menutrieuhoi");
+    }
 }

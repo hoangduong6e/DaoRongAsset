@@ -240,15 +240,27 @@ public class AllMenu : MonoBehaviour
     }
     public void OpenMenuDisk(string id,Transform parent = null)
     {
+       // id = AssetBundleManager.EncryptString(id);
+        debug.Log("AssetBundle " + id + " loaded name: " + AssetBundleManager.infoasbundle[id].ToString());
+        if(menu.ContainsKey(id))
+        {
+             menu[id].gameObject.SetActive(true);
+            return;
+        }
         StartCoroutine(AssetBundleManager.ins.LoadAssetBundle(id,
             onSuccess: (assetBundle) =>
             {
            
-                debug.Log("AssetBundle " + id + " loaded successfully name: " + AssetBundleManager.infoasbundle[id].ToString());
+             
              //   debug.Log(AssetBundleManager.infoasbundle[id].ToString());
               
                 // Sử dụng AssetBundle ở đây, ví dụ:
-                GameObject prefab = assetBundle.LoadAsset<GameObject>(AssetBundleManager.infoasbundle[id]["name"].AsString);
+              //  GameObject prefab = assetBundle.LoadAsset<GameObject>(AssetBundleManager.infoasbundle[id]["name"].AsString);
+
+                // Tải tất cả GameObject từ AssetBundle
+          GameObject[] allPrefabs = assetBundle.LoadAllAssets<GameObject>();
+
+           GameObject prefab = allPrefabs[0]; // Lấy GameObject đầu tiên
                 GameObject instan = Instantiate(prefab);
 
                 if (parent != null)
@@ -257,6 +269,7 @@ public class AllMenu : MonoBehaviour
                 }
                 else instan.transform.SetParent(ins.transform,false);
                 instan.gameObject.SetActive(true);
+                menu.Add(id,instan);
             },
             onError: (error) => debug.LogError($"Load error: {error}")
         ));

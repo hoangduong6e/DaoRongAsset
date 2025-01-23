@@ -64,6 +64,10 @@ public static string http = "https";
     // public static string ws { get {return (http == "https") } };
     private void Awake()
     {
+
+       // PlayerPrefs.DeleteAll();
+        Debug.Log($"Application.persistentDataPath: {Application.persistentDataPath}");
+
         DontDestroyOnLoad(CanvasLogin);
         //  LoadAllServer();
 #if UNITY_EDITOR_OSX
@@ -1037,7 +1041,7 @@ public static string http = "https";
         Application.backgroundLoadingPriority = UnityEngine.ThreadPriority.High;
         AssetBundle Asset = null;
         // Tải AssetBundle
-        yield return AssetBundleManager.ins.LoadAssetBundle("mn2", Okkk, (str) => { debug.Log(str); });
+        yield return AssetBundleManager.ins.LoadAssetBundle("scene", Okkk, (str) => { debug.Log(str); });
         void Okkk(AssetBundle asset)
         {
             Asset = asset;
@@ -1058,7 +1062,7 @@ public static string http = "https";
 #else
 
 
-        Application.backgroundLoadingPriority = UnityEngine.ThreadPriority.High;
+        Application.backgroundLoadingPriority = ThreadPriority.High;
         // Application.backgroundLoadingPriority = ThreadPriority.Normal;
         //SGAsyncOperation operation = SGSceneManager.LoadSceneAsync("SampleScenetest");
         AsyncOperation operation = SceneManager.LoadSceneAsync("SampleScenetest");

@@ -1,6 +1,7 @@
 using SimpleJSON;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
@@ -11,7 +12,7 @@ using UnityEngine.Networking;
 public class AssetBundleManager : MonoBehaviour
 {
     public static JSONNode infoasbundle;
-    private static string encryptionKey = "1111111111111111"; // Khóa mã hóa, cần 16, 24 hoặc 32 ký tự
+    public static string encryptionKey = "1111111111111111"; // Khóa mã hóa, cần 16, 24 hoặc 32 ký tự
 
     public static byte[] EncryptData(byte[] data)
     {
@@ -54,6 +55,28 @@ public class AssetBundleManager : MonoBehaviour
                 }
             }
         }
+    }
+
+     // Mã hóa dữ liệu (byte[])
+
+
+    // Mã hóa chuỗi
+    public static string EncryptString(string plainText)
+    {
+        byte[] plainBytes = Encoding.UTF8.GetBytes(plainText);
+        byte[] encryptedBytes = EncryptData(plainBytes);
+        string base64String = Convert.ToBase64String(encryptedBytes); // Chuyển sang Base64 để dễ lưu trữ
+
+        return base64String.Replace("/", "_").Replace("\\", "-");
+    }
+
+    // Giải mã chuỗi
+    public static string DecryptString(string encryptedText)
+    {
+        byte[] encryptedBytes = Convert.FromBase64String(encryptedText);
+        byte[] decryptedBytes = DecryptData(encryptedBytes);
+        string base64String =  Encoding.UTF8.GetString(decryptedBytes);
+        return base64String.Replace("/", "_").Replace("\\", "-");
     }
 
     
@@ -114,9 +137,19 @@ public class AssetBundleManager : MonoBehaviour
         string filePath = GetEncryptedFilePath(fileName);
 
         return File.Exists(filePath);
-    }    
+    }
+
+
+    public static Dictionary<string,AssetBundle> allAssetLoaded = new();
     public IEnumerator LoadAssetBundle(string fileName, Action<AssetBundle> onSuccess, Action<string> onError)
     {
+        debug.Log("LoadAssetBundle: " + fileName);
+        fileName = EncryptString(fileName);
+        if(allAssetLoaded.ContainsKey(fileName))
+        {
+             onSuccess?.Invoke(allAssetLoaded[fileName]);
+            yield break;
+        }
         string filePath = GetEncryptedFilePath(fileName);
 
         if (!File.Exists(filePath))
@@ -149,6 +182,7 @@ public class AssetBundleManager : MonoBehaviour
         {
             debug.Log($"AssetBundle {fileName} loaded successfully");
             onSuccess?.Invoke(request.assetBundle);
+            allAssetLoaded.Add(fileName,request.assetBundle);
         }
         else
         {
@@ -246,7 +280,7 @@ public class AssetBundleManager : MonoBehaviour
             else
             {
                 // Xử lý lỗi tải xuống
-                debug.LogError($"Error downloading AssetBundle: {www.error}");
+                debug.LogError($"Error downloading AssetBundle: {www.error} " + url);
                 onError?.Invoke(www.error); // Gọi callback lỗi (nếu có)
             }
         }
@@ -264,7 +298,6 @@ public class AssetBundleManager : MonoBehaviour
     {
         //     updateText?.Invoke("Đang kiểm tra bản cập nhật...");
 
-
         int count = infoasbundle.Count;
             
         double process = 0;
@@ -272,27 +305,31 @@ public class AssetBundleManager : MonoBehaviour
         foreach (string id in infoasbundle.AsObject.Keys)
         {
             debug.Log("check id la: " + id);
-            string vercurrent = "0";
+            float vercurrent = 0;
           //  string id = infoasbundle[i]["id"].AsString;
-            string ver = infoasbundle[id]["ver"].AsString;
-            string name = infoasbundle[id]["name"].AsString;
-            string namefile = id;
-            if (PlayerPrefs.HasKey(namefile)) vercurrent = PlayerPrefs.GetString(namefile);
+            float ver = infoasbundle[id]["ver"].AsFloat;
+            //string name = infoasbundle[id]["name"].AsString;
+            string namefile = EncryptString(id);
+            if (PlayerPrefs.HasKey(namefile)) vercurrent = PlayerPrefs.GetFloat(namefile);
             bool checkContainFile = CheckFileContains(namefile);
+            debug.Log("file tồn tại " + checkContainFile.ToString() + " ver cũ: " + vercurrent + ", ver mới: " + ver);
             if (vercurrent != ver || !checkContainFile)
             {
                 if (checkContainFile)
                 {
                     DeleteAssetBundle(namefile);
-                    debug.Log("cập nhật: " + name);
+                    debug.Log("cập nhật: " + id);
                     ChangeStatus("Đang cập nhật.. ");
                 }
                 else ChangeStatus("Đang tải dữ liệu: ");
-                //   updateText?.Invoke("Đang tải dữ liệu " + name + "...");
-                //  debug.Log("tải mới: " + name);
-                yield return DownloadAssetBundleKoMaHoa(DownLoadAssetBundle.linkdown + name, namefile, ThanhCong, Error, UpdateProcess);
-                process += Math.Floor((double)90 / count);
-                PlayerPrefs.SetString(namefile, ver);
+                if(ver > 0)
+                {
+                   yield return DownloadAssetBundleKoMaHoa(DownLoadAssetBundle.linkdown + id, namefile, ThanhCong, Error, UpdateProcess);
+                    process += Math.Floor((double)90 / count);
+                   PlayerPrefs.SetFloat(namefile, ver);
+                }
+                else PlayerPrefs.DeleteKey(namefile);
+        
 
             }
             else count -= 1;
@@ -327,4 +364,3 @@ public class AssetBundleManager : MonoBehaviour
         }
     }
 }
-

@@ -371,10 +371,10 @@ public class ReplayData : MonoBehaviour
         }
 
        // CrGame.ins.menulogin.SetActive(true);
-        Image Progress = CrGame.ins.menulogin.transform.GetChild(0).GetComponent<Image>();
-        Text txtProgress = Progress.transform.GetChild(0).GetComponent<Text>();
-        Progress.fillAmount = (float)1 / (float)100;
-        txtProgress.text = "1%";
+       // Image Progress = CrGame.ins.menulogin.transform.GetChild(0).GetComponent<Image>();
+        //Text txtProgress = Progress.transform.GetChild(0).GetComponent<Text>();
+        //Progress.fillAmount = (float)1 / (float)100;
+        //txtProgress.text = "1%";
 
         dangupdate = true;
         Record = false;

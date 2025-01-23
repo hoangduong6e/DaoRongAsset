@@ -16,7 +16,7 @@ function start()
    -- print("LuaBehaviour Awake!")
     btnExit:GetComponent("Button").onClick:AddListener(function()-- btnExit là gameObject đã gán vào injections trong luabehavior
 		print("clicked, you input is ")
-        CS.AllMenu.ins:DestroyMenu("MenuTrieuHoiRong")
+        CS.AllMenu.ins:DestroyMenu("menutrieuhoi")
 	end)
 
     btnTrieuHoi = self.transform:GetChild(0):GetChild(3):GetComponent(typeof(CS.UnityEngine.UI.Button))
@@ -111,7 +111,7 @@ if func then
                 local quabay = img:GetComponent(typeof(CS.QuaBay))
                 quabay.vitribay = CS.UnityEngine.GameObject.FindGameObjectWithTag("hopqua")
                 quabay.enabled = true
-                CS.AllMenu.ins:DestroyMenu("MenuTrieuHoiRong")
+                CS.AllMenu.ins:DestroyMenu("menutrieuhoi")
             end,0.1)
         
         end, 0.5)
@@ -130,7 +130,7 @@ end
 
 function TruItem()
     for i = 1, #allnamemanh do
-        print('trừ mảnh: '.. allnamemanh[i])
+       -- print('trừ mảnh: '.. allnamemanh[i])
         CS.Inventory.ins:AddItem(allnamemanh[i],-1)
     end
 end
