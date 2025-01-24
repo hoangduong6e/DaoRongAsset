@@ -37,7 +37,7 @@ function start()
     for i = 0, AllmanhRong.transform.childCount - 1 do
         local child = AllmanhRong.transform:GetChild(i)
         local img = child:GetComponent(typeof(CS.UnityEngine.UI.Image))
-
+        AllmanhRong.transform:GetChild(i).name = allnamemanh[i + 1]
         -- Cập nhật sprite
         img.sprite = CS.Inventory.LoadSprite(allnamemanh[i + 1])  -- Lua index bắt đầu từ 1, trong khi C# bắt đầu từ 0
 

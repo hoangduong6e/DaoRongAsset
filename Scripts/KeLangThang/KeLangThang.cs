@@ -1,3 +1,4 @@
+using System.Collections;
 using SimpleJSON;
 using UnityEngine;
 
@@ -96,9 +97,9 @@ public abstract class KeLangThang : DragonIslandController
               RanDiChuyen();
         }
     }
-    protected override void ScanFood()
+    protected override void ScanFood ()
     {
-     
+
     }
     protected override void scale(float x)
     {
@@ -177,8 +178,14 @@ public abstract class KeLangThang : DragonIslandController
               //  ItemFly.CreateItemFly(Inventory.LoadSprite("tui"),transform.position);
                 destroy();
             }
+           GameObject obj = Inventory.LoadObjectResource("GameData/Event/BanTay");
+               GameObject ins = Instantiate(obj,transform.position,Quaternion.identity);
+            
+            Destroy(ins,1.5f);
+
         });
     }
+
     public JSONClass GetInfoKLT()
     {
         JSONClass json = new JSONClass();
@@ -191,7 +198,6 @@ public abstract class KeLangThang : DragonIslandController
     {
         die = true;
         KeLangThangManager.ins.id_KLT.Remove(ID);
-
         transform.LeanScale(new Vector3(), 0.5f);
         Destroy(gameObject,0.5f);
     }

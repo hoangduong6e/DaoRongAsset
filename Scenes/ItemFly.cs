@@ -36,8 +36,12 @@ public class ItemFly : MonoBehaviour
     }
     private void Fly()
     {
-        transform.LeanMove(GameObject.FindGameObjectWithTag("hopqua").transform.position, 1f).setOnComplete(() => {
+        GameObject hopqua = GameObject.FindGameObjectWithTag("hopqua");
+                  hopqua.GetComponent<HopQua>().ThemQua(1);
+        transform.LeanMove(hopqua.transform.position, 1f).setOnComplete(() => {
+  
             Destroy(gameObject);
+            
         });
     }
 
