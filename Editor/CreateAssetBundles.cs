@@ -9,7 +9,6 @@ using System.Linq;
 public class CreateEncryptedAssetBundles : MonoBehaviour
 {
     public static bool test = false;
-    private static string encryptionKey = "1111111111111111"; // Khóa mã hóa
 
     [MenuItem("Assets/Build tất cả assetbundle (đã mã hóa)")]
     private static void BuildAllEncryptedAssetBundles()

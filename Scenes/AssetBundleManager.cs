@@ -13,51 +13,43 @@ public class AssetBundleManager : MonoBehaviour
 {
     public static JSONNode infoasbundle;
     public static string encryptionKey = "1111111111111111"; // Khóa mã hóa, cần 16, 24 hoặc 32 ký tự
-
+    private static readonly byte[] fixedIV = Encoding.UTF8.GetBytes("FixedIV123456789"); // IV cố định (16 byte)
     public static byte[] EncryptData(byte[] data)
     {
         using (Aes aesAlg = Aes.Create())
         {
             aesAlg.Key = Encoding.UTF8.GetBytes(encryptionKey);
-            aesAlg.IV = new byte[16]; // IV mặc định
+            aesAlg.IV = fixedIV; // Sử dụng IV cố định
 
-            ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
             using (MemoryStream ms = new MemoryStream())
+            using (ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV))
+            using (CryptoStream cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
             {
-                using (CryptoStream cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
-                {
-                    cs.Write(data, 0, data.Length);
-                }
+                cs.Write(data, 0, data.Length);
+                cs.FlushFinalBlock();
                 return ms.ToArray();
             }
         }
-
     }
 
-    // Hàm giải mã dữ liệu
+    // Giải mã dữ liệu
     public static byte[] DecryptData(byte[] encryptedData)
     {
         using (Aes aesAlg = Aes.Create())
         {
             aesAlg.Key = Encoding.UTF8.GetBytes(encryptionKey);
-            aesAlg.IV = new byte[16]; // IV mặc định
+            aesAlg.IV = fixedIV; // Sử dụng IV cố định
 
-            ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
             using (MemoryStream ms = new MemoryStream(encryptedData))
+            using (ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV))
+            using (CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
+            using (MemoryStream output = new MemoryStream())
             {
-                using (CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
-                {
-                    using (MemoryStream output = new MemoryStream())
-                    {
-                        cs.CopyTo(output);
-                        return output.ToArray();
-                    }
-                }
+                cs.CopyTo(output);
+                return output.ToArray();
             }
         }
     }
-
-     // Mã hóa dữ liệu (byte[])
 
 
     // Mã hóa chuỗi
@@ -145,7 +137,8 @@ public class AssetBundleManager : MonoBehaviour
     {
         debug.Log("LoadAssetBundle: " + fileName);
         fileName = EncryptString(fileName);
-        if(allAssetLoaded.ContainsKey(fileName))
+        debug.Log("LoadAssetBundle filename mã hóa: " + fileName);
+        if (allAssetLoaded.ContainsKey(fileName))
         {
              onSuccess?.Invoke(allAssetLoaded[fileName]);
             yield break;
