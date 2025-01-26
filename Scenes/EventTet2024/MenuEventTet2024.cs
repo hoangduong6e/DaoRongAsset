@@ -394,6 +394,25 @@ public class MenuEventTet2024 : EventManager
     }
     public void OpenGiaoDienThinhRong()
     {
+        //JSONClass datasend = new JSONClass();
+        //datasend["class"] = nameEvent;
+        //datasend["method"] = "GetGiaoDienThinhRong";
+        //NetworkManager.ins.SendServer(datasend, Ok);
+        //void Ok(JSONNode json)
+        //{
+        //    debug.Log(json.ToString());
+        //    if (json["status"].Value == "ok")
+        //    {
+        //        GiaoDienThinhRong GiaoDien = GetCreateMenu("GiaoDienThinhRong",trencung.transform).GetComponent<GiaoDienThinhRong>();
+        //        GiaoDien.gameObject.SetActive(true);
+        //        GiaoDien.ParseData(json);
+        //    }
+        //    else
+        //    {
+        //        CrGame.ins.OnThongBaoNhanh(json["status"].Value);
+        //    }
+        //}
+
         JSONClass datasend = new JSONClass();
         datasend["class"] = nameEvent;
         datasend["method"] = "GetGiaoDienThinhRong";
@@ -403,8 +422,9 @@ public class MenuEventTet2024 : EventManager
             debug.Log(json.ToString());
             if (json["status"].Value == "ok")
             {
-                GiaoDienThinhRong GiaoDien = GetCreateMenu("GiaoDienThinhRong",trencung.transform).GetComponent<GiaoDienThinhRong>();
-                GiaoDien.gameObject.SetActive(true);
+                ShopTrungNguSac GiaoDien = EventManager.ins.GetCreateMenu("ShopLenhBai", transform, false, EventManager.ins.btnHopQua.transform.GetSiblingIndex()).GetComponent<ShopTrungNguSac>();
+                //       AllMenu.ins.transform.Find("ShopTrungNguSac").GetComponent<ShopTrungNguSac>();
+                //   GiaoDien.gameObject.SetActive(true);
                 GiaoDien.ParseData(json);
             }
             else
@@ -447,4 +467,7 @@ public class MenuEventTet2024 : EventManager
     {
         AllMenu.ins.OpenMenuDisk("menutrieuhoi");
     }
+
+
+
 }

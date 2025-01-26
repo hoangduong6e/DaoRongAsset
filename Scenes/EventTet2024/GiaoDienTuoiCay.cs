@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
@@ -749,19 +750,22 @@ public class GiaoDienTuoiCay : MonoBehaviour
         mn.gameObject.SetActive(true);
     }
 
+
     public void OpenMenuDoiManh()
     {
+        //return;
         AudioManager.PlaySound("soundClick");
         JSONClass datasend = new JSONClass();
         datasend["class"] = EventManager.ins.nameEvent;
         datasend["method"] = "MenuDoiManh";
+        //  if (menuevent.ContainsKey("GiaoDien2")) datasend["method"] = "MenuDoiManh2";
         NetworkManager.ins.SendServer(datasend, Ok);
 
         void Ok(JSONNode json)
         {
             if (json["status"].Value == "0")
             {
-                GameObject menuDoiManh = EventManager.ins.GetCreateMenu("MenuDoiManh", transform, false);
+                GameObject menuDoiManh = EventManager.ins.GetCreateMenu("MenuDoiManh", CrGame.ins.trencung.transform, true, transform.GetSiblingIndex() + 1);
                 GameObject ContentManh = menuDoiManh.transform.GetChild(0).transform.GetChild(2).transform.GetChild(0).transform.GetChild(0).gameObject;
                 GameObject ObjectManh = ContentManh.transform.GetChild(0).gameObject;
 
@@ -771,28 +775,31 @@ public class GiaoDienTuoiCay : MonoBehaviour
                     manh.transform.SetParent(ContentManh.transform, false);
                     manh.GetComponent<Button>().onClick.AddListener(XemManhDoi);
                     Image imgmanh = manh.transform.GetChild(0).GetComponent<Image>();
-                    if (json["ManhDoi"][i]["itemgi"].Value == "item" || json["ManhDoi"][i]["itemgi"].Value == "thuyenthucan")
+                    if (json["ManhDoi"][i]["itemgi"].Value == "Item" || json["ManhDoi"][i]["itemgi"].Value == "ThuyenThucAn")
                     {
                         imgmanh.sprite = Inventory.LoadSprite(json["ManhDoi"][i]["nameitem"].Value);
                     }
-                    else if (json["ManhDoi"][i]["itemgi"].Value == "itemevent")
+                    else if (json["ManhDoi"][i]["itemgi"].Value == "ItemEvent")
                     {
-                        for (int j = 0; j < EventManager.ins.allitemEvent.Length; j++)
-                        {
-                            if (json["ManhDoi"][i]["nameitem"].Value == EventManager.ins.allitemEvent[j].name)
-                            {
-                                imgmanh.sprite = EventManager.ins.allitemEvent[j];
-                            }
-                        }
+                        imgmanh.sprite = EventManager.ins.GetSprite(json["ManhDoi"][i]["nameitem"].AsString);
                         imgmanh.SetNativeSize();
+                    }
+                    else if (json["ManhDoi"][i]["itemgi"].Value == "Avatar")
+                    {
+                        Friend.ins.LoadImage("avt", json["ManhDoi"][i]["nameitem"].AsString, imgmanh);
+                        // imgmanh.sprite = EventManager.ins.GetSprite(json["ManhDoi"][i]["nameitem"].AsString);
+                        // imgmanh.SetNativeSize();
                     }
                     else
                     {
                         imgmanh.sprite = Inventory.LoadSpriteRong(json["ManhDoi"][i]["nameitem"].Value + "2");
                     }
+                    imgmanh.SetNativeSize();
                     manh.name = json["ManhDoi"][i]["namekey"];
                     manh.SetActive(true);
+                    GamIns.ResizeItem(imgmanh, 200);
                 }
+
                 menuDoiManh.transform.GetChild(2).GetComponent<Button>().onClick.AddListener(DoiManh);
                 menuDoiManh.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().onClick.AddListener(ExitDoiManh);
                 menuDoiManh.SetActive(true);
@@ -808,46 +815,82 @@ public class GiaoDienTuoiCay : MonoBehaviour
     void XemManhDoi()
     {
         AudioManager.PlaySound("soundClick");
-        Button btnchon = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
+        Button btnchon = EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
         GameObject yeucau = EventManager.ins.menuevent["MenuDoiManh"].transform.GetChild(1).gameObject;
         namemanhchon = btnchon.name;
         JSONClass datasend = new JSONClass();
         datasend["class"] = EventManager.ins.nameEvent;
         datasend["method"] = "XemManhDoi";
+        //    if (menuevent.ContainsKey("GiaoDien2")) datasend["method"] = "XemManhDoi2";
         datasend["data"]["namemanh"] = namemanhchon;
         NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
-            for (int i = 0; i < yeucau.transform.childCount; i++)
+            Debug.Log(json.ToString());
+            for (int i = 1; i < yeucau.transform.childCount; i++)
             {
-                yeucau.transform.GetChild(i).gameObject.SetActive(false);
+                Destroy(yeucau.transform.GetChild(i).gameObject);
             }
             int sonvok = 0;
             for (int i = 0; i < json["manhdoi"]["itemcan"].Count; i++)
             {
-                for (int j = 0; j < yeucau.transform.childCount; j++)
-                {
-                    if (yeucau.transform.GetChild(j).name == json["manhdoi"]["itemcan"][i]["nameitem"].Value)
-                    {
-                        Text txtyeucau = yeucau.transform.GetChild(j).transform.GetChild(1).GetComponent<Text>();
-                        yeucau.transform.GetChild(j).gameObject.SetActive(true);
 
-                        txtyeucau.text = json["hienthisoitemco"][json["manhdoi"]["itemcan"][i]["nameitem"].AsString].AsString;
-                        if (json["hienthisoitemco"][json["manhdoi"]["itemcan"][i]["nameitem"].AsString].AsBool)
-                        {
-                            sonvok += 1;
-                        }
-                        if (json["duocdoi"].AsBool)
-                        {
-                            EventManager.ins.menuevent["MenuDoiManh"].transform.GetChild(2).gameObject.SetActive(true);
-                            EventManager.ins.menuevent["MenuDoiManh"].transform.GetChild(2).GetComponent<Button>().interactable = true;
-                        }
-                        else
-                        {
-                            EventManager.ins.menuevent["MenuDoiManh"].transform.GetChild(2).gameObject.SetActive(false);
-                        }
-                    }
+                GameObject g = yeucau.transform.GetChild(0).gameObject;
+                GameObject instan = Instantiate(g, transform.position, Quaternion.identity);
+                instan.transform.SetParent(yeucau.transform, false);
+                string nameitem = json["manhdoi"]["itemcan"][i]["nameitem"].AsString; ;
+                instan.name = nameitem;
+                Image img = instan.transform.GetChild(0).GetComponent<Image>();
+                if (json["manhdoi"]["itemcan"][i]["loaiitem"].AsString == "ItemEvent")
+                {
+                    img.sprite = EventManager.ins.GetSprite(nameitem);
                 }
+                else if (json["manhdoi"]["itemcan"][i]["loaiitem"].AsString == "Item" || json["manhdoi"]["itemcan"][i]["loaiitem"].AsString == "ItemNgoc")
+                {
+                    img.sprite = Inventory.LoadSprite(nameitem);
+                }
+                img.SetNativeSize();
+                instan.gameObject.SetActive(true);
+                Text txtyeucau = instan.transform.GetChild(1).GetComponent<Text>();
+
+                txtyeucau.text = json["hienthisoitemco"][json["manhdoi"]["itemcan"][i]["nameitem"].AsString].AsString;
+                if (json["hienthisoitemco"][json["manhdoi"]["itemcan"][i]["nameitem"].AsString].AsBool)
+                {
+                    sonvok += 1;
+                }
+                if (json["duocdoi"].AsBool)
+                {
+                    EventManager.ins.menuevent["MenuDoiManh"].transform.GetChild(2).gameObject.SetActive(true);
+                    EventManager.ins.menuevent["MenuDoiManh"].transform.GetChild(2).GetComponent<Button>().interactable = true;
+                }
+                else
+                {
+                    EventManager.ins.menuevent["MenuDoiManh"].transform.GetChild(2).gameObject.SetActive(false);
+                }
+                GamIns.ResizeItem(img);
+                //for (int j = 0; j < yeucau.transform.childCount; j++)
+                //{
+                //    if (yeucau.transform.GetChild(j).name == json["manhdoi"]["itemcan"][i]["nameitem"].Value)
+                //    {
+                //        Text txtyeucau = yeucau.transform.GetChild(j).transform.GetChild(1).GetComponent<Text>();
+                //        yeucau.transform.GetChild(j).gameObject.SetActive(true);
+
+                //        txtyeucau.text = json["hienthisoitemco"][json["manhdoi"]["itemcan"][i]["nameitem"].AsString].AsString;
+                //        if (json["hienthisoitemco"][json["manhdoi"]["itemcan"][i]["nameitem"].AsString].AsBool)
+                //        {
+                //            sonvok += 1;
+                //        }
+                //        if (json["duocdoi"].AsBool)
+                //        {
+                //            EventManager.ins.menuevent["MenuDoiManh"].transform.GetChild(2).gameObject.SetActive(true);
+                //            EventManager.ins.menuevent["MenuDoiManh"].transform.GetChild(2).GetComponent<Button>().interactable = true;
+                //        }
+                //        else
+                //        {
+                //            EventManager.ins.menuevent["MenuDoiManh"].transform.GetChild(2).gameObject.SetActive(false);
+                //        }
+                //    }
+                //}
             }
             EventManager.ins.menuevent["MenuDoiManh"].transform.GetChild(0).transform.GetChild(3).GetComponent<Text>().text = json["manhdoi"]["thongtin"].Value;
         }
@@ -860,7 +903,9 @@ public class GiaoDienTuoiCay : MonoBehaviour
         JSONClass datasend = new JSONClass();
         datasend["class"] = EventManager.ins.nameEvent;
         datasend["method"] = "DoiQua";
+        if (EventManager.ins.menuevent.ContainsKey("GiaoDien2")) datasend["method"] = "DoiQua2";
         datasend["data"]["namemanh"] = namemanhchon;
+
         NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
@@ -876,7 +921,7 @@ public class GiaoDienTuoiCay : MonoBehaviour
                 {
                     yeucau.transform.GetChild(i).gameObject.SetActive(false);
                 }
-                transform.GetChild(0).transform.Find("imgLiXi").transform.GetChild(1).GetComponent<Text>().text = json["BaoLiXi"].AsString;
+                //   transform.GetChild(0).transform.Find("imgLiXi").transform.GetChild(1).GetComponent<Text>().text = json["BaoLiXi"].AsString;
                 //  ev.menuevent["GiaoDien2"].transform.Find("itemDaMatTrang").GetChild(1).GetComponent<Text>().text = json["DaMatTrang"].AsString;
                 CrGame.ins.OnThongBaoNhanh(json["message"].AsString, 2.5f);
             }
@@ -890,6 +935,6 @@ public class GiaoDienTuoiCay : MonoBehaviour
     private void ExitDoiManh()
     {
         EventManager.ins.DestroyMenu("MenuDoiManh");
+        AudioManager.SoundClick();
     }
-
 }

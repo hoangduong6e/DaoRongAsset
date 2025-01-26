@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class ShopTrungNguSac : MonoBehaviour
 {
     Transform g;
-    string nameEvent = "EvenLacVaoRungTien";
+    string nameEvent = "EventTet2024";
     public void ParseData(JSONNode json)
     {
         debug.Log(json.ToString());
@@ -45,6 +45,15 @@ public class ShopTrungNguSac : MonoBehaviour
                 ins.transform.GetChild(4).GetComponent<Text>().text = key.Value["txtdadoi"].AsString;
                 GamIns.ResizeItem(imgitem, 80);
             }
+            else if (key.Value["loaiitem"].AsString == "Avatar")
+            {
+
+                Friend.ins.LoadImage("avt", key.Value["nameitem"].AsString, imgitem);
+
+                ins.transform.GetChild(2).GetComponent<Text>().text = " ";
+            
+                ins.transform.GetChild(4).GetComponent<Text>().text = key.Value["txtdadoi"].AsString;
+            }
             Button btndoi = ins.transform.Find("btnDoi").GetComponent<Button>();
             if (key.Value["btn"].AsBool) btndoi.interactable = true;
             else btndoi.interactable = false;
@@ -71,7 +80,7 @@ public class ShopTrungNguSac : MonoBehaviour
     public void DoiQua()
     {
         Transform tf = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.transform.parent;
-        EventManager.OpenThongBaoChon("Tiêu hao <color=yellow>" + tf.transform.Find("btnDoi").transform.GetChild(1).GetComponent<Text>().text + "</color> Trứng Ngũ Sắc để đổi <color=yellow>" + tf.transform.GetChild(0).name + "</color>?", XacNhan);
+        EventManager.OpenThongBaoChon("Tiêu hao <color=yellow>" + tf.transform.Find("btnDoi").transform.GetChild(1).GetComponent<Text>().text + "</color> Lệnh bài để đổi <color=yellow>" + tf.transform.GetChild(0).name + "</color>?", XacNhan);
     void XacNhan()
         {
             JSONClass datasend = new JSONClass();
@@ -105,7 +114,7 @@ public class ShopTrungNguSac : MonoBehaviour
     }
     public void CloseMenu()
     {
-        EventManager.ins.DestroyMenu("ShopTrungNguSac");
+        EventManager.ins.DestroyMenu("ShopLenhBai");
         //gameObject.SetActive(false);
     }
 }

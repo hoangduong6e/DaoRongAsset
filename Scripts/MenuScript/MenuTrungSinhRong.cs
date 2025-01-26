@@ -11,6 +11,28 @@ public class MenuTrungSinhRong : MonoBehaviour
 {
     // Start is called before the first frame update
     string idrong;
+    private JSONNode allrongLongNgoc;
+    private void Start()
+    {
+
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "TrungSinh";
+        datasend["method"] = "GetData";
+        NetworkManager.ins.SendServer(datasend, Ok, true);
+        void Ok(JSONNode json)
+        {
+            if (json["status"].AsString == "0")
+            {
+                debug.Log(json.ToString());
+                allrongLongNgoc = json["allrongLongNgoc"];
+            }
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+            }
+        }
+
+    }
     private void OnEnable()
     {
         OpenNangSaoRong();
@@ -400,9 +422,71 @@ public class MenuTrungSinhRong : MonoBehaviour
             }
         }
     }
+
+    public void OpenChuyenHoaRongDacBiet()
+    {
+        GameObject contentRong = transform.GetChild(1).transform.GetChild(1).transform.GetChild(0).transform.GetChild(0).gameObject;
+        GameObject allitemcan = transform.GetChild(0).transform.Find("allitemcan").gameObject;
+        Image item1 = allitemcan.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>();
+        item1.sprite = Inventory.LoadSprite("SungMaTroi");
+        transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text = "Thăng sao Rồng Event";
+        transform.GetChild(0).transform.GetChild(1).GetComponent<Text>().text = "Yêu cầu vật phẩm <color=#00ff00ff>Long Ngọc</color> để <color=#ffa500ff>Thăng sao</color> <color=#ffff00ff>Rồng Event</color>";
+        for (int i = 1; i < contentRong.transform.childCount; i++)
+        {
+            Destroy(contentRong.transform.GetChild(i).gameObject);
+        }
+        GameObject g = transform.GetChild(0).gameObject;
+        //SpriteRenderer spriteRongChon = g.transform.Find("SpriteRongChon").GetComponent<SpriteRenderer>();
+        // Text txtQuaThong = transform.GetChild(0).transform.GetChild(3).GetComponent<Text>();
+        //SpriteRenderer SpriteRongNang = g.transform.Find("SpriteRongNangCap").GetComponent<SpriteRenderer>();
+        // txtQuaThong.gameObject.SetActive(false);
+        ClearRongGd();
+        for (int i = 0; i < allitemcan.transform.childCount; i++)
+        {
+            allitemcan.transform.GetChild(i).gameObject.SetActive(false);
+        }
+        foreach (KeyValuePair<string, JSONNode> json in allrongLongNgoc.AsObject)
+        {
+            debug.Log(json.Key);
+            int saomin = json.Value["saomin"].AsInt;
+            int saomax = json.Value["saomax"].AsInt;
+            if (Inventory.ins.TuiRong.transform.childCount > 1)
+            {
+                for (int i = 0; i < Inventory.ins.TuiRong.transform.childCount - 1; i++)
+                {
+                    if (Inventory.ins.TuiRong.transform.GetChild(i).transform.childCount > 0)
+                    {
+                        ItemDragon itemdra = Inventory.ins.TuiRong.transform.GetChild(i).transform.GetChild(0).GetComponent<ItemDragon>();
+                        string nameimg = itemdra.transform.GetChild(0).GetComponent<Image>().sprite.name;
+                        if (itemdra.nameObjectDragon == json.Key && nameimg == json.Key + "2")
+                        {
+                            int saohientai = int.Parse(itemdra.txtSao.text);
+                            if (saohientai >= saomin && saohientai <= saomax)
+                            {
+                                GameObject rong = Instantiate(contentRong.transform.GetChild(0).gameObject, transform.position, Quaternion.identity);
+                                rong.transform.SetParent(contentRong.transform, false);
+                                // ite
+                                rong.name = itemdra.name;
+                                Image imgRong = rong.transform.GetChild(0).GetComponent<Image>();
+                                imgRong.sprite = Inventory.LoadSpriteRong(itemdra.nameObjectDragon + "2"); imgRong.SetNativeSize();
+                                rong.transform.GetChild(1).GetComponent<Text>().text = itemdra.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text;
+                                rong.transform.GetChild(2).GetComponent<Text>().text = itemdra.txtSao.text;
+                                // AddSlotRong(item.name, item.nameObjectDragon, ""); //item.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text
+                                rong.SetActive(true);
+                            }
+                         
+                        }
+                    }
+                }
+            }
+        }    
+     
+    }
     public void ChonRongNangSao()
     {
-        CrGame.ins.panelLoadDao.SetActive(true) ;
+        string tengiaodien = transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text;
+   
+       
         AudioManager.PlaySound("soundClick");
         // Transform tf = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.transform.parent;
         // int btnnhan = tf.transform.parent.childCount - 1 - tf.transform.GetSiblingIndex();
@@ -419,10 +503,11 @@ public class MenuTrungSinhRong : MonoBehaviour
                     Image img = itemdra.transform.GetChild(0).GetComponent<Image>();
                     namerong = itemdra.nameObjectDragon;
                     saorong = itemdra.transform.GetChild(1).transform.GetChild(0).GetComponent<Text>().text;
-                    if (transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text == "Trùng sinh Rồng Event")
+                    if (tengiaodien == "Trùng sinh Rồng Event")
                     {
                         
                     }
+              
                     else
                     {
                         load = "ChuyenHoa";
@@ -432,7 +517,51 @@ public class MenuTrungSinhRong : MonoBehaviour
                 }
             }
         }
+        GameObject g = transform.GetChild(0).gameObject;
+        Text txtsaotruoc = g.transform.Find("txtsaotruoc").GetComponent<Text>();
+        Text txtsaosau = g.transform.Find("txtsaosau").GetComponent<Text>();
+        GameObject allitemcan = g.transform.Find("allitemcan").gameObject;
+        Button btnTrungSinh = g.transform.Find("btnTrungSinh").GetComponent<Button>();
+        if (tengiaodien == "Thăng sao Rồng Event")
+        {
+            SetRongGd(namerong + "2", namerong + "2");
+            txtsaotruoc.text = saorong.ToString() + " sao";
+            txtsaosau.text = (int.Parse(saorong) + 1) + " sao";
 
+            JSONNode ItemYeuCau = allrongLongNgoc[namerong]["ItemYeuCau"];
+            byte ok = 0;
+            for (int i = 0; i < ItemYeuCau.Count; i++)
+            {
+                Text txtyeucau = allitemcan.transform.GetChild(i).transform.GetChild(1).GetComponent<Text>();
+                Image imgitem = allitemcan.transform.GetChild(i).transform.GetChild(0).GetComponent<Image>();
+                int itemco = Inventory.ins.GetItem(ItemYeuCau[i]["nameitem"].AsString);
+                int itemcan = ItemYeuCau[i]["soluong"].AsInt;
+                imgitem.sprite = Inventory.LoadSprite(ItemYeuCau[i]["nameitem"].AsString);
+                txtyeucau.text = ItemYeuCau[i]["txtyeucau"].AsString;
+                imgitem.SetNativeSize();
+                GamIns.ResizeItem(imgitem);
+
+                if(itemco >= itemcan)
+                {
+                    ok += 1;
+                    txtyeucau.text = "<color=#00ff00ff>" + itemco + "/" + itemcan + "</color>";
+                }
+                else
+                {
+                    txtyeucau.text = "<color=#ff0000ff>" + itemco + "/" + itemcan + "</color>";
+                }
+                allitemcan.transform.GetChild(i).gameObject.SetActive(true);
+            }
+            if (ok >= ItemYeuCau.Count)
+            {
+                btnTrungSinh.interactable = true;
+            }
+            else btnTrungSinh.interactable = false;
+
+            return;
+
+        }
+        CrGame.ins.panelLoadDao.SetActive(true);
         JSONClass datasend = new JSONClass();
         datasend["class"] = "TrungSinh";
         datasend["method"] = "GetItemTrungSinh";
@@ -440,8 +569,8 @@ public class MenuTrungSinhRong : MonoBehaviour
         datasend["data"]["load"] = load;
         datasend["data"]["namerong"] = namerong;
         datasend["data"]["saorong"] = saorong;
-        GameObject g = transform.GetChild(0).gameObject;
-        Button btnTrungSinh = g.transform.Find("btnTrungSinh").GetComponent<Button>();
+      
+       
         NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
@@ -457,11 +586,10 @@ public class MenuTrungSinhRong : MonoBehaviour
                 // Text txtQuaThong = transform.GetChild(0).transform.GetChild(3).GetComponent<Text>();
                // SpriteRenderer SpriteRongNang = g.transform.Find("SpriteRongNangCap").GetComponent<SpriteRenderer>();
 
-                Text txtsaotruoc = g.transform.Find("txtsaotruoc").GetComponent<Text>();
-                Text txtsaosau = g.transform.Find("txtsaosau").GetComponent<Text>();
+             
               //  spriteRongChon.enabled = true; SpriteRongNang.enabled = true;
                 //  txtQuaThong.gameObject.SetActive(true);
-                GameObject allitemcan = g.transform.Find("allitemcan").gameObject;
+             
                 for (int i = 0; i < allitemcan.transform.childCount; i++)
                 {
                     allitemcan.transform.GetChild(i).gameObject.SetActive(false);
@@ -661,13 +789,13 @@ public class MenuTrungSinhRong : MonoBehaviour
         Button btndoi = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
         btndoi.interactable = false;
         CrGame.ins.panelLoadDao.SetActive(true);
-        string load = "TrungSinh"; 
-        if (transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text == "Chuyển hóa Rồng Lửa Mắt Xanh" 
+        string load = "TrungSinh";
+        if (transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text == "Chuyển hóa Rồng Lửa Mắt Xanh"
             || transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text == "Chuyển hóa Rồng Ma Trơi"
             || transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text == "Chuyển hóa Rồng Huyết Nguyệt Long"
             || transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text == "Chuyển hóa Rồng Ma Thạch"
             ) load = "ChuyenHoa";
-
+        else load = "ThangSao";
         AudioManager.PlaySound("soundClick");
        // Transform tf = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.transform.parent;
        // int btnnhan = tf.transform.parent.childCount - 1 - tf.transform.GetSiblingIndex();
@@ -678,6 +806,7 @@ public class MenuTrungSinhRong : MonoBehaviour
         NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
+            string tengd = transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text;
             if (json["status"].AsString == "0")
             {
                 for (int i = 0; i < json["allitem"].Count; i++)
@@ -693,10 +822,15 @@ public class MenuTrungSinhRong : MonoBehaviour
                             ItemDragon itemdra = Inventory.ins.TuiRong.transform.GetChild(i).transform.GetChild(0).GetComponent<ItemDragon>();
                             Image img = itemdra.transform.GetChild(0).GetComponent<Image>();
 
-                            if (transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text == "Trùng sinh Rồng Event")
+                            if (tengd == "Trùng sinh Rồng Event")
                             {
                                 img.sprite = Inventory.LoadSpriteRong(itemdra.nameObjectDragon + "1");
                                 CrGame.ins.OnThongBaoNhanh("Trùng sinh thành công");
+                            }
+                            else if (tengd == "Thăng sao Rồng Event")
+                            {
+                                img.sprite = Inventory.LoadSpriteRong(json["namerongchuyenhoa"].AsString + "2");
+                                itemdra.txtSao.text = (int.Parse(itemdra.txtSao.text) + 1).ToString();
                             }
                             else
                             {

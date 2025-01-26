@@ -23,6 +23,15 @@ string assetBundleDirectoryPath = Application.dataPath + "/../AssetsBundles/IOS"
         try
         {
             // Build asset bundle
+
+            string[] oldFiles = Directory.GetFiles(assetBundleDirectoryPath);
+            foreach (string file in oldFiles)
+            {
+                File.Delete(file);
+            }
+            Debug.Log("Đã xóa tất cả các asset bundle cũ trong thư mục.");
+
+
             BuildPipeline.BuildAssetBundles(assetBundleDirectoryPath, BuildAssetBundleOptions.None, EditorUserBuildSettings.activeBuildTarget);
 
             // Mã hóa asset bundle
