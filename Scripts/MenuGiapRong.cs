@@ -34,7 +34,7 @@ public class MenuGiapRong : MonoBehaviour
     }
     void LoadRongStart()
     {
-        SetRongGd(new string[] { "RongLuaMatXanh+GiapKimLoai", "RongLuaMatXanh+GiapDo", "RongLuaMatXanh+GiapNgocXanh" });
+        SetRongGd(new string[] { "RongLuaMatXanh+GiapKimLoai", "RongLuaMatXanh+GiapDo", "RongLuaMatXanh+GiapNgocXanh" },"");
     }    
     public void Close()
     {
@@ -77,6 +77,10 @@ public class MenuGiapRong : MonoBehaviour
                 case "MaTroi":
                     transform.GetChild(0).transform.Find("btnMaTroi").GetComponent<Image>().color = new Color32(255, 255, 255, 255);
                     break;
+                case "KyLan":
+                    transform.GetChild(0).transform.Find("btnKyLan").GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+                    break;
+
             }
             LoadItemRong();
         }
@@ -97,23 +101,44 @@ public class MenuGiapRong : MonoBehaviour
                     transform.GetChild(0).transform.Find("btnMaTroi").GetComponent<Image>().color = new Color32(255, 255, 255, 255);
                     allrong = new string[] { "RongMaTroi+GiapKimLoai", "RongMaTroi+GiapDo", "RongMaTroi+GiapNgocXanh" };
                     break;
+                case "KyLan":
+                    transform.GetChild(0).transform.Find("btnKyLan").GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+                    allrong = new string[] { "", "", "RongKyLanTim+GiapKyLan" };
+                    break;
             }
             //for (int i = 0; i < 3; i++)
             //{
             //    objrong.transform.GetChild(i).GetComponent<Animator>().runtimeAnimatorController = Inventory.LoadAnimator(allrong[i]);
             //}
-            SetRongGd(allrong);
+            SetRongGd(allrong, tab);
         }
      
     }    
-    private void SetRongGd(string[] namerong)
+    private void SetRongGd(string[] namerong,string nametab)
     {
         GameObject giaodienren = transform.GetChild(0).transform.Find("giaodienRen").gameObject;
         GameObject objrong = giaodienren.transform.Find("objRong").gameObject;
+
         for (int i = 0; i < 3; i++)
         {
-            AllMenu.ins.LoadRongGiaoDien(namerong[i] + "2", objrong.transform.GetChild(i).transform.GetChild(1));
-           // objrong.transform.GetChild(i).GetComponent<Animator>().runtimeAnimatorController = Inventory.LoadAnimator(allrong[i]);
+            Transform G = objrong.transform.GetChild(i).transform.GetChild(1);
+            if (namerong[i] != "")
+            {
+                AllMenu.ins.LoadRongGiaoDien(namerong[i] + "2",G);
+            }
+            else
+            {
+                for(int j = 0; j < G.transform.childCount;j++)
+                {
+                    Destroy(G.transform.GetChild(j).gameObject);
+                }
+            }
+            if(nametab == "KyLan")
+            {
+                objrong.transform.GetChild(i).transform.GetChild(0).gameObject.SetActive(false);
+            }
+            else objrong.transform.GetChild(i).transform.GetChild(0).gameObject.SetActive(true);
+            // objrong.transform.GetChild(i).GetComponent<Animator>().runtimeAnimatorController = Inventory.LoadAnimator(allrong[i]);
         }
     }    
     private void LoadVatPhamYc()
@@ -130,7 +155,7 @@ public class MenuGiapRong : MonoBehaviour
     }    
     private void LoadItemGiap()
     {
-        string[] allgiap = {"GiapDo-","GiapDo-CuongHoa","GiapKimLoai-","GiapKimLoai-CuongHoa","GiapNgocXanh-","GiapNgocXanh-CuongHoa"};
+        string[] allgiap = {"GiapDo-","GiapDo-CuongHoa","GiapKimLoai-","GiapKimLoai-CuongHoa","GiapNgocXanh-","GiapNgocXanh-CuongHoa", "GiapKyLan-", "GiapKyLan-CuongHoa" };
         GameObject content = transform.GetChild(0).transform.Find("giaodienRen").transform.Find("ScrollView").transform.GetChild(0).transform.GetChild(0).gameObject;
         GameObject item = content.transform.GetChild(0).gameObject;
     
@@ -637,6 +662,10 @@ public class MenuGiapRong : MonoBehaviour
             case "MaTroi":
                 allrong = new string[] { "RongMaTroi", "RongMaTroi+GiapKimLoai", "RongMaTroi+GiapDo", "RongMaTroi+GiapNgocXanh",
                      "RongMaTroiGiapThin", "RongMaTroiGiapThin+GiapKimLoai", "RongMaTroiGiapThin+GiapDo", "RongMaTroiGiapThin+GiapNgocXanh"
+                };
+                break;
+            case "KyLan":
+                allrong = new string[] { "RongKyLanTim","RongKyLanTim+GiapKyLan"
                 };
                 break;
         }
