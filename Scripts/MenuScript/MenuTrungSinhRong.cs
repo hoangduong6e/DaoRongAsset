@@ -829,8 +829,9 @@ public class MenuTrungSinhRong : MonoBehaviour
                             }
                             else if (tengd == "Thăng sao Rồng Event")
                             {
-                                img.sprite = Inventory.LoadSpriteRong(json["namerongchuyenhoa"].AsString + "2");
+                             //   img.sprite = Inventory.LoadSpriteRong(json["namerongchuyenhoa"].AsString + "2");
                                 itemdra.txtSao.text = (int.Parse(itemdra.txtSao.text) + 1).ToString();
+                                CrGame.ins.OnThongBaoNhanh("Thăng sao thành công");
                             }
                             else
                             {
