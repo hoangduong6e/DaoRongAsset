@@ -61,14 +61,26 @@ public class VienChinh : MonoBehaviour
     public static VienChinh vienchinh;
     public CheDoDau chedodau;
 
+    public float tylehoisinhXanh = 0;
+    public float tylehoisinhDo = 0;
+
+    public float maxhs;
     //public JSONClass ThongKeDame = new JSONClass();
-    
+
     //public void AddThongKeDame(string id, string nameobjrong,byte saorong,float damee)
     //{
     //   if()
     //   ThongKeDame[nameobjrong][id + "/" + saorong] = 0;
-   // }    
+    // }    
 
+    public void SetTyLeHoiSinh(float set, Team team)
+    {
+        if(team == Team.TeamDo)
+        {
+            tylehoisinhDo += set;
+        }
+        else tylehoisinhXanh += set;
+    }
     public void SetBuffGiapall(float set, Team team)
     {
         if (team == Team.TeamDo)

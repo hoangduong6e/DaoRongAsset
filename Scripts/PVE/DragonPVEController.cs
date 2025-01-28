@@ -363,12 +363,27 @@ public abstract class DragonPVEController : MonoBehaviour
     public abstract void AbsMatMau(float maumat, DragonPVEController cs, bool setonline = false);
     public abstract void SetHp(float fillhp,bool setonline);
     public abstract void SetHpOnline(JSONObject data);
+    protected float hs = 0;
+    
     protected void MatMauDefault(float maumat, DragonPVEController cs, bool setonline = false)
     {
         //   debug.LogError("MauMat " + gameObject.transform.parent.name + ": " + maumat);
         if (GetHpTru(maumat, cs, setonline) <= 0)
         {
-            Died();
+            float tylehoisinh = (team == Team.TeamDo) ? VienChinh.vienchinh.tylehoisinhDo : VienChinh.vienchinh.tylehoisinhXanh;
+            if(tylehoisinh > 0)
+            {
+                if(hs < VienChinh.vienchinh.maxhs && Random.Range(0,100) < tylehoisinh)
+                {
+                    PVEManager.InstantiateHieuUngChu("hoisinh", transform);
+                    hp = Maxhp;
+                    ImgHp.fillAmount = 1;
+                    hs += 1;
+                }
+                else Died();
+            }
+            else Died();
+
         }
     }
     protected void SetHpDefault(float fillhp,bool setonline = false)

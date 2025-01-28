@@ -90,7 +90,7 @@ if func then
     --print(T.message)
     if T.status == "0" then
         btnTrieuHoi.interactable = false
-        CS.CrGame.ins:OnThongBaoNhanh("Triệu hồi oke", 2)
+        --CS.CrGame.ins:OnThongBaoNhanh("Triệu hồi oke", 2)
         local HieuUngTrieuHoi = self.transform:GetChild(0):GetChild(4).gameObject;
         HieuUngTrieuHoi:SetActive(true);
         CS.EventManager.StartDelay2(function()
@@ -114,7 +114,7 @@ if func then
                 CS.AllMenu.ins:DestroyMenu("menutrieuhoi")
             end,0.1)
         
-        end, 0.5)
+        end, 3)
     else
         CS.CrGame.ins:OnThongBaoNhanh(T.message, 2)
     end
