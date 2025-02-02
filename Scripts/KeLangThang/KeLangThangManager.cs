@@ -20,8 +20,11 @@ public class KeLangThangManager : MonoBehaviour
     public bool setBtnKLT { 
         set 
         {
-            btnKeLangThang.SetActive(value);
-            btnThongBao.SetActive(!value);
+            if(!Friend.ins.QuaNha)
+            {
+                btnKeLangThang.SetActive(value);
+            }    
+          //  btnThongBao.SetActive(!value);
         } 
     }
     private void Awake()

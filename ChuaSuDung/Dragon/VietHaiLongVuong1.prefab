@@ -269,7 +269,7 @@ Transform:
   m_GameObject: {fileID: 1995592170551451176}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.9, y: 0.9, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1995592171160986890}
@@ -1334,7 +1334,7 @@ Transform:
   m_GameObject: {fileID: 1995592171674047562}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.9, y: 0.9, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1995592172200255685}
@@ -1736,6 +1736,7 @@ GameObject:
   - component: {fileID: 1995592172012278733}
   - component: {fileID: 1995592172012278732}
   - component: {fileID: 1995592172012278722}
+  - component: {fileID: 9036697982794179490}
   m_Layer: 0
   m_Name: Tail
   m_TagString: Untagged
@@ -6551,6 +6552,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   path: Particles/
   materialName: Standard Unlit
+--- !u!114 &9036697982794179490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1995592172012278721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6c2112105e2af5488c84e67fc1cdbda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parent: {fileID: 1995592171785262100}
+  particleSystem: {fileID: 1995592172012278733}
 --- !u!1 &1995592172052417090
 GameObject:
   m_ObjectHideFlags: 0

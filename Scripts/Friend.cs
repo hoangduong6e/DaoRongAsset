@@ -177,6 +177,7 @@ public class Friend : MonoBehaviour
         DaoFriend.SetActive(false);
         QuaNha = false;
         net.socket.Emit("quanhafriend", JSONObject.CreateStringObject("venha"));
+        KeLangThangManager.ins.setBtnKLT = true;
         // AllMenu.ins.DestroyMenu("NhaFriend");
         //Clear();
     }
@@ -320,6 +321,7 @@ public class Friend : MonoBehaviour
         {
             if (jsonn["status"].Value == "0")
             {
+                KeLangThangManager.ins.setBtnKLT = false;
                 JSONNode json = jsonn["data"];
                 //  DonDepDao();
                 net.socket.Emit("quanhafriend", JSONObject.CreateStringObject("quanha"));

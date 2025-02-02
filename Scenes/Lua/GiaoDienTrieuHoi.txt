@@ -33,6 +33,8 @@ function start()
 
     local soluongmanhco = 0
 
+    local RuntimeControllerOvang = self.transform:GetChild(0):GetChild(1):GetChild(5):GetComponent(typeof(CS.UnityEngine.Animator))
+    local allOBac = self.transform:GetChild(0):GetChild(1).gameObject
     -- Duyệt tất cả con của AllmanhRong
     for i = 0, AllmanhRong.transform.childCount - 1 do
         local child = AllmanhRong.transform:GetChild(i)
@@ -48,6 +50,7 @@ function start()
             -- Đặt màu sắc trắng cho hình ảnh
             xluaMethod:SetColor(img,255,255,255,255)
             soluongmanhco = soluongmanhco + 1
+            allOBac.transform:GetChild(i):GetComponent(typeof(CS.UnityEngine.Animator)).runtimeAnimatorController = RuntimeControllerOvang.runtimeAnimatorController
         else
             -- Đặt màu sắc xám cho hình ảnh
             xluaMethod:SetColor(img,125,125,125,181)
@@ -114,7 +117,7 @@ if func then
                 CS.AllMenu.ins:DestroyMenu("menutrieuhoi")
             end,0.1)
         
-        end, 3)
+        end, 2.8)
     else
         CS.CrGame.ins:OnThongBaoNhanh(T.message, 2)
     end

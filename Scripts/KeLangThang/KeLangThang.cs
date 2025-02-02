@@ -199,7 +199,17 @@ public abstract class KeLangThang : DragonIslandController
         die = true;
         KeLangThangManager.ins.id_KLT.Remove(ID);
         transform.LeanScale(new Vector3(), 0.5f);
-        Destroy(gameObject,0.5f);
+        Destroy(gameObject, 0.5f);
+
+        EventManager.StartDelay2(() => {
+            GameObject Buibay = Instantiate(Inventory.ins.GetEffect("Bui"), new Vector3(gameObject.transform.position.x, transform.position.y - 0.2f), Quaternion.identity);
+            Buibay.transform.position = new Vector3(bongrong.transform.GetChild(0).transform.position.x, bongrong.transform.GetChild(0).transform.position.y + 0.3f);
+            Buibay.SetActive(true);
+            Destroy(Buibay, 0.3f);
+
+        }, 0.4f);
+            
+     
     }
     
 }

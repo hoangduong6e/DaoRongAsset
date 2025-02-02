@@ -665,7 +665,7 @@ public class MenuGiapRong : MonoBehaviour
                 };
                 break;
             case "KyLan":
-                allrong = new string[] { "RongKyLanTim","RongKyLanTim+GiapKyLan"
+                allrong = new string[] { "RongKyLanTim","RongKyLanDo","RongKyLanTimGiapThin","RongKyLanTim+GiapKyLan","RongKyLanTimGiapThin+GiapKyLan","RongKyLanDo+GiapKyLan"
                 };
                 break;
         }

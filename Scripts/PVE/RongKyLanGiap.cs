@@ -134,7 +134,7 @@ public class RongKyLanGiap : DragonPVEController
     }
     public override void ABSAnimWin()
     {
-        animplay = "Win";
+        animplay = "Idlle";
 
     }
     public override void AbsUpdateAnimAttack()

@@ -95,12 +95,22 @@ public class MenuTrungSinhRong : MonoBehaviour
                               || itemdra.nameObjectDragon == "RongMaThach2" && nameimg == "RongMaThach22"
                               || itemdra.nameObjectDragon == "RongMaThach3" && nameimg == "RongMaThach32"
                               || itemdra.nameObjectDragon == "RongHacLong" && nameimg == "RongHacLong2"
+                               || itemdra.nameObjectDragon == "RongKyLanTim" && nameimg == "RongKyLanTim2" || itemdra.nameObjectDragon == "RongKyLanTimGiapThin" && nameimg == "RongKyLanTimGiapThin2"
                              ) 
                     {
 
                         if (itemdra.nameObjectDragon == "RongXuong" && nameimg == "RongXuong2")
                         {
                             if (int.Parse(itemdra.txtSao.text) >= 16 && int.Parse(itemdra.txtSao.text) < 20)
+                            {
+                                SetRong();
+                            }
+
+                        }
+
+                        else if (itemdra.nameObjectDragon == "RongKyLanDo" && nameimg == "RongKyLanDo2" || itemdra.nameObjectDragon == "RongKyLanTim" && nameimg == "RongKyLanTim2" || itemdra.nameObjectDragon == "RongKyLanTimGiapThin" && nameimg == "RongKyLanTimGiapThin2")
+                        {
+                            if (int.Parse(itemdra.txtSao.text) >= 10 && int.Parse(itemdra.txtSao.text) <= 29)
                             {
                                 SetRong();
                             }
@@ -122,17 +132,10 @@ public class MenuTrungSinhRong : MonoBehaviour
                             }
                         }
                         else if (itemdra.nameObjectDragon == "RongPhuongHoangBang" && nameimg == "RongPhuongHoangBang2"
-                          || itemdra.nameObjectDragon == "RongPhuongHoangLua" && nameimg == "RongPhuongHoangLua2" || itemdra.nameObjectDragon == "RongKyLanDo" && nameimg == "RongKyLanDo2"
+                          || itemdra.nameObjectDragon == "RongPhuongHoangLua" && nameimg == "RongPhuongHoangLua2" || itemdra.nameObjectDragon == "RongPhuongHoangDungNham" && nameimg == "RongPhuongHoangDungNham2"
                           )
                         {
                             if (int.Parse(itemdra.txtSao.text) >= 10 && int.Parse(itemdra.txtSao.text) <= 20)
-                            {
-                                SetRong();
-                            }
-                        }
-                        else if (itemdra.nameObjectDragon == "RongPhuongHoangDungNham" && nameimg == "RongPhuongHoangDungNham2")
-                        {
-                            if (int.Parse(itemdra.txtSao.text) >= 16 && int.Parse(itemdra.txtSao.text) <= 19)
                             {
                                 SetRong();
                             }
@@ -790,12 +793,13 @@ public class MenuTrungSinhRong : MonoBehaviour
         btndoi.interactable = false;
         CrGame.ins.panelLoadDao.SetActive(true);
         string load = "TrungSinh";
-        if (transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text == "Chuyển hóa Rồng Lửa Mắt Xanh"
-            || transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text == "Chuyển hóa Rồng Ma Trơi"
-            || transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text == "Chuyển hóa Rồng Huyết Nguyệt Long"
-            || transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text == "Chuyển hóa Rồng Ma Thạch"
+        string tengd = transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text;
+        if (tengd == "Chuyển hóa Rồng Lửa Mắt Xanh"
+            || tengd == "Chuyển hóa Rồng Ma Trơi"
+            || tengd == "Chuyển hóa Rồng Huyết Nguyệt Long"
+            || tengd == "Chuyển hóa Rồng Ma Thạch"
             ) load = "ChuyenHoa";
-        else load = "ThangSao";
+        else if(tengd == "Thăng sao Rồng Event") load = "ThangSao";
         AudioManager.PlaySound("soundClick");
        // Transform tf = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.transform.parent;
        // int btnnhan = tf.transform.parent.childCount - 1 - tf.transform.GetSiblingIndex();

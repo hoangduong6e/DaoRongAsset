@@ -84,14 +84,16 @@ public class VietHaiLongVuongAttack : DragonPVEController
     }
     public override void ABSAnimatorAttack()
     {
-        if (stateAnimAttack < maxStateAttack)
-        {
-            animplay = "Attack";
-        }
-        else
-        {
-            animplay = "Idlle";
-        }
+        //if (stateAnimAttack < maxStateAttack)
+        //{
+        //    animplay = "Attack";
+        //}
+        //else
+        //{
+        //    animplay = "Idlle";
+        //}
+
+        animplay = "Attack";
     }
     public override void AbsUpdateAnimIdle()
     {
@@ -106,11 +108,19 @@ public class VietHaiLongVuongAttack : DragonPVEController
     {
         if (stateAnimAttack == 1)
         {
-            ReplayData.AddAttackTarget(transform.parent.name, "0", "dungdau");
-            skillObj[0].transform.position = transform.position;
-            skillObj[0].SetActive(true);
+            for (int i = 0; i < skillObj.Length; i++)
+            {
+                if (!skillObj[i].gameObject.activeSelf)
+                {
+                    if (Target == null) return;
+                    ReplayData.AddAttackTarget(transform.parent.name, i.ToString(), "dungdau");
+                    skillObj[i].transform.position = transform.position;
+                    skillObj[i].SetActive(true);
+                    break;
+                }
+            }
         }
-      //  if (stateAnimAttack == maxStateAttack) danh += 1;
+        if (stateAnimAttack == maxStateAttack) stateAnimAttack = 0;
     }
     public override void BienCuuABS(float time)
     {

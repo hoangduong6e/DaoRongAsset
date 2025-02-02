@@ -58,6 +58,8 @@ public class ThanTuanLongAttack : DragonPVEController
     {
 
     }
+    private byte luotdanh = 0;
+
     public override void SkillMoveOk()
     {
         float damee = dame;
@@ -66,7 +68,12 @@ public class ThanTuanLongAttack : DragonPVEController
             damee *= 5;
             PVEManager.InstantiateHieuUngChu("chimang", transform);
         }
-
+        luotdanh++;
+        if(luotdanh >= 3)
+        {
+            damee *= 2;
+            luotdanh = 0;
+        }    
         if (Target.name != "trudo" && Target.name != "truxanh")
         {
             DragonPVEController dra = Target.GetComponent<DraUpdateAnimator>().DragonPVEControllerr;

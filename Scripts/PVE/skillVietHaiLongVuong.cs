@@ -12,10 +12,14 @@ public class skillVietHaiLongVuong : SkillDraController
     }
     private void Start()
     {
-        if (controller.team == Team.TeamXanh)
-        {
-            transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-        }
+        //if (controller.team == Team.TeamDo)
+        //{
+        //  //  Transform child0 = transform.GetChild(0);
+        //    transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        //   // child0.transform.localScale = new Vector3(-child0.transform.localScale.x, child0.transform.localScale.y, child0.transform.localScale.z);
+        //}
+
+        transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
     }
     //public float speedrotation;
 

@@ -50,7 +50,7 @@ public class ItemFly : MonoBehaviour
         GameObject ins = Instantiate(Inventory.ins.GetObj("ItemFly"), vec, Quaternion.identity, CrGame.ins.trencung);
         if(sprite != null)
         {
-            Image img = ins.transform.GetChild(0).GetComponent<Image>();
+            Image img = ins.transform.GetChild(1).GetComponent<Image>();
             img.sprite = sprite;
             img.SetNativeSize();
             img.Resize(85);

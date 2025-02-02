@@ -27,8 +27,9 @@ public class ShopTrungNguSac : MonoBehaviour
                 ins.transform.GetChild(2).GetComponent<Text>().text = "x" + key.Value["soluong"].AsString;
                 imgitem.sprite = Inventory.LoadSprite(key.Value["nameitem"].AsString);
                 ins.transform.GetChild(4).GetComponent<Text>().text = key.Value["txtdadoi"].AsString;
-                ins.transform.GetChild(1).gameObject.SetActive(false);//vienvang
+              
                 GamIns.ResizeItem(imgitem, 77);
+                if(!key.Value["nameitem"].AsString.Contains("LongVan")) ins.transform.GetChild(1).gameObject.SetActive(false);//vienvang
             }
             else if (key.Value["loaiitem"].AsString == "ItemEvent")
             {

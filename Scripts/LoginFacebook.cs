@@ -778,7 +778,8 @@ public static string http = "https";
         }
         else
         {
-            PlayerPrefs.DeleteAll();
+            //  PlayerPrefs.DeleteAll();
+            DeleteInfoAcc();
             btnLoginThuong.SetActive(true);
            // btnloginfb.SetActive(true);// btnloginfb
             NameServer = ServerChinh;
@@ -786,9 +787,21 @@ public static string http = "https";
     }
     public void DeletePrefs()
     {
-        PlayerPrefs.DeleteAll();
+        DeleteInfoAcc();
+        //PlayerPrefs.DeleteAll();
     }
 
+
+    private void DeleteInfoAcc()
+    {
+        debug.Log("DeleteInfoAcc");
+        PlayerPrefs.DeleteKey("memobi");
+        PlayerPrefs.DeleteKey("id");
+        PlayerPrefs.DeleteKey("matkhau");
+        PlayerPrefs.DeleteKey("tenhienthi");
+        PlayerPrefs.DeleteKey("maychu");
+        PlayerPrefs.DeleteKey("log");
+    }    
     public void LoginWithId(InputField input)
     {
         id = input.text;
@@ -823,7 +836,9 @@ public static string http = "https";
         MenuChon.SetActive(false);
        // btnloginfb.SetActive(true);
         btnLoginThuong.SetActive(true);
-        PlayerPrefs.DeleteAll();
+        DeleteInfoAcc();
+
+       // PlayerPrefs.DeleteAll();
     }
     public void ChonServer()
     {

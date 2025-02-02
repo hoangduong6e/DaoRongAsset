@@ -12,6 +12,8 @@ public class MenuEventTet2024 : EventManager
     public Sprite sprite1, sprite2, chuaduocnhan, duocnhan, danhan;
     public Transform trencung;
     public static MenuEventTet2024 inss;
+
+    public Text txtTimeEvent;
     protected override void ABSAwake()
     {
         inss = this;
@@ -34,6 +36,11 @@ public class MenuEventTet2024 : EventManager
 
         if (json["data"]["nhankilan"].AsBool) GiaoDienCayMai.transform.Find("KyLan9Sao").gameObject.SetActive(false);
         btnHopQua.transform.SetParent(trencung.transform);
+
+        if (CrGame.ins.NgayDem == "Ngay") transform.GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("GameData/EventTet2024/BanNgay");
+        else transform.GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("GameData/EventTet2024/BanDem");
+
+        txtTimeEvent.text = json["txtTimeEvent"];
     }
     public void TriggerBaoLiXi(Sprite sprite)
     {
