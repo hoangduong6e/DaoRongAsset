@@ -162,7 +162,7 @@ public class NetworkManager : MonoBehaviour
 
         else if (e.data["downloadmenu"])
         {
-            debug.Log("download menu " + e.data["downloadmenu"]["namemenu"].str);
+           // debug.Log("download menu " + e.data["downloadmenu"]["namemenu"].str);
 
             if (e.data["downloadmenu"]["namemenu"].str == "paneltrieuhoihaclong")
             {
@@ -189,7 +189,7 @@ public class NetworkManager : MonoBehaviour
         }
         else if (e.data["KeLangThang"])
         {
-            debug.Log("Tao kelangthang");
+            //debug.Log("Tao kelangthang");
             KeLangThangManager.CreateAllKeLangThang(e.data);
         }
         else if (e.data["timeKLT"])
@@ -1050,7 +1050,7 @@ public class NetworkManager : MonoBehaviour
                         DragonPVEController dragonPVEController = vienchinh.TeamXanh.transform.GetChild(i).GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
                         if (dragonPVEController != null)
                         {
-                            dataLamCham data = new dataLamCham(float.Parse(CatDauNgoacKep(e.data["useskill"]["timeskill"].ToString())), "", 0, "0.7+0.7+1.3", false, true);
+                            dataLamCham data = new dataLamCham(float.Parse(CatDauNgoacKep(e.data["useskill"]["timeskill"].ToString())), "",0, "0.7+0.7+1.3", false, true);
                             dragonPVEController.LamChamABS(data);// [speed][speedrun][speedAttack]
                         }
                         else break;

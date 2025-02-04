@@ -122,7 +122,7 @@ public class RongMaThach3Attack : DragonPVEController
             damee *= 5;
         }
 
-        dataLamCham data = new dataLamCham(3);
+        dataLamCham data = new dataLamCham(3, "", 2, "0", false, false, true, false);
 
         for (int i = 0; i < ronggan.Count; i++)
         {

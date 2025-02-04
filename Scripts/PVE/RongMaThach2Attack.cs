@@ -113,7 +113,7 @@ public class RongMaThach2Attack : DragonPVEController
         }
         bool chimanggg = false;
 
-        dataLamCham data = new dataLamCham(3);
+        dataLamCham data = new dataLamCham(3, "", 2, "0", false, false, true, false);
         for (int i = 0; i < ronggan.Count; i++)
         {
             if (ronggan[i].name != "trudo" && ronggan[i].name != "truxanh")

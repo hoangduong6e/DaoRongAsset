@@ -13,7 +13,9 @@ public class dataLamCham
     public string tangtoc = "0";
     public bool setOnline = false;
     public bool set = false;
-    public dataLamCham(float Time, string Eff = "", float Chia = 2, string TangToc = "0", bool SetOnline = false, bool Set = false)
+    public bool setSpeedrun = true;
+    public bool setSpeedanim = true;
+    public dataLamCham(float Time, string Eff = "", float Chia = 2, string TangToc = "0", bool SetOnline = false, bool Set = false,bool SpeedRun = true, bool SpeedDanh = true)
     {
         time = Time;
         eff = Eff;
@@ -21,6 +23,9 @@ public class dataLamCham
         tangtoc = TangToc;
         setOnline = SetOnline;
         set = Set;
+
+        setSpeedrun = SpeedRun;
+        setSpeedanim = SpeedDanh;
     }
     
 }
@@ -370,16 +375,17 @@ public abstract class DragonPVEController : MonoBehaviour
         //   debug.LogError("MauMat " + gameObject.transform.parent.name + ": " + maumat);
         if (GetHpTru(maumat, cs, setonline) <= 0)
         {
-            float tylehoisinh = (team == Team.TeamDo) ? VienChinh.vienchinh.tylehoisinhDo : VienChinh.vienchinh.tylehoisinhXanh;
+            float tylehoisinh = VienChinh.vienchinh.tilehoisinh[team];
             if(tylehoisinh > 0)
             {
-                if (hs < VienChinh.vienchinh.maxhs && Random.Range(0, 100) < tylehoisinh)
+                if (hs < VienChinh.vienchinh.maxHS[team] && Random.Range(0, 100) < tylehoisinh && Random.Range(0, 100) < tylehoisinh && VienChinh.vienchinh.solanHSAll[team] < VienChinh.vienchinh.maxHSAll[team])
                 {
                     battu = true;
                     PVEManager.InstantiateHieuUngChu("hoisinh", transform);
                     hp = Maxhp;
                     ImgHp.fillAmount = 1;
                     hs += 1;
+                    VienChinh.vienchinh.solanHSAll[team] += 1;
                     EventManager.StartDelay2(() => { battu = false; },0.2f);
                 }
                 else Died();
@@ -627,9 +633,9 @@ public abstract class DragonPVEController : MonoBehaviour
             DauTruongOnline.ins.AddUpdateData(newjson,data.set);
             return;
         }
-        LamChamOnline(data.time,data.eff,data.chia,data.tangtoc,data.setOnline);
+        LamChamOnline(data.time,data.eff,data.chia,data.tangtoc,data.setOnline,data.setSpeedrun,data.setSpeedanim);
     }
-    public void LamChamOnline(float time, string effect = "", float chia = 2, string cong = "0",bool setOnline = false)
+    public void LamChamOnline(float time, string effect = "", float chia = 2, string cong = "0",bool setOnline = false,bool setSpeedRun = true, bool setSpeedAnim = true)
     {
       //  if (!setOnline) return;
         ReplayData.AddLamCham(transform.parent.name, time.ToString(), effect, chia.ToString(), cong);
@@ -652,9 +658,6 @@ public abstract class DragonPVEController : MonoBehaviour
         //  debug.Log("tangtoc " + cong);
         if (cong == "0")
         {
-
-            bool setSpeedRun = true;
-            bool setSpeedAnim = true;
             if(effect == "caylamcham")
             {
                 setSpeedRun = false;

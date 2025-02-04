@@ -369,9 +369,16 @@ public partial class HacLongAttack : DragonPVEController
     public override void LamChamABS(dataLamCham data)
     {
         // LamChamDefault(data);
-        data.eff = "";
-        data.chia = 1;
-        LamChamDefault(data);
+        if(data.tangtoc != "0")
+        {
+            data.eff = "";
+           // data.chia = 1;
+            //data.time = 0;
+         //   data.setSpeedanim = true;
+         //   data.setSpeedrun = true;
+            LamChamDefault(data);
+        }    
+ 
     }
     public override void DayLuiABS()
     {

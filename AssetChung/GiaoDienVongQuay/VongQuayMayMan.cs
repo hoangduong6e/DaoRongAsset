@@ -468,7 +468,7 @@ public class VongQuayMayMan : MonoBehaviour
                 }
                 else
                 {
-                    CrGame.ins.OnThongBaoNhanh(json[""].Value);
+                    CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
                     duocquay = true;
                 }
         }

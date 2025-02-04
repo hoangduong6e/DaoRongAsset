@@ -63,6 +63,9 @@ public class KeLangThangManager : MonoBehaviour
 
             }
         }
+        ins.xuathien.SetActive(true);
+        Text txtdao = ins.xuathien.transform.GetChild(0).GetComponent<Text>();
+        txtdao.text = data["solanxuathien"].ToString();
         ins.LoadXuatHien();
     }
     private void CheckDaoHienTai()
@@ -85,9 +88,9 @@ public class KeLangThangManager : MonoBehaviour
             imgicon.sprite = LoadIcon(ins.name_KLT.Peek());
             imgicon.SetNativeSize();
 
-            xuathien.SetActive(true);
-            Text txtdao = xuathien.transform.GetChild(0).GetComponent<Text>();
-            txtdao.text = daoXuatHien.Peek().ToString();
+         
+           // Text txtdao = xuathien.transform.GetChild(0).GetComponent<Text>();
+       //     txtdao.text = daoXuatHien.Peek().ToString();
            // id_KLT.RemoveAt(0);
         }
         else xuathien.SetActive(false);

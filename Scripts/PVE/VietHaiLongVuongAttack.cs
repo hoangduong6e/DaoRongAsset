@@ -9,26 +9,20 @@ public class VietHaiLongVuongAttack : DragonPVEController
     }
     public override void AbsStart()
     {
-        VienChinh.vienchinh.SetTyLeHoiSinh(saorong,team);
+        byte maxhs = 0;
+      
 
-        if (saorong >= 1 && saorong <= 11)
+        if (saorong >= 1 && saorong <= 23)
         {
-            VienChinh.vienchinh.maxhs = 1;
+            maxhs = 1;
         }
-        else if (saorong >= 12 && saorong <= 20)
+        else if (saorong >= 24)
         {
-            VienChinh.vienchinh.maxhs = 2;
-        }
-        else if (saorong == 21)
-        {
-            VienChinh.vienchinh.maxhs = 3;
-        }
-        else
-        {
-            VienChinh.vienchinh.maxhs = 0; // Giá trị mặc định nếu không nằm trong các khoảng
+            maxhs = 2;
         }
 
-        hs = VienChinh.vienchinh.maxhs;// ngăn không cho hồi sinh
+        VienChinh.vienchinh.SetTyLeHoiSinh(saorong, maxhs,saorong, team);
+        hs = maxhs;// ngăn không cho hồi sinh
     }
     protected override void Updatee()
     {
@@ -128,7 +122,7 @@ public class VietHaiLongVuongAttack : DragonPVEController
     }
     private void OnDestroy()
     {
-        VienChinh.vienchinh.SetTyLeHoiSinh(saorong, team);
-        VienChinh.vienchinh.maxhs = 0;
+        VienChinh.vienchinh.SetTyLeHoiSinh((byte)-saorong,0,0, team);
+       // VienChinh.vienchinh.maxhs = 0;
     }
 }

@@ -61,10 +61,27 @@ public class VienChinh : MonoBehaviour
     public static VienChinh vienchinh;
     public CheDoDau chedodau;
 
-    public float tylehoisinhXanh = 0;
-    public float tylehoisinhDo = 0;
 
-    public float maxhs;
+    public Dictionary<Team, byte> tilehoisinh = new Dictionary<Team, byte>() {
+        {Team.TeamXanh, 0 },
+        {Team.TeamDo, 0 },
+    };
+
+    public Dictionary<Team, byte> maxHS = new Dictionary<Team, byte>() {
+        {Team.TeamXanh, 0 },
+        {Team.TeamDo, 0 },
+    };
+
+    public Dictionary<Team, byte> solanHSAll = new Dictionary<Team, byte>() {
+        {Team.TeamXanh, 0 },
+        {Team.TeamDo, 0 },
+    };
+
+    public Dictionary<Team, byte> maxHSAll = new Dictionary<Team, byte>() {
+        {Team.TeamXanh, 0 },
+        {Team.TeamDo, 0 },
+    };
+
     //public JSONClass ThongKeDame = new JSONClass();
 
     //public void AddThongKeDame(string id, string nameobjrong,byte saorong,float damee)
@@ -73,13 +90,13 @@ public class VienChinh : MonoBehaviour
     //   ThongKeDame[nameobjrong][id + "/" + saorong] = 0;
     // }    
 
-    public void SetTyLeHoiSinh(float set, Team team)
+    public void SetTyLeHoiSinh(byte set,byte maxhs, byte maxhsAll, Team team)
     {
-        if(team == Team.TeamDo)
-        {
-            tylehoisinhDo += set;
-        }
-        else tylehoisinhXanh += set;
+        tilehoisinh[team] += set;
+        if (tilehoisinh[team] < 0) tilehoisinh[team] = 0;
+        maxHS[team] = maxhs;
+        maxHSAll[team] = maxhsAll;
+        solanHSAll[team] = 0;
     }
     public void SetBuffGiapall(float set, Team team)
     {

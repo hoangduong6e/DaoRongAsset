@@ -77,7 +77,7 @@ public class ThanTuanLongAttack : DragonPVEController
         if (Target.name != "trudo" && Target.name != "truxanh")
         {
             DragonPVEController dra = Target.GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
-            dataLamCham data = new dataLamCham(5f, "",3);//làm chậm 90%
+            dataLamCham data = new dataLamCham(5f, "",3,"0",false,false,false,true);//làm chậm 90%
             dra.LamChamABS(data);
             dra.MatMau(damee, this);
         }
