@@ -183,6 +183,7 @@ public class Shop : MonoBehaviour
                 void Ok()
                 {
                     admob.ShowRewardedVideo();
+                    admob.autoXemQc = true;
                 }
             }
             else CrGame.ins.OnThongBaoNhanh(json["message"].AsString);

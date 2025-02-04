@@ -1451,8 +1451,9 @@ public class VienChinh : MonoBehaviour
            // if (nameSkill == "SkillBienCuu" || nameSkill == "SkillCuongLoan") return;
         }
       //  debug.Log("xong1");
+
         GameObject hieuungg = InstantiateHieuUngSkill(nameSkill,team);
-       // debug.Log("xong2");
+        // debug.Log("xong2");
 
         if (nameSkill == "SkillSamNo")
         {
@@ -1485,7 +1486,7 @@ public class VienChinh : MonoBehaviour
         }
         else if (nameSkill == "SkillDienKienTuThan" && !setOnline)
         {
-            //debug.Log("SkillDienKienTuThan");
+            debug.Log("su dung DienKienTuThan");
             string[] randomthebai = new string [0];
             string nameskill = "";
             float[] probabilities = { 0.4f, 0.3f, 0.3f }; // Xác suất: 40%, 40%, 20%

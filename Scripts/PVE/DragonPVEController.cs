@@ -378,7 +378,7 @@ public abstract class DragonPVEController : MonoBehaviour
             float tylehoisinh = VienChinh.vienchinh.tilehoisinh[team];
             if(tylehoisinh > 0)
             {
-                if (hs < VienChinh.vienchinh.maxHS[team] && Random.Range(0, 100) < tylehoisinh && Random.Range(0, 100) < tylehoisinh && VienChinh.vienchinh.solanHSAll[team] < VienChinh.vienchinh.maxHSAll[team])
+                if (hs < VienChinh.vienchinh.maxHS[team] && Random.Range(0, 100) < tylehoisinh && VienChinh.vienchinh.solanHSAll[team] < VienChinh.vienchinh.maxHSAll[team])
                 {
                     battu = true;
                     PVEManager.InstantiateHieuUngChu("hoisinh", transform);

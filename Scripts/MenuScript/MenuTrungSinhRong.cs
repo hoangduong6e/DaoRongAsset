@@ -12,6 +12,7 @@ public class MenuTrungSinhRong : MonoBehaviour
     // Start is called before the first frame update
     string idrong;
     private JSONNode allrongLongNgoc;
+    private JSONNode allrongTrungSinh;
     private void Start()
     {
 
@@ -25,6 +26,8 @@ public class MenuTrungSinhRong : MonoBehaviour
             {
                 debug.Log(json.ToString());
                 allrongLongNgoc = json["allrongLongNgoc"];
+                allrongTrungSinh = json["allrongTrungSinh"];
+                OpenNangSaoRong();
             }
             else
             {
@@ -32,10 +35,6 @@ public class MenuTrungSinhRong : MonoBehaviour
             }
         }
 
-    }
-    private void OnEnable()
-    {
-        OpenNangSaoRong();
     }
     private void ClearRongGd()
     {
@@ -68,161 +67,198 @@ public class MenuTrungSinhRong : MonoBehaviour
         {
             Destroy(contentRong.transform.GetChild(i).gameObject);
         }
-        GameObject g = transform.GetChild(0).gameObject;
+        //  GameObject g = transform.GetChild(0).gameObject;
 
-        if (Inventory.ins.TuiRong.transform.childCount > 1)
+
+        foreach (KeyValuePair<string, JSONNode> json in allrongTrungSinh.AsObject)
         {
-            for (int i = 0; i < Inventory.ins.TuiRong.transform.childCount - 1; i++)
+            int saomin = json.Value["saomin"].AsInt;
+            int saomax = json.Value["saomax"].AsInt;
+            if (Inventory.ins.TuiRong.transform.childCount > 1)
             {
-                if (Inventory.ins.TuiRong.transform.GetChild(i).transform.childCount > 0)
+                for (int i = 0; i < Inventory.ins.TuiRong.transform.childCount - 1; i++)
                 {
-                    ItemDragon itemdra = Inventory.ins.TuiRong.transform.GetChild(i).transform.GetChild(0).GetComponent<ItemDragon>();
-                    string nameimg = itemdra.transform.GetChild(0).GetComponent<Image>().sprite.name;
-                    if (itemdra.nameObjectDragon == "RongVang" && nameimg == "RongVang2" || itemdra.nameObjectDragon == "RongBac" && nameimg == "RongBac2" ||
-                        itemdra.nameObjectDragon == "RongLuaMatXanh" && nameimg == "RongLuaMatXanh2" || itemdra.nameObjectDragon == "RongLuaMatXanhGiapThin" && nameimg == "RongLuaMatXanh2" ||
-                             itemdra.nameObjectDragon == "RongLuaMatXanhSapphire" && nameimg == "RongLuaMatXanhSapphire2" || itemdra.nameObjectDragon == "RongLuaMatXanhSapphireGiapThin" && nameimg == "RongLuaMatXanhSapphire2" ||
-                             itemdra.nameObjectDragon == "RongXuong" && nameimg == "RongXuong2" ||
-                             itemdra.nameObjectDragon == "RongTuanLong" && nameimg == "RongTuanLong2" || itemdra.nameObjectDragon == "RongPhuongHoangBang" && nameimg == "RongPhuongHoangBang2" || itemdra.nameObjectDragon == "RongPhuongHoangLua" && nameimg == "RongPhuongHoangLua2" 
-                             
-                             || itemdra.nameObjectDragon == "RongKhongTuoc" && nameimg == "RongKhongTuoc2" || itemdra.nameObjectDragon == "RongKhongTuocValentine" && nameimg == "RongKhongTuoc2" ||
-                             itemdra.nameObjectDragon == "RongNguyetLong" && nameimg == "RongNguyetLong2" || itemdra.nameObjectDragon == "RongNguyetLongGiapThin" && nameimg == "RongNguyetLong2" ||
-                              itemdra.nameObjectDragon == "RongKyLanDo" && nameimg == "RongKyLanDo2" || itemdra.nameObjectDragon == "RongMaTroiGiapThin" && nameimg == "RongMaTroi2"
-                              || itemdra.nameObjectDragon == "RongRua" && nameimg == "RongRua2" || itemdra.nameObjectDragon == "RongNguSac" && nameimg == "RongNguSac2"
-                              || itemdra.nameObjectDragon == "RongPhuongHoangDungNham" && nameimg == "RongPhuongHoangDungNham2"
-                              || itemdra.nameObjectDragon == "RongMatXe" && nameimg == "RongMatXe2"
-                              || itemdra.nameObjectDragon == "RongHuyetNguyetLong" && nameimg == "RongHuyetNguyetLong2"
-                              || itemdra.nameObjectDragon == "RongMaThach1" && nameimg == "RongMaThach12"
-                              || itemdra.nameObjectDragon == "RongMaThach2" && nameimg == "RongMaThach22"
-                              || itemdra.nameObjectDragon == "RongMaThach3" && nameimg == "RongMaThach32"
-                              || itemdra.nameObjectDragon == "RongHacLong" && nameimg == "RongHacLong2"
-                               || itemdra.nameObjectDragon == "RongKyLanTim" && nameimg == "RongKyLanTim2" || itemdra.nameObjectDragon == "RongKyLanTimGiapThin" && nameimg == "RongKyLanTimGiapThin2"
-                             ) 
+                    if (Inventory.ins.TuiRong.transform.GetChild(i).transform.childCount > 0)
                     {
-
-                        if (itemdra.nameObjectDragon == "RongXuong" && nameimg == "RongXuong2")
+                        ItemDragon itemdra = Inventory.ins.TuiRong.transform.GetChild(i).transform.GetChild(0).GetComponent<ItemDragon>();
+                        string nameimg = itemdra.transform.GetChild(0).GetComponent<Image>().sprite.name;
+                        if (itemdra.nameObjectDragon == json.Key && nameimg.EndsWith("2"))
                         {
-                            if (int.Parse(itemdra.txtSao.text) >= 16 && int.Parse(itemdra.txtSao.text) < 20)
+                            int saohientai = int.Parse(itemdra.txtSao.text);
+                            if (saohientai >= saomin && saohientai <= saomax)
                             {
-                                SetRong();
+                                GameObject rong = Instantiate(contentRong.transform.GetChild(0).gameObject, transform.position, Quaternion.identity);
+                                rong.transform.SetParent(contentRong.transform, false);
+                                // ite
+                                rong.name = itemdra.name;
+                                Image imgRong = rong.transform.GetChild(0).GetComponent<Image>();
+                                imgRong.sprite = Inventory.LoadSpriteRong(itemdra.nameObjectDragon + "2"); imgRong.SetNativeSize();
+                                rong.transform.GetChild(1).GetComponent<Text>().text = itemdra.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text;
+                                rong.transform.GetChild(2).GetComponent<Text>().text = itemdra.txtSao.text;
+                                // AddSlotRong(item.name, item.nameObjectDragon, ""); //item.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text
+                                rong.SetActive(true);
                             }
 
-                        }
-
-                        else if (itemdra.nameObjectDragon == "RongKyLanDo" && nameimg == "RongKyLanDo2" || itemdra.nameObjectDragon == "RongKyLanTim" && nameimg == "RongKyLanTim2" || itemdra.nameObjectDragon == "RongKyLanTimGiapThin" && nameimg == "RongKyLanTimGiapThin2")
-                        {
-                            if (int.Parse(itemdra.txtSao.text) >= 10 && int.Parse(itemdra.txtSao.text) <= 29)
-                            {
-                                SetRong();
-                            }
-
-                        }
-                        else if (itemdra.nameObjectDragon == "RongKhongTuoc" && nameimg == "RongKhongTuoc2" || itemdra.nameObjectDragon == "RongKhongTuocValentine" && nameimg == "RongKhongTuoc2")
-                        {
-                            if (int.Parse(itemdra.txtSao.text) >= 10 && int.Parse(itemdra.txtSao.text) <= 29)
-                            {
-                                SetRong();
-                            }
-
-                        }
-                        else if (itemdra.nameObjectDragon == "RongNguyetLong" && nameimg == "RongNguyetLong2")
-                        {
-                            if (int.Parse(itemdra.txtSao.text) >= 10 && int.Parse(itemdra.txtSao.text) <= 22)
-                            {
-                                SetRong();
-                            }
-                        }
-                        else if (itemdra.nameObjectDragon == "RongPhuongHoangBang" && nameimg == "RongPhuongHoangBang2"
-                          || itemdra.nameObjectDragon == "RongPhuongHoangLua" && nameimg == "RongPhuongHoangLua2" || itemdra.nameObjectDragon == "RongPhuongHoangDungNham" && nameimg == "RongPhuongHoangDungNham2"
-                          )
-                        {
-                            if (int.Parse(itemdra.txtSao.text) >= 10 && int.Parse(itemdra.txtSao.text) <= 20)
-                            {
-                                SetRong();
-                            }
-                        }
-                        else if(itemdra.nameObjectDragon == "RongTuanLong" && nameimg == "RongTuanLong2")
-                        {
-                            if (int.Parse(itemdra.txtSao.text) >= 10 && int.Parse(itemdra.txtSao.text) <= 29)
-                            {
-                                SetRong();
-                            }
-                        }
-                        else if (itemdra.nameObjectDragon == "RongMaTroiGiapThin" && nameimg == "RongMaTroi2" || itemdra.nameObjectDragon == "RongNguyetLongGiapThin" && nameimg == "RongNguyetLong2" || itemdra.nameObjectDragon == "RongLuaMatXanhSapphireGiapThin" && nameimg == "RongLuaMatXanhSapphire2")
-                        {
-                            if (int.Parse(itemdra.txtSao.text) >= 16 && int.Parse(itemdra.txtSao.text) <= 22)
-                            {
-                                SetRong();
-                            }
-                        }
-                        else if (itemdra.nameObjectDragon == "RongRua" && nameimg == "RongRua2")
-                        {
-                            if (int.Parse(itemdra.txtSao.text) >= 10 && int.Parse(itemdra.txtSao.text) <= 22)
-                            {
-                                SetRong();
-                            }
-                        }
-                        else if (itemdra.nameObjectDragon == "RongNguSac" && nameimg == "RongNguSac2")
-                        {
-                            if (int.Parse(itemdra.txtSao.text) >= 10 && int.Parse(itemdra.txtSao.text) <= 25)
-                            {
-                                SetRong();
-                            }
-                        }
-                        else if (itemdra.nameObjectDragon == "RongMatXe" && nameimg == "RongMatXe2")
-                        {
-                            if (int.Parse(itemdra.txtSao.text) >= 16 && int.Parse(itemdra.txtSao.text) <= 20)
-                            {
-                                SetRong();
-                            }
-                        }
-                        else if (itemdra.nameObjectDragon == "RongHuyetNguyetLong" && nameimg == "RongHuyetNguyetLong2")
-                        {
-                            if (int.Parse(itemdra.txtSao.text) >= 23 && int.Parse(itemdra.txtSao.text) <= 24)
-                            {
-                                SetRong();
-                            }
-                        }
-                        else if (itemdra.nameObjectDragon == "RongMaThach1" && nameimg == "RongMaThach12"
-                              || itemdra.nameObjectDragon == "RongMaThach2" && nameimg == "RongMaThach22"
-                              || itemdra.nameObjectDragon == "RongMaThach3" && nameimg == "RongMaThach32")
-                        {
-                            if (int.Parse(itemdra.txtSao.text) >= 10 && int.Parse(itemdra.txtSao.text) <= 22)
-                            {
-                                SetRong();
-                            }
-                        }
-                        else if (itemdra.nameObjectDragon == "RongHacLong" && nameimg == "RongHacLong2")
-                        {
-                            if (int.Parse(itemdra.txtSao.text) >= 16 && int.Parse(itemdra.txtSao.text) <= 29)
-                            {
-                                SetRong();
-                            }
-                        }
-                        else
-                        {
-                            if (int.Parse(itemdra.txtSao.text) >= 2 && int.Parse(itemdra.txtSao.text) < 22)
-                            {
-                                SetRong();
-                            }
-                        }
-                  
-                        void SetRong()
-                        {
-                            GameObject rong = Instantiate(contentRong.transform.GetChild(0).gameObject, transform.position, Quaternion.identity);
-                            rong.transform.SetParent(contentRong.transform, false);
-                            // ite
-                            rong.name = itemdra.name;
-                            Image imgRong = rong.transform.GetChild(0).GetComponent<Image>();
-                            imgRong.sprite = Inventory.LoadSpriteRong(itemdra.nameObjectDragon + "2"); imgRong.SetNativeSize();
-                            rong.transform.GetChild(1).GetComponent<Text>().text = itemdra.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text;
-                            rong.transform.GetChild(2).GetComponent<Text>().text = itemdra.txtSao.text;
-                            // AddSlotRong(item.name, item.nameObjectDragon, ""); //item.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text
-                            rong.SetActive(true);
                         }
                     }
                 }
             }
         }
+
+
+        //if (Inventory.ins.TuiRong.transform.childCount > 1)
+        //{
+        //    for (int i = 0; i < Inventory.ins.TuiRong.transform.childCount - 1; i++)
+        //    {
+        //        if (Inventory.ins.TuiRong.transform.GetChild(i).transform.childCount > 0)
+        //        {
+        //            ItemDragon itemdra = Inventory.ins.TuiRong.transform.GetChild(i).transform.GetChild(0).GetComponent<ItemDragon>();
+        //            string nameimg = itemdra.transform.GetChild(0).GetComponent<Image>().sprite.name;
+        //            if (itemdra.nameObjectDragon == "RongVang" && nameimg == "RongVang2" || itemdra.nameObjectDragon == "RongBac" && nameimg == "RongBac2" ||
+        //                itemdra.nameObjectDragon == "RongLuaMatXanh" && nameimg == "RongLuaMatXanh2" || itemdra.nameObjectDragon == "RongLuaMatXanhGiapThin" && nameimg == "RongLuaMatXanh2" ||
+        //                     itemdra.nameObjectDragon == "RongLuaMatXanhSapphire" && nameimg == "RongLuaMatXanhSapphire2" || itemdra.nameObjectDragon == "RongLuaMatXanhSapphireGiapThin" && nameimg == "RongLuaMatXanhSapphire2" ||
+        //                     itemdra.nameObjectDragon == "RongXuong" && nameimg == "RongXuong2" ||
+        //                     itemdra.nameObjectDragon == "RongTuanLong" && nameimg == "RongTuanLong2" || itemdra.nameObjectDragon == "RongPhuongHoangBang" && nameimg == "RongPhuongHoangBang2" || itemdra.nameObjectDragon == "RongPhuongHoangLua" && nameimg == "RongPhuongHoangLua2" 
+                             
+        //                     || itemdra.nameObjectDragon == "RongKhongTuoc" && nameimg == "RongKhongTuoc2" || itemdra.nameObjectDragon == "RongKhongTuocValentine" && nameimg == "RongKhongTuoc2" ||
+        //                     itemdra.nameObjectDragon == "RongNguyetLong" && nameimg == "RongNguyetLong2" || itemdra.nameObjectDragon == "RongNguyetLongGiapThin" && nameimg == "RongNguyetLong2" ||
+        //                      itemdra.nameObjectDragon == "RongKyLanDo" && nameimg == "RongKyLanDo2" || itemdra.nameObjectDragon == "RongMaTroiGiapThin" && nameimg == "RongMaTroi2"
+        //                      || itemdra.nameObjectDragon == "RongRua" && nameimg == "RongRua2" || itemdra.nameObjectDragon == "RongNguSac" && nameimg == "RongNguSac2"
+        //                      || itemdra.nameObjectDragon == "RongPhuongHoangDungNham" && nameimg == "RongPhuongHoangDungNham2"
+        //                      || itemdra.nameObjectDragon == "RongMatXe" && nameimg == "RongMatXe2"
+        //                      || itemdra.nameObjectDragon == "RongHuyetNguyetLong" && nameimg == "RongHuyetNguyetLong2"
+        //                      || itemdra.nameObjectDragon == "RongMaThach1" && nameimg == "RongMaThach12"
+        //                      || itemdra.nameObjectDragon == "RongMaThach2" && nameimg == "RongMaThach22"
+        //                      || itemdra.nameObjectDragon == "RongMaThach3" && nameimg == "RongMaThach32"
+        //                      || itemdra.nameObjectDragon == "RongHacLong" && nameimg == "RongHacLong2"
+        //                       || itemdra.nameObjectDragon == "RongKyLanTim" && nameimg == "RongKyLanTim2" || itemdra.nameObjectDragon == "RongKyLanTimGiapThin" && nameimg == "RongKyLanTimGiapThin2"
+        //                     ) 
+        //            {
+
+        //                if (itemdra.nameObjectDragon == "RongXuong" && nameimg == "RongXuong2")
+        //                {
+        //                    if (int.Parse(itemdra.txtSao.text) >= 16 && int.Parse(itemdra.txtSao.text) < 20)
+        //                    {
+        //                        SetRong();
+        //                    }
+
+        //                }
+
+        //                else if (itemdra.nameObjectDragon == "RongKyLanDo" && nameimg == "RongKyLanDo2" || itemdra.nameObjectDragon == "RongKyLanTim" && nameimg == "RongKyLanTim2" || itemdra.nameObjectDragon == "RongKyLanTimGiapThin" && nameimg == "RongKyLanTimGiapThin2")
+        //                {
+        //                    if (int.Parse(itemdra.txtSao.text) >= 10 && int.Parse(itemdra.txtSao.text) <= 29)
+        //                    {
+        //                        SetRong();
+        //                    }
+
+        //                }
+        //                else if (itemdra.nameObjectDragon == "RongKhongTuoc" && nameimg == "RongKhongTuoc2" || itemdra.nameObjectDragon == "RongKhongTuocValentine" && nameimg == "RongKhongTuoc2")
+        //                {
+        //                    if (int.Parse(itemdra.txtSao.text) >= 10 && int.Parse(itemdra.txtSao.text) <= 29)
+        //                    {
+        //                        SetRong();
+        //                    }
+
+        //                }
+        //                else if (itemdra.nameObjectDragon == "RongNguyetLong" && nameimg == "RongNguyetLong2")
+        //                {
+        //                    if (int.Parse(itemdra.txtSao.text) >= 10 && int.Parse(itemdra.txtSao.text) <= 22)
+        //                    {
+        //                        SetRong();
+        //                    }
+        //                }
+        //                else if (itemdra.nameObjectDragon == "RongPhuongHoangBang" && nameimg == "RongPhuongHoangBang2"
+        //                  || itemdra.nameObjectDragon == "RongPhuongHoangLua" && nameimg == "RongPhuongHoangLua2" || itemdra.nameObjectDragon == "RongPhuongHoangDungNham" && nameimg == "RongPhuongHoangDungNham2"
+        //                  )
+        //                {
+        //                    if (int.Parse(itemdra.txtSao.text) >= 10 && int.Parse(itemdra.txtSao.text) <= 20)
+        //                    {
+        //                        SetRong();
+        //                    }
+        //                }
+        //                else if(itemdra.nameObjectDragon == "RongTuanLong" && nameimg == "RongTuanLong2")
+        //                {
+        //                    if (int.Parse(itemdra.txtSao.text) >= 10 && int.Parse(itemdra.txtSao.text) <= 29)
+        //                    {
+        //                        SetRong();
+        //                    }
+        //                }
+        //                else if (itemdra.nameObjectDragon == "RongMaTroiGiapThin" && nameimg == "RongMaTroi2" || itemdra.nameObjectDragon == "RongNguyetLongGiapThin" && nameimg == "RongNguyetLong2" || itemdra.nameObjectDragon == "RongLuaMatXanhSapphireGiapThin" && nameimg == "RongLuaMatXanhSapphire2")
+        //                {
+        //                    if (int.Parse(itemdra.txtSao.text) >= 16 && int.Parse(itemdra.txtSao.text) <= 22)
+        //                    {
+        //                        SetRong();
+        //                    }
+        //                }
+        //                else if (itemdra.nameObjectDragon == "RongRua" && nameimg == "RongRua2")
+        //                {
+        //                    if (int.Parse(itemdra.txtSao.text) >= 10 && int.Parse(itemdra.txtSao.text) <= 22)
+        //                    {
+        //                        SetRong();
+        //                    }
+        //                }
+        //                else if (itemdra.nameObjectDragon == "RongNguSac" && nameimg == "RongNguSac2")
+        //                {
+        //                    if (int.Parse(itemdra.txtSao.text) >= 10 && int.Parse(itemdra.txtSao.text) <= 25)
+        //                    {
+        //                        SetRong();
+        //                    }
+        //                }
+        //                else if (itemdra.nameObjectDragon == "RongMatXe" && nameimg == "RongMatXe2")
+        //                {
+        //                    if (int.Parse(itemdra.txtSao.text) >= 16 && int.Parse(itemdra.txtSao.text) <= 20)
+        //                    {
+        //                        SetRong();
+        //                    }
+        //                }
+        //                else if (itemdra.nameObjectDragon == "RongHuyetNguyetLong" && nameimg == "RongHuyetNguyetLong2")
+        //                {
+        //                    if (int.Parse(itemdra.txtSao.text) >= 23 && int.Parse(itemdra.txtSao.text) <= 24)
+        //                    {
+        //                        SetRong();
+        //                    }
+        //                }
+        //                else if (itemdra.nameObjectDragon == "RongMaThach1" && nameimg == "RongMaThach12"
+        //                      || itemdra.nameObjectDragon == "RongMaThach2" && nameimg == "RongMaThach22"
+        //                      || itemdra.nameObjectDragon == "RongMaThach3" && nameimg == "RongMaThach32")
+        //                {
+        //                    if (int.Parse(itemdra.txtSao.text) >= 10 && int.Parse(itemdra.txtSao.text) <= 22)
+        //                    {
+        //                        SetRong();
+        //                    }
+        //                }
+        //                else if (itemdra.nameObjectDragon == "RongHacLong" && nameimg == "RongHacLong2")
+        //                {
+        //                    if (int.Parse(itemdra.txtSao.text) >= 16 && int.Parse(itemdra.txtSao.text) <= 29)
+        //                    {
+        //                        SetRong();
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    if (int.Parse(itemdra.txtSao.text) >= 2 && int.Parse(itemdra.txtSao.text) < 22)
+        //                    {
+        //                        SetRong();
+        //                    }
+        //                }
+                  
+        //                void SetRong()
+        //                {
+        //                    GameObject rong = Instantiate(contentRong.transform.GetChild(0).gameObject, transform.position, Quaternion.identity);
+        //                    rong.transform.SetParent(contentRong.transform, false);
+        //                    // ite
+        //                    rong.name = itemdra.name;
+        //                    Image imgRong = rong.transform.GetChild(0).GetComponent<Image>();
+        //                    imgRong.sprite = Inventory.LoadSpriteRong(itemdra.nameObjectDragon + "2"); imgRong.SetNativeSize();
+        //                    rong.transform.GetChild(1).GetComponent<Text>().text = itemdra.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text;
+        //                    rong.transform.GetChild(2).GetComponent<Text>().text = itemdra.txtSao.text;
+        //                    // AddSlotRong(item.name, item.nameObjectDragon, ""); //item.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text
+        //                    rong.SetActive(true);
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
     }    
     public void OpenChuyenHoaRong()
     {

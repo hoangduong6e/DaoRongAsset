@@ -46,10 +46,20 @@ public class Admobb : MonoBehaviour
         rewardedAd.OnUserEarnedReward += HandleUserEarnedReward;
         rewardedAd.OnAdClosed += HandleRewardedAdClosed;
         rewardedAd.OnAdFailedToShow += HandleRewardedAdFailedToShow;
+        rewardedAd.OnAdLoaded += LoadQcXong;
         AdRequest request = new AdRequest.Builder().Build();
         rewardedAd.LoadAd(request);
-    }
 
+    }
+    public void LoadQcXong(object sender, EventArgs args)
+    {
+        debug.Log("load qc xong");
+        if(autoXemQc)
+        {
+            ShowRewardedVideo();
+            autoXemQc = false;
+        }    
+    }    
     public void ShowInterstitial()
     {
         if (interstitial_Ad.IsLoaded())
@@ -68,7 +78,7 @@ public class Admobb : MonoBehaviour
         tbchon.txtThongBao.text = "Xem hết quảng cáo để nhận quà bí ẩn";
         tbchon.btnChon.onClick.AddListener(ShowRewardedVideo);
     }
-
+    public bool autoXemQc = false;
     public void ShowRewardedVideo()
     {
         if (rewardedAd.IsLoaded())
@@ -77,7 +87,7 @@ public class Admobb : MonoBehaviour
         }
         else
         {
-            CrGame.ins.OnThongBaoNhanh("Chưa có quảng cáo");
+            CrGame.ins.OnThongBaoNhanh("Đang tải quảng cáo...");
         }
     }
 

@@ -1029,15 +1029,11 @@ public class NetworkManager : MonoBehaviour
             int index = int.Parse(CatDauNgoacKep(e.data["useskill"]["index"].ToString()));
             // Transform oskill = GiaoDienPVP.ins.OSkill.transform.GetChild(1);
             //  oskill.GetChild(index).transform.GetChild(1).gameObject.SetActive(true);
-
             string nameskill = e.data["useskill"]["nameskill"].str;
             GiaoDienPVP.ins.OSkill.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().fillAmount = float.Parse(CatDauNgoacKep(e.data["useskill"]["sonokhi"].ToString())) / 150;
-
             GiaoDienPVP.ins.OSkill.transform.GetChild(0).transform.GetChild(1).GetComponent<Text>().text = CatDauNgoacKep(e.data["useskill"]["sonokhi"].ToString());
 
-
             vienchinh.timeskill[index] = float.Parse(CatDauNgoacKep(e.data["useskill"]["time"].ToString()));
-
             vienchinh.HieuUngSkill("Skill" + CatDauNgoacKep(e.data["useskill"]["nameskill"].ToString()), float.Parse(CatDauNgoacKep(e.data["useskill"]["satthuong"].ToString())), float.Parse(CatDauNgoacKep(e.data["useskill"]["level"].ToString())));
 
             if (nameskill == "SamNo")
@@ -1168,13 +1164,13 @@ public class NetworkManager : MonoBehaviour
             //   vienchinh.nokhi -= int.Parse(CatDauNgoacKep(e.data["useskill"]["nokhi"].ToString()));
             return;
         }
-        else if (e.data["DuocXemQuangCao"])
-        {
-            //#if UNITY_EDITOR || UNITY_ANDROID
-            GetComponent<Admobb>().RequestRewardedVideo();
-            //    CrGame.ins.BtnXemQuangCao.SetActive(true);
-            //#endif
-        }
+        //else if (e.data["DuocXemQuangCao"])
+        //{
+        //    //#if UNITY_EDITOR || UNITY_ANDROID
+        //    GetComponent<Admobb>().RequestRewardedVideo();
+        //    //    CrGame.ins.BtnXemQuangCao.SetActive(true);
+        //    //#endif
+        //}
         else if (e.data["TimeQuaOnline"])
         {
             TimeQuaonl timequa = CrGame.ins.txtTimeQuaonl.gameObject.GetComponent<TimeQuaonl>();
@@ -2646,7 +2642,7 @@ public class NetworkManager : MonoBehaviour
                             GameObject objtuibinhtieuhoa = CrGame.ins.tuithucAn.transform.parent.transform.parent.transform.parent.transform.GetChild(5).transform.GetChild(0).transform.GetChild(0).gameObject;
                             objtuibinhtieuhoa.transform.GetChild(2).gameObject.SetActive(true);
                         }
-                        if (nameitem[1] == "GiapKimLoai-" || nameitem[1] == "GiapKimLoai-CuongHoa" || nameitem[1] == "GiapDo-" || nameitem[1] == "GiapDo-CuongHoa" || nameitem[1] == "GiapNgocXanh-" || nameitem[1] == "GiapNgocXanh-CuongHoa")
+                        if (nameitem[1] == "GiapKyLan-" || nameitem[1] == "GiapKyLan-CuongHoa" || nameitem[1] == "GiapKimLoai-" || nameitem[1] == "GiapKimLoai-CuongHoa" || nameitem[1] == "GiapDo-" || nameitem[1] == "GiapDo-CuongHoa" || nameitem[1] == "GiapNgocXanh-" || nameitem[1] == "GiapNgocXanh-CuongHoa")
                         {
                             int sl = int.Parse(e.data["item"]["itemthuong"][i]["soluong"].ToString());
                             for (int j = 0; j < sl; j++)

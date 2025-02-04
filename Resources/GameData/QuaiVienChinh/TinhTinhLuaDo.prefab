@@ -134,7 +134,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &3524310050779056005
 Transform:
   m_ObjectHideFlags: 0
@@ -640,14 +640,15 @@ MonoBehaviour:
   Maxhp: 2000
   speed: 3
   tamdanhxa: 3.2
-  chimang: 0
   netranh: 0
-  huthp: 0
+  maxhuthp: 0
   giapso: 0
   giapphantram: 0
   xuyengiap: 0
   hpgiap: 0
   maxhpgiap: 0
+  huthp: 0
+  chimang: 0
   Target: {fileID: 0}
   anim: {fileID: 0}
   stateAnimIdle: 0
@@ -659,6 +660,7 @@ MonoBehaviour:
   idrong: 
   team: 1
   thongke: 1
+  DanganimAttack: 0
 --- !u!1 &8924416017710484425
 GameObject:
   m_ObjectHideFlags: 0
