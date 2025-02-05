@@ -56,8 +56,9 @@ public class Admobb : MonoBehaviour
         debug.Log("load qc xong");
         if(autoXemQc)
         {
-            ShowRewardedVideo();
             autoXemQc = false;
+            ShowRewardedVideo();
+        
         }    
     }    
     public void ShowInterstitial()
@@ -117,7 +118,7 @@ public class Admobb : MonoBehaviour
     {
         //  RequestRewardedVideo();
         // tbchon.gameObject.SetActive(false);
-        CrGame.ins.BtnXemQuangCao.SetActive(false);
+     //   CrGame.ins.BtnXemQuangCao.SetActive(false);
         NetworkManager.ins.socket.Emit("XemQuangCaoXong", JSONObject.CreateStringObject(namequaxem));
 
     }
