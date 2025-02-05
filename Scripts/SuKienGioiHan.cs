@@ -358,7 +358,7 @@ public class SuKienGioiHan : MonoBehaviour
        CrGame.ins. StartCoroutine(DownloadImage());
         IEnumerator DownloadImage()
         {
-            UnityWebRequest request = UnityWebRequestTexture.GetTexture("http://" + LoginFacebook.ins.ServerChinh + "/LoadImage/namefolder/" + namefolder + "/name/" + namefile);
+            UnityWebRequest request = UnityWebRequestTexture.GetTexture("https://" + LoginFacebook.ins.ServerChinh + "/LoadImage/namefolder/" + namefolder + "/name/" + namefile);
             yield return request.SendWebRequest();
             if (request.isNetworkError || request.isHttpError)
                 debug.Log(request.error);
