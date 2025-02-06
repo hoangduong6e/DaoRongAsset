@@ -1,0 +1,48 @@
+local TxtTime
+local timer = 0  -- Biến đếm thời gian
+local time = 10
+local allVitriChuot, objectMat
+local spriteMatMo, spriteMatNham
+function start()
+    TxtTime = txtTime:GetComponent("Text")
+    allViTriChuot = ObjDangChoi.transform:Find("allViTri")
+    objectMat = self.transform:Find("MatMo"):GetComponent("Image")
+    spriteMatMo = objectMat:GetComponent("Image").sprite
+    spriteMatNham = self.transform:Find("MatNham"):GetComponent("Image").sprite
+    --print("name AllVitrichuot:".. allViTriChuot.name )
+   CreateMat()
+    end
+
+function update()
+   
+    if time >= 0 then
+        timer = timer + CS.UnityEngine.Time.deltaTime  -- Cộng thời gian mỗi frame
+        if timer >= 1 then  -- Nếu đã đủ 1 giây
+            TxtTime.text = FormatTime(time)
+            time = time - 1  -- Giảm 1 giây
+            timer = 0  -- Reset bộ đếm
+            end
+        end
+    end
+
+function FormatTime(time)
+    if time < 0 then
+        time = 0
+        end
+        local minutes = math.floor(time / 60)  -- Lấy số phút
+        local seconds = math.floor(time % 60)  -- Lấy số giây còn lại
+        return string.format("%02d:%02d", minutes, seconds)
+    end
+
+function CreateMat()
+    local random = math.floor(CS.UnityEngine.Random.Range(0, allViTriChuot.transform.childCount)) 
+    --print("random la"..random)
+    local parent = allViTriChuot.transform:GetChild(random)
+    local clone = CS.UnityEngine.Object.Instantiate(objectMat, parent)
+    clone.gameObject:SetActive(true)
+    clone.transform.position = parent.transform.position
+
+    CS.EventManager.StartDelay2(function ()
+            clone:GetComponent("Image").sprite = spriteMatNham
+        end,0.3)
+    end
