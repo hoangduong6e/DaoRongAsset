@@ -1,0 +1,56 @@
+local XluaNetwork = CS.XluaNetwork();-- tạo instance của class XluaMethod để gọi các hàm không static
+
+local XluaJSONNode = CS.XluaJSONNode();
+
+LuaBehaviour = LuaBehaviour or {}
+
+function start()
+   local btn = self.gameObject:AddComponent(typeof(CS.UnityEngine.UI.Button))
+   -- `self.transform` là transform của GameObject hiện tại
+   
+
+   btn.onClick:AddListener(onClick)
+end
+
+function onClick()
+ 
+   local method = 'MiniGameDapChuot'
+   local nameClass = 'GetData'
+   local keyData = { 'key',}
+   local valueData = { 'value',}
+   XluaNetwork:SendRequest(method, nameClass, keyData, valueData, myCallback)
+
+   local allmenu = CS.AllMenu.ins.transform
+   print('allmenu la:'..allmenu.name)
+  local menu = allmenu:Find("MiniGameDapChuot");
+  print('menu la:'..menu.name)
+
+
+  menu.gameObject:SetActive(true);
+end
+
+local function myCallback(response)
+   --local str = XluaJSONNode:str(response,'message');
+   --local str2 = XluaJSONNode:str(response,{'data','tuiluongthuc'});
+    print('Lua received callback data: '.. response)
+
+-- Chuyển đổi JSON thành Lua table
+local L = "return "..response:gsub('("[^"]-"):','[%1]=')  -- Thay dấu ':' bằng '='
+
+-- Sử dụng load thay vì loadstring
+local func = load(L)  -- Đảm bảo rằng load được gọi thay vì loadstring
+
+if func then
+    local T = func()  -- Thực thi hàm Lua để nhận bảng Lua
+    -- Truy xuất giá trị trong bảng Lua
+    --print(T.message)
+    if T.status == "0" then
+        
+    else
+        CS.CrGame.ins:OnThongBaoNhanh(T.message, 2)
+    end
+else
+    print("Error loading Lua code")
+end
+
+end

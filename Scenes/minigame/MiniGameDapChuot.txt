@@ -1,6 +1,6 @@
 local TxtTime
 local timer = 0  -- Biến đếm thời gian
-local time = 10
+local time = 100
 local allVitriChuot, objectMat
 local spriteMatMo, spriteMatNham
 function start()
@@ -10,7 +10,7 @@ function start()
     spriteMatMo = objectMat:GetComponent("Image").sprite
     spriteMatNham = self.transform:Find("MatNham"):GetComponent("Image").sprite
     --print("name AllVitrichuot:".. allViTriChuot.name )
-   CreateMat()
+    --RandomMat()
     end
 
 function update()
@@ -21,7 +21,12 @@ function update()
             TxtTime.text = FormatTime(time)
             time = time - 1  -- Giảm 1 giây
             timer = 0  -- Reset bộ đếm
+            local random = math.floor(CS.UnityEngine.Random.Range(0, 5)) 
+            for i = 0, random do
+                CreateMat()
+              end
             end
+    
         end
     end
 
@@ -34,15 +39,37 @@ function FormatTime(time)
         return string.format("%02d:%02d", minutes, seconds)
     end
 
+-- function RandomMat()
+--     if time > 0.6 then
+--         CS.EventManager.StartDelay2(function ()
+--             RandomMat()
+--           end,0.6)
+--     end
+--     local random = math.floor(CS.UnityEngine.Random.Range(0, 5)) 
+--     for i = 0, random do
+--         CreateMat()
+--     end
+  
+-- end
+
 function CreateMat()
     local random = math.floor(CS.UnityEngine.Random.Range(0, allViTriChuot.transform.childCount)) 
+    if allViTriChuot.transform:GetChild(random).transform.childCount > 0 then
+    return
+end
+    
     --print("random la"..random)
     local parent = allViTriChuot.transform:GetChild(random)
     local clone = CS.UnityEngine.Object.Instantiate(objectMat, parent)
+    local vector3 = CS.UnityEngine.Vector3(parent.transform.position.x,parent.transform.position.y- 0.1,parent.transform.position.z)
     clone.gameObject:SetActive(true)
-    clone.transform.position = parent.transform.position
+    clone.transform.position = vector3
 
     CS.EventManager.StartDelay2(function ()
             clone:GetComponent("Image").sprite = spriteMatNham
+            CS.EventManager.StartDelay2(function ()
+                --clone.gameObject:SetActive(false)
+                CS.UnityEngine.Object.Destroy(clone.gameObject)
+              end,0.3)
         end,0.3)
     end
