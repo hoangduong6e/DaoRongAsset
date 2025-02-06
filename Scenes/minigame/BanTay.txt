@@ -1,0 +1,90 @@
+LuaBehaviour = LuaBehaviour or {}
+
+
+function start()
+    -- Gọi hàm testcallLua trên đối tượng MiniGameDapChuot (nếu có)
+    if _G.MiniGameDapChuot and _G.MiniGameDapChuot.testcallLua then
+        _G.MiniGameDapChuot:testcallLua()
+    end
+  
+    -- Lưu lại gameObject từ LuaBehaviour
+    gameObject = self.gameObject
+
+    -- Kiểm tra EventTrigger và thêm nếu chưa có
+    eventTrigger = gameObject:GetComponent(typeof(CS.UnityEngine.EventSystems.EventTrigger))
+    if not eventTrigger then
+        eventTrigger = gameObject:AddComponent(typeof(CS.UnityEngine.EventSystems.EventTrigger))
+    end
+
+    -- Đảm bảo eventTrigger.triggers không bị lỗi
+    if not eventTrigger.triggers then
+        eventTrigger.triggers = CS.System.Collections.Generic.List(typeof(CS.UnityEngine.EventSystems.EventTrigger.Entry))()
+    end
+
+    -- Gọi Init để đăng ký sự kiện
+    Init()
+end
+
+function update()
+end
+
+local function AddEvent(eventType, func)
+    local entry = CS.UnityEngine.EventSystems.EventTrigger.Entry()
+    entry.eventID = eventType
+    entry.callback:AddListener(func)
+    eventTrigger.triggers:Add(entry)
+end
+
+-- Chuyển đổi tọa độ màn hình thành tọa độ thế giới 2D
+local function ScreenToWorldPosition(screenPosition)
+    local worldPosition = CS.UnityEngine.Camera.main:ScreenToWorldPoint(CS.UnityEngine.Vector3(screenPosition.x, screenPosition.y, 0))
+    return CS.UnityEngine.Vector3(worldPosition.x, worldPosition.y, 0)
+end
+
+-- Hàm xử lý khi Drag
+function OnDrag(eventData)
+    local AllVitrichuot = _G.MiniGameDapChuot.allViTriChuot
+    local newPos = ScreenToWorldPosition(eventData.position)
+    
+    if newPos.x > 8 then newPos = CS.UnityEngine.Vector3(8,newPos.y,newPos.z)end
+    if newPos.x < -6 then newPos = CS.UnityEngine.Vector3(-6,newPos.y,newPos.z)end
+    if newPos.y > 3 then newPos = CS.UnityEngine.Vector3(newPos.x,3,newPos.z)end
+    if newPos.y < -5 then newPos = CS.UnityEngine.Vector3(newPos.x,-5,newPos.z) end
+    newPos = CS.UnityEngine.Vector3(newPos.x - 1,newPos.y + 1,newPos.z)
+    gameObject.transform.position = newPos
+
+    for i = 0, AllVitrichuot.transform.childCount - 1 do
+        local childi = AllVitrichuot.transform:GetChild(i).gameObject
+        if CheckGan(gameObject,childi,1.5) then
+           -- print('gameobject gan la: '..AllVitrichuot.transform:GetChild(i).gameObject.name)
+           if childi.transform.childCount > 0 then 
+            _G.MiniGameDapChuot:DapChuot(i)
+            end
+            
+            break
+        end
+    end
+end
+
+-- Hàm xử lý khi kết thúc Drag
+function OnEndDrag(eventData)
+    --print("End Drag at: " .. eventData.position.x .. ", " .. eventData.position.y)
+end
+
+function Init()
+    AddEvent(CS.UnityEngine.EventSystems.EventTriggerType.Drag, OnDrag)
+    AddEvent(CS.UnityEngine.EventSystems.EventTriggerType.EndDrag, OnEndDrag)
+end
+
+
+function CheckGan(gameObject1, gameObject2, threshold)-- xem bàn tay đang gần gameobject nào
+    -- Lấy tọa độ của hai GameObject
+    local pos1 = gameObject1.transform.position
+    local pos2 = gameObject2.transform.position
+
+    -- Tính khoảng cách giữa hai GameObject
+    local distance = math.abs(CS.UnityEngine.Vector3.Distance(pos1, pos2))
+    
+    -- Kiểm tra xem khoảng cách có nhỏ hơn ngưỡng không
+    return distance < threshold
+end

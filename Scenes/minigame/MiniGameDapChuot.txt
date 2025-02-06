@@ -1,18 +1,45 @@
-local TxtTime
+local TxtTime, txtDiem, txtExp, txtVang
 local timer = 0  -- Biến đếm thời gian
 local time = 100
 local allVitriChuot, objectMat
 local spriteMatMo, spriteMatNham
+LuaBehaviour = LuaBehaviour or {}
+MiniGameDapChuot = {}
+
+local imgVang, imgExp
+
+local XluaNetwork = CS.XluaNetwork();-- tạo instance của class XluaMethod để gọi các hàm không static
+local XluaJSONNode = CS.XluaJSONNode();
+
+local oMoiDap = -1
+
+local AllQuai = {}
 function start()
     TxtTime = txtTime:GetComponent("Text")
+ 
     allViTriChuot = ObjDangChoi.transform:Find("allViTri")
+    MiniGameDapChuot.allViTriChuot = allViTriChuot  
+    MiniGameDapChuot.self = self
     objectMat = self.transform:Find("MatMo"):GetComponent("Image")
     spriteMatMo = objectMat:GetComponent("Image").sprite
     spriteMatNham = self.transform:Find("MatNham"):GetComponent("Image").sprite
-    --print("name AllVitrichuot:".. allViTriChuot.name )
-    --RandomMat()
+    txtDiem = self.transform:GetChild(0).transform:Find("txtDiem"):GetComponent("Text")
+    txtExp = ObjDangChoi.transform:Find("txtExp"):GetComponent("Text")
+    txtVang = ObjDangChoi.transform:Find("txtVang"):GetComponent("Text")
+    imgVang = ObjDangChoi.transform:Find("imgVang").gameObject
+    imgExp = ObjDangChoi.transform:Find("imgExp").gameObject
+
+    local allQuai = self.transform:Find("allQuai")
+
+    for i = 0, allQuai.transform.childCount -1 do
+        local childi = allQuai.transform:GetChild(i)
+        AllQuai[childi.name] = childi.gameObject
+       end
+
+      -- print('AllQuai test: '..AllQuai["SocVang"].name)
     end
 
+    local isCreate = true;-- được tạo trong 1 giây
 function update()
    
     if time >= 0 then
@@ -21,14 +48,17 @@ function update()
             TxtTime.text = FormatTime(time)
             time = time - 1  -- Giảm 1 giây
             timer = 0  -- Reset bộ đếm
-            local random = math.floor(CS.UnityEngine.Random.Range(0, 5)) 
+            isCreate = true
+        elseif timer > 0.85 and isCreate then
+            isCreate = false
+            local random = math.floor(CS.UnityEngine.Random.Range(3, 6)) 
             for i = 0, random do
                 CreateMat()
-              end
-            end
-    
+              end  
         end
+    
     end
+end
 
 function FormatTime(time)
     if time < 0 then
@@ -39,26 +69,18 @@ function FormatTime(time)
         return string.format("%02d:%02d", minutes, seconds)
     end
 
--- function RandomMat()
---     if time > 0.6 then
---         CS.EventManager.StartDelay2(function ()
---             RandomMat()
---           end,0.6)
---     end
---     local random = math.floor(CS.UnityEngine.Random.Range(0, 5)) 
---     for i = 0, random do
---         CreateMat()
---     end
-  
--- end
 
 function CreateMat()
     local random = math.floor(CS.UnityEngine.Random.Range(0, allViTriChuot.transform.childCount)) 
     if allViTriChuot.transform:GetChild(random).transform.childCount > 0 then
-    return
-end
+        random = math.floor(CS.UnityEngine.Random.Range(0, allViTriChuot.transform.childCount))  -- random thử thêm 1 lần nữa
+        return
+    end
+ 
+    if allViTriChuot.transform:GetChild(random).transform.childCount > 0 then return end
     
     --print("random la"..random)
+    if oMoiDap == random then oMoiDap = -1 end
     local parent = allViTriChuot.transform:GetChild(random)
     local clone = CS.UnityEngine.Object.Instantiate(objectMat, parent)
     local vector3 = CS.UnityEngine.Vector3(parent.transform.position.x,parent.transform.position.y- 0.1,parent.transform.position.z)
@@ -70,6 +92,108 @@ end
             CS.EventManager.StartDelay2(function ()
                 --clone.gameObject:SetActive(false)
                 CS.UnityEngine.Object.Destroy(clone.gameObject)
+               
               end,0.3)
         end,0.3)
     end
+
+
+
+
+    function MiniGameDapChuot:testcallLua()
+        print("call ok roi nha")
+    end
+
+    function MiniGameDapChuot:DapChuot(vitri)
+        if oMoiDap == vitri then return end
+        oMoiDap = vitri
+        print('dap chuot vi tri: '..vitri)
+
+
+        local method = 'MiniGameDapChuot'
+        local nameClass = 'DapChuot'
+        local keyData = { 'key',}
+        local valueData = { 'value',}
+       
+        
+        local function callbackDapChuot(response)
+            print('call back dap chuot: '.. response)
+        
+        -- Chuyển đổi JSON thành Lua table
+        local L = "return "..response:gsub('("[^"]-"):','[%1]=')  -- Thay dấu ':' bằng '='
+        
+        -- Sử dụng load thay vì loadstring
+        local func = load(L)  -- Đảm bảo rằng load được gọi thay vì loadstring
+        
+        if func then
+            local T = func()  -- Thực thi hàm Lua để nhận bảng Lua
+            -- Truy xuất giá trị trong bảng Lua
+            --print(T.message)
+            if T.status == "0" then
+                 --print('allViTriChuot: '..allViTriChuot.name)
+                 local cloneimgItemRoi
+         
+               
+                if T.loai == "Item" then
+                   
+                    cloneimgItemRoi = CS.UnityEngine.Object.Instantiate(imgItemRoi, ObjDangChoi.transform)
+                    local imgitem = cloneimgItemRoi:GetComponent("Image")
+                    imgitem.sprite = CS.Inventory.LoadSprite(T.nameitemroi)
+                    imgitem:SetNativeSize()
+                    Resize(imgitem,70)
+                    CS.EventManager.StartDelay2(function ()
+                        local quabay = imgitem:GetComponent(typeof(CS.QuaBay))
+                        if T.nameitemroi == "Vang" then
+                            quabay.vitribay = imgVang.gameObject
+                        elseif T.nameitemroi == "Exp" then 
+                            quabay.vitribay = imgExp.gameObject
+                        else
+                            quabay.vitribay = CS.UnityEngine.GameObject.FindGameObjectWithTag("hopqua")
+                        end
+                       
+                        quabay.enabled = true
+                       
+                      end,0.3)
+                elseif T.loai == "Quai" then
+                    cloneimgItemRoi = CS.UnityEngine.Object.Instantiate(AllQuai[T.nameitemroi], ObjDangChoi.transform)
+                    CS.UnityEngine.Object.Destroy(cloneimgItemRoi.gameObject,1)
+
+                end
+              
+                cloneimgItemRoi.transform.position = allViTriChuot.transform:GetChild(vitri).transform.position
+                cloneimgItemRoi.gameObject:SetActive(true)
+               
+                
+           
+               
+
+            else
+                CS.CrGame.ins:OnThongBaoNhanh(T.message, 2)
+            end
+        else
+            print("Error loading Lua code")
+        end
+        
+        end
+        XluaNetwork:SendRequest(method, nameClass, keyData, valueData, callbackDapChuot)
+    end
+
+    -- Lưu trữ đối tượng MiniGameDapChuot vào biến toàn cục
+
+    function Resize(image, size)
+        -- Lấy kích thước gốc của image
+        local originalWidth = image.rectTransform.rect.width
+        local originalHeight = image.rectTransform.rect.height
+    
+        -- Tính toán tỉ lệ thu nhỏ
+        local widthRatio = size / originalWidth
+        local heightRatio = size / originalHeight
+        local minRatio = math.min(widthRatio, heightRatio)
+    
+        -- Điều chỉnh kích thước
+        image.rectTransform.sizeDelta = CS.UnityEngine.Vector2(originalWidth * minRatio, originalHeight * minRatio)
+        
+        return image
+    end
+
+    _G.MiniGameDapChuot = MiniGameDapChuot
