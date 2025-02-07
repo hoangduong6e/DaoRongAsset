@@ -1,0 +1,63 @@
+﻿LuaExtension = {}
+
+function start()
+    --print('LuaExtension start');
+end
+
+function LuaExtension:formatNumber(num)
+    local formatted = tostring(num)
+    local k
+    while true do  
+        formatted, k = formatted:gsub("^(-?%d+)(%d%d%d)", "%1.%2")  
+        if k == 0 then break end
+    end
+    return formatted
+end
+
+function LuaExtension:ResizeImage(image, size)
+    -- Lấy kích thước gốc của image
+    local originalWidth = image.rectTransform.rect.width
+    local originalHeight = image.rectTransform.rect.height
+
+    -- Tính toán tỉ lệ thu nhỏ
+    local widthRatio = size / originalWidth
+    local heightRatio = size / originalHeight
+    local minRatio = math.min(widthRatio, heightRatio)
+
+    -- Điều chỉnh kích thước
+    image.rectTransform.sizeDelta = CS.UnityEngine.Vector2(originalWidth * minRatio, originalHeight * minRatio)
+    
+    return image
+end
+
+function LuaExtension:FormatTime(time)
+    if time < 0 then
+        time = 0
+        end
+        local minutes = math.floor(time / 60)  -- Lấy số phút
+        local seconds = math.floor(time % 60)  -- Lấy số giây còn lại
+        return string.format("%02d:%02d", minutes, seconds)
+    end
+
+
+function LuaExtension:ParseTable(response)
+    print('Lua received callback dataaa: '.. response)
+
+    -- Chuyển đổi JSON thành Lua table
+    local L = "return "..response:gsub('("[^"]-"):','[%1]=')  -- Thay dấu ':' bằng '='
+
+    -- Sử dụng load thay vì loadstring
+    local func = load(L)  -- Đảm bảo rằng load được gọi thay vì loadstring
+
+    if func then
+        local T = func()  -- Thực thi hàm Lua để nhận bảng Lua
+        -- Trả về bảng T
+        return T
+    else
+        print("Error loading Lua code")
+        return nil
+    end
+end
+
+
+_G.LuaExtension = LuaExtension

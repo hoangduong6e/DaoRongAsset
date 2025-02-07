@@ -2577,7 +2577,7 @@ public class NetworkManager : MonoBehaviour
                             lockk = bool.Parse(e.data["item"]["itemrong"][i]["lock"].ToString());
                         }
                         inventory.AddItemRongByindex(i - 1, id[1], nameitem[1], byte.Parse(e.data["item"]["itemrong"][i]["sao"].ToString()),
-                            int.Parse(e.data["item"]["itemrong"][i]["level"].ToString()), int.Parse(e.data["item"]["itemrong"][i]["exp"].ToString()), int.Parse(e.data["item"]["itemrong"][i]["maxexp"].ToString()),
+                            int.Parse(e.data["item"]["itemrong"][i]["level"].ToString()), double.Parse(e.data["item"]["itemrong"][i]["exp"].ToString()), double.Parse(e.data["item"]["itemrong"][i]["maxexp"].ToString()),
                             byte.Parse(e.data["item"]["itemrong"][i]["tienhoa"].ToString()), 0, namerong[1], nameObject[1], e.data["item"]["itemrong"][i]["hoangkim"], e.data["item"]["itemrong"][i]["ngoc"], lockk);
                     }//GetData Item Rồng
                     for (int i = 0; i < e.data["item"]["itemthucan"].Count; i++)

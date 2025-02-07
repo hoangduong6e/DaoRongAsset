@@ -1039,7 +1039,7 @@ public class Inventory : MonoBehaviour
             }
         }
     }
-    public void AddItemRongByindex(int indexchild, string iditem, string nameItem, byte sao, int level, int exp, int maxexp, byte tienhoa, float sothucan, string tenrong, string nameObject,bool hoangkim, JSONObject allngoc, bool lockk)
+    public void AddItemRongByindex(int indexchild, string iditem, string nameItem, byte sao, int level, double exp, double maxexp, byte tienhoa, float sothucan, string tenrong, string nameObject,bool hoangkim, JSONObject allngoc, bool lockk)
     {
         GameObject itemRong = Instantiate(ItemRong, TuiRong.transform.GetChild(indexchild).transform.position, Quaternion.identity) as GameObject;
         itemRong.transform.SetParent(TuiRong.transform.GetChild(indexchild).transform);
