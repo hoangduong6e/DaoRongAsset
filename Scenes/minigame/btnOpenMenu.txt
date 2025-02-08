@@ -28,12 +28,12 @@ if func then
     -- Truy xuất giá trị trong bảng Lua
     if T.status == "0" then
    
-        --local allmenu = CS.AllMenu.ins.transform
-        --print('allmenu la:'..allmenu.name)
-       --local menu = allmenu:Find("MiniGameDapChuot");
-       --print('menu la:'..menu.name)
-       --menu.gameObject:SetActive(true);
-       CS.AllMenu.ins:OpenMenuDisk('minigamedapchuot');
+        local allmenu = CS.AllMenu.ins.transform
+        print('allmenu la:'..allmenu.name)
+       local menu = allmenu:Find("MiniGameDapChuot");
+       print('menu la:'..menu.name)
+       menu.gameObject:SetActive(true);
+       --CS.AllMenu.ins:OpenMenuDisk('minigamedapchuot');
        MiniGameDapChuot.dataParse = T
     else
         CS.CrGame.ins:OnThongBaoNhanh(T.message, 2)

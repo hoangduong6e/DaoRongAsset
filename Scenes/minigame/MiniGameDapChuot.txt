@@ -22,6 +22,8 @@ local isPlay = false
 local Diem, Vang, Exp = 0, 0, 0
 local allGiaKC,maxLuotChoi,soLuotChoi
 local BangKetQua, txtKetQua, txtInfo
+
+local tableQua, countTableQua
 function start()
     TxtTime = txtTime:GetComponent("Text")
  
@@ -134,12 +136,82 @@ function CreateMat()
             CS.EventManager.StartDelay2(function ()
                 --clone.gameObject:SetActive(false)
                 CS.UnityEngine.Object.Destroy(clone.gameObject)
-               
+                CS.EventManager.StartDelay2(function ()
+                    RandomItem(random)
+                  end,0.1)
               end,0.3)
         end,0.3)
     end
 
+function RandomItem(vitri)
+    local random = math.floor(CS.UnityEngine.Random.Range(0, countTableQua)) 
+    local itemrandom = tableQua[tostring(random)]
+    CreateItem(itemrandom.name,itemrandom.soluong,itemrandom.loai,{name = "Vang",soluong=1000,loai="Item"},vitri)
+    print('random item la: '..random)
+end
+function CreateItem(nameitemroi,soluong,loai,itemsoc,vitri)
+                local function RoiItem()
+                    local cloneimgItemRoi
+                    if loai == "Item" then
+                        cloneimgItemRoi = CS.UnityEngine.Object.Instantiate(imgItemRoi, ObjDangChoi.transform)
+                        local imgitem = cloneimgItemRoi:GetComponent("Image")
+                        imgitem.sprite = CS.Inventory.LoadSprite(nameitemroi)
+                        imgitem:SetNativeSize()
+                        _G.LuaExtension:ResizeImage(imgitem,70)
+                        SetBanTayTha()
+                        --print('T.soluong'..soluong)
+                        CS.EventManager.StartDelay2(function ()
+                            local quabay = imgitem:GetComponent(typeof(CS.QuaBay))
+                            if nameitemroi == "Vang" then
+                                quabay.vitribay = imgVang.gameObject
+                                Vang = Vang + tonumber(soluong)
+                                txtVang.text = tostring(_G.LuaExtension:formatNumber(Vang))
+                            elseif nameitemroi == "Exp" then 
+                                quabay.vitribay = imgExp.gameObject
+                                Exp = Exp + tonumber(soluong)
+                                txtExp.text = tostring(_G.LuaExtension:formatNumber(Exp))
+                            else
+                                quabay.vitribay = CS.UnityEngine.GameObject.FindGameObjectWithTag("hopqua")
+                            end
+                           
+                            quabay.enabled = true
+                          
+                          end,0.3)
+                    elseif loai == "Quai" then
+                       
+                        cloneimgItemRoi = CS.UnityEngine.Object.Instantiate(AllQuai[nameitemroi], ObjDangChoi.transform)
+                        CS.UnityEngine.Object.Destroy(cloneimgItemRoi.gameObject,1)
+                        if nameitemroi == "XuongRong" then
+                            camDapChuot = true
+                            ImgBanTay.sprite = spriteBanTayCam
+                            ImgBanTay:SetNativeSize()
+                            animBanTay.enabled = true
+    
+                            CS.EventManager.StartDelay2(function ()
+                                camDapChuot = false
+                                animBanTay.enabled = false
+                                ImgBanTay.sprite = spriteBanTayTha
+                                ImgBanTay:SetNativeSize()
+                              end,3)
+                        else
+                            nameitemroi = itemsoc.name
+                            soluong = itemsoc.soluong
+                            loai = itemsoc.loai
+                            CS.EventManager.StartDelay2(function ()
+                                RoiItem()
+                              end,1)
+                          
+                           
+                        end
+    
+                    end
+                  
+                    cloneimgItemRoi.transform.position = allViTriChuot.transform:GetChild(vitri).transform.position
+                    cloneimgItemRoi.gameObject:SetActive(true)
 
+                end
+                RoiItem()
+end
 
 
     function MiniGameDapChuot:testcallLua()
@@ -308,6 +380,13 @@ function CreateMat()
                 SetSoLuotChoi()
                 BangKetQua:SetActive(false)
                 txtInfo:SetActive(true)
+                tableQua = table.tableQua
+
+                local count = 0
+                for _, _ in pairs(tableQua) do
+                    count = count + 1
+                end
+                countTableQua = count
             else
                 CS.CrGame.ins:OnThongBaoNhanh(table.message, 2)
             end
