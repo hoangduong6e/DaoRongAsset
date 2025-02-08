@@ -59,5 +59,36 @@ function LuaExtension:ParseTable(response)
     end
 end
 
+function LuaExtension:tableToJson(tbl)
+    local function serialize(value)
+        if type(value) == "number" then
+            return tostring(value)
+        elseif type(value) == "boolean" then
+            return value and "true" or "false"
+        elseif type(value) == "string" then
+            return '"' .. value .. '"'
+        elseif type(value) == "table" then
+            local isArray = #value > 0
+            local result = {}
+
+            if isArray then
+                for i, v in ipairs(value) do
+                    table.insert(result, serialize(v))
+                end
+                return "[" .. table.concat(result, ",") .. "]"
+            else
+                for k, v in pairs(value) do
+                    table.insert(result, '"' .. k .. '":' .. serialize(v))
+                end
+                return "{" .. table.concat(result, ",") .. "}"
+            end
+        else
+            return 'null' -- Các kiểu dữ liệu không hỗ trợ sẽ trả về `null`
+        end
+    end
+
+    return serialize(tbl)
+end
+
 
 _G.LuaExtension = LuaExtension

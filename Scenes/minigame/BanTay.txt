@@ -57,9 +57,7 @@ function OnDrag(eventData)
         local childi = AllVitrichuot.transform:GetChild(i).gameObject
         if CheckGan(gameObject,childi,1.3) then
            -- print('gameobject gan la: '..AllVitrichuot.transform:GetChild(i).gameObject.name)
-           if childi.transform.childCount > 0 then 
-            _G.MiniGameDapChuot:DapChuot(i)
-            end
+           _G.MiniGameDapChuot:DapChuot(i)
             
             break
         end
