@@ -16,18 +16,9 @@ end
 
 local function myCallback(response)
     print('Lua received callback dataaa: '.. response)
+    local T = _G.LuaExtension:ParseTable(response)
 
--- Chuyển đổi JSON thành Lua table
-local L = "return "..response:gsub('("[^"]-"):','[%1]=')  -- Thay dấu ':' bằng '='
-
--- Sử dụng load thay vì loadstring
-local func = load(L)  -- Đảm bảo rằng load được gọi thay vì loadstring
-
-if func then
-    local T = func()  -- Thực thi hàm Lua để nhận bảng Lua
-    -- Truy xuất giá trị trong bảng Lua
     if T.status == "0" then
-   
     --     local allmenu = CS.AllMenu.ins.transform
     --     print('allmenu la:'..allmenu.name)
     --    local menu = allmenu:Find("MiniGameDapChuot");
@@ -38,9 +29,6 @@ if func then
     else
         CS.CrGame.ins:OnThongBaoNhanh(T.message, 2)
     end
-else
-    print("Error loading Lua code")
-end
 
 end
 
