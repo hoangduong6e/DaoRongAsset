@@ -12,8 +12,6 @@ function start()
    btn.onClick:AddListener(onClick)
 end
 
-
-
 local function myCallback(response)
     print('Lua received callback dataaa: '.. response)
     local T = _G.LuaExtension:ParseTable(response)

@@ -41,7 +41,7 @@ function LuaExtension:FormatTime(time)
 
 
 function LuaExtension:ParseTable(response)
-    print('Lua received callback dataaa: '.. response)
+    --print('Lua received callback dataaa: '.. response)
 
     -- Chuyển đổi JSON thành Lua table
     local L = "return "..response:gsub('("[^"]-"):','[%1]=')  -- Thay dấu ':' bằng '='
@@ -54,7 +54,7 @@ function LuaExtension:ParseTable(response)
         -- Trả về bảng T
         return T
     else
-        print("Error loading Lua code")
+        print("Error loading Lua code extension")
         return nil
     end
 end
