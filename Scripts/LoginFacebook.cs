@@ -33,7 +33,7 @@ public class LoginFacebook : MonoBehaviour
     public GameObject CanvasLogin;
 #if UNITY_EDITOR && UNITY_EDITOR_OSX
 // Chỉ Unity Editor trên macOS
-public static string http = "http";
+public static string http = "https";
 #elif UNITY_IOS || UNITY_ANDROID
     // Khi build trên iOS hoặc Android
     public static string http = "https";

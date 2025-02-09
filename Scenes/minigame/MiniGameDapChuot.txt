@@ -95,13 +95,13 @@ function GetSoLuongRandomRoi()
 end
 function GetTimeXuatHien()
     if time < 4 then
-        return 1
+        return 0.8
     elseif time < 10 then
         return 1
     elseif time < 15 then
         return 1.2
     elseif time < 35 then
-        return 1.5
+        return 1.4
     elseif time < 40 then
         return 1
     elseif time <= 45 then
@@ -180,6 +180,10 @@ function CreateMat()
     end
 
 function RandomItem(vitri)
+    if math.floor(time) % 11 == 0 then
+        CreateItem("XuongRong",0,"Quai",{name = "Vang",soluong=1000,loai="Item"},vitri)
+        return
+    end 
     local random = math.floor(CS.UnityEngine.Random.Range(0, countTableQua)) 
     for i = 0, 5 do
         local itemrandom = tableQua[tostring(random)]
@@ -221,26 +225,6 @@ function CreateItem(nameitemroi,soluong,loai,itemsoc,vitri)
                         imgitem.sprite = CS.Inventory.LoadSprite(nameitemroi)
                         imgitem:SetNativeSize()
                         _G.LuaExtension:ResizeImage(imgitem,70)
-                        -- SetBanTayTha()
-                        -- --print('T.soluong'..soluong)
-                        -- CS.EventManager.StartDelay2(function ()
-                        --     local quabay = imgitem:GetComponent(typeof(CS.QuaBay))
-                        --     if nameitemroi == "Vang" then
-                        --         quabay.vitribay = imgVang.gameObject
-                        --         Vang = Vang + tonumber(soluong)
-                        --         txtVang.text = tostring(_G.LuaExtension:formatNumber(Vang))
-                        --     elseif nameitemroi == "Exp" then 
-                        --         quabay.vitribay = imgExp.gameObject
-                        --         Exp = Exp + tonumber(soluong)
-                        --         txtExp.text = tostring(_G.LuaExtension:formatNumber(Exp))
-                        --     else
-                        --         quabay.vitribay = CS.UnityEngine.GameObject.FindGameObjectWithTag("hopqua")
-                        --     end
-                           
-                        --     quabay.enabled = true
-                          
-                        --   end,0.3)
-                       
                         CS.EventManager.StartDelay2(function ()
                             if allViTriChuot.transform:GetChild(vitri).childCount > 0 then 
                                 if cloneimgItemRoi:GetComponent("QuaBay").enabled == false then
@@ -282,10 +266,7 @@ function CreateItem(nameitemroi,soluong,loai,itemsoc,vitri)
                             -- CS.EventManager.StartDelay2(function ()
                             --     RoiItem()
                             --   end,1)
-                          
-                           
                         end
-    
                     end
                   
                     cloneimgItemRoi.transform.position = allViTriChuot.transform:GetChild(vitri).transform.position
