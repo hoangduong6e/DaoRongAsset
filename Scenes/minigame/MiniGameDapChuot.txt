@@ -179,9 +179,14 @@ function CreateMat()
         end,0.3)
     end
 
+local isRandomXuongRong = false
 function RandomItem(vitri)
-    if math.floor(time) % 11 == 0 then
+    if math.floor(time) % 11 == 0 and isRandomXuongRong == false then
         CreateItem("XuongRong",0,"Quai",{name = "Vang",soluong=1000,loai="Item"},vitri)
+        isRandomXuongRong = true
+        CS.EventManager.StartDelay2(function ()
+            isRandomXuongRong = false
+          end,2)
         return
     end 
     local random = math.floor(CS.UnityEngine.Random.Range(0, countTableQua)) 

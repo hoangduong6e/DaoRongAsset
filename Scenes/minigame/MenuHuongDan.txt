@@ -1,0 +1,100 @@
+LuaBehaviour = LuaBehaviour or {}
+local spriteGuide = {}
+local animatorAllGuide
+local trang = 1
+local maxtrang = 3
+local txttrang
+local ListImageAnim = {}
+function start()
+    spriteGuide = {
+        img1:GetComponent("Image").sprite,
+        img2:GetComponent("Image").sprite,
+        img3:GetComponent("Image").sprite
+    }
+    ListImageAnim = {
+        img1:GetComponent("Image"),
+        img2:GetComponent("Image"),
+        img3:GetComponent("Image")
+    }
+    animatorAllGuide = allGuide:GetComponent("Animator")
+    txttrang = txtTrang:GetComponent("Text")
+  
+    gameObject = self.gameObject
+    btnExit:GetComponent("Button").onClick:AddListener(function() gameObject:SetActive(false)end)
+    -- Kiểm tra EventTrigger và thêm nếu chưa có
+    eventTrigger = gameObject:GetComponent(typeof(CS.UnityEngine.EventSystems.EventTrigger))
+    if not eventTrigger then 
+        eventTrigger = gameObject:AddComponent(typeof(CS.UnityEngine.EventSystems.EventTrigger))
+    end
+
+    -- Đảm bảo eventTrigger.triggers không bị lỗi
+    if not eventTrigger.triggers then
+        eventTrigger.triggers = CS.System.Collections.Generic.List(typeof(CS.UnityEngine.EventSystems.EventTrigger.Entry))()
+    end
+
+    -- Gọi Init để đăng ký sự kiện
+    Init()
+end
+
+local function AddEvent(eventType, func)
+    local entry = CS.UnityEngine.EventSystems.EventTrigger.Entry()
+    entry.eventID = eventType
+    entry.callback:AddListener(func)
+    eventTrigger.triggers:Add(entry)
+end
+
+local startX = 0  -- Lưu vị trí khi bắt đầu kéo
+
+function OnPointerDown(eventData)
+    startX = eventData.position.x  -- Ghi lại vị trí ban đầu khi nhấn
+end
+local dangSangTrang = false
+-- Hàm xử lý khi Drag
+function OnDrag(eventData)
+    if dangSangTrang then return end
+    local deltaX = eventData.position.x - startX  -- Tính khoảng cách di chuyển
+    if trang > 1 then
+        ListImageAnim[3].sprite = spriteGuide[trang - 1]
+    end
+    if trang < maxtrang then
+        ListImageAnim[2].sprite = spriteGuide[trang + 1]
+    end
+    if deltaX < 0 then
+        print("Người chơi kéo sang trái")
+        if trang < maxtrang then
+            animatorAllGuide:Play("sangphai")
+            trang = trang + 1
+            SetTrang()
+        end
+    elseif deltaX > 0 then
+        print("Người chơi kéo sang phải")
+        if trang > 1 then 
+            animatorAllGuide:Play("sangtrai")
+            trang = trang - 1
+            SetTrang()
+        end
+    end
+end
+
+function SetTrang()
+    txttrang.text = trang.."/"..maxtrang
+    dangSangTrang = true
+    local time = 1
+    if trang == maxtrang then btnExit:SetActive(true) end
+    CS.EventManager.StartDelay2(function ()
+        dangSangTrang = false
+        animatorAllGuide:Play("default")
+        ListImageAnim[1].sprite = spriteGuide[trang]
+      end,time)
+end
+-- Hàm xử lý khi kết thúc Drag
+function OnEndDrag(eventData)
+    print("End Drag at: " .. eventData.position.x .. ", " .. eventData.position.y)
+    
+end
+
+function Init()
+    AddEvent(CS.UnityEngine.EventSystems.EventTriggerType.PointerDown, OnPointerDown)
+    AddEvent(CS.UnityEngine.EventSystems.EventTriggerType.Drag, OnDrag)
+    AddEvent(CS.UnityEngine.EventSystems.EventTriggerType.EndDrag, OnEndDrag)
+end
