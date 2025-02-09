@@ -481,7 +481,8 @@ function CreateItem(nameitemroi,soluong,loai,itemsoc,vitri)
         txtDiem.text = "Điểm: ".. Diem
     end
 
-    function ExitMenu()
+    local XacNhanThoat = false
+    function Thoat()
         --self.gameObject:SetActive(false)
         local btnqua = CS.CrGame.ins.trencung.transform:Find("btnQuaOnline")
         if btnqua ~= nil then  -- Kiểm tra btnqua khác nil (khác null)
@@ -489,7 +490,20 @@ function CreateItem(nameitemroi,soluong,loai,itemsoc,vitri)
         end
         CS.AllMenu.ins:DestroyMenu("minigamedapchuot")
     end
-
+    function ExitMenu()
+        if isPlay and XacNhanThoat == false then
+            CS.EventManager.OpenThongBaoChon("Phần quà chỉ được nhận khi Tổng Kết xong, bạn có chắc chắn thoát?",
+            function()
+                XacNhanThoat = true 
+            Thoat()
+            end,"Thoát")
+            return
+        else
+            Thoat()
+        end
+        
+       
+    end
 
     function TinhKetQua()
     
