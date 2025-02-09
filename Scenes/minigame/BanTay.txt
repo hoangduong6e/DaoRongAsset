@@ -1,6 +1,6 @@
 LuaBehaviour = LuaBehaviour or {}
 
-
+local isHolding = false
 function start()
     -- Gọi hàm testcallLua trên đối tượng MiniGameDapChuot (nếu có)
     if _G.MiniGameDapChuot and _G.MiniGameDapChuot.testcallLua then
@@ -26,7 +26,34 @@ function start()
 end
 
 function update()
+    if not isHolding then return end  -- Thoát sớm nếu không giữ chuột
+
+    local AllVitrichuot = _G.MiniGameDapChuot.allViTriChuot
+    if not AllVitrichuot then return end -- Tránh lỗi nếu đối tượng bị nil
+
+    -- Lấy vị trí chuột (cần truyền eventData từ PointerDown hoặc PointerMove)
+    local mousePos = CS.UnityEngine.Input.mousePosition
+    local newPos = CS.UnityEngine.Camera.main:ScreenToWorldPoint(CS.UnityEngine.Vector3(mousePos.x, mousePos.y, 10))
+
+    -- Giới hạn vị trí trong khoảng cho phép
+    newPos.x = math.max(-6, math.min(8, newPos.x))
+    newPos.y = math.max(-5, math.min(3, newPos.y))
+
+    -- Điều chỉnh vị trí theo offset (-1, +1)
+    newPos = CS.UnityEngine.Vector3(newPos.x - 1, newPos.y + 1, newPos.z)
+    gameObject.transform.position = newPos
+
+    -- Kiểm tra gần vị trí chuột
+    local childCount = AllVitrichuot.transform.childCount
+    for i = 0, childCount - 1 do
+        local childi = AllVitrichuot.transform:GetChild(i).gameObject
+        if CheckGan(gameObject, childi, 1.3) then
+            _G.MiniGameDapChuot:DapChuot(i)
+            break
+        end
+    end
 end
+
 
 local function AddEvent(eventType, func)
     local entry = CS.UnityEngine.EventSystems.EventTrigger.Entry()
@@ -43,35 +70,18 @@ end
 
 -- Hàm xử lý khi Drag
 function OnDrag(eventData)
-    local AllVitrichuot = _G.MiniGameDapChuot.allViTriChuot
-    local newPos = ScreenToWorldPosition(eventData.position)
-    
-    if newPos.x > 8 then newPos = CS.UnityEngine.Vector3(8,newPos.y,newPos.z)end
-    if newPos.x < -6 then newPos = CS.UnityEngine.Vector3(-6,newPos.y,newPos.z)end
-    if newPos.y > 3 then newPos = CS.UnityEngine.Vector3(newPos.x,3,newPos.z)end
-    if newPos.y < -5 then newPos = CS.UnityEngine.Vector3(newPos.x,-5,newPos.z) end
-    newPos = CS.UnityEngine.Vector3(newPos.x - 1,newPos.y + 1,newPos.z)
-    gameObject.transform.position = newPos
-
-    for i = 0, AllVitrichuot.transform.childCount - 1 do
-        local childi = AllVitrichuot.transform:GetChild(i).gameObject
-        if CheckGan(gameObject,childi,1.3) then
-           -- print('gameobject gan la: '..AllVitrichuot.transform:GetChild(i).gameObject.name)
-           _G.MiniGameDapChuot:DapChuot(i)
-            
-            break
-        end
-    end
+    isHolding = true
 end
 
 -- Hàm xử lý khi kết thúc Drag
 function OnEndDrag(eventData)
     --print("End Drag at: " .. eventData.position.x .. ", " .. eventData.position.y)
+    isHolding = false
 end
 
 function Init()
-    AddEvent(CS.UnityEngine.EventSystems.EventTriggerType.Drag, OnDrag)
-    AddEvent(CS.UnityEngine.EventSystems.EventTriggerType.EndDrag, OnEndDrag)
+    AddEvent(CS.UnityEngine.EventSystems.EventTriggerType.PointerDown, OnDrag)
+    AddEvent(CS.UnityEngine.EventSystems.EventTriggerType.PointerUp, OnEndDrag)
 end
 
 
