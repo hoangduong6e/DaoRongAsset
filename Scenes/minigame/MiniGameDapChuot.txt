@@ -225,13 +225,35 @@ function RandomItem(vitri)
    -- print('random item la: '..random)
 end
 function RungThietBi()
-    if CS.UnityEngine.SystemInfo.supportsVibration then
+    local platform = CS.UnityEngine.Application.platform
+
+    -- Kiểm tra xem thiết bị có hỗ trợ rung hay không
+    if not CS.UnityEngine.SystemInfo.supportsVibration then
+        print("Thiết bị không hỗ trợ rung.")
+        return
+    end
+
+    if platform == CS.UnityEngine.RuntimePlatform.Android then
+        -- Gọi Android Vibrator bằng UnityEngine.AndroidJavaObject
+        local unityPlayer = CS.UnityEngine.AndroidJavaClass("com.unity3d.player.UnityPlayer")
+        local currentActivity = unityPlayer:GetStatic("currentActivity")
+        local vibrator = currentActivity:Call("getSystemService", "vibrator")
+
+        if vibrator ~= nil then
+            vibrator:Call("vibrate", 500) -- Rung 500ms
+            print("Thiết bị đã rung (Android)")
+        else
+            print("Không thể truy cập dịch vụ rung trên Android.")
+        end
+
+    elseif platform == CS.UnityEngine.RuntimePlatform.IPhonePlayer then
+        -- Đối với iOS, bật rung và gọi Handheld.Vibrate()
         CS.UnityEngine.iOS.Device.SetVibrationEnabled(true)
         CS.UnityEngine.Handheld.Vibrate()
         print("Thiết bị đã rung (iOS)")
-        CS.CrGame.ins:OnThongBaoNhanh("Đã rung", 1)
+
     else
-        print("Thiết bị không hỗ trợ rung.")
+        print("Không hỗ trợ rung trên nền tảng này.")
     end
 end
 function CreateItem(nameitemroi,soluong,loai,itemsoc,vitri)
