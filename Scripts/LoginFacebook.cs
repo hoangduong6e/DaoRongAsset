@@ -96,7 +96,7 @@ public static string http = "https";
         // testdownassetsbundle();
 
         //TestGenerics<GameObject> newgameobj = new TestGenerics<GameObject>(transform.gameObject);
- //       ScaleSpriteToScreen.ScaleSprite(GameObject.Find("BGLanSu_00000").GetComponent<SpriteRenderer>(),GameObject.Find("Canvasmenu").transform);
+        //       ScaleSpriteToScreen.ScaleSprite(GameObject.Find("BGLanSu_00000").GetComponent<SpriteRenderer>(),GameObject.Find("Canvasmenu").transform);
     }
 
     private void Start()

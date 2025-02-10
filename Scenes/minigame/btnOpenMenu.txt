@@ -17,12 +17,12 @@ local function myCallback(response)
     local T = _G.LuaExtension:ParseTable(response)
 
     if T.status == "0" then
-    --     local allmenu = CS.AllMenu.ins.transform
-    --     print('allmenu la:'..allmenu.name)
-    --    local menu = allmenu:Find("MiniGameDapChuot");
-    --    print('menu la:'..menu.name)
-    --    menu.gameObject:SetActive(true);
-       CS.AllMenu.ins:OpenMenuDisk('minigamedapchuot');
+         local allmenu = CS.AllMenu.ins.transform
+         print('allmenu la:'..allmenu.name)
+       local menu = allmenu:Find("MiniGameDapChuot");
+       print('menu la:'..menu.name)
+       menu.gameObject:SetActive(true);
+      -- CS.AllMenu.ins:OpenMenuDisk('minigamedapchuot');
        MiniGameDapChuot.dataParse = T
     else
         CS.CrGame.ins:OnThongBaoNhanh(T.message, 2)

@@ -23,7 +23,7 @@ local Diem, Vang, Exp = 0, 0, 0
 local allGiaKC,maxLuotChoi,soLuotChoi
 local BangKetQua, txtKetQua, txtInfo
 
-local tableQua, countTableQua, phantramExp,timeChiaRandomXuongRong
+local tableQua, countTableQua, phantramExp,timeChiaRandomXuongRong, BGToi, ImgBG
 
 function start()
     TxtTime = txtTime:GetComponent("Text")
@@ -47,6 +47,9 @@ function start()
     spriteBanTayTha = self.transform:Find("imgBanTayTha"):GetComponent("Image").sprite
     spriteBanTayBop = self.transform:Find("imgBanTayBop"):GetComponent("Image").sprite
     spriteBanTayCam = self.transform:Find("imgBanTayCam"):GetComponent("Image").sprite
+    BGToi = self.transform:Find("BGToi"):GetComponent("Image").sprite
+    ImgBG = self.transform:GetChild(0).transform:Find("BG"):GetComponent("Image")
+    SetNgayDem()
     ImgBanTay = ObjDangChoi.transform:Find("BanTay"):GetComponent("Image")
     animBanTay = ImgBanTay.gameObject:GetComponent("Animator")
     BtnChoiNgay = ObjChuaChoi.transform:Find("btnChoiNgay"):GetComponent("Button")
@@ -65,7 +68,11 @@ function start()
        ParseData()
       -- print('AllQuai test: '..AllQuai["SocVang"].name)
     end
-
+function SetNgayDem()
+    if CS.CrGame.ins.NgayDem == "Dem" then
+        ImgBG.sprite = BGToi
+    end
+end
 function SetSoLuotChoi()
     txtSoLuotChoi.text = "Bạn còn <color=lime>"..maxLuotChoi - tonumber(soLuotChoi) .."</color> lượt chơi"
 end
@@ -79,15 +86,15 @@ function ParseData()
     --print('gia kc choi lan 2 la: '..allGiaKC["2"])
 end
 function GetSoLuongRandomRoi()
-    if time < 4 then
+    if time < 3 then
         return 1
-    elseif time < 10 then
+    elseif time < 7 then
         return 2
     elseif time < 15 then
         return Random(2,3 + 1)
     elseif time < 35 then
         return Random(3,4 + 1)
-    elseif time < 40 then
+    elseif time < 41 then
         return 2
     elseif time <= 45 then
         return 1
@@ -97,13 +104,13 @@ function GetTimeXuatHien()
     if time < 4 then
         return 0.8
     elseif time < 10 then
-        return 1
+        return 0.9
     elseif time < 15 then
-        return 1.2
+        return 1.1
     elseif time < 35 then
-        return 1.4
+        return 1.3
     elseif time < 40 then
-        return 1
+        return 0.9
     elseif time <= 45 then
         return 0.8
     end
@@ -216,6 +223,14 @@ function RandomItem(vitri)
         end
     end
    -- print('random item la: '..random)
+end
+function RungThietBi()
+    if CS.UnityEngine.SystemInfo.supportsVibration then
+        CS.UnityEngine.Handheld.Vibrate()
+        print("Thiết bị đã rung!")
+    else
+        print("Thiết bị không hỗ trợ rung.")
+    end
 end
 function CreateItem(nameitemroi,soluong,loai,itemsoc,vitri)
         allItemRoi[vitri] = {nameitemroi = nameitemroi,soluong = soluong,loai = loai, itemsoc = itemsoc}
@@ -377,7 +392,7 @@ function CreateItem(nameitemroi,soluong,loai,itemsoc,vitri)
         --print('dap chuot vi tri: '..vitri)
         AllDuocDap[vitri + 1] = false
         local nameitemroi = allItemRoi[vitri].nameitemroi
-        
+        RungThietBi()
                                 
         local cloneanimChucPhuc = CS.UnityEngine.Object.Instantiate(animChucPhuc, ObjDangChoi.transform)
         cloneanimChucPhuc.transform.position = child.transform.position
