@@ -84,9 +84,9 @@ function SetSoLuotChoi()
     txtSoLuotChoi.text = "Bạn còn <color=lime>"..maxLuotChoi - tonumber(soLuotChoi) .."</color> lượt chơi"
 end
 function PlayAudio(nameaudio)
-    local clone = CS.UnityEngine.Object.Instantiate(allaudio[nameaudio], ObjDangChoi.transform)
+    local clone = CS.UnityEngine.Object.Instantiate(allaudio[nameaudio], self.transform)
     clone.gameObject:SetActive(true)
-    CS.UnityEngine.Object.Destroy(clone.gameObject,2)
+    CS.UnityEngine.Object.Destroy(clone.gameObject,3)
 end
 function ParseData()
         --print('parse data: '.._G.MiniGameDapChuot.dataParse.data.soluotchoi)
@@ -389,7 +389,9 @@ function CreateItem(nameitemroi,soluong,loai,itemsoc,vitri)
         local child = allViTriChuot.transform:GetChild(vitri)
          local childCount = child.transform.childCount
          if childCount == 0 then return end
+        
         if oMoiDap == vitri or camDapChuot == true or AllDuocDap[vitri + 1] == false then return end
+        PlayAudio("audioclick")
         oMoiDap = vitri
         --print('dap chuot vi tri: '..vitri)
         AllDuocDap[vitri + 1] = false
@@ -442,7 +444,7 @@ function CreateItem(nameitemroi,soluong,loai,itemsoc,vitri)
            --print('qua soc bay mau: '.._G.LuaExtension:tableToJson(quasoc7mau))
         else
             if MoiXuatHien[vitri+1] then 
-                PlayAudio("audioclick")
+                
                 CS.EventManager.StartDelay2(function ()
                     QuaBay(vitri)
                   end,0.3)
