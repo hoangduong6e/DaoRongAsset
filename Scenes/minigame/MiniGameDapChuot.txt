@@ -419,18 +419,17 @@ function CreateItem(nameitemroi,soluong,loai,itemsoc,vitri)
               
               --return
         elseif allItemRoi[vitri].nameitemroi == "SocDo" then
-            local randomVang = Random(200000,500000)
-            CS.AudioManager.PlaySound("nhatvang")
-            CreateItemQuai("Vang","Item",vitri,randomVang)
-            addItemNhat("Vang",randomVang)
+            CreateItemQuai("Exp","Item",vitri,phantramExp)
+            addItemNhat("Exp",phantramExp)
+            CS.AudioManager.PlaySound("sound1")
             if MoiXuatHien[vitri+1] then CS.UnityEngine.Object.Destroy(child.transform:GetChild(0).gameObject,0.3)
             else  CS.UnityEngine.Object.Destroy(child.transform:GetChild(0).gameObject) end
             --return
         elseif allItemRoi[vitri].nameitemroi == "SocVang" then
-
-            CreateItemQuai("Exp","Item",vitri,phantramExp)
-            addItemNhat("Exp",phantramExp)
-            CS.AudioManager.PlaySound("sound1")
+            local randomVang = Random(200000,500000)
+            CS.AudioManager.PlaySound("nhatvang")
+            CreateItemQuai("Vang","Item",vitri,randomVang)
+            addItemNhat("Vang",randomVang)
             if MoiXuatHien[vitri+1] then CS.UnityEngine.Object.Destroy(child.transform:GetChild(0).gameObject,0.3)
             else  CS.UnityEngine.Object.Destroy(child.transform:GetChild(0).gameObject) end
             --return
