@@ -23,7 +23,7 @@ local Diem, Vang, Exp = 0, 0, 0
 local allGiaKC,maxLuotChoi,soLuotChoi
 local BangKetQua, txtKetQua, txtInfo
 
-local tableQua, countTableQua, phantramExp
+local tableQua, countTableQua, phantramExp,timeChiaRandomXuongRong
 
 function start()
     TxtTime = txtTime:GetComponent("Text")
@@ -56,7 +56,7 @@ function start()
     txtInfo = ObjChuaChoi.transform:Find("txtInfo").gameObject
 
     BtnChoiNgay.onClick:AddListener(ChoiNgay)
-
+    
     self.transform:GetChild(0).transform:Find("btnExit"):GetComponent("Button").onClick:AddListener(ExitMenu)
     for i = 0, allQuai.transform.childCount -1 do
         local childi = allQuai.transform:GetChild(i)
@@ -179,9 +179,10 @@ function CreateMat()
         end,0.3)
     end
 
+
 local isRandomXuongRong = false
 function RandomItem(vitri)
-    if math.floor(time) % 11 == 0 and isRandomXuongRong == false then
+    if math.floor(time) % timeChiaRandomXuongRong == 0 and isRandomXuongRong == false and Random(0,100) >= 20 then
         CreateItem("XuongRong",0,"Quai",{name = "Vang",soluong=1000,loai="Item"},vitri)
         isRandomXuongRong = true
         CS.EventManager.StartDelay2(function ()
@@ -217,7 +218,6 @@ function RandomItem(vitri)
    -- print('random item la: '..random)
 end
 function CreateItem(nameitemroi,soluong,loai,itemsoc,vitri)
-       
         allItemRoi[vitri] = {nameitemroi = nameitemroi,soluong = soluong,loai = loai, itemsoc = itemsoc}
                 local function RoiItem()
                     MoiXuatHien[vitri + 1] = true
@@ -483,6 +483,8 @@ function CreateItem(nameitemroi,soluong,loai,itemsoc,vitri)
                 Vang = 0
                 Exp = 0
                 SetDiem()
+                txtExp.text = "0"
+             txtVang.text = "0"
                 isPlay = true
                 ObjChuaChoi:SetActive(false)
                 ObjDangChoi:SetActive(true)
@@ -491,8 +493,11 @@ function CreateItem(nameitemroi,soluong,loai,itemsoc,vitri)
                 BangKetQua:SetActive(false)
                 txtInfo:SetActive(true)
                 tableQua = table.tableQua
+                SoLanXuatHienItem = {}
+                AllGioiHan = {}
                 phantramExp = tonumber(table.phantramExp)
                 local count = 0
+                timeChiaRandomXuongRong = Random(10,13)
                 for key, value in pairs(tableQua) do
                     --print("Key: " .. tostring(key) .. ", Value: " .. tostring(value.name))
                     count = count + 1
@@ -539,7 +544,6 @@ function CreateItem(nameitemroi,soluong,loai,itemsoc,vitri)
 
     function TinhKetQua()
     
-
         local method = 'MiniGameDapChuot'
         local nameClass = 'TinhKQ'
         local keyData = { 'AllItemNhat',}

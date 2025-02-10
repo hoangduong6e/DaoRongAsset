@@ -5,7 +5,18 @@ local trang = 1
 local maxtrang = 3
 local txttrang
 local ListImageAnim = {}
+function awake()
+    if CS.UnityEngine.PlayerPrefs.HasKey("guideminigame1") then
+        
+        local str = CS.UnityEngine.PlayerPrefs.GetString("guideminigame1")
+        if str == CS.CrGame.ins.FB_userName.text then
+            self.gameObject:SetActive(false)
+        end
+        print("guideminigame1:"..str);
+     end
+end
 function start()
+   
     spriteGuide = {
         img1:GetComponent("Image").sprite,
         img2:GetComponent("Image").sprite,
@@ -20,7 +31,10 @@ function start()
     txttrang = txtTrang:GetComponent("Text")
   
     gameObject = self.gameObject
-    btnExit:GetComponent("Button").onClick:AddListener(function() gameObject:SetActive(false)end)
+    btnExit:GetComponent("Button").onClick:AddListener(function()
+         gameObject:SetActive(false)
+         CS.UnityEngine.PlayerPrefs.SetString("guideminigame1",CS.CrGame.ins.FB_userName.text)
+        end)
     -- Kiểm tra EventTrigger và thêm nếu chưa có
     eventTrigger = gameObject:GetComponent(typeof(CS.UnityEngine.EventSystems.EventTrigger))
     if not eventTrigger then 
