@@ -225,12 +225,7 @@ function RandomItem(vitri)
    -- print('random item la: '..random)
 end
 function RungThietBi()
-    if CS.UnityEngine.SystemInfo.supportsVibration then
-        CS.UnityEngine.Handheld.Vibrate()
-        print("Thiết bị đã rung!")
-    else
-        print("Thiết bị không hỗ trợ rung.")
-    end
+    CS.UnityEngine.Handheld.Vibrate()
 end
 function CreateItem(nameitemroi,soluong,loai,itemsoc,vitri)
         allItemRoi[vitri] = {nameitemroi = nameitemroi,soluong = soluong,loai = loai, itemsoc = itemsoc}
