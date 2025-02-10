@@ -21,11 +21,12 @@ local camDapChuot = false
 local isPlay = false
 local Diem, Vang, Exp = 0, 0, 0
 local allGiaKC,maxLuotChoi,soLuotChoi
-local BangKetQua, txtKetQua, txtInfo
+local BangKetQua, txtKetQua, txtInfo, audioclick, audioxuongrong
 
 local tableQua, countTableQua, phantramExp,timeChiaRandomXuongRong, BGToi, ImgBG
 
 function start()
+    CS.AudioManager.SoundBg:Stop()
     TxtTime = txtTime:GetComponent("Text")
  
     allViTriChuot = ObjDangChoi.transform:Find("allViTri")
@@ -58,8 +59,11 @@ function start()
     txtKetQua = BangKetQua.transform:GetChild(0):GetComponent("Text")
     txtInfo = ObjChuaChoi.transform:Find("txtInfo").gameObject
 
+    audioclick = self.transform:Find("audioclick"):GetComponent("AudioSource").clip
+    audioxuongrong = self.transform:Find("audioxuongrong"):GetComponent("AudioSource").clip
     BtnChoiNgay.onClick:AddListener(ChoiNgay)
     
+
     self.transform:GetChild(0).transform:Find("btnExit"):GetComponent("Button").onClick:AddListener(ExitMenu)
     for i = 0, allQuai.transform.childCount -1 do
         local childi = allQuai.transform:GetChild(i)
@@ -224,38 +228,6 @@ function RandomItem(vitri)
     end
    -- print('random item la: '..random)
 end
-function RungThietBi()
-    local platform = CS.UnityEngine.Application.platform
-
-    -- Kiểm tra xem thiết bị có hỗ trợ rung hay không
-    if not CS.UnityEngine.SystemInfo.supportsVibration then
-        print("Thiết bị không hỗ trợ rung.")
-        return
-    end
-
-    if platform == CS.UnityEngine.RuntimePlatform.Android then
-        -- Gọi Android Vibrator bằng UnityEngine.AndroidJavaObject
-        local unityPlayer = CS.UnityEngine.AndroidJavaClass("com.unity3d.player.UnityPlayer")
-        local currentActivity = unityPlayer:GetStatic("currentActivity")
-        local vibrator = currentActivity:Call("getSystemService", "vibrator")
-
-        if vibrator ~= nil then
-            vibrator:Call("vibrate", 500) -- Rung 500ms
-            print("Thiết bị đã rung (Android)")
-        else
-            print("Không thể truy cập dịch vụ rung trên Android.")
-        end
-
-    elseif platform == CS.UnityEngine.RuntimePlatform.IPhonePlayer then
-        -- Đối với iOS, bật rung và gọi Handheld.Vibrate()
-        CS.UnityEngine.iOS.Device.SetVibrationEnabled(true)
-        CS.UnityEngine.Handheld.Vibrate()
-        print("Thiết bị đã rung (iOS)")
-
-    else
-        print("Không hỗ trợ rung trên nền tảng này.")
-    end
-end
 function CreateItem(nameitemroi,soluong,loai,itemsoc,vitri)
         allItemRoi[vitri] = {nameitemroi = nameitemroi,soluong = soluong,loai = loai, itemsoc = itemsoc}
                 local function RoiItem()
@@ -339,13 +311,11 @@ function CreateItem(nameitemroi,soluong,loai,itemsoc,vitri)
             {name = AllNgoc2[Random(1,5)],soluong = 1,loai = "Item"},
             {name = "HoaTuyet",soluong = 10,loai = "Item"}
         }
-         
           local quarandomsoc =  allitemrandom[Random(1,3)];
           return quarandomsoc
     end
 
     function CreateItemQuai(nameitemroi,loai,vitri,soluong)
-      
         CS.EventManager.StartDelay2(function ()
             if loai == "Item" then
                 -- local vitrichuot = allViTriChuot.transform:GetChild(vitri).transform:GetChild(0)
@@ -416,13 +386,13 @@ function CreateItem(nameitemroi,soluong,loai,itemsoc,vitri)
         --print('dap chuot vi tri: '..vitri)
         AllDuocDap[vitri + 1] = false
         local nameitemroi = allItemRoi[vitri].nameitemroi
-        RungThietBi()
-                                
+                               
         local cloneanimChucPhuc = CS.UnityEngine.Object.Instantiate(animChucPhuc, ObjDangChoi.transform)
         cloneanimChucPhuc.transform.position = child.transform.position
         cloneanimChucPhuc:SetActive(true)
         CS.UnityEngine.Object.Destroy(cloneanimChucPhuc.gameObject,0.5)
         if allItemRoi[vitri].nameitemroi == "XuongRong" then
+            CS.LeanAudio.play(audioxuongrong) 
             camDapChuot = true
             ImgBanTay.sprite = spriteBanTayCam
             ImgBanTay:SetNativeSize()
@@ -440,6 +410,7 @@ function CreateItem(nameitemroi,soluong,loai,itemsoc,vitri)
               --return
         elseif allItemRoi[vitri].nameitemroi == "SocDo" then
             local randomVang = Random(200000,500000)
+            CS.AudioManager.PlaySound("nhatvang")
             CreateItemQuai("Vang","Item",vitri,randomVang)
             addItemNhat("Vang",randomVang)
             if MoiXuatHien[vitri+1] then CS.UnityEngine.Object.Destroy(child.transform:GetChild(0).gameObject,0.3)
@@ -449,17 +420,20 @@ function CreateItem(nameitemroi,soluong,loai,itemsoc,vitri)
 
             CreateItemQuai("Exp","Item",vitri,phantramExp)
             addItemNhat("Exp",phantramExp)
+            CS.AudioManager.PlaySound("sound1")
             if MoiXuatHien[vitri+1] then CS.UnityEngine.Object.Destroy(child.transform:GetChild(0).gameObject,0.3)
             else  CS.UnityEngine.Object.Destroy(child.transform:GetChild(0).gameObject) end
             --return
         elseif allItemRoi[vitri].nameitemroi == "SocBayMau" then
             --return
+            CS.AudioManager.PlaySound("sound2")
             local quasoc7mau = GetItemSocBayMau()
             CreateItemQuai(quasoc7mau.name,quasoc7mau.loai,vitri,quasoc7mau.soluong)
             if MoiXuatHien[vitri+1] then CS.UnityEngine.Object.Destroy(child.transform:GetChild(0).gameObject,0.3)
             else  CS.UnityEngine.Object.Destroy(child.transform:GetChild(0).gameObject) end
            --print('qua soc bay mau: '.._G.LuaExtension:tableToJson(quasoc7mau))
         else
+            CS.LeanAudio.play(audioclick) 
             if MoiXuatHien[vitri+1] then 
                 CS.EventManager.StartDelay2(function ()
                     QuaBay(vitri)
@@ -492,6 +466,7 @@ function CreateItem(nameitemroi,soluong,loai,itemsoc,vitri)
    
     function ChoiNgay()
         --CS.CrGame.ins:OnThongBaoNhanh("đã ấn play", 2)
+        CS.AudioManager.SoundClick()
         if soLuotChoi < 7 then
             --print('soLuotChoi la: '..tostring(soLuotChoi));
             --print('kim cuong yeu cau la: '..allGiaKC[tostring(soLuotChoi)]);
@@ -564,6 +539,7 @@ function CreateItem(nameitemroi,soluong,loai,itemsoc,vitri)
         if btnqua ~= nil then  -- Kiểm tra btnqua khác nil (khác null)
            CS.UnityEngine.Object.Destroy(btnqua.gameObject)
         end
+        CS.AudioManager.SetSoundBg("nhacnen0")
         CS.AllMenu.ins:DestroyMenu("minigamedapchuot")
     end
     function ExitMenu()
