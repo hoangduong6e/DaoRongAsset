@@ -14,6 +14,10 @@ public class NapinApp : MonoBehaviour
     {
         inapp = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<inappload>();
         UpdateUI();
+        if (LoginFacebook.ins.id != "testadmin")
+        {
+            transform.Find("btnNapThe").gameObject.SetActive(true);
+        }
     }
     void UpdateUI()
     {
@@ -33,5 +37,10 @@ public class NapinApp : MonoBehaviour
     public void ExitMenu()
     {
         AllMenu.ins.CloseMenu("MenuNapinapp");
+    }    
+    public void OpenMenuNapThe()
+    {
+        AllMenu.ins.OpenMenu("MenuNapThe");
+        ExitMenu();
     }    
 }
