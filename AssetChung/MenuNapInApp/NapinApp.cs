@@ -1,4 +1,4 @@
-﻿#if UNITY_IOS
+﻿
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -35,4 +35,3 @@ public class NapinApp : MonoBehaviour
         AllMenu.ins.CloseMenu("MenuNapinapp");
     }    
 }
-#endif

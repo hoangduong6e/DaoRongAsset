@@ -143,19 +143,15 @@ public class CrGame : MonoBehaviour
         //FB_userName.text = LoginFacebook.ins.nameNv;
         //  net.socket.Emit("Login", JSONObject.CreateStringObject(LoginFacebook.ins.id));
         //  testdownassetsbundle();
-#if UNITY_IOS
-  if (LoginFacebook.ins.id == "testadmin")
+        if (LoginFacebook.ins.id == "testadmin")
         {
-           // GameObject.Find("btnNap").GetComponent<Button>().onClick.AddListener(delegate { AllMenu.ins.OpenMenu("MenuNapinapp"); });
-               giaodien.transform.Find("GameObjecttat").transform.Find("btnNap").GetComponent<Button>().onClick.AddListener(delegate { AllMenu.ins.OpenMenu("MenuNapinapp"); });
+            // GameObject.Find("btnNap").GetComponent<Button>().onClick.AddListener(delegate { AllMenu.ins.OpenMenu("MenuNapinapp"); });
+            giaodien.transform.Find("GameObjecttat").transform.Find("btnNap").GetComponent<Button>().onClick.AddListener(delegate { AllMenu.ins.OpenMenu("MenuNapinapp"); });
         }
         else
         {
-             giaodien.transform.Find("GameObjecttat").transform.Find("btnNap").GetComponent<Button>().onClick.AddListener(delegate { AllMenu.ins.OpenMenu("MenuNapThe"); });
+            giaodien.transform.Find("GameObjecttat").transform.Find("btnNap").GetComponent<Button>().onClick.AddListener(delegate { AllMenu.ins.OpenMenu("MenuNapThe"); });
         }
-#elif UNITY_ANDROID
-        giaodien.transform.Find("GameObjecttat").transform.Find("btnNap").GetComponent<Button>().onClick.AddListener(delegate { AllMenu.ins.OpenMenu("MenuNapThe"); });
-#endif
     }
     DateTime ConvertToVietnamTime(DateTime currentTime)
     {
