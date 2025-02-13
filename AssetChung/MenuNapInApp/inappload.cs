@@ -66,7 +66,7 @@ public class inappload : MonoBehaviour, IStoreListener
         crgame.panelLoadDao.SetActive(false);
         var product = args.purchasedProduct;
         XacThuc(args);
-        return PurchaseProcessingResult.Pending; // Chờ xác thực từ server
+        return PurchaseProcessingResult.Complete; // Chờ xác thực từ server
 
         //We return Complete, informing IAP that the processing on our side is done and the transaction can be closed.
         //string receipt = args.purchasedProduct.receipt; // Lấy hóa đơn
@@ -107,7 +107,7 @@ public class inappload : MonoBehaviour, IStoreListener
                 net.socket.Emit("NapInApp", JSONObject.CreateStringObject(kc));
 
                 Debug.Log($"Purchase Complete - Product: {args.purchasedProduct.definition.id}");
-                //PurchaseProcessingResult.Complete;
+               // PurchaseProcessingResult.Complete;
 
             }
             else
