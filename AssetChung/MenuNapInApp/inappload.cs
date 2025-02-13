@@ -90,21 +90,23 @@ public class inappload : MonoBehaviour, IStoreListener
                 // Debug.Log("Xác thực thành công: " + www.downloadHandler.text);
                 m_StoreController.ConfirmPendingPurchase(args.purchasedProduct);
 
-                string kc = "300";
-                //product.definition.payout.
-                if (args.purchasedProduct.definition.id == skimcuong[0])
-                {
-                    Debug.Log("Mua 300kc thành công");
-                }
-                else if (args.purchasedProduct.definition.id == skimcuong[1])
-                {
-                    Debug.Log("Mua 1500kc thành công"); kc = "1500";
-                }
-                else if (args.purchasedProduct.definition.id == skimcuong[2])
-                {
-                    Debug.Log("Mua 3500kc thành công"); kc = "3500";
-                }
-                net.socket.Emit("NapInApp", JSONObject.CreateStringObject(kc));
+                //string kc = "300";
+                ////product.definition.payout.
+                //if (args.purchasedProduct.definition.id == skimcuong[0])
+                //{
+                //    Debug.Log("Mua 300kc thành công");
+                //}
+                //else if (args.purchasedProduct.definition.id == skimcuong[1])
+                //{
+                //    Debug.Log("Mua 1500kc thành công"); kc = "1500";
+                //}
+                //else if (args.purchasedProduct.definition.id == skimcuong[2])
+                //{
+                //    Debug.Log("Mua 3500kc thành công"); kc = "3500";
+                //}
+                CrGame.ins.OnThongBao(true,json["message"].AsString,true);
+
+                //net.socket.Emit("NapInApp", JSONObject.CreateStringObject(kc));
 
                 Debug.Log($"Purchase Complete - Product: {args.purchasedProduct.definition.id}");
                // PurchaseProcessingResult.Complete;
@@ -112,7 +114,7 @@ public class inappload : MonoBehaviour, IStoreListener
             }
             else
             {
-                CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+                CrGame.ins.OnThongBao(true, json["message"].AsString, true);
             }
         }
 
