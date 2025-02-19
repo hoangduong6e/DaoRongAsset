@@ -166,7 +166,7 @@ public class GiaoDienChucPhuc : MonoBehaviour
         datasend["class"] = EventManager.ins.nameEvent;
         datasend["method"] = "ChucPhuc";
         datasend["data"]["solanquay"] = x;
-        NetworkManager.ins.SendServer(datasend, Ok, true);
+        NetworkManager.ins.SendServer(datasend, Ok);
         void Ok(JSONNode json)
         {
             debug.Log(json.ToString());

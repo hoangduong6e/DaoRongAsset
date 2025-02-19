@@ -46,7 +46,7 @@ public class GiaoDienSucXac : MonoBehaviour
         int cong = 0;
         for (int i = 0; i < allmoc.Length; i++)
         {
-            debug.Log("allmoc[i] " + allmoc[i]);
+            //debug.Log("allmoc[i] " + allmoc[i]);
             Image fill = content.transform.GetChild(i).transform.Find("load").GetComponent<Image>();
             cong += allmoc[i];
             if (vong >= allmoc[i])
@@ -74,7 +74,7 @@ public class GiaoDienSucXac : MonoBehaviour
                 {
                     int max = allmoc[i] - allmoc[i - 1];
                     fill.fillAmount = (float)(vong - allmoc[i - 1]) / (float)max;
-                    debug.Log("chia " + (float)(vong - allmoc[i - 1]) / max);
+                  //  debug.Log("chia " + (float)(vong - allmoc[i - 1]) / max);
                 }
 
                 else fill.fillAmount = 0;
@@ -144,7 +144,6 @@ public class GiaoDienSucXac : MonoBehaviour
                                 SetImgSang(ObjOquay.transform.GetChild(ObjOquay.transform.childCount - 1).GetComponent<Image>());
                                 yield return new WaitForSeconds(0.3f);
                             }
-                       
                         }
                     }    
                     else
@@ -164,7 +163,7 @@ public class GiaoDienSucXac : MonoBehaviour
                             else SetImgToi(ObjOquay.transform.GetChild(ObjOquay.transform.childCount - 1).GetComponent<Image>());
                             //if (odangdung >= 0 && odangdung < ObjOquay.transform.childCount)
                             //{
-
+                               
                             //}
                             if (i >= 0 && i < ObjOquay.transform.childCount)  SetImgSang(ObjOquay.transform.GetChild(i).GetComponent<Image>());
                             i += 1;

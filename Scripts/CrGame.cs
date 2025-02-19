@@ -371,7 +371,7 @@ public class CrGame : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
 
             JSONClass datasend = new JSONClass();
-            datasend["class"] = "MenuEventValentine2024";
+            datasend["class"] = "EventValentine2024";
             datasend["method"] = "GetData";
             NetworkManager.ins.SendServer(datasend, GetEventok);
         }
