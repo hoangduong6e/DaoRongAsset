@@ -169,7 +169,7 @@ public abstract class DragonPVEController : MonoBehaviour
     {
         Transform parent = transform.parent;
 
-        //PVEManager.GetUpdateMove(transform, parent.transform.parent.name);
+      //  PVEManager.GetUpdateMove(transform, parent.transform.parent.name);
         skillObj[0].GetComponent<SkillDraController>().skillmoveok += SkillMoveOk;
         
         //     ImgHp = ThanhMau.transform.GetChild(0).GetComponent<Image>();
