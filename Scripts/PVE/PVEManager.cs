@@ -189,12 +189,12 @@ public class PVEManager : MonoBehaviour
         rongtrieuhoi.transform.SetSiblingIndex(tfteam.transform.childCount - 1);
         anim.Play("Spawn");
 
-        if (VienChinh.vienchinh.chedodau == CheDoDau.Online)
-        {
-            draInstantiate.DraInsPVP(data, id);
-        }
-        else draInstantiate.DraInsPVE(data);
-
+        //if (VienChinh.vienchinh.chedodau == CheDoDau.Online)
+        //{
+        //    draInstantiate.DraInsPVP(data, id);
+        //}
+        //else draInstantiate.DraInsPVE(data);
+        draInstantiate.DraInsOnline(data, id);
         if (ReplayData.Record)
         {
             ReplayData.AddNewDragon(id, team, nameObject, randomvec, data["sao"].ToString());

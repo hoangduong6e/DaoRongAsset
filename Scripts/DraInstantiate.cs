@@ -78,6 +78,33 @@ public abstract class DraInstantiate : MonoBehaviour
        // dragonPVEController.animIdlle = Idlle;
         SetDraCompleted();
     }
+
+    public void DraInsOnline(JSONObject e, string id)
+    {
+      GameObject obj = PVEManager.GetSkillDra(nameSkill); //Resources.Load("GameData/Object/CanvasDraIsland") as GameObject;
+        GameObject SkillDra = Instantiate(obj, transform.position, Quaternion.identity, transform);
+
+        Transform obj0 = transform.GetChild(0);
+        SkillDra.transform.position = obj0.transform.position;
+        SkillDra.name = "SkillDra";
+        DragonPVEController dragonPVEController = SkillDra.GetComponent<DragonPVEController>();
+
+        GetComponent<DraUpdateAnimator>().DragonPVEControllerr = dragonPVEController;
+        TangScaleRong(transform);
+
+        dragonPVEController.ParseData(e);
+        PVEManager.GetScale(transform);
+        SetScaleSkill(dragonPVEController.skillObj);
+        if (transform.parent.name == "TeamDo")
+        {
+            dragonPVEController.ImgHp.sprite = VienChinh.vienchinh.thanhmaudo;
+            dragonPVEController.team = Team.TeamDo;
+        }
+        else dragonPVEController.team = Team.TeamXanh;
+      //  DauTruongOnline.dicdra.Add(id,transform);
+        //dragonPVEController.animIdlle = Idlle;
+        SetDraCompleted();
+    }
     public void DraInsReplay(string nameObject,float timetrieuhoi)
     {
        // debug.Log("time trieu hoi " + timetrieuhoi + " frame: " + (timetrieuhoi * 0.2f) + " time " + ReplayData.time);
