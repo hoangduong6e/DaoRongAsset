@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,7 @@ using UnityEngine.UI;
 public class DraUpdateAnimator : MonoBehaviour
 {
     // Start is called before the first frame update
+    public Action actionUpdateAttack;
     public DragonPVEController DragonPVEControllerr { get; set; }
     public GameObject bongrong;
     public Transform chamdo;
@@ -33,6 +35,7 @@ public class DraUpdateAnimator : MonoBehaviour
         {
             DragonPVEControllerr.UpdateAnimAttack();
         }
+        actionUpdateAttack?.Invoke();
     }
     public void UpdateAnimIdle()
     {
@@ -43,7 +46,7 @@ public class DraUpdateAnimator : MonoBehaviour
     }
     public void SpawmComplete()
     {
-        debug.Log(DragonPVEControllerr);
+      //  debug.Log(DragonPVEControllerr);
         if (DragonPVEControllerr != null)
         {
         //    debug.Log("Spawm complete");

@@ -181,6 +181,7 @@ public class DragonFlyIsland : DragonIslandController
                                 break;
                             case 5:
                                 moveIslandStatus = MoveIslandStatus.Left;
+                                RandomDaBong();
                                 break;
                         }
                         if (Random.Range(0, 10) > 6) TimeFly = MaxTimeFly;
@@ -194,9 +195,14 @@ public class DragonFlyIsland : DragonIslandController
                             case 2: moveIslandStatus = MoveIslandStatus.Right; break;
                             case 3: moveIslandStatus = MoveIslandStatus.DownLeft; break;
                             case 4: moveIslandStatus = MoveIslandStatus.DownRight; break;
-                            case 5: moveIslandStatus = MoveIslandStatus.Down; break;
+                            case 5:
+                                moveIslandStatus = MoveIslandStatus.Down;
+                                RandomDaBong();
+                                break;
                         }
                     }
+
+                   
                 }
             
             }
@@ -222,7 +228,7 @@ public class DragonFlyIsland : DragonIslandController
     }
     protected override void ScanFood()
     {
-        if (doi)
+        if (doi && !dabong)
         {
             if (DragonIslandManager.DungThucAn.transform.childCount > 0)
             {

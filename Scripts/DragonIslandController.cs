@@ -1,4 +1,7 @@
 ﻿using SimpleJSON;
+using System.Collections;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
@@ -20,7 +23,7 @@ public abstract class DragonIslandController : MonoBehaviour
         dichuyen = true,
         roi = false;
 
-    private bool xem = false, openinfo = false;
+    protected bool xem = false, openinfo = false, dabong = false;
 
     protected virtual float setRandomSpeed {get{return speed; }set{speed = value; } }
     protected Animator anim;
@@ -28,6 +31,7 @@ public abstract class DragonIslandController : MonoBehaviour
     protected GameObject hieuungboi;
     public Transform bongrong;
     protected Rigidbody2D rigid;
+    private QuaBong tfquabong;
 
     public Text txtNameRong { get; set; }
 
@@ -44,8 +48,62 @@ public abstract class DragonIslandController : MonoBehaviour
         }
     }
 
-   // public DataDragonIsland data { get; set; }
-    
+    // public DataDragonIsland data { get; set; }
+    private byte stateAnimAttack = 0;
+    public void StartDaBong()
+    {
+        if (boi) return;
+        if (tfquabong == null)
+        {
+            Transform ObjectTrangTri = transform.parent.transform.parent.transform.Find("ObjectTrangTri");
+
+            for(int i = 0; i < ObjectTrangTri.transform.childCount;i++)
+            {
+                string name = ObjectTrangTri.transform.GetChild(i).name;
+                if (name.Contains("QuaBongSieuSao") || name.Contains("QuaBongBracuza"))
+                {
+                    tfquabong = ObjectTrangTri.transform.GetChild(i).GetComponent<QuaBong>() ;
+                    break;
+                }
+            }
+        }
+        if (tfquabong != null)
+        {
+            if (tfquabong.isLan) return;
+            DraUpdateAnimator dra = GetComponent<DraUpdateAnimator>();
+            if (dra != null)
+            {
+                DragonPVEController controller = Inventory.LoadObjectResource("GameData/SkillDra/Skill"+GetComponent<DraInstantiate>().nameSkill).GetComponent<DragonPVEController>();
+                debug.Log("maxstate attack la: " + GetComponent<DraInstantiate>().nameSkill + ": " + controller.maxStateAttack);
+                dra.actionUpdateAttack = null;
+                dra.actionUpdateAttack += () =>
+                {
+                    debug.Log("update animattack");
+                    stateAnimAttack += 1;
+                    if(stateAnimAttack == controller.maxStateAttack)
+                    {
+                        stateAnimAttack = 0;
+                        anim.Play("Walking");
+                    }
+                };
+            }
+         
+        
+            anim.SetFloat("speedRun",1.5f);
+            dabong = true;
+            dichuyen = false;
+            if (transform.position.x > tfquabong.transform.position.x) scale(1);
+            else scale(-1);
+        }    
+    }
+    private void SutBong()
+    {
+        tfquabong.BongLan();
+        dabong = false;
+        dichuyen = true;
+   
+        anim.SetFloat("speedRun", 1f);
+    }    
     protected void Startt()
     {
         vitribongY = gameObject.transform.position.y - bongrong.transform.position.y;
@@ -68,7 +126,7 @@ public abstract class DragonIslandController : MonoBehaviour
         time = 0;
         if (collision.CompareTag("duoinuoctrai") || collision.CompareTag("duoinuocduoi") || collision.CompareTag("duoinuocphai"))
         {
-            if (drag == false)
+            if (drag == false && dabong == false)
             {
                 //debug.Log("Rotxuongnuoc");
                 if (boi == false)
@@ -263,6 +321,7 @@ public abstract class DragonIslandController : MonoBehaviour
         txtNameRong.transform.localScale = scaleCanvasIsland;
 
     }
+
     protected void UpdateTransform()
     {
         if (time <= maxtime)
@@ -276,7 +335,7 @@ public abstract class DragonIslandController : MonoBehaviour
             setRandomSpeed = Random.Range(0.3f, 0.75f);
             RanRun();
         }
-        if (dichuyen)
+        if (dichuyen && !dabong)
         {
             switch (moveIslandStatus)
             {
@@ -317,6 +376,17 @@ public abstract class DragonIslandController : MonoBehaviour
             }
           //  UpdateAnimator();
         }
+        else if(dabong)
+        {
+            transform.position = Vector3.MoveTowards(new Vector3(transform.position.x, transform.position.y, tfquabong.transform.position.z), tfquabong.transform.position, 2.5f * Time.deltaTime);
+
+            if (Vector3.Distance(transform.position, tfquabong.transform.position) <= 0.2f)
+            {
+                Invoke("SutBong", 0.3f);
+                anim.Play("Attack");
+                Debug.Log("Đã chạy đến quả bóng");
+            }
+        }    
         if (boi)
         {
             dichuyen = false;
@@ -331,23 +401,14 @@ public abstract class DragonIslandController : MonoBehaviour
         }
         else
         {
-            //if (Friend.ins.QuaNha)
-            //{
-
-
-            //    return;
-            //}    
             GioiHanDiChuyen();
-         
-            //float limitPosX = Mathf.Clamp(transform.position.x, GamIns.ins.minX, GamIns.ins.MaxX);
-            //float limitPosY = Mathf.Clamp(transform.position.y, GamIns.ins.minY, GamIns.ins.MaxY);
-            //transform.position = new Vector3(limitPosX, limitPosY, transform.position.z);
         }
+        
         ScanFood();
     }
     protected abstract void ScanFood();
     protected abstract void GioiHanDiChuyen();
-    protected  virtual void RanDiChuyen()
+    protected virtual void RanDiChuyen()
     {
         byte randichuyen = (byte)Random.Range(1, 16);
         switch (randichuyen)
@@ -383,6 +444,7 @@ public abstract class DragonIslandController : MonoBehaviour
                 break;
             case 12:
                 moveIslandStatus = MoveIslandStatus.Down;
+                RandomDaBong();
                 break;
             case 15:
                 moveIslandStatus = MoveIslandStatus.Idle;
@@ -391,8 +453,20 @@ public abstract class DragonIslandController : MonoBehaviour
                 moveIslandStatus = MoveIslandStatus.Idle;
                 break;
         }
+        if (Random.Range(0, 100) > 50)
+        {
+            StartDaBong();
+        }
         UpdateAnimator();
     }
+    public void RandomDaBong()
+    {
+        if (Random.Range(0, 5000) == 2500) // Xác suất 1/5000 (rất hiếm)
+        {
+            StartDaBong();
+        }
+    }
+
     public void StartDrag(PointerEventData data)
     {
         if (boi == false)

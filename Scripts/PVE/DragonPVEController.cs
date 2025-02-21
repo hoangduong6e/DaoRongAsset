@@ -94,8 +94,8 @@ public abstract class DragonPVEController : MonoBehaviour
     protected byte maxStateIdle = 1;
 
     protected byte stateAnimAttack = 0;
-    [SerializeField]
-    protected byte maxStateAttack = 1;
+
+    public byte maxStateAttack = 1;
 
     public float maxspeed { get; set; }
 

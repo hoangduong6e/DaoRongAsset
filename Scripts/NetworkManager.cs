@@ -64,6 +64,7 @@ public class NetworkManager : MonoBehaviour
         socket.On("LoiDai", LoiDai);
         socket.On("updateMoney", UpdateMoney);
         socket.On("Event", Event);
+        socket.On("UpdateTick", UpdateTick);
         hopqua = GameObject.Find("btnQuaOnline").GetComponent<HopQua>();
         //  quatanghangngay = GetComponent<QuaTangHangNgay>();
         thuyen = GetComponent<ThuyenThucAn>();
@@ -116,7 +117,11 @@ public class NetworkManager : MonoBehaviour
         //    CrGame.ins.panelLoadDao.SetActive(false);
         //}
     }
+    void UpdateTick(SocketIOEvent e)
+    {
+        debug.Log("UpdateTick: " + e.name + " " + e.data);
 
+    }    
     void Event(SocketIOEvent e)
     {
         debug.Log("[SocketIO] Open received: " + e.name + " " + e.data);

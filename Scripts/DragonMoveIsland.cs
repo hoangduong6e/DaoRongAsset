@@ -54,6 +54,7 @@ public class DragonMoveIsland : DragonIslandController
             //debug.Log("ran runnnnnnn");
             RanDiChuyen();
             UpdateAnimator();
+          
         }
     }
     protected override void UpdateAnimator()
@@ -81,7 +82,7 @@ public class DragonMoveIsland : DragonIslandController
     }
     protected override void ScanFood()
     {
-        if (doi)
+        if (doi && !dabong)
         {
             if (DragonIslandManager.DungThucAn.transform.childCount > 0)
             {
