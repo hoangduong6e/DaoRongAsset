@@ -120,6 +120,16 @@ public class NetworkManager : MonoBehaviour
     void UpdateTick(SocketIOEvent e)
     {
         debug.Log("UpdateTick: " + e.name + " " + e.data);
+        foreach (string team in e.data["p"].keys)
+        {
+             foreach (string id in e.data["p"][team].keys)
+             {
+                Transform tf = PVPManager.DragonsTF[team][id];
+                float x = float.Parse(e.data["p"][team][id].ToString());
+                tf.position = new Vector3(x,tf.transform.position.y,tf.transform.position.z);
+             }
+        }
+
 
     }    
     void Event(SocketIOEvent e)

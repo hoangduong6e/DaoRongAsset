@@ -163,12 +163,14 @@ public class PVEManager : MonoBehaviour
         //   debug.Log("rong6");x
         // dra.tienhoa = byte.Parse(e.data["xanhtrieuhoi"]["tienhoa"].ToString());
         Transform tfteam = null;
+        string teamonl = "b";
         if (team == "TeamXanh")
         {
             tfteam = VienChinh.vienchinh.TeamXanh.transform;
         }
         else
         {
+            teamonl = "r";
             tfteam = VienChinh.vienchinh.TeamDo.transform;
             if (Setting.cauhinh == CauHinh.CauHinhCao) GiaoDienPVP.ins.AddHienRong(nameObject);
         }
@@ -194,7 +196,11 @@ public class PVEManager : MonoBehaviour
         //    draInstantiate.DraInsPVP(data, id);
         //}
         //else draInstantiate.DraInsPVE(data);
+
+        /////
         draInstantiate.DraInsOnline(data, id);
+        PVPManager.AddDragonTF(teamonl,id,rongtrieuhoi.transform);
+        /////
         if (ReplayData.Record)
         {
             ReplayData.AddNewDragon(id, team, nameObject, randomvec, data["sao"].ToString());

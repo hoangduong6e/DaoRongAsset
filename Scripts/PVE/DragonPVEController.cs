@@ -237,7 +237,7 @@ public abstract class DragonPVEController : MonoBehaviour
     void FixedUpdate()
     {
         Updatee();
-    
+        //debug.Log(team + ": " + transform.position.x);
         if (actionUpdate == null) return;
         actionUpdate();
         //ReplayData.AddPositionDragon(transform.parent.name,transform.position);
@@ -767,12 +767,10 @@ public abstract class DragonPVEController : MonoBehaviour
             DauTruongOnline.ins.AddUpdateData(newjson);
             return;
         }
-
-        string id = idrong;
       //  string team = transform.parent.transform.parent.name;
         if (team == Team.TeamXanh)
         {
-            GiaoDienPVP.ins.RongChet(transform.parent.name);
+            GiaoDienPVP.ins.RongChet(idrong);
            
             //   if(VienChinh.vienchinh.muctieuxanh.name == id) VienChinh.vienchinh.SetMucTieuTeamDo();//
 
