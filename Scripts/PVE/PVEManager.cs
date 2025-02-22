@@ -318,7 +318,7 @@ public class PVEManager : MonoBehaviour
             if (parent.position.x < targetPosition.x - tamdanhxa)
             {
                 parent.position += Vector3.right * speed;
-                if(!dragonPVEController.DanganimAttack)
+                if (!dragonPVEController.DanganimAttack)
                 {
                     dragonPVEController.AnimatorRun();
                     if (parent.position.x > VienChinh.vienchinh.muctieudo.transform.position.x)
