@@ -432,8 +432,7 @@ public class CrGame : MonoBehaviour
         {
             if (json["status"].AsString == "0")
             {
-                // AllMenu.ins.OpenMenuTrenCung("MenuEvent7VienNgocRong2023");
-                //    GameObject gdevent = AllMenu.ins.GetCreateMenu("MenuEvent7VienNgocRong2023",AllMenu.ins.gameObject,false);
+
                 if (Friend.ins.QuaNha)
                 {
                     Friend.ins.GoHome();
@@ -443,23 +442,50 @@ public class CrGame : MonoBehaviour
                     gdevent.SetActive(true);
                     gdevent.GetComponent<MenuEventTet2024>().ParseData(json);
                     DonDepDao();
-
+                 
                     menulogin.SetActive(false);
+            }
+            else
+            {
+                OnThongBaoNhanh(json["message"].AsString);
+                menulogin.SetActive(false);
+            }
+        }
 
-                //DownLoadAssetBundle.ins.DownLoadMenu("event2", DownOk);
+    }
 
-                //void DownOk()
-                //{
-                //    GameObject gdevent = Instantiate(DownLoadAssetBundle.MenuBundle["event2"],trencung.position,Quaternion.identity);
-                //    gdevent.transform.SetParent(AllMenu.ins.transform,false);
+    public void OpenMenuEventTraoHongDoatLong()
+    {
+        //  OnThongBaoNhanh("Sắp ra mắt!");
+        //  return;
+        menulogin.SetActive(true);
+        StartCoroutine(delay());
+        IEnumerator delay()
+        {
+            yield return new WaitForSeconds(0.1f);
 
-                //    gdevent.SetActive(true);
-                //    gdevent.GetComponent<MenuEventHalloween2024>().ParseData(json);
-                //    DonDepDao();
+            JSONClass datasend = new JSONClass();
+            datasend["class"] = "EventTraoHongDoatLong";
+            datasend["method"] = "GetData";
+            NetworkManager.ins.SendServer(datasend, GetEventok);
+        }
 
-                //    menulogin.SetActive(false);
-                //}
+        void GetEventok(JSONNode json)
+        {
+            if (json["status"].AsString == "0")
+            {
 
+                if (Friend.ins.QuaNha)
+                {
+                    Friend.ins.GoHome();
+                }
+              //  GameObject gdevent = AllMenu.ins.GetCreateMenu("MenuEventTet2024", AllMenu.ins.gameObject);//AllMenu.ins.transform.GetChild(AllMenu.ins.transform.childCount - 1).gameObject;
+                GameObject gdevent = AllMenu.ins.transform.Find("MenuEventTraoHongDoatLong").gameObject;
+                gdevent.SetActive(true);
+                gdevent.GetComponent<MenuEventTraoHongDoatLong>().ParseData(json);
+                DonDepDao();
+
+                menulogin.SetActive(false);
             }
             else
             {

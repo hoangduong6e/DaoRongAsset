@@ -431,35 +431,6 @@ public class MenuEventValentine2024 : EventManager
             }
         }
     }
-    public void OpenMenuNhiemvu()
-    {
-        JSONClass datasend = new JSONClass();
-        datasend["class"] = nameEvent;
-        datasend["method"] = "GetNhiemVu";
-        NetworkManager.ins.SendServer(datasend, Ok);
-        void Ok(JSONNode json)
-        {
-            if (json["status"].AsString == "0")
-            {
-                GameObject MenuNhiemVu = GetCreateMenu("MenuNhiemVu", CrGame.ins.trencung);
-                GameObject AllNhiemVu = MenuNhiemVu.transform.GetChild(1).transform.GetChild(0).transform.GetChild(0).gameObject;
-                for (int i = 0; i < json["allNhiemvu"].Count; i++)
-                {
-                    Text txttiendo = AllNhiemVu.transform.GetChild(i).transform.GetChild(1).GetComponent<Text>();
-                    Text txtphanthuong = AllNhiemVu.transform.GetChild(i).transform.GetChild(2).GetComponent<Text>();
-                    if (int.Parse(json["allNhiemvu"][i]["dalam"].Value) >= int.Parse(json["allNhiemvu"][i]["maxnhiemvu"].Value))
-                    {
-                        txttiendo.text = "<color=#00ff00ff>" + json["allNhiemvu"][i]["dalam"].Value + "/" + json["allNhiemvu"][i]["maxnhiemvu"].Value + "</color>";
-                    }
-                    else
-                    {
-                        txttiendo.text = "<color=#ff0000ff>" + json["allNhiemvu"][i]["dalam"].Value + "/" + json["allNhiemvu"][i]["maxnhiemvu"].Value + "</color>";
-                    }
-                    txtphanthuong.text = json["allNhiemvu"][i]["qua"]["soluong"].AsString;
-                }
-            }
-        }
-    }
 
 
     public void VeNha()
