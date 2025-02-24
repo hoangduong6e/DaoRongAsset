@@ -74,11 +74,11 @@ public abstract class DragonIslandController : MonoBehaviour
             if (dra != null)
             {
                 DragonPVEController controller = Inventory.LoadObjectResource("GameData/SkillDra/Skill"+GetComponent<DraInstantiate>().nameSkill).GetComponent<DragonPVEController>();
-                debug.Log("maxstate attack la: " + GetComponent<DraInstantiate>().nameSkill + ": " + controller.maxStateAttack);
+               // debug.Log("maxstate attack la: " + GetComponent<DraInstantiate>().nameSkill + ": " + controller.maxStateAttack);
                 dra.actionUpdateAttack = null;
                 dra.actionUpdateAttack += () =>
                 {
-                    debug.Log("update animattack");
+                 //   debug.Log("update animattack");
                     stateAnimAttack += 1;
                     if(stateAnimAttack == controller.maxStateAttack)
                     {
@@ -384,7 +384,7 @@ public abstract class DragonIslandController : MonoBehaviour
             {
                 Invoke("SutBong", 0.3f);
                 anim.Play("Attack");
-                Debug.Log("Đã chạy đến quả bóng");
+                //Debug.Log("Đã chạy đến quả bóng");
             }
         }    
         if (boi)

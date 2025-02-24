@@ -102,22 +102,22 @@ public class QuaBong : MonoBehaviour
         Status[] arrRandom = new Status[] { };
         if (transform.position.y <= -1.3f && transform.position.x <= 0)// nếu đang ở dưới góc bên trái
         {
-            debug.Log("góc dưới trái");
+            //debug.Log("góc dưới trái");
             arrRandom = new Status[] {Status.Up,Status.UpRight};
         }
         else if (transform.position.y <= -1.3f && transform.position.x > 0)// nếu đang ở dưới góc bên phải
         {
-            debug.Log("góc dưới phải");
+            //debug.Log("góc dưới phải");
             arrRandom = new Status[] { Status.Up, Status.UpLeft};
         }
         else if (transform.position.y > 1.3f && transform.position.x <= 0)// nếu đang ở trên góc bên trái
         {
-            debug.Log("góc trên trái");
+           // debug.Log("góc trên trái");
             arrRandom = new Status[] { Status.Down, Status.DownRight };
         }
         else if (transform.position.y > 1.3f && transform.position.x > 0)// nếu đang ở trên góc bên phải
         {
-            debug.Log("góc trên phải");
+          //  debug.Log("góc trên phải");
             arrRandom = new Status[] { Status.Down, Status.DownLeft };
         }
         else if(transform.position.x < -1) // nếu đang ở bên trái
@@ -138,7 +138,7 @@ public class QuaBong : MonoBehaviour
         }
         else
         {
-            debug.Log("gocs");
+            //debug.Log("gocs");
             arrRandom = allStatus;
         }    
       // debug.Log("length: " + arrRandom.Length);
