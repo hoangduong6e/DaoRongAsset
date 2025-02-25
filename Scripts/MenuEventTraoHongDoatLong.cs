@@ -70,6 +70,8 @@ public class MenuEventTraoHongDoatLong : EventManager
         SetTxtHoaHong(data["HoaHong"].AsString);
         SetTxtHoaNguSac(data["HoaNguSac"].AsString);
         SetLuotHaiNguSacFree(data["luotHaiNguSacFree"].AsString);
+        btnHopQua = CrGame.ins.giaodien.transform.Find("btnQuaOnline").gameObject;
+        btnHopQua.transform.SetParent(CrGame.ins.trencung.transform);
         gameObject.SetActive(true);
     }
     private void SetLuotHaiNguSacFree(string luot)
@@ -227,6 +229,45 @@ public class MenuEventTraoHongDoatLong : EventManager
                     SetTxtHoaNguSac(json["HoaNguSac"].AsString,true);
                     parent.gameObject.SetActive(false);
                     SetLuotHaiNguSacFree(json["luotHaiNguSacFree"].AsString);
+
+                    if(json["reset"].AsBool)
+                    {
+                        //   Vector3 vecbandau = instan.transform.position;
+                        //instan.transform.position = new Vector3(vecbandau.x, vecbandau.y + 2);
+                        //instan.transform.LeanMove(vecbandau, 0.3f);
+                        StartCoroutine(delay());
+                        IEnumerator delay()
+                        {
+                              JSONNode allHoaNguSacReset = json["allHoaNguSacReset"];
+                        for(int i = 0; i < 15;i++)
+                        {
+                             //
+                              Transform HoaNguSac = allHoaNguSac.transform.GetChild(i);
+                              Vector3 vecbandau = HoaNguSac.transform.position;
+                               HoaNguSac.transform.position = new Vector3(vecbandau.x, vecbandau.y + 2);
+                              HoaNguSac.gameObject.SetActive(true);
+                             
+                              Animator animNguSac = HoaNguSac.transform.GetChild(0).transform.GetChild(0).GetComponent<Animator>();
+           
+         
+                              HoaNguSac.name = allHoaNguSacReset[i]["hoa"].AsString;
+
+     
+           
+                              if(allHoaNguSacReset[i]["hoa"].AsString == "1")
+                              {
+                                 animNguSac.runtimeAnimatorController = hoaNguSac1;
+                              }
+                              else animNguSac.runtimeAnimatorController = hoaNguSac2;
+                                HoaNguSac.transform.LeanMove(vecbandau, 0.3f);
+
+                            yield return new WaitForSeconds(0.11f);
+                        }
+                        }
+                      
+                        
+                        debug.Log("Reset Hoa Ngũ Sắc");
+                    }
                 }
                 else if(json["status"].AsString == "2")
                 {
@@ -364,5 +405,12 @@ public class MenuEventTraoHongDoatLong : EventManager
             default: return "";
         }
     }
+    public void OpenMenuDoiHoa()
+    {
 
+    }
+    public void OpenMenuThueSoc()
+    {
+
+    }
 }
