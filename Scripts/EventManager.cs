@@ -261,7 +261,7 @@ public abstract class EventManager : MonoBehaviour
         return mn;
     }
 
-    public static GameObject OpenMenuNhanDuocItem(string namequa, string hienthi, LoaiItem itemgi)
+    public static GameObject OpenMenuNhanDuocItem(string namequa, string hienthi, LoaiItem itemgi,Action clickClose = null)
     {
         GameObject mn = Instantiate(Inventory.LoadObjectResource("GameData/Event/PanelHienQua"), CrGame.ins.trencung.position, Quaternion.identity);
         mn.transform.SetParent(CrGame.ins.trencung.transform, false);
@@ -280,7 +280,7 @@ public abstract class EventManager : MonoBehaviour
         txt.text = hienthi;
         StartDelay2(() => {
             Button btn = mn.GetComponent<Button>();
-            btn.onClick.AddListener(delegate { Destroy(mn); });
+            btn.onClick.AddListener(delegate { Destroy(mn); clickClose?.Invoke(); });
         }, 0.5f);
         return mn;
     }

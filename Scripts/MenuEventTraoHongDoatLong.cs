@@ -1,4 +1,5 @@
 using SimpleJSON;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,6 +38,7 @@ public class MenuEventTraoHongDoatLong : EventManager
     private  byte indexHoaHongChon = 0;
     public Transform KhungHoa;
     public GameObject txtAnim;
+    public Transform[] BongBong;
     public void ParseData(JSONNode json)
     {
         JSONNode data = json["data"];
@@ -67,37 +69,120 @@ public class MenuEventTraoHongDoatLong : EventManager
         nextDecreaseTime = Time.time + 1f; // Đặt thời gian đầu tiên để trừ
         isTruGiay = true;
         KhungHoa.transform.Find("txtTimeEvent").GetComponent<Text>().text = json["txtTimeEvent"].AsString;
-        SetTxtHoaHong(data["HoaHong"].AsString);
+        SetTxtHoaHong(json["TongHoaHong"].AsString);
         SetTxtHoaNguSac(data["HoaNguSac"].AsString);
         SetLuotHaiNguSacFree(data["luotHaiNguSacFree"].AsString);
         btnHopQua = CrGame.ins.giaodien.transform.Find("btnQuaOnline").gameObject;
         btnHopQua.transform.SetParent(CrGame.ins.trencung.transform);
+        SetQuaAi(json["QuaAi"],json["YeuCauNguSac"].AsInt,data["HoaNguSac"].AsInt,data["phantramGiaiPhongAn"].AsString);
         gameObject.SetActive(true);
     }
+    private void SetQuaAi(JSONNode dataAi,int YeuCauNguSac,int HoaNguSacHienTai,string phantramphongan)
+    {
+        Text txtHoaGiai = transform.Find("txtHoaGiai").GetComponent<Text>();
+        txtHoaGiai.text = "Đã hóa giải được <color=lime>"+phantramphongan+"%</color> phong ấn.\n Rồng Nụ Tầm Xuân";
+        for(int i = 0; i < 2;i++)
+        {
+            Image imgItem = BongBong[i].transform.GetChild(0).transform.GetChild(0).GetComponent<Image>();
+            Text txtSoLuong = BongBong[i].transform.GetChild(0).transform.GetChild(1).GetComponent<Text>();
+            Text txtyeucau = BongBong[i].transform.Find("txtyeucau").GetComponent<Text>();
+            LoaiItem loai = (LoaiItem)Enum.Parse(typeof(LoaiItem), dataAi[i]["loai"].AsString, true);
+            imgItem.sprite = GetSpriteAll(dataAi[i]["name"].AsString,loai);
+            imgItem.SetNativeSize();
+            imgItem.Resize(150);
+            if(loai == LoaiItem.rong)
+            {
+                txtSoLuong.text = dataAi[i]["sao"].AsString + " sao";
+            }
+            else txtSoLuong.text = dataAi[i]["soluong"].AsString;
+            imgItem.name = dataAi[i]["name"].AsString;
+            //Transform txt = KhungHoa.transform.Find("txtHoaNguSac");
+
+            txtyeucau.text = HoaNguSacHienTai >= YeuCauNguSac ? "<color=lime>"+HoaNguSacHienTai+"/"+YeuCauNguSac+"</color>":"<color=red>"+HoaNguSacHienTai+"/"+YeuCauNguSac+"</color>";
+        }
+    }
+    private bool xacNhanChonQua = false;
+    
+    public void ChonQuaAi(int qua)
+    {
+        GameObject btnChon = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+        Send();
+        void Send()
+        {
+            JSONClass datasend = new JSONClass();
+        datasend["class"] = "EventTraoHongDoatLong";
+        datasend["method"] = "ChonItem";
+        datasend["data"]["qua"] = qua.ToString();
+        datasend["data"]["xacnhan"] = xacNhanChonQua.ToString();
+
+        //datasend["data"]["dao"] = CrGame.ins.DangODao.ToString();
+        NetworkManager.ins.SendServer(datasend, Ok);
+        void Ok(JSONNode json)
+        {
+            if (json["status"].AsString == "0")
+            {
+                xacNhanChonQua = false;
+                LoaiItem loai = (LoaiItem)Enum.Parse(typeof(LoaiItem), json["QuaChon"]["loai"].AsString, true);
+                string hienthi = loai == LoaiItem.rong?json["QuaChon"]["loai"].AsString + " sao":"x"+GamIns.FormatCash(json["QuaChon"]["soluong"].AsInt);
+                for(int i = 0; i < 2;i++)
+                {
+                   BongBong[i].transform.LeanScale(Vector3.zero,0.4f);
+                }
+
+                OpenMenuNhanDuocItem(json["QuaChon"]["name"].AsString,hienthi,loai,()=>{
+                     SetQuaAi(json["QuaAi"],json["YeuCauNguSac"].AsInt,json["HoaNguSac"].AsInt,json["phantramGiaiPhongAn"].AsString);
+                      for(int i = 0; i < 2;i++)
+                      {
+                          BongBong[i].transform.LeanScale(Vector3.one,0.4f);
+                      }
+                    });
+                SetTxtHoaNguSac(json["HoaNguSac"].AsString);
+               
+            }
+             else if(json["status"].AsString == "2")
+             {
+                   EventManager.OpenThongBaoChon(json["message"].AsString,()=>{xacNhanChonQua = true; Send();});
+             }
+               else if(json["status"].AsString == "3")
+             {
+                   EventManager.OpenThongBaoChon(json["message"].AsString,()=>{});
+             }
+            else
+            {
+                     xacNhanChonQua = false;
+                CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+            }
+
+        }
+        }
+        
+    }
+
     private void SetLuotHaiNguSacFree(string luot)
     {
         transform.Find("txtFree").GetComponent<Text>().text = "Bạn có <color=lime>"+luot+" lượt</color> hái hoa ngũ sắc <color=lime>miễn phí</color>";
     }
-    private void InsTxtAnim(Transform tf)
+    private void InsTxtAnim(Transform tf,string soluong = "+1")
     {
         GameObject txtAnimClone = Instantiate(txtAnim,transform.position,Quaternion.identity);
         txtAnimClone.transform.SetParent(transform,false);
         txtAnimClone.transform.position = new Vector3(tf.transform.position.x + 1,tf.transform.position.y,tf.transform.position.z);
+        txtAnimClone.transform.GetChild(0).GetComponent<Text>().text = soluong;
         txtAnimClone.SetActive(true);
         Destroy(txtAnimClone,3f);
     }
 
-    private void SetTxtHoaHong(string sl, bool txtanim = false)
+    private void SetTxtHoaHong(string sl, bool txtanim = false,string slcong = "+1")
     {
         Transform txt = KhungHoa.transform.Find("txtHoaHongThuong");
           txt.GetComponent<Text>().text = "<color=orange>Hoa hồng thường</color>: <color=yellow>"+sl+"</color> bông";
-        if(txtanim) InsTxtAnim(KhungHoa.transform.Find("HoaHongThuong"));
+        if(txtanim) InsTxtAnim(KhungHoa.transform.Find("HoaHongThuong"),slcong);
     }
-    private void SetTxtHoaNguSac(string sl, bool txtanim = false)
+    private void SetTxtHoaNguSac(string sl, bool txtanim = false,string slcong = "+1")
     {
          Transform txt = KhungHoa.transform.Find("txtHoaNguSac");
           txt.GetComponent<Text>().text = "<color=orange>Hoa Ngũ Sắc</color>: <color=yellow>"+sl+"</color> bông";
-        if(txtanim) InsTxtAnim(KhungHoa.transform.Find("HoaNguSac"));
+        if(txtanim) InsTxtAnim(KhungHoa.transform.Find("HoaNguSac"),slcong);
     }
     private void SetHoaHongNo(int i)
     {
@@ -407,7 +492,63 @@ public class MenuEventTraoHongDoatLong : EventManager
     }
     public void OpenMenuDoiHoa()
     {
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "EventTraoHongDoatLong";
+        datasend["method"] = "GetMenuDoiHoa";
+        //datasend["data"]["dao"] = CrGame.ins.DangODao.ToString();
+        NetworkManager.ins.SendServer(datasend, Ok);
+        void Ok(JSONNode json)
+        {
+            if (json["status"].AsString == "0")
+            {
+                GameObject menuDoiHoa = transform.Find("MenuDoiHoa").gameObject;
 
+               Transform PanelHoa = menuDoiHoa.transform.Find("Panel");
+
+                Text txtTongHoa = menuDoiHoa.transform.GetChild(3).GetComponent<Text>();
+                txtTongHoa.text = "Để đổi <color=lime>1 Hoa Ngũ Sắc</color> bạn cần <color=yellow>100 Hoa Hồng Thường</color>. Hiện bạn đang có <color=yellow>"+json["TongHoa"].AsString+" Hoa Hồng Thường</color>";
+                for(int i = 0;i < json["allSoluongHoa"].Count;i++)
+                {
+                    PanelHoa.transform.GetChild(i).transform.GetChild(1).GetComponent<Text>().text = json["allSoluongHoa"][i].AsString;
+                }
+                menuDoiHoa.transform.GetChild(0).transform.Find("txtSoLuong").GetComponent<Text>().text = json["tongHoaDoi"].AsString;
+                menuDoiHoa.SetActive(true);
+            }
+            else CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+
+        }
+    }
+    bool xacNhanDoiNguSac = false;
+    public void DoiHoaNguSac()
+    {
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "EventTraoHongDoatLong";
+        datasend["method"] = "DoiHoaNguSac";
+        datasend["data"]["xacNhanDoiNguSac"] = xacNhanDoiNguSac.ToString();
+        NetworkManager.ins.SendServer(datasend, Ok);
+        void Ok(JSONNode json)
+        {
+            if (json["status"].AsString == "0")
+            {
+                GameObject menuDoiHoa = transform.Find("MenuDoiHoa").gameObject;
+                GameObject imgHoaNguSac = menuDoiHoa.transform.GetChild(0).transform.Find("imgHoa").gameObject;
+                GameObject imgClone = Instantiate(imgHoaNguSac,transform.position,Quaternion.identity);
+                imgClone.transform.SetParent(transform,false);
+                imgClone.transform.position = imgHoaNguSac.transform.position;
+              QuaBay quabay = imgClone.AddComponent<QuaBay>();
+                 Transform tfHoaHong = transform.Find("KhungHoa").transform.Find("HoaNguSac");
+                    quabay.vitribay = tfHoaHong.gameObject;
+                menuDoiHoa.SetActive(false);
+                SetTxtHoaNguSac(json["HoaNguSac"].AsString,true,"+"+json["tongHoaDoi"].AsString);
+                xacNhanDoiNguSac = false;
+            }
+              else if(json["status"].AsString == "2")
+              {
+                   EventManager.OpenThongBaoChon(json["message"].AsString,()=>{xacNhanDoiNguSac = true; DoiHoaNguSac();});
+             }
+            else CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+
+        }
     }
     public void OpenMenuThueSoc()
     {
