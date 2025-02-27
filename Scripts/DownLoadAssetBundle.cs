@@ -15,10 +15,10 @@ public class DownLoadAssetBundle : MonoBehaviour
     // Start is called before the first frame update
     public static string link = "";
 #if UNITY_ANDROID
-    public static string linkdown = "/DaoRongData3/Android/";
+    public static string linkdown = "/DaoRongData4/Android/";
 #endif
 #if UNITY_IOS
-  public static string linkdown = "/DaoRongData3/IOS/";
+  public static string linkdown = "/DaoRongData4/IOS/";
 #endif
 
     public static DownLoadAssetBundle ins;
