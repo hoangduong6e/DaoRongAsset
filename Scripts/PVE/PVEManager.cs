@@ -74,7 +74,7 @@ public class PVEManager : MonoBehaviour
                         "Idlle", new Dictionary<DraHeight, Func<Vector3>>
                         {
                             { DraHeight.DEFAULT, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-2.3f,-1f), VienChinh.vienchinh.TruXanh.transform.position.z) },
-                         
+                            { DraHeight.NuTamXuan, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0f,0.5f), VienChinh.vienchinh.TruXanh.transform.position.z) },
                         }
                     },
                     {
@@ -99,6 +99,7 @@ public class PVEManager : MonoBehaviour
                         "Idlle", new Dictionary<DraHeight, Func<Vector3>>
                         {
                             { DraHeight.DEFAULT, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-2.3f,-1), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.NuTamXuan, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0f,0.5f), VienChinh.vienchinh.TruXanh.transform.position.z) },
 
                         }
                     },

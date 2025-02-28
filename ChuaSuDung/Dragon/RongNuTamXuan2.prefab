@@ -689,6 +689,7 @@ GameObject:
   - component: {fileID: 2619640975266334402}
   - component: {fileID: 2619640975266334403}
   - component: {fileID: 2619640975266334428}
+  - component: {fileID: 2619640973882911125}
   m_Layer: 0
   m_Name: RongNuTamXuan2
   m_TagString: Untagged
@@ -804,9 +805,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44c6761944f7cc84180f3472b0cfd60a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nameSkill: 
-  Idlle: 
-  draheight: 0
+  nameSkill: RongNuTamXuan
+  Idlle: Idlle
+  draheight: 7
+--- !u!114 &2619640973882911125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2619640975266334429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8dd7c899029994a439fe22f1467ccbcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bongrong: {fileID: 0}
+  chamdo: {fileID: 0}
 --- !u!1 &2733630634592756052
 GameObject:
   m_ObjectHideFlags: 0

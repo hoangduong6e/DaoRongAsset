@@ -267,6 +267,7 @@ public enum DraHeight// chiều cao của trục y của rồng trong trận đ�
     RongLua,
     PH,
     _2DAU,
-    MaThach
+    MaThach,
+    NuTamXuan
 }
 

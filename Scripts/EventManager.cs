@@ -276,6 +276,10 @@ public abstract class EventManager : MonoBehaviour
         {
             imgqua.sprite = Inventory.LoadSprite(namequa);
         }
+        else if (itemgi == LoaiItem.itemevent)
+        {
+            imgqua.sprite = EventManager.ins.GetSprite(namequa);
+        }
         imgqua.SetNativeSize();
         txt.text = hienthi;
         StartDelay2(() => {

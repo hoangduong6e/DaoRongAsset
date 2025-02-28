@@ -75,6 +75,11 @@ public class MenuEventTraoHongDoatLong : EventManager
         btnHopQua = CrGame.ins.giaodien.transform.Find("btnQuaOnline").gameObject;
         btnHopQua.transform.SetParent(CrGame.ins.trencung.transform);
         SetQuaAi(json["QuaAi"],json["YeuCauNguSac"].AsInt,data["HoaNguSac"].AsInt,data["phantramGiaiPhongAn"].AsString);
+
+        Transform vitriRong = transform.Find("vitriRong");
+        GameObject rong = AllMenu.ins.GetRongGiaoDien("RongNuTamXuan1", vitriRong, 1);
+        Vector3 scale = rong.transform.localScale;
+        rong.transform.localScale = new Vector3(scale.x * 1.2f, scale.y * 1.2f, scale.z);
         gameObject.SetActive(true);
     }
     private void SetQuaAi(JSONNode dataAi,int YeuCauNguSac,int HoaNguSacHienTai,string phantramphongan)
@@ -135,7 +140,11 @@ public class MenuEventTraoHongDoatLong : EventManager
                       {
                           BongBong[i].transform.LeanScale(Vector3.one,0.4f);
                       }
-                    });
+                    if (json["nhanRong"].AsBool)
+                    {
+                        OpenMenuNhanDuocItem(json["RongNhan"]["name"].AsString, json["RongNhan"]["sao"].AsString + " sao", LoaiItem.rong);
+                    }
+                });
                 SetTxtHoaNguSac(json["HoaNguSac"].AsString);
                
             }
@@ -279,11 +288,11 @@ public class MenuEventTraoHongDoatLong : EventManager
             datasend["data"]["loai"] = loaihoa;
         return datasend;
     }
-    private void quaBay(Transform parent,string loaihoa = "HoaHongThuong")
+    private void quaBay(Transform parent,Transform g,string loaihoa = "HoaHongThuong")
     {
                     GameObject hoaClone = Instantiate(parent.gameObject,transform.position,Quaternion.identity);
                     hoaClone.transform.SetParent(transform,false);
-                    hoaClone.transform.position = parent.transform.position;
+                    hoaClone.transform.position = g.transform.position;
                     Transform tfHoaHong = transform.Find("KhungHoa").transform.Find(loaihoa);
                     QuaBay quabay = hoaClone.AddComponent<QuaBay>();
                     quabay.vitribay = tfHoaHong.gameObject;
@@ -310,7 +319,7 @@ public class MenuEventTraoHongDoatLong : EventManager
                 if (json["status"].AsString == "0")
                 {
                     xacnhanHaiNguSac = false;
-                    quaBay(parent,"HoaNguSac");
+                    quaBay(parent,g.transform,"HoaNguSac");
                     SetTxtHoaNguSac(json["HoaNguSac"].AsString,true);
                     parent.gameObject.SetActive(false);
                     SetLuotHaiNguSacFree(json["luotHaiNguSacFree"].AsString);
@@ -386,7 +395,7 @@ public class MenuEventTraoHongDoatLong : EventManager
             {
                 if (json["status"].AsString == "0")
                 {
-                     quaBay(parent);
+                     quaBay(parent,g.transform);
                      SetTxtHoaHong(json["HoaHong"].AsString,true);
                      TimeHoaHongConLai[index] = json["TimeYeuCau"].AsFloat;
                      MaxTimeHoaHong[index] = TimeHoaHongConLai[index];
