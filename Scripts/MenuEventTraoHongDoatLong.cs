@@ -37,13 +37,18 @@ public class MenuEventTraoHongDoatLong : EventManager
 
     private  byte indexHoaHongChon = 0;
     public Transform KhungHoa;
-    public GameObject txtAnim;
+    public GameObject txtAnim, menuXacNhanSoc;
     public Transform[] BongBong;
+    private bool socNongDan = false;
+    private int socNongDanThuThap, gioiHanSocNongDan;
     public void ParseData(JSONNode json)
     {
         JSONNode data = json["data"];
         JSONNode datHoaHong = data["allHoaHong"];
         JSONNode dataHoaNguSac = data["allHoaNguSac"];
+         socNongDan = data["socNongDan"].AsBool;
+        socNongDanThuThap = data["socThuThap"].AsInt;
+        gioiHanSocNongDan = json["GioiHanSocThuThap"].AsInt;
         for(int i = 0; i < 15;i++)
         {
             TimeHoaHongConLai[i] = json["TimeHoaHongConLai"][i].AsFloat;
@@ -80,6 +85,7 @@ public class MenuEventTraoHongDoatLong : EventManager
         GameObject rong = AllMenu.ins.GetRongGiaoDien("RongNuTamXuan1", vitriRong, 1);
         Vector3 scale = rong.transform.localScale;
         rong.transform.localScale = new Vector3(scale.x * 1.2f, scale.y * 1.2f, scale.z);
+       
         gameObject.SetActive(true);
     }
     private void SetQuaAi(JSONNode dataAi,int YeuCauNguSac,int HoaNguSacHienTai,string phantramphongan)
@@ -193,6 +199,7 @@ public class MenuEventTraoHongDoatLong : EventManager
           txt.GetComponent<Text>().text = "<color=orange>Hoa Ngũ Sắc</color>: <color=yellow>"+sl+"</color> bông";
         if(txtanim) InsTxtAnim(KhungHoa.transform.Find("HoaNguSac"),slcong);
     }
+    bool SendSocThuHoach = false;
     private void SetHoaHongNo(int i)
     {
             if(TimeHoaHongConLai[i] <= 0 && statusHoaHong[i] != 2)
@@ -200,6 +207,13 @@ public class MenuEventTraoHongDoatLong : EventManager
                 statusHoaHong[i] = 2;//đã nở
                
                 SetSpriteHoaHong(i,"hoa");
+                SocThuHoach();
+
+             //if(socNongDan && socNongDanThuThap < gioiHanSocNongDan)
+             //{
+             //      Transform HoaHong = allHoaHong.transform.GetChild(i);
+             //      ThuHoachHoaHong(i,HoaHong.transform.GetChild(0).transform.GetChild(0).gameObject,HoaHong);
+             // }
             }
             else if(TimeHoaHongConLai[i] <= MaxTimeHoaHong[i] / 2 && statusHoaHong[i] != 1)
             {
@@ -232,6 +246,7 @@ public class MenuEventTraoHongDoatLong : EventManager
                      {
                         TimeHoaHongConLai[i] -= 1f;
                         SetHoaHongNo(i);
+                       
                      }
                 }
                 nextDecreaseTime += 1f; // Đặt mốc thời gian tiếp theo
@@ -240,6 +255,10 @@ public class MenuEventTraoHongDoatLong : EventManager
           
              txtTimeHoaHong.text = TimeHoaHongConLai[indexHoaHongChon] + " giây";
         }
+        //if(Input.GetKeyUp(KeyCode.Z))
+        //{
+        //    SocThuHoach();
+        //}
     }
     protected override void ABSAwake()
     {
@@ -388,7 +407,11 @@ public class MenuEventTraoHongDoatLong : EventManager
             CrGame.ins.OnThongBaoNhanh("Chưa được thu hoạch!");
             return;
           }
-          indexHoaHongChon = (byte)index;
+          ThuHoachHoaHong(index,g,parent);
+    }
+    private void ThuHoachHoaHong(int index,GameObject g, Transform parent)
+    {
+        indexHoaHongChon = (byte)index;
          // string namesprite = g.GetComponent<Image>().sprite.name;  
             NetworkManager.ins.SendServer(DataSendThuHoach(index,"HoaHong"), Ok);
             void Ok(JSONNode json)
@@ -407,7 +430,48 @@ public class MenuEventTraoHongDoatLong : EventManager
                 else CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
 
             }
-
+    }
+    private void SocThuHoach()
+    {
+        debug.Log("soc thu hoachh");
+       if(SendSocThuHoach || socNongDanThuThap >= gioiHanSocNongDan) return;
+        SendSocThuHoach = true;
+         JSONClass datasend = new JSONClass();
+            datasend["class"] = "EventTraoHongDoatLong";
+            datasend["method"] = "SocThuHoach";
+         // string namesprite = g.GetComponent<Image>().sprite.name;  
+            NetworkManager.ins.SendServer(datasend, Ok);
+            void Ok(JSONNode json)
+            {
+                if (json["status"].AsString == "0")
+                {
+                     JSONNode allHoaThuHoach = json["allHoaThuHoach"];
+                     JSONNode allTimeYeuCau = json["allTimeYeuCau"];
+                     JSONNode allHoaNew = json["allHoaNew"];
+                   //  quaBay(parent,g.transform);
+                     SetTxtHoaHong(json["HoaHong"].AsString,true);
+                    // TimeHoaHongConLai[index] = json["TimeYeuCau"].AsFloat;
+                    // MaxTimeHoaHong[index] = TimeHoaHongConLai[index];
+                    // parent.name = json["hoaNew"]["hoa"].AsString;
+             
+                     for(int i = 0; i < allHoaThuHoach.Count;i++)
+                     {
+                        int index = allHoaThuHoach[i].AsInt;
+                        Transform parent = allHoaHong.transform.GetChild(allHoaThuHoach[i].AsInt);
+                         GameObject g = parent.transform.GetChild(0).transform.GetChild(0).gameObject;
+                         quaBay(parent,g.transform);
+                    TimeHoaHongConLai[index] = allTimeYeuCau[i].AsFloat;
+                    MaxTimeHoaHong[index] = allTimeYeuCau[i].AsFloat;
+                    parent.name = allHoaNew[i]["hoa"].AsString;
+                     Image img = g.GetComponent<Image>();
+                     img.sprite = GetSprite("mamhoa");
+                     img.SetNativeSize();
+                    //ThuHoachHoaHong(i,HoaHong.transform.GetChild(0).transform.GetChild(0).gameObject,HoaHong);
+                }
+                }
+                else CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+                SendSocThuHoach = false;
+            }
     }
     private void SetTransformPanelInfoHoa(Transform tf)
     {
@@ -561,6 +625,46 @@ public class MenuEventTraoHongDoatLong : EventManager
     }
     public void OpenMenuThueSoc()
     {
-
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "EventTraoHongDoatLong";
+        datasend["method"] = "GetGiaThueSoc";
+        NetworkManager.ins.SendServer(datasend, Ok);
+        void Ok(JSONNode json)
+        {
+            if (json["status"].AsString == "0")
+            {
+                menuXacNhanSoc.transform.SetParent(CrGame.ins.trencung.transform,false);
+                Text txt = menuXacNhanSoc.transform.Find("txt").GetComponent<Text>();
+                Text txtVang = menuXacNhanSoc.transform.Find("txtVang").GetComponent<Text>();
+                Text txtKimCuong = menuXacNhanSoc.transform.Find("txtKimCuong").GetComponent<Text>();
+                txt.text = json["txt"].AsString;
+                txtVang.text =  json["giaVang"].AsString;
+                txtKimCuong.text =  json["giaKimCuong"].AsString;
+                menuXacNhanSoc.SetActive(true);
+            }
+            else if(json["status"].AsString == "2")
+            {
+                EventManager.OpenThongBaoChon(json["message"].AsString,()=>{ ThueSoc("KimCuong");});
+            }
+            else CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+        }
+    }
+    public void ThueSoc(string s)
+    {
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "EventTraoHongDoatLong";
+        datasend["method"] = "ThueSoc";
+        datasend["data"]["loai"] = s;
+        NetworkManager.ins.SendServer(datasend, Ok);
+        void Ok(JSONNode json)
+        {
+            if (json["status"].AsString == "0")
+            {
+                CrGame.ins.OnThongBaoNhanh(json["strThongBaoOk"].AsString,3f);
+                 menuXacNhanSoc.SetActive(false);
+                socNongDan = true;
+            }
+            else CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+        }
     }
 }
