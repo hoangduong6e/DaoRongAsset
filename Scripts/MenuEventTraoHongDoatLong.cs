@@ -40,9 +40,24 @@ public class MenuEventTraoHongDoatLong : EventManager
     public Transform KhungHoa;
     public GameObject txtAnim, menuXacNhanSoc, menuNhanQuaSoc, allSoc, MenuDoiHoa;
     public Transform[] BongBong;
-    public bool socNongDan = false;
+    public bool socnongdan = false;
     private int socThuThap, gioiHanSocNongDan;
-
+    public bool socNongDan { get{return socnongdan; } set
+            {
+                socnongdan = value;
+                 if(socnongdan)
+                 {
+                     CheckSocAutoThuHoach();
+                 }
+                 else
+                 {
+                                 for (int i = 0; i < allSoc.transform.childCount; i++)
+                                   {
+                                allSoc.transform.GetChild(i).GetComponent<Animator>().Play("Sit");
+                                }
+                 }
+            }
+        }
     private int socNongDanThuThap
     {
         get { return socThuThap; }
@@ -54,10 +69,7 @@ public class MenuEventTraoHongDoatLong : EventManager
             {
                 allSoc.transform.GetChild(i).transform.GetChild(2).gameObject.SetActive(active);
             }
-            if(active)
-            {
-                CheckSocAutoThuHoach();
-            }
+           
         }
     }
     private void CheckSocAutoThuHoach()
@@ -482,7 +494,7 @@ public class MenuEventTraoHongDoatLong : EventManager
                 JSONNode allTimeYeuCau = json["allTimeYeuCau"];
                 JSONNode allHoaNew = json["allHoaNew"];
                 //  quaBay(parent,g.transform);
-                SetTxtHoaHong(json["HoaHong"].AsString, true);
+               // SetTxtHoaHong(json["HoaHong"].AsString);
                 // TimeHoaHongConLai[index] = json["TimeYeuCau"].AsFloat;
                 // MaxTimeHoaHong[index] = TimeHoaHongConLai[index];
                 // parent.name = json["hoaNew"]["hoa"]
@@ -682,7 +694,7 @@ public class MenuEventTraoHongDoatLong : EventManager
             if (json["status"].AsString == "0")
             {
                 MenuDoiHoa.transform.SetParent(CrGame.ins.trencung.transform);
-
+                MenuDoiHoa.transform.SetAsFirstSibling();
                 Transform PanelHoa = MenuDoiHoa.transform.Find("Panel");
 
                 Text txtTongHoa = MenuDoiHoa.transform.GetChild(3).GetComponent<Text>();
@@ -741,6 +753,7 @@ public class MenuEventTraoHongDoatLong : EventManager
             if (json["status"].AsString == "0")
             {
                 menuXacNhanSoc.transform.SetParent(CrGame.ins.trencung.transform, false);
+
                 Text txt = menuXacNhanSoc.transform.Find("txt").GetComponent<Text>();
                 Text txtVang = menuXacNhanSoc.transform.Find("txtVang").GetComponent<Text>();
                 Text txtKimCuong = menuXacNhanSoc.transform.Find("txtKimCuong").GetComponent<Text>();
@@ -769,8 +782,8 @@ public class MenuEventTraoHongDoatLong : EventManager
             {
                 CrGame.ins.OnThongBaoNhanh(json["strThongBaoOk"].AsString, 3f);
                 menuXacNhanSoc.SetActive(false);
-                socNongDan = true;
                 gioiHanSocNongDan = json["gioihanThuThap"].AsInt;
+                socNongDan = true;
             }
             else CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
         }
