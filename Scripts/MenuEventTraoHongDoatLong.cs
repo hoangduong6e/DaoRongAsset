@@ -37,10 +37,22 @@ public class MenuEventTraoHongDoatLong : EventManager
 
     private  byte indexHoaHongChon = 0;
     public Transform KhungHoa;
-    public GameObject txtAnim, menuXacNhanSoc;
+    public GameObject txtAnim, menuXacNhanSoc, menuNhanQuaSoc, allSoc;
     public Transform[] BongBong;
-    private bool socNongDan = false;
-    private int socNongDanThuThap, gioiHanSocNongDan;
+    public bool socNongDan = false;
+    private int socThuThap, gioiHanSocNongDan;
+
+    private int socNongDanThuThap {get{return socThuThap; }set
+            {
+            socThuThap = value;
+            bool active = socThuThap > 0;
+            for(int i = 0; i < allSoc.transform.childCount;i++)
+            {
+                 allSoc.transform.GetChild(i).transform.GetChild(2).gameObject.SetActive(active);
+            }
+            }
+        }
+
     public void ParseData(JSONNode json)
     {
         JSONNode data = json["data"];
@@ -433,8 +445,9 @@ public class MenuEventTraoHongDoatLong : EventManager
     }
     private void SocThuHoach()
     {
-        debug.Log("soc thu hoachh");
-       if(SendSocThuHoach || socNongDanThuThap >= gioiHanSocNongDan) return;
+        debug.Log("soc thu hoachh, SendSocThuHoach: " + SendSocThuHoach + ", socNongDanThuThap: " + socNongDanThuThap + ", gioiHanSocNongDan: " + gioiHanSocNongDan);
+        if(!socNongDan) return; 
+        if(SendSocThuHoach || socNongDanThuThap >= gioiHanSocNongDan) return;
         SendSocThuHoach = true;
          JSONClass datasend = new JSONClass();
             datasend["class"] = "EventTraoHongDoatLong";
@@ -467,7 +480,10 @@ public class MenuEventTraoHongDoatLong : EventManager
                      img.sprite = GetSprite("mamhoa");
                      img.SetNativeSize();
                     //ThuHoachHoaHong(i,HoaHong.transform.GetChild(0).transform.GetChild(0).gameObject,HoaHong);
-                }
+                    }
+    socNongDan = json["socNongDan"].AsBool;
+        socNongDanThuThap = json["socThuThap"].AsInt;
+        gioiHanSocNongDan = json["GioiHanSocThuThap"].AsInt;
                 }
                 else CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
                 SendSocThuHoach = false;
@@ -663,8 +679,58 @@ public class MenuEventTraoHongDoatLong : EventManager
                 CrGame.ins.OnThongBaoNhanh(json["strThongBaoOk"].AsString,3f);
                  menuXacNhanSoc.SetActive(false);
                 socNongDan = true;
+                gioiHanSocNongDan = json["gioihanThuThap"].AsInt;
             }
             else CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
         }
+    }
+    public void XemNhanHoaSoc()
+    {
+          JSONClass datasend = new JSONClass();
+        datasend["class"] = "EventTraoHongDoatLong";
+        datasend["method"] = "XemNhanHoaSoc";
+        NetworkManager.ins.SendServer(datasend, Ok);
+        void Ok(JSONNode json)
+        {
+            if (json["status"].AsString == "0")
+            {
+                menuNhanQuaSoc.transform.SetParent(CrGame.ins.trencung,false);
+                Text txtHoaHong = menuNhanQuaSoc.transform.Find("txtHoaHong").GetComponent<Text>();
+                menuNhanQuaSoc.SetActive(true);
+                txtHoaHong.text = json["strThuThap"].AsString;
+            }
+            else CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+        }
+    }
+    public void XacNhanNhanQuaSoc()
+    {
+          JSONClass datasend = new JSONClass();
+        datasend["class"] = "EventTraoHongDoatLong";
+        datasend["method"] = "XacNhanNhanQuaSoc";
+        NetworkManager.ins.SendServer(datasend, Ok);
+        void Ok(JSONNode json)
+        {
+            if (json["status"].AsString == "0")
+            {
+              
+                 GameObject HoaHong = menuNhanQuaSoc.transform.Find("HoaHong").gameObject;
+                    GameObject imgClone = Instantiate(HoaHong,transform.position,Quaternion.identity);
+                imgClone.transform.SetParent(transform,false);
+                imgClone.transform.position = HoaHong.transform.position;
+              QuaBay quabay = imgClone.AddComponent<QuaBay>();
+                 Transform tfHoaHong = transform.Find("KhungHoa").transform.Find("HoaHongThuong");
+                    quabay.vitribay = tfHoaHong.gameObject;
+                socNongDanThuThap = 0;
+                SetTxtHoaHong(json["HoaHong"].AsString,true,"+"+json["socThuThap"].AsString);
+            }
+            else CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+               menuNhanQuaSoc.SetActive(false);
+        }
+    }
+    public void VeNha()
+    {
+        Destroy(menuXacNhanSoc.gameObject);
+        Destroy(menuNhanQuaSoc.gameObject);
+        
     }
 }
