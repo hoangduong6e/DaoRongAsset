@@ -479,8 +479,8 @@ public class CrGame : MonoBehaviour
                 {
                     Friend.ins.GoHome();
                 }
-              //  GameObject gdevent = AllMenu.ins.GetCreateMenu("MenuEventTet2024", AllMenu.ins.gameObject);//AllMenu.ins.transform.GetChild(AllMenu.ins.transform.childCount - 1).gameObject;
-                GameObject gdevent = AllMenu.ins.transform.Find("MenuEventTraoHongDoatLong").gameObject;
+               GameObject gdevent = AllMenu.ins.GetCreateMenu("MenuEventTraoHongDoatLong", AllMenu.ins.gameObject);//AllMenu.ins.transform.GetChild(AllMenu.ins.transform.childCount - 1).gameObject;
+              //  GameObject gdevent = AllMenu.ins.transform.Find("MenuEventTraoHongDoatLong").gameObject;
                 gdevent.SetActive(true);
                 gdevent.GetComponent<MenuEventTraoHongDoatLong>().ParseData(json);
                 DonDepDao();

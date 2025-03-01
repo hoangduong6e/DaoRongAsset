@@ -34,7 +34,7 @@ public class MenuRaKhoi : MonoBehaviour
     private int[] vitriKhoBau;
     public Animator animThuyenTo;
     public float timeSec;
-    public static string nameEvent = "EventHalloween2024";
+    public static string nameEvent = "EventTraoHongDoatLong";
 
     public static MenuRaKhoi ins;
     void Start()
