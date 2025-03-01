@@ -782,15 +782,15 @@ public class MenuEventTraoHongDoatLong : EventManager
         {
             if (json["status"].AsString == "0")
             {
-                GameObject menuDoiHoa = transform.Find("MenuDoiHoa").gameObject;
-                GameObject imgHoaNguSac = menuDoiHoa.transform.GetChild(0).transform.Find("imgHoa").gameObject;
+              //  GameObject menuDoiHoa = transform.Find("MenuDoiHoa").gameObject;
+                GameObject imgHoaNguSac = MenuDoiHoa.transform.GetChild(0).transform.Find("imgHoa").gameObject;
                 GameObject imgClone = Instantiate(imgHoaNguSac, transform.position, Quaternion.identity);
                 imgClone.transform.SetParent(CrGame.ins.trencung, false);
                 imgClone.transform.position = imgHoaNguSac.transform.position;
                 QuaBay quabay = imgClone.AddComponent<QuaBay>();
                 Transform tfHoaHong = transform.Find("KhungHoa").transform.Find("HoaNguSac");
                 quabay.vitribay = tfHoaHong.gameObject;
-                menuDoiHoa.SetActive(false);
+                MenuDoiHoa.SetActive(false);
                 SetTxtHoaNguSac(json["HoaNguSac"].AsString, true, "+" + json["tongHoaDoi"].AsString);
                 xacNhanDoiNguSac = false;
             }
