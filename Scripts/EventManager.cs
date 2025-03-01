@@ -414,7 +414,7 @@ public abstract class EventManager : MonoBehaviour
     }
     string namemanhchon;
 
-    void XemManhDoi()
+    protected void XemManhDoi()
     {
         AudioManager.PlaySound("soundClick");
         Button btnchon = EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
@@ -498,7 +498,7 @@ public abstract class EventManager : MonoBehaviour
         }
     }
 
-    void DoiManh()
+    protected void DoiManh()
     {
         AudioManager.PlaySound("soundClick");
 
@@ -535,7 +535,7 @@ public abstract class EventManager : MonoBehaviour
     }
 
 
-    private void ExitDoiManh()
+    protected void ExitDoiManh()
     {
         EventManager.ins.DestroyMenu("MenuDoiManh");
     }

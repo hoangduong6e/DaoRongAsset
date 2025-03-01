@@ -42,22 +42,25 @@ public class MenuEventTraoHongDoatLong : EventManager
     public Transform[] BongBong;
     public bool socnongdan = false;
     private int socThuThap, gioiHanSocNongDan;
-    public bool socNongDan { get{return socnongdan; } set
+    public bool socNongDan
+    {
+        get { return socnongdan; }
+        set
+        {
+            socnongdan = value;
+            if (socnongdan)
             {
-                socnongdan = value;
-                 if(socnongdan)
-                 {
-                     CheckSocAutoThuHoach();
-                 }
-                 else
-                 {
-                                 for (int i = 0; i < allSoc.transform.childCount; i++)
-                                   {
-                                allSoc.transform.GetChild(i).GetComponent<Animator>().Play("Sit");
-                                }
-                 }
+                CheckSocAutoThuHoach();
+            }
+            else
+            {
+                for (int i = 0; i < allSoc.transform.childCount; i++)
+                {
+                    allSoc.transform.GetChild(i).GetComponent<Animator>().Play("Sit");
+                }
             }
         }
+    }
     private int socNongDanThuThap
     {
         get { return socThuThap; }
@@ -69,7 +72,7 @@ public class MenuEventTraoHongDoatLong : EventManager
             {
                 allSoc.transform.GetChild(i).transform.GetChild(2).gameObject.SetActive(active);
             }
-           
+
         }
     }
     private void CheckSocAutoThuHoach()
@@ -83,6 +86,66 @@ public class MenuEventTraoHongDoatLong : EventManager
             }
         }
     }
+    public void OpenMenuDoiManh2()
+    {
+        //return;
+        AudioManager.PlaySound("soundClick");
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = EventManager.ins.nameEvent;
+        datasend["method"] = "MenuDoiManh";
+        //  if (menuevent.ContainsKey("GiaoDien2")) datasend["method"] = "MenuDoiManh2";
+        NetworkManager.ins.SendServer(datasend, Ok);
+
+        void Ok(JSONNode json)
+        {
+            if (json["status"].Value == "0")
+            {
+                GameObject menuDoiManh = EventManager.ins.GetCreateMenu("MenuDoiManh", CrGame.ins.trencung.transform, true, transform.GetSiblingIndex() + 1);
+                GameObject ContentManh = menuDoiManh.transform.GetChild(0).transform.GetChild(2).transform.GetChild(0).transform.GetChild(0).gameObject;
+                GameObject ObjectManh = ContentManh.transform.GetChild(0).gameObject;
+
+                for (int i = 0; i < json["ManhDoi"].Count; i++)
+                {
+                    GameObject manh = Instantiate(ObjectManh, ContentManh.transform.position, Quaternion.identity);
+                    manh.transform.SetParent(ContentManh.transform, false);
+                    manh.GetComponent<Button>().onClick.AddListener(XemManhDoi);
+                    Image imgmanh = manh.transform.GetChild(0).GetComponent<Image>();
+                    if (json["ManhDoi"][i]["itemgi"].Value == "Item" || json["ManhDoi"][i]["itemgi"].Value == "ThuyenThucAn")
+                    {
+                        imgmanh.sprite = Inventory.LoadSprite(json["ManhDoi"][i]["nameitem"].Value);
+                    }
+                    else if (json["ManhDoi"][i]["itemgi"].Value == "ItemEvent")
+                    {
+                        imgmanh.sprite = EventManager.ins.GetSprite(json["ManhDoi"][i]["nameitem"].AsString);
+                        imgmanh.SetNativeSize();
+                    }
+                    else if (json["ManhDoi"][i]["itemgi"].Value == "Avatar")
+                    {
+                        Friend.ins.LoadImage("avt", json["ManhDoi"][i]["nameitem"].AsString, imgmanh);
+                        // imgmanh.sprite = EventManager.ins.GetSprite(json["ManhDoi"][i]["nameitem"].AsString);
+                        // imgmanh.SetNativeSize();
+                    }
+                    else
+                    {
+                        imgmanh.sprite = Inventory.LoadSpriteRong(json["ManhDoi"][i]["nameitem"].Value + "2");
+                    }
+                    imgmanh.SetNativeSize();
+                    manh.name = json["ManhDoi"][i]["namekey"];
+                    manh.SetActive(true);
+                    GamIns.ResizeItem(imgmanh, 200);
+                }
+
+                menuDoiManh.transform.GetChild(2).GetComponent<Button>().onClick.AddListener(DoiManh);
+                menuDoiManh.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>().onClick.AddListener(ExitDoiManh);
+                menuDoiManh.SetActive(true);
+            }
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+            }
+        }
+    }
+    private int YeuCauNguSac = 0;
     public void ParseData(JSONNode json)
     {
         JSONNode data = json["data"];
@@ -91,6 +154,7 @@ public class MenuEventTraoHongDoatLong : EventManager
         socNongDan = data["socNongDan"].AsBool;
         socNongDanThuThap = data["socThuThap"].AsInt;
         gioiHanSocNongDan = json["GioiHanSocThuThap"].AsInt;
+        int SoHoaNguSacFalse = 0;
         for (int i = 0; i < 15; i++)
         {
             TimeHoaHongConLai[i] = json["TimeHoaHongConLai"][i].AsFloat;
@@ -98,10 +162,11 @@ public class MenuEventTraoHongDoatLong : EventManager
             Transform HoaHong = allHoaHong.transform.GetChild(i);
 
             Transform HoaNguSac = allHoaNguSac.transform.GetChild(i);
-            HoaNguSac.gameObject.SetActive(data["allHoaNguSac"][i]["active"].AsBool);
-            Image imgHoaHong = HoaHong.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>();
+            bool active = data["allHoaNguSac"][i]["active"].AsBool;
+            HoaNguSac.gameObject.SetActive(active);
+            //   Image imgHoaHong = HoaHong.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>();
             Animator animNguSac = HoaNguSac.transform.GetChild(0).transform.GetChild(0).GetComponent<Animator>();
-
+            if (!active) SoHoaNguSacFalse += 1;
             HoaHong.name = datHoaHong[i]["hoa"].AsString;
             HoaNguSac.name = dataHoaNguSac[i]["hoa"].AsString;
 
@@ -113,15 +178,24 @@ public class MenuEventTraoHongDoatLong : EventManager
             }
             else animNguSac.runtimeAnimatorController = hoaNguSac2;
         }
+
+        if (SoHoaNguSacFalse >= dataHoaNguSac.Count)
+        {
+            if (!data["ResetHoaNguSac"].AsBool)
+            {
+                transform.Find("KhungHoa").transform.Find("btnLamMoi").gameObject.SetActive(true);
+            }
+        }
         nextDecreaseTime = Time.time + 1f; // Đặt thời gian đầu tiên để trừ
         isTruGiay = true;
         KhungHoa.transform.Find("txtTimeEvent").GetComponent<Text>().text = json["txtTimeEvent"].AsString;
+        YeuCauNguSac = json["YeuCauNguSac"].AsInt;
         SetTxtHoaHong(json["TongHoaHong"].AsString);
         SetTxtHoaNguSac(data["HoaNguSac"].AsString);
         SetLuotHaiNguSacFree(data["luotHaiNguSacFree"].AsString);
         btnHopQua = CrGame.ins.giaodien.transform.Find("btnQuaOnline").gameObject;
         btnHopQua.transform.SetParent(CrGame.ins.trencung.transform);
-        SetQuaAi(json["QuaAi"], json["YeuCauNguSac"].AsInt, data["HoaNguSac"].AsInt, data["phantramGiaiPhongAn"].AsString);
+        SetQuaAi(json["QuaAi"], data["HoaNguSac"].AsInt, data["phantramGiaiPhongAn"].AsString);
 
         Transform vitriRong = transform.Find("vitriRong");
         GameObject rong = AllMenu.ins.GetRongGiaoDien("RongNuTamXuan1", vitriRong, 1);
@@ -130,7 +204,7 @@ public class MenuEventTraoHongDoatLong : EventManager
         panelInfoHoa.transform.SetParent(CrGame.ins.trencung.transform);
         gameObject.SetActive(true);
     }
-    private void SetQuaAi(JSONNode dataAi, int YeuCauNguSac, int HoaNguSacHienTai, string phantramphongan)
+    private void SetQuaAi(JSONNode dataAi, int HoaNguSacHienTai, string phantramphongan)
     {
         Text txtHoaGiai = transform.Find("txtHoaGiai").GetComponent<Text>();
         txtHoaGiai.text = "Đã hóa giải được <color=lime>" + phantramphongan + "%</color> phong ấn.\n Rồng Nụ Tầm Xuân";
@@ -181,9 +255,9 @@ public class MenuEventTraoHongDoatLong : EventManager
                     {
                         BongBong[i].transform.LeanScale(Vector3.zero, 0.4f);
                     }
-
+                    YeuCauNguSac = json["YeuCauNguSac"].AsInt;
                     OpenMenuNhanDuocItem(json["QuaChon"]["name"].AsString, hienthi, loai, () => {
-                        SetQuaAi(json["QuaAi"], json["YeuCauNguSac"].AsInt, json["HoaNguSac"].AsInt, json["phantramGiaiPhongAn"].AsString);
+                        SetQuaAi(json["QuaAi"], json["HoaNguSac"].AsInt, json["phantramGiaiPhongAn"].AsString);
                         for (int i = 0; i < 2; i++)
                         {
                             BongBong[i].transform.LeanScale(Vector3.one, 0.4f);
@@ -240,6 +314,14 @@ public class MenuEventTraoHongDoatLong : EventManager
         Transform txt = KhungHoa.transform.Find("txtHoaNguSac");
         txt.GetComponent<Text>().text = "<color=orange>Hoa Ngũ Sắc</color>: <color=yellow>" + sl + "</color> bông";
         if (txtanim) InsTxtAnim(KhungHoa.transform.Find("HoaNguSac"), slcong);
+
+
+        for (int i = 0; i < 2; i++)
+        {
+            Text txtyeucau = BongBong[i].transform.Find("txtyeucau").GetComponent<Text>();
+            int HoaNguSacHienTai = int.Parse(sl);
+            txtyeucau.text = HoaNguSacHienTai >= YeuCauNguSac ? "<color=lime>" + HoaNguSacHienTai + "/" + YeuCauNguSac + "</color>" : "<color=red>" + HoaNguSacHienTai + "/" + YeuCauNguSac + "</color>";
+        }
     }
     bool SendSocThuHoach = false;
     private void SetHoaHongNo(int i)
@@ -337,7 +419,7 @@ public class MenuEventTraoHongDoatLong : EventManager
     }
     protected override void DiemDanhOk(JSONNode json)
     {
-
+        SetLuotHaiNguSacFree(json["data"]["luotHaiNguSacFree"].AsString);
     }
 
     private JSONClass DataSendThuHoach(int index, string loaihoa)
@@ -365,7 +447,6 @@ public class MenuEventTraoHongDoatLong : EventManager
         GameObject g = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
         Transform parent = g.transform.parent.transform.parent;
         int index = parent.transform.GetSiblingIndex();
-     
 
         indexHoaHongChon = (byte)index;
         Send();
@@ -383,46 +464,25 @@ public class MenuEventTraoHongDoatLong : EventManager
                     quaBay(parent, g.transform, "HoaNguSac");
                     SetTxtHoaNguSac(json["HoaNguSac"].AsString, true);
                     parent.gameObject.SetActive(false);
+
+                    int soHoaNguSacFalse = 0;
+                    for (int i = 0; i < allHoaNguSac.transform.childCount; i++)
+                    {
+                        if (!allHoaNguSac.transform.GetChild(i).gameObject.activeSelf)
+                        {
+                            soHoaNguSacFalse += 1;
+                        }
+                    }
                     SetLuotHaiNguSacFree(json["luotHaiNguSacFree"].AsString);
 
-                    if (json["reset"].AsBool)
+                    if (soHoaNguSacFalse >= allHoaNguSac.transform.childCount)
                     {
-                        //   Vector3 vecbandau = instan.transform.position;
-                        //instan.transform.position = new Vector3(vecbandau.x, vecbandau.y + 2);
-                        //instan.transform.LeanMove(vecbandau, 0.3f);
-                        StartCoroutine(delay());
-                        IEnumerator delay()
+                        if (!json["ResetHoaNguSac"].AsBool)
                         {
-                            JSONNode allHoaNguSacReset = json["allHoaNguSacReset"];
-                            for (int i = 0; i < 15; i++)
-                            {
-                                //
-                                Transform HoaNguSac = allHoaNguSac.transform.GetChild(i);
-                                Vector3 vecbandau = HoaNguSac.transform.position;
-                                HoaNguSac.transform.position = new Vector3(vecbandau.x, vecbandau.y + 2);
-                                HoaNguSac.gameObject.SetActive(true);
-
-                                Animator animNguSac = HoaNguSac.transform.GetChild(0).transform.GetChild(0).GetComponent<Animator>();
-
-
-                                HoaNguSac.name = allHoaNguSacReset[i]["hoa"].AsString;
-
-
-
-                                if (allHoaNguSacReset[i]["hoa"].AsString == "1")
-                                {
-                                    animNguSac.runtimeAnimatorController = hoaNguSac1;
-                                }
-                                else animNguSac.runtimeAnimatorController = hoaNguSac2;
-                                HoaNguSac.transform.LeanMove(vecbandau, 0.3f);
-
-                                yield return new WaitForSeconds(0.11f);
-                            }
+                            transform.Find("KhungHoa").transform.Find("btnLamMoi").gameObject.SetActive(true);
                         }
-
-
-                        debug.Log("Reset Hoa Ngũ Sắc");
                     }
+                    // transform.Find("KhungHoa").transform.Find("btnLamMoi").gameObject.SetActive(true);
                 }
                 else if (json["status"].AsString == "2")
                 {
@@ -485,7 +545,7 @@ public class MenuEventTraoHongDoatLong : EventManager
         datasend["class"] = "EventTraoHongDoatLong";
         datasend["method"] = "SocThuHoach";
         // string namesprite = g.GetComponent<Image>().sprite.name;  
-        NetworkManager.ins.SendServer(datasend, Ok,true);
+        NetworkManager.ins.SendServer(datasend, Ok, true);
         void Ok(JSONNode json)
         {
             if (json["status"].AsString == "0")
@@ -494,12 +554,12 @@ public class MenuEventTraoHongDoatLong : EventManager
                 JSONNode allTimeYeuCau = json["allTimeYeuCau"];
                 JSONNode allHoaNew = json["allHoaNew"];
                 //  quaBay(parent,g.transform);
-               // SetTxtHoaHong(json["HoaHong"].AsString);
+                // SetTxtHoaHong(json["HoaHong"].AsString);
                 // TimeHoaHongConLai[index] = json["TimeYeuCau"].AsFloat;
                 // MaxTimeHoaHong[index] = TimeHoaHongConLai[index];
                 // parent.name = json["hoaNew"]["hoa"]
                 // .AsString;
-                List<Transform> allsocThuThap = new(); 
+                List<Transform> allsocThuThap = new();
                 int soSocDiThuHoach = allHoaThuHoach.Count;
                 if (soSocDiThuHoach >= allSoc.transform.childCount)
                 {
@@ -516,10 +576,10 @@ public class MenuEventTraoHongDoatLong : EventManager
                     int soSocRandomOk = 0;
                     for (int i = 0; i < allSoc.transform.childCount; i++)
                     {
-                        if(UnityEngine.Random.Range(0,100) > 50)
+                        if (UnityEngine.Random.Range(0, 100) > 50)
                         {
                             FLowersToggle soc = allSoc.transform.GetChild(i).GetComponent<FLowersToggle>();
-                            if(!soc.thuhoach && soc.walk)
+                            if (!soc.thuhoach && soc.walk)
                             {
                                 soSocRandomOk++;
                                 soc.ThuHoach();
@@ -528,7 +588,7 @@ public class MenuEventTraoHongDoatLong : EventManager
                             }
                         }
                     }
-                    if(soSocRandomOk < soSocDiThuHoach)
+                    if (soSocRandomOk < soSocDiThuHoach)
                     {
                         for (int i = 0; i < allSoc.transform.childCount; i++)
                         {
@@ -581,7 +641,7 @@ public class MenuEventTraoHongDoatLong : EventManager
                 }
 
 
-             
+
                 socNongDan = json["socNongDan"].AsBool;
                 socNongDanThuThap = json["socThuThap"].AsInt;
                 gioiHanSocNongDan = json["GioiHanSocThuThap"].AsInt;
@@ -591,7 +651,7 @@ public class MenuEventTraoHongDoatLong : EventManager
         }
     }
 
- 
+
     private void SetTransformPanelInfoHoa(Transform tf)
     {
         Vector3 vec = tf.transform.position;
@@ -830,6 +890,61 @@ public class MenuEventTraoHongDoatLong : EventManager
             }
             else CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
             menuNhanQuaSoc.SetActive(false);
+        }
+    }
+    bool XacNhanLamMoi = false;
+    public void btnResetHoaNguSac()
+    {
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "EventTraoHongDoatLong";
+        datasend["method"] = "LamMoiHoaNguSac";
+        datasend["data"]["XacNhanLamMoi"] = XacNhanLamMoi.ToString();
+        //datasend["data"]["dao"] = CrGame.ins.DangODao.ToString();
+        NetworkManager.ins.SendServer(datasend, Ok);
+        void Ok(JSONNode json)
+        {
+            if (json["status"].AsString == "0")
+            {
+                transform.Find("KhungHoa").transform.Find("btnLamMoi").gameObject.SetActive(false);
+                StartCoroutine(delay());
+                IEnumerator delay()
+                {
+                    JSONNode allHoaNguSacReset = json["allHoaNguSacReset"];
+                    for (int i = 0; i < 15; i++)
+                    {
+                        //
+                        Transform HoaNguSac = allHoaNguSac.transform.GetChild(i);
+                        Vector3 vecbandau = HoaNguSac.transform.position;
+                        HoaNguSac.transform.position = new Vector3(vecbandau.x, vecbandau.y + 2);
+                        HoaNguSac.gameObject.SetActive(true);
+
+                        Animator animNguSac = HoaNguSac.transform.GetChild(0).transform.GetChild(0).GetComponent<Animator>();
+
+
+                        HoaNguSac.name = allHoaNguSacReset[i]["hoa"].AsString;
+
+
+
+                        if (allHoaNguSacReset[i]["hoa"].AsString == "1")
+                        {
+                            animNguSac.runtimeAnimatorController = hoaNguSac1;
+                        }
+                        else animNguSac.runtimeAnimatorController = hoaNguSac2;
+                        HoaNguSac.transform.LeanMove(vecbandau, 0.3f);
+
+                        yield return new WaitForSeconds(0.11f);
+                    }
+                }
+
+
+                debug.Log("Reset Hoa Ngũ Sắc");
+            }
+            else if (json["status"].AsString == "2")
+            {
+                EventManager.OpenThongBaoChon(json["message"].AsString, () => { XacNhanLamMoi = true; btnResetHoaNguSac(); });
+            }
+            else CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+            XacNhanLamMoi = false;
         }
     }
     public void VeNha()
