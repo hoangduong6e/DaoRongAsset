@@ -76,6 +76,7 @@ public class ItemTrangTri : MonoBehaviour
                         txtsoluong.enabled = true;
                         transform.position = parnett.transform.position;
                         transform.SetParent(parnett.transform);
+                        inventory.AddItem(NameItemTrangTri, int.Parse(txtsoluong.text));
                         return;
                     } 
                         

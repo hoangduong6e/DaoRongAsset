@@ -49,7 +49,12 @@ public class NamNguSacAttack : DragonPVEController
     }
     public override void AbsMatMau(float maumat, DragonPVEController cs, bool setonline = false)
     {
-        MatMauDefault(maumat, cs, setonline);
+        //  MatMauDefault(maumat, cs, setonline);
+
+        if (GetHpTru(maumat, cs, setonline) <= 0)
+        {
+            Died();
+        }
     }
     public override void DayLuiABS()
     {

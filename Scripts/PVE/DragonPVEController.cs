@@ -391,7 +391,6 @@ public abstract class DragonPVEController : MonoBehaviour
                 else Died();
             }
             else Died();
-
         }
     }
     protected void SetHpDefault(float fillhp,bool setonline = false)
