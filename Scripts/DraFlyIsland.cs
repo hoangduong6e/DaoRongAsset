@@ -5,6 +5,7 @@ using UnityEngine;
 public class DraFlyIsland : DraInstantiate
 {
     // Start is called before the first frame update
+    public string attackQuaBong = "Attack";
     void Start()
     {
         //DraInstantiate draInstantiate = GetComponent<DraInstantiate>();
@@ -16,6 +17,7 @@ public class DraFlyIsland : DraInstantiate
         if(!GetComponent<DragonFlyIsland>())
         {
             DragonFlyIsland DraflyIsland = gameObject.AddComponent<DragonFlyIsland>();
+             DraflyIsland.attackQuaBong = attackQuaBong;
             InsCanvasDraIsland(data);
         }
         // Destroy(GetComponent<DraInstantiate>());

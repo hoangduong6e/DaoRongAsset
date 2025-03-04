@@ -9,7 +9,7 @@ public class QuaBong : MonoBehaviour
     public Transform tfQuaBong;
 
     public bool isLan = false;
-    private float speed = 0.05f;
+    private float speed = 0.03f;
     enum Status
     {
         Up, Down, Left, Right,
@@ -144,7 +144,7 @@ public class QuaBong : MonoBehaviour
       // debug.Log("length: " + arrRandom.Length);
         status = arrRandom[Random.Range(0, arrRandom.Length)];
         //  debug.Log("Bóng lăn: " + status.ToString());
-        speed = Random.Range(0.04f,0.07f);
+        speed = Random.Range(0.03f,0.06f);
           isLan = true;
     }
     private void OnTriggerEnter2D(Collider2D collision)

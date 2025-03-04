@@ -1,5 +1,4 @@
-﻿
-using UnityEngine;
+﻿using UnityEngine;
 public class DragonFlyIsland : DragonIslandController
 {
     private bool Fly = false, moiFly = false;

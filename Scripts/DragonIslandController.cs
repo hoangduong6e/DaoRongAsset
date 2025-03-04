@@ -24,7 +24,7 @@ public abstract class DragonIslandController : MonoBehaviour
         roi = false;
 
     protected bool xem = false, openinfo = false, dabong = false;
-
+    
     protected virtual float setRandomSpeed {get{return speed; }set{speed = value; } }
     protected Animator anim;
     protected Transform chayvedao;
@@ -34,11 +34,11 @@ public abstract class DragonIslandController : MonoBehaviour
     private QuaBong tfquabong;
 
     public Text txtNameRong { get; set; }
-
+    public string attackQuaBong = "Attack";
     public bool doi { get; set; }
   //  public Text setTxtNameRong { set { txtNameRong = value; } }
     public string SetNameRong { 
-        set 
+        set
         { 
             if(value != "")
             {
@@ -383,7 +383,7 @@ public abstract class DragonIslandController : MonoBehaviour
             if (Vector3.Distance(transform.position, tfquabong.transform.position) <= 0.2f)
             {
                 Invoke("SutBong", 0.3f);
-                anim.Play("Attack");
+                anim.Play(attackQuaBong);
                 //Debug.Log("Đã chạy đến quả bóng");
             }
         }    
@@ -453,15 +453,12 @@ public abstract class DragonIslandController : MonoBehaviour
                 moveIslandStatus = MoveIslandStatus.Idle;
                 break;
         }
-        if (Random.Range(0, 100) > 50)
-        {
-            StartDaBong();
-        }
+        RandomDaBong();
         UpdateAnimator();
     }
     public void RandomDaBong()
     {
-        if (Random.Range(0, 5000) == 2500) // Xác suất 1/5000 (rất hiếm)
+        if (Random.Range(0, 300) > 280) // Xác suất 1/5000 (rất hiếm)
         {
             StartDaBong();
         }
