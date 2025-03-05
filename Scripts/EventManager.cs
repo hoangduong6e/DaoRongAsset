@@ -9,6 +9,7 @@ using XLua;
 [LuaCallCSharp]
 public abstract class EventManager : MonoBehaviour
 {
+    public static string Event1, Event2;
     public string nameEvent;
     public Dictionary<string, GameObject> menuevent = new Dictionary<string, GameObject>();
     public Sprite Top1, Top2, Top3, Top;
@@ -68,10 +69,25 @@ public abstract class EventManager : MonoBehaviour
     }    
     public Sprite GetSprite(string name)
     {
-
         Sprite sprite = Resources.Load<Sprite>("GameData/" + nameEvent + "/" + name);
 
         // Nếu sprite không tồn tại, trả về sprite mặc định
+        if (sprite == null)
+        {
+            sprite = Resources.Load<Sprite>("GameData/Sprite/Default");
+        }
+
+        return sprite;
+    }
+    public static Sprite getSprite(string name)
+    {
+        Sprite sprite = Resources.Load<Sprite>("GameData/" + Event1 + "/" + name);
+
+        // Nếu sprite không tồn tại, trả về sprite mặc định
+         if (sprite == null)
+        {
+           sprite = Resources.Load<Sprite>("GameData/" + Event2 + "/" + name);
+        }
         if (sprite == null)
         {
             sprite = Resources.Load<Sprite>("GameData/Sprite/Default");

@@ -664,14 +664,22 @@ public class MenuTrungSinhRong : MonoBehaviour
                     else SetRongGd(namerong + "2", json["namechuyenhoa"].AsString + "1");
 
                 }
-                byte ok = 0;
+                //byte ok = 0;
                 for (int i = 0; i < json["allitem"].Count; i++)
                 {
                     Text txtyeucau = allitemcan.transform.GetChild(i).transform.GetChild(1).GetComponent<Text>();
                     Image imgitem = allitemcan.transform.GetChild(i).transform.GetChild(0).GetComponent<Image>();
                     int itemco = Inventory.ins.GetItem(json["allitem"][i]["nameitem"].AsString);
                     int itemcan = json["allitem"][i]["soluong"].AsInt;
-                    imgitem.sprite = Inventory.LoadSprite(json["allitem"][i]["nameitem"].AsString);
+                    if(json["allitem"]["loai"].AsString == "ItemEvent")
+                    {
+                         imgitem.sprite = EventManager.getSprite(json["allitem"][i]["nameitem"].AsString);
+                    }
+                    else
+                    {
+                         imgitem.sprite = Inventory.LoadSprite(json["allitem"][i]["nameitem"].AsString);
+                    }
+                
                     txtyeucau.text = json["allitem"][i]["txtyeucau"].AsString;
                     imgitem.SetNativeSize();
                     GamIns.ResizeItem(imgitem);

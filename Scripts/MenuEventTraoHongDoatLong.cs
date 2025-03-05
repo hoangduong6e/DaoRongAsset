@@ -195,7 +195,7 @@ public class MenuEventTraoHongDoatLong : EventManager
         SetLuotHaiNguSacFree(data["luotHaiNguSacFree"].AsString);
         btnHopQua = CrGame.ins.giaodien.transform.Find("btnQuaOnline").gameObject;
         btnHopQua.transform.SetParent(CrGame.ins.trencung.transform);
-        SetQuaAi(json["QuaAi"], data["HoaNguSac"].AsInt, data["phantramGiaiPhongAn"].AsString);
+        SetQuaAi(json["QuaAi"], data["HoaNguSac"].AsInt, data["phantramGiaiPhongAn"].AsString, data["aiHienTai"].AsString);
 
         Transform vitriRong = transform.Find("vitriRong");
         GameObject rong = AllMenu.ins.GetRongGiaoDien("RongNuTamXuan1", vitriRong, 1);
@@ -204,10 +204,10 @@ public class MenuEventTraoHongDoatLong : EventManager
         panelInfoHoa.transform.SetParent(CrGame.ins.trencung.transform);
         gameObject.SetActive(true);
     }
-    private void SetQuaAi(JSONNode dataAi, int HoaNguSacHienTai, string phantramphongan)
+    private void SetQuaAi(JSONNode dataAi, int HoaNguSacHienTai, string phantramphongan, string aihientai)
     {
         Text txtHoaGiai = transform.Find("txtHoaGiai").GetComponent<Text>();
-        txtHoaGiai.text = "Đã hóa giải được <color=lime>" + phantramphongan + "%</color> phong ấn.\n Rồng Nụ Tầm Xuân";
+        txtHoaGiai.text = "Đã hóa giải được <color=lime>" + phantramphongan + "%</color> phong ấn.\n Rồng Nụ Tầm Xuân\n\n\n\n<color=yellow>Ải hiện tại: </color>"+aihientai;
         for (int i = 0; i < 2; i++)
         {
             Image imgItem = BongBong[i].transform.GetChild(0).transform.GetChild(0).GetComponent<Image>();
@@ -250,14 +250,14 @@ public class MenuEventTraoHongDoatLong : EventManager
                 {
                     xacNhanChonQua = false;
                     LoaiItem loai = (LoaiItem)Enum.Parse(typeof(LoaiItem), json["QuaChon"]["loai"].AsString, true);
-                    string hienthi = loai == LoaiItem.rong ? json["QuaChon"]["loai"].AsString + " sao" : "x" + GamIns.FormatCash(json["QuaChon"]["soluong"].AsInt);
+                    string hienthi = loai == LoaiItem.rong ? json["QuaChon"]["sao"].AsString + " sao" : "x" + GamIns.FormatCash(json["QuaChon"]["soluong"].AsInt);
                     for (int i = 0; i < 2; i++)
                     {
                         BongBong[i].transform.LeanScale(Vector3.zero, 0.4f);
                     }
                     YeuCauNguSac = json["YeuCauNguSac"].AsInt;
                     OpenMenuNhanDuocItem(json["QuaChon"]["name"].AsString, hienthi, loai, () => {
-                        SetQuaAi(json["QuaAi"], json["HoaNguSac"].AsInt, json["phantramGiaiPhongAn"].AsString);
+                        SetQuaAi(json["QuaAi"], json["HoaNguSac"].AsInt, json["phantramGiaiPhongAn"].AsString,json["aiHienTai"].AsString);
                         for (int i = 0; i < 2; i++)
                         {
                             BongBong[i].transform.LeanScale(Vector3.one, 0.4f);
