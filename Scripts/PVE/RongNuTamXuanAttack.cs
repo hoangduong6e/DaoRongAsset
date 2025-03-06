@@ -56,7 +56,7 @@ public class RongNuTamXuanAttack : DragonPVEController
             if (danh <= 3) danh += 1;
             else
             {
-                danh = 0;
+                danh = 1;
                 debug.Log("damee x"+nhandame);
                 damee *= nhandame;
             }
