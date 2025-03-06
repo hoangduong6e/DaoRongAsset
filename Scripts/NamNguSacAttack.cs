@@ -27,7 +27,10 @@ public class NamNguSacAttack : DragonPVEController
         //}
 
     }
+    protected override void RongChet()
+    {
 
+    }
     public override void Choang(float giay = 0.4F, bool setOnline = false)
     {
         // base.Choang(giay);

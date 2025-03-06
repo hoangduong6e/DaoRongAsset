@@ -753,7 +753,16 @@ public abstract class DragonPVEController : MonoBehaviour
     //        daylui = true;
     //    }
     //}
+    protected virtual void RongChet()
+    {
+           if (team == Team.TeamXanh)
+        {
+            GiaoDienPVP.ins.RongChet(idrong);
+           
+            //   if(VienChinh.vienchinh.muctieuxanh.name == id) VienChinh.vienchinh.SetMucTieuTeamDo();//
 
+        }
+    }
     public void Died(bool setonline = false)
     {
         Transform parnent = transform.parent;
@@ -767,13 +776,7 @@ public abstract class DragonPVEController : MonoBehaviour
             return;
         }
       //  string team = transform.parent.transform.parent.name;
-        if (team == Team.TeamXanh)
-        {
-            GiaoDienPVP.ins.RongChet(idrong);
-           
-            //   if(VienChinh.vienchinh.muctieuxanh.name == id) VienChinh.vienchinh.SetMucTieuTeamDo();//
-
-        }
+     RongChet();
         //   else if (VienChinh.vienchinh.muctieudo.name == id) VienChinh.vienchinh.SetMucTieuTeamXanh();//
         //if (Target.transform.parent.name == "TeamDo")
         //{
