@@ -53,7 +53,7 @@ public class RongNuTamXuanAttack : DragonPVEController
         {
             DragonPVEController chisodich = Target.GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
 
-            if (danh <= 3) danh += 1;
+            if (danh < 3) danh += 1;
             else
             {
                 danh = 1;

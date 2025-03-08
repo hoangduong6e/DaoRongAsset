@@ -242,11 +242,16 @@ function CreateItem(nameitemroi,soluong,loai,itemsoc,vitri)
                     MoiXuatHien[vitri + 1] = true
                     AllDuocDap[vitri + 1] = true
                     local cloneimgItemRoi
-                    if loai == "Item" then
+                    if loai == "Item" or loai == "ItemEvent" then
                         cloneimgItemRoi = CS.UnityEngine.Object.Instantiate(imgItemRoi, allViTriChuot.transform:GetChild(vitri).transform)
                         cloneimgItemRoi.name = nameitemroi
                         local imgitem = cloneimgItemRoi:GetComponent("Image")
-                        imgitem.sprite = CS.Inventory.LoadSprite(nameitemroi)
+                        if loai == "Item" then
+                            imgitem.sprite = CS.Inventory.LoadSprite(nameitemroi)
+                        elseif loai == "ItemEvent" then
+                            imgitem.sprite = CS.EventManager.getSprite(nameitemroi)
+                            end
+
                         imgitem:SetNativeSize()
                         _G.LuaExtension:ResizeImage(imgitem,70)
                         CS.EventManager.StartDelay2(function ()

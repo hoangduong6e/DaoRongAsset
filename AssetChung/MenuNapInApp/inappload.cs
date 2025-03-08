@@ -36,10 +36,14 @@ public class inappload : MonoBehaviour, IStoreListener
         }
         UnityPurchasing.Initialize(this, builder);
     }
-    public void MuaKimCuong(string id)
+    public void MuaKimCuong()
     {
+        GameObject btnchon = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+        int index = btnchon.transform.GetSiblingIndex();
         crgame.OnThongBaoNhanh("Đang khởi tạo giao dịch...", 2);
         crgame.panelLoadDao.SetActive(true);
+        string id = skimcuong[index];
+        debug.Log("id: " + id);
         m_StoreController.InitiatePurchase(id);
     }
     public void OnInitialized(IStoreController controller, IExtensionProvider extensions)

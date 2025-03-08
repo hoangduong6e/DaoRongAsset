@@ -28,9 +28,9 @@ public class NapinApp : MonoBehaviour
             Onap.transform.GetChild(i).transform.GetChild(2).GetComponent<Text>().text = inapp.sokimcuong[i];
         }
     }
-    public void MuaKimCuong(string id)
+    public void MuaKimCuong()
     {
-        inapp.MuaKimCuong(id);
+        inapp.MuaKimCuong();
        // crgame.OnThongBaoNhanh("Đang khởi tạo giao dịch...",3);
        // m_StoreController.InitiatePurchase(id);
     }

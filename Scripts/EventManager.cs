@@ -9,7 +9,7 @@ using XLua;
 [LuaCallCSharp]
 public abstract class EventManager : MonoBehaviour
 {
-    public static string Event1, Event2;
+    public static string Event1 = "EventValentine2024", Event2 = "EventValentine2024";
     public string nameEvent;
     public Dictionary<string, GameObject> menuevent = new Dictionary<string, GameObject>();
     public Sprite Top1, Top2, Top3, Top;
