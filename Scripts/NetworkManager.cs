@@ -407,14 +407,14 @@ public class NetworkManager : MonoBehaviour
                 GiaoDienPVP.ins.transform.Find("btnTrieuHoiNhanh").gameObject.SetActive(true);
                 // AudioManager.SetSoundBg("");
                 vienchinh.StartCoroutine(vienchinh.delayGame("nhacloidai"));
-                yield return new WaitForSeconds(3.5f);
-                for (int i = 0; i < count; i++)
-                {
-                    PVEManager.TrieuHoiDra(e.data["danhloidai"]["doihinhfriend"][i], "TeamDo");
+                //yield return new WaitForSeconds(3.5f);
+                //for (int i = 0; i < count; i++)
+                //{
+                //    PVEManager.TrieuHoiDra(e.data["danhloidai"]["doihinhfriend"][i], "TeamDo");
 
                     yield return new WaitForSeconds(0.1f);
 
-                }
+                //}
             }
         }
         if (e.data["danhthuthach"])

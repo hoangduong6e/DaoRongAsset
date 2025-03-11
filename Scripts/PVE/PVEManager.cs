@@ -192,15 +192,15 @@ public class PVEManager : MonoBehaviour
         rongtrieuhoi.transform.SetSiblingIndex(tfteam.transform.childCount - 1);
         anim.Play("Spawn");
 
-        if (VienChinh.vienchinh.chedodau == CheDoDau.Online)
-        {
-            draInstantiate.DraInsPVP(data, id);
-        }
-        else draInstantiate.DraInsPVE(data);
+        //if (VienChinh.vienchinh.chedodau == CheDoDau.Online)
+        //{
+        //    draInstantiate.DraInsPVP(data, id);
+        //}
+        //else draInstantiate.DraInsPVE(data);
 
         /////
-        //  draInstantiate.DraInsOnline(data, id);
-        //  PVPManager.AddDragonTF(teamonl,id,rongtrieuhoi.transform);
+          draInstantiate.DraInsOnline(data, id);
+          PVPManager.AddDragonTF(teamonl,id,rongtrieuhoi.transform);
         /////
         if (ReplayData.Record)
         {
@@ -335,7 +335,7 @@ public class PVEManager : MonoBehaviour
             }
             else
             {
-                dragonPVEController.AnimatorAttack();
+               // dragonPVEController.AnimatorAttack();///////////////////////
             }
         }
 
@@ -369,7 +369,7 @@ public class PVEManager : MonoBehaviour
             }
             else
             {
-                dragonPVEController.AnimatorAttack();
+               // dragonPVEController.AnimatorAttack();//////////////////////
             }
 
 
