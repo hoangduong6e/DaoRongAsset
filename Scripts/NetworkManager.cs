@@ -65,6 +65,7 @@ public class NetworkManager : MonoBehaviour
         socket.On("updateMoney", UpdateMoney);
         socket.On("Event", Event);
         socket.On("UpdateTick", UpdateTick);
+        socket.On("PVP", PVP);
         hopqua = GameObject.Find("btnQuaOnline").GetComponent<HopQua>();
         //  quatanghangngay = GetComponent<QuaTangHangNgay>();
         thuyen = GetComponent<ThuyenThucAn>();
@@ -131,7 +132,26 @@ public class NetworkManager : MonoBehaviour
         }
 
 
-    }    
+    }
+    void PVP(SocketIOEvent e)
+    {
+         debug.Log("PVP: " + e.name + " " + e.data);
+        if(e.data["anim"])
+        {
+             Transform tf = PVPManager.DragonsTF[e.data["anim"]["team"].str][e.data["anim"]["id"].str];
+
+             Animator anim = tf.GetComponent<Animator>();
+            anim.Play(e.data["anim"]["anim"].str);
+          
+        }
+        //else if(e.data["attack"])
+        //{
+        //     Transform tf = PVPManager.DragonsTF[e.data["attack"]["team"].str][e.data["attack"]["id"].str];
+        //    debug.Log(tf.name + " attack");
+        //    DragonPVEController dra = tf.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+        //    dra.AnimatorAttack();
+        //}
+    }
     void Event(SocketIOEvent e)
     {
         debug.Log("[SocketIO] Open received: " + e.name + " " + e.data);
@@ -157,7 +177,6 @@ public class NetworkManager : MonoBehaviour
                         item.transform.LeanScale(Vector3.zero, 0.2f);
                         Destroy(item.gameObject, 0.2f);
                     }
-
                 }
             }
             if (e.data["message"].str != "") CrGame.ins.OnThongBaoNhanh(e.data["message"].str, 3);

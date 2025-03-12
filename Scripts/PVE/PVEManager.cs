@@ -335,7 +335,7 @@ public class PVEManager : MonoBehaviour
             }
             else
             {
-               // dragonPVEController.AnimatorAttack();///////////////////////
+                dragonPVEController.AnimatorAttack();///////////////////////
             }
         }
 
@@ -369,7 +369,7 @@ public class PVEManager : MonoBehaviour
             }
             else
             {
-               // dragonPVEController.AnimatorAttack();//////////////////////
+                dragonPVEController.AnimatorAttack();//////////////////////
             }
 
 

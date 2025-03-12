@@ -352,23 +352,23 @@ public class RongXuongAttack : DragonPVEController
     }
     private void SkillMoveOkRongDat()
     {
-        float damee = dame;
-        if (Random.Range(1, 100) <= _ChiMang)
-        {
-            damee *= 5;
-            PVEManager.InstantiateHieuUngChu("chimang", transform);
-        }
+        //float damee = dame;
+        //if (Random.Range(1, 100) <= _ChiMang)
+        //{
+        //    damee *= 5;
+        //    PVEManager.InstantiateHieuUngChu("chimang", transform);
+        //}
 
-        if (Target.name != "trudo" && Target.name != "truxanh")
-        {
-            DragonPVEController dra = Target.GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
-            dra.MatMau(damee, this);
-          //  dra.LamChamABS(5, "caylamcham");
-        }
-        else
-        {
-            KillTru();
-        }
+        //if (Target.name != "trudo" && Target.name != "truxanh")
+        //{
+        //    DragonPVEController dra = Target.GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
+        //    dra.MatMau(damee, this);
+        //  //  dra.LamChamABS(5, "caylamcham");
+        //}
+        //else
+        //{
+        //    KillTru();
+        //}
     }
     private void AbsUpdateAnimAttackRongCay()
     {
