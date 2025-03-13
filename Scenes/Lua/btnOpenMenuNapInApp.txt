@@ -14,8 +14,9 @@ end
 
 function onClick()
    print('click triu hoi')
-   -- menu = CS.AllMenu.ins.transform:Find("MenuNapinapp").gameObject
-    menu = CS.AllMenu.ins:GetCreateMenu("MenuNapinapp")
+    menu = CS.AllMenu.ins.transform:Find("MenuNapinapp").gameObject
+    menu.transform:Find("btnLichSu"):GetComponent("Button").onClick:AddListener(GetLichSuNap)
+    --menu = CS.AllMenu.ins:GetCreateMenu("MenuNapinapp")
    local Onap = menu.transform:GetChild(0)
    for i = 0, Onap.transform.childCount - 1 do
     --CS.UnityEngine.Object.Destroy(Onap.transform:GetChild(i).gameObject:GetComponent(typeof(CS.UnityEngine.UI.Button)))
@@ -28,15 +29,10 @@ function onClick()
 end
 
 local function myCallback(response)
+    CS.CrGame.ins.panelLoadDao:SetActive(false);
     print('Lua received callback dataaa: '.. response)
     local T = _G.LuaExtension:ParseTable(response)
-
     if T.status == "0" then
-    --     local allmenu = CS.AllMenu.ins.transform
-    --     print('allmenu la:'..allmenu.name)
-    --    local menu = allmenu:Find("MiniGameDapChuot");
-    --    print('menu la:'..menu.name)
-    --    menu.gameObject:SetActive(true);
           local NapinApp = menu:GetComponent("NapinApp")
           NapinApp:MuaKimCuong()
           print('yeu cau ok')
@@ -48,6 +44,7 @@ local function myCallback(response)
 end
 
 function ClickMuaKimCuong()
+    CS.CrGame.ins.panelLoadDao:SetActive(true);
     local btnchon = CS.UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject
     print('click mua kc'..btnchon.transform:GetSiblingIndex())
 
@@ -61,3 +58,24 @@ function ClickMuaKimCuong()
     XluaNetwork:SendRequest(method, nameClass, keyData, valueData, myCallback)
 end
 
+local function CallBackLichSuNap(response)
+    print('Lua received callback dataaa: '.. response)
+    local T = _G.LuaExtension:ParseTable(response)
+    if T.status == "0" then
+          
+          print('CallBackLichSuNap ok')
+     
+    else
+        CS.CrGame.ins:OnThongBaoNhanh(T.message, 2)
+    end
+
+end
+
+function GetLichSuNap()
+    local method = 'NapInApp'
+    local nameClass = 'GetLichSu'
+    local keyData = { '',}
+    local valueData = {''}
+
+    XluaNetwork:SendRequest(method, nameClass, keyData, valueData, CallBackLichSuNap)
+end
