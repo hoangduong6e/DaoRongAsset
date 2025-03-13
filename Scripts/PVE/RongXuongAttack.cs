@@ -159,10 +159,8 @@ public class RongXuongAttack : DragonPVEController
             }
         }
     }
-    public override void AbsUpdateAnimIdle()
-    {
-       
-    }
+
+
     public override void ABSAnimWin()
     {
         if (loaiRong == RongLoai1.XuongMaTroi || loaiRong == RongLoai1.NguyetLong || loaiRong == RongLoai1.RongBang || loaiRong == RongLoai1.RongDat || loaiRong == RongLoai1.KyLan)
@@ -370,8 +368,15 @@ public class RongXuongAttack : DragonPVEController
         //    KillTru();
         //}
     }
+   
+    public override void AbsUpdateAnimIdle()
+    {
+     
+    }
+
     private void AbsUpdateAnimAttackRongCay()
     {
+       
         if (stateAnimAttack == 1)
         {
             if (Target == null) return;

@@ -120,7 +120,7 @@ public class NetworkManager : MonoBehaviour
     }
     void UpdateTick(SocketIOEvent e)
     {
-        debug.Log("UpdateTick: " + e.name + " " + e.data);
+      // debug.Log("UpdateTick: " + e.name + " " + e.data);
         foreach (string team in e.data["p"].keys)
         {
              foreach (string id in e.data["p"][team].keys)
