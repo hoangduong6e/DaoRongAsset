@@ -11,7 +11,7 @@ public class inappload : MonoBehaviour, IStoreListener
     public string[] skimcuong = new string[] { "com.memobi.studio.300kimcuong", "com.memobi.studio.1500kimcuong", "com.memobi.studio.3500kimcuong" };
     public string[] sokimcuong = new string[] { "300", "1500", "3500" };
     public string[] sotien = new string[] { "19.000Đ", "99.000Đ", "199.000Đ"};
-    IStoreController m_StoreController;
+     IStoreController m_StoreController;
     void Awake()
     {
         crgame = GetComponent<CrGame>();

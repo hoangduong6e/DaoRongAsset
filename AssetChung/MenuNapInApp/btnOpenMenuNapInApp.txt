@@ -1,0 +1,11 @@
+﻿LuaBehaviour = LuaBehaviour or {}
+
+function start()
+   local btn = self.gameObject:GetComponent(typeof(CS.UnityEngine.UI.Button))
+   btn.onClick:AddListener(onClick)
+
+end
+function onClick()
+     CS.AllMenu.ins:OpenMenuDisk('menunapinapp')
+ 
+ end
