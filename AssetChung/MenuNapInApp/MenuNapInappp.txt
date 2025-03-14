@@ -7,6 +7,9 @@ local menu
 local spriteTabSang,spriteTabToi
 local alltab
 
+local menuinfoitem
+
+local isNap = false
 function start()
 
     menu = self.gameObject
@@ -22,6 +25,7 @@ function start()
     alltab.transform:Find("btnNapThe"):GetComponent("Button").onClick:AddListener(ClickTabNapThe)
     menu.transform:Find("btnExit"):GetComponent("Button").onClick:AddListener(ClickExit)
     --menu = CS.AllMenu.ins:GetCreateMenu("MenuNapinapp")
+    menuinfoitem = CS.AllMenu.ins:GetCreateMenu("infoitem",CS.CrGame.ins.trencung.gameObject)
    local Onap = menu.transform:GetChild(0)
    for i = 0, Onap.transform.childCount - 1 do
     --CS.UnityEngine.Object.Destroy(Onap.transform:GetChild(i).gameObject:GetComponent(typeof(CS.UnityEngine.UI.Button)))
@@ -37,6 +41,19 @@ function start()
 
    end
 
+end
+function update()
+    --print('update')
+    if isNap == false then return end
+    for i = 0, menuinfoitem.transform.childCount - 1 do 
+        local txt = menuinfoitem.transform:GetChild(i).transform:GetChild(0):GetComponent("Text")
+        if txt.text == "Giao dịch thất bại" then
+            --CS.CrGame.ins:OnThongBaoNhanh("Bắt đc thất bại", 2)
+            SaveHuyGiaoDich()
+            isNap = false
+        end
+        print('txt:'..txt.text)
+    end
 end
 function ClickExit()
     CS.AllMenu.ins:DestroyMenu("menunapinapp")
@@ -71,6 +88,7 @@ local function myCallback(response)
     print('Lua received callback dataaa: '.. response)
     local T = _G.LuaExtension:ParseTable(response)
     if T.status == "0" then
+          isNap = true
           local NapinApp = menu:GetComponent("NapinApp")
           NapinApp:MuaKimCuong()
           print('yeu cau ok')
@@ -85,6 +103,11 @@ function ClickMuaKimCuong()
     CS.CrGame.ins.panelLoadDao:SetActive(true);
 
     local btnchon = CS.UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject
+    local button = btnchon:GetComponent("Button")
+    button.enabled = false
+    CS.EventManager.StartDelay2(function ()
+        button.enabled = true
+    end,1)
     --print('click mua kc'..btnchon.transform:GetSiblingIndex())
 
     local platform = (CS.UnityEngine.Application.platform == CS.UnityEngine.RuntimePlatform.Android) and "google" or "apple"
@@ -106,26 +129,28 @@ local function CallBackLichSuNap(response)
           local Content = PanelLichSu.transform:GetChild(2).transform:GetChild(0).transform:GetChild(0)
           local Obj = Content.transform:GetChild(0)
           PanelLichSu:SetActive(true)
-          print('CallBackLichSuNap ok')
+          --print('CallBackLichSuNap ok')
           SetAllTabToi()
 
           alltab.transform:Find("btnLichSu"):GetComponent("Image").sprite = spriteTabSang
 
-          for key, value in pairs(list) do
+          for i = 0, tonumber(T.lengthlist) - 1 do
             local clone = CS.UnityEngine.Object.Instantiate(Obj, Content.transform)
-            clone.transform:Find("txttime"):GetComponent("Text").text = value.time
-            clone.transform:Find("txttrangthai"):GetComponent("Text").text = value.status
-            clone.transform:Find("txtmenhgia"):GetComponent("Text").text = value.product_id
-            clone.transform:Find("txtchitiet"):GetComponent("Text").text = value.magiaodich
-           
-            local img = menu.transform:GetChild(0).transform:Find(value.product_id)
+            local obj = list[tostring(i)]
+            clone.name = i
+            clone.transform:Find("txttime"):GetComponent("Text").text = obj.time
+            clone.transform:Find("txttrangthai"):GetComponent("Text").text = obj.status
+            clone.transform:Find("txtmenhgia"):GetComponent("Text").text = obj.product_id
+            clone.transform:Find("txtchitiet"):GetComponent("Text").text = obj.magiaodich
+            clone.transform:SetSiblingIndex(1)
+            local img = menu.transform:GetChild(0).transform:Find(obj.product_id)
             if img ~= nil then
                 local imgIcon = clone.transform:Find("imgIcon"):GetComponent("Image")
                 imgIcon.sprite = img.transform:GetChild(0):GetComponent("Image").sprite
             end
          
             clone.gameObject:SetActive(true)
-            --print("Key: " .. tostring(key) .. ", product_id: " .. tostring(value.product_id))
+            --print("i: " .. tostring(i) .. ", product_id: " .. tostring(obj))
             --count = count + 1
             --AllGioiHan[value.name] = tonumber(value.gioihan)
         end
@@ -141,8 +166,32 @@ function GetLichSuNap()
     if PanelLichSu.activeSelf then return end
     local method = 'NapInApp'
     local nameClass = 'GetLichSu'
-    local keyData = { '',}
+    local keyData = { '1'}
     local valueData = {''}
 
     XluaNetwork:SendRequest(method, nameClass, keyData, valueData, CallBackLichSuNap)
+end
+
+
+
+local function CallBackHuyGD(response)
+    CS.CrGame.ins.panelLoadDao:SetActive(false);
+    print('Lua received callback dataaa: '.. response)
+    local T = _G.LuaExtension:ParseTable(response)
+    if T.status == "0" then
+          
+    
+    else
+        CS.CrGame.ins:OnThongBaoNhanh(T.message, 2)
+    end
+
+end
+
+function SaveHuyGiaoDich()
+    local method = 'NapInApp'
+    local nameClass = 'HuyBo'
+    local keyData = { '1'}
+    local valueData = {''}
+
+    XluaNetwork:SendRequest(method, nameClass, keyData, valueData, CallBackHuyGD)
 end
