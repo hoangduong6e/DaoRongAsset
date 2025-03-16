@@ -76,145 +76,145 @@ public class DauTruongOnline : MonoBehaviour
             gameObject.SetActive(false);
             return;
         }
-        else if (e.data["UpdateDra"])
-        {
-           // dataSet.Add();
-            if (e.data["UpdateDra"]["team"])
-            {
-                if (e.data["UpdateDra"]["hieuungskill"])
-                {
-                    string hieuungskill = e.data["UpdateDra"]["hieuungskill"].str;
-                    float dame = float.Parse(e.data["UpdateDra"]["dame"].str);
-                    float level = float.Parse(e.data["UpdateDra"]["level"].str);
-                    VienChinh.vienchinh.HieuUngSkill(hieuungskill, dame, level, true, VienChinh.vienchinh.GetTeamByName(e.data["UpdateDra"]["team"].str));
-                    return;
-                }
-                //if (e.data["UpdateDra"]["HienIconSkill"])
-                //{
-                //    float timehien = float.Parse(e.data["UpdateDra"]["timehien"].str);
-                //    string team = e.data["UpdateDra"]["team"].str;
-                //    string namee = e.data["UpdateDra"]["namee"].str;
-                //    if (VienChinh.vienchinh.GetTeamByName(team) == "TeamXanh") team = "Do";
-                //    else team = "Xanh";
+        //else if (e.data["UpdateDra"])
+        //{
+        //   // dataSet.Add();
+        //    if (e.data["UpdateDra"]["team"])
+        //    {
+        //        if (e.data["UpdateDra"]["hieuungskill"])
+        //        {
+        //            string hieuungskill = e.data["UpdateDra"]["hieuungskill"].str;
+        //            float dame = float.Parse(e.data["UpdateDra"]["dame"].str);
+        //            float level = float.Parse(e.data["UpdateDra"]["level"].str);
+        //            VienChinh.vienchinh.HieuUngSkill(hieuungskill, dame, level, true, VienChinh.vienchinh.GetTeamByName(e.data["UpdateDra"]["team"].str));
+        //            return;
+        //        }
+        //        //if (e.data["UpdateDra"]["HienIconSkill"])
+        //        //{
+        //        //    float timehien = float.Parse(e.data["UpdateDra"]["timehien"].str);
+        //        //    string team = e.data["UpdateDra"]["team"].str;
+        //        //    string namee = e.data["UpdateDra"]["namee"].str;
+        //        //    if (VienChinh.vienchinh.GetTeamByName(team) == "TeamXanh") team = "Do";
+        //        //    else team = "Xanh";
 
-                //    VienChinh.vienchinh.HienIconSkill(timehien,team,namee,true);
-                //    return;
-                //}
-                if (VienChinh.vienchinh.GetTeamByName(e.data["UpdateDra"]["team"].str) == "TeamXanh")
-                {
-                    if (e.data["UpdateDra"]["truhptru"])
-                    {
-                        VienChinh.vienchinh.TruXanh.GetComponent<TruVienChinh>().MatMau(float.Parse(e.data["UpdateDra"]["truhptru"].str), true);
-                    }
-                }
-                else
-                {
-                    if (e.data["UpdateDra"]["truhptru"])
-                    {
-                        VienChinh.vienchinh.TruDo.GetComponent<TruVienChinh>().MatMau(float.Parse(e.data["UpdateDra"]["truhptru"].str), true);
-                    }
-                }
-                return;
-            }
-            if (e.data["UpdateDra"]["listdra"])
-            {
-                for (int i = 0; i < e.data["UpdateDra"]["listdra"].Count; i++)
-                {
-                    Transform draa = GetDra(e.data["UpdateDra"]["listdra"][i].str);
-                    if (draa != null)
-                    {
-                        if (e.data["UpdateDra"]["biencuu"])
-                        {
-                            VienChinh.vienchinh.SetBienCuuOnline(draa, float.Parse(e.data["UpdateDra"]["time"].str));
+        //        //    VienChinh.vienchinh.HienIconSkill(timehien,team,namee,true);
+        //        //    return;
+        //        //}
+        //        if (VienChinh.vienchinh.GetTeamByName(e.data["UpdateDra"]["team"].str) == "TeamXanh")
+        //        {
+        //            if (e.data["UpdateDra"]["truhptru"])
+        //            {
+        //                VienChinh.vienchinh.TruXanh.GetComponent<TruVienChinh>().MatMau(float.Parse(e.data["UpdateDra"]["truhptru"].str), true);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if (e.data["UpdateDra"]["truhptru"])
+        //            {
+        //                VienChinh.vienchinh.TruDo.GetComponent<TruVienChinh>().MatMau(float.Parse(e.data["UpdateDra"]["truhptru"].str), true);
+        //            }
+        //        }
+        //        return;
+        //    }
+        //    if (e.data["UpdateDra"]["listdra"])
+        //    {
+        //        for (int i = 0; i < e.data["UpdateDra"]["listdra"].Count; i++)
+        //        {
+        //            Transform draa = GetDra(e.data["UpdateDra"]["listdra"][i].str);
+        //            if (draa != null)
+        //            {
+        //                if (e.data["UpdateDra"]["biencuu"])
+        //                {
+        //                    VienChinh.vienchinh.SetBienCuuOnline(draa, float.Parse(e.data["UpdateDra"]["time"].str));
 
-                            if (e.data["UpdateDra"]["lamcham"])
-                            {
-                                float time = float.Parse(e.data["UpdateDra"]["time"].str);
-                                //  string lamcham = e.data["UpdateDra"]["lamcham"].str;
-                                string effect = e.data["UpdateDra"]["effect"].str;
-                                float chia = float.Parse(e.data["UpdateDra"]["chia"].str);
-                                string cong = e.data["UpdateDra"]["cong"].str;
-                                dataLamCham data = new dataLamCham(time, effect, chia, cong, true);
-                                draa.transform.Find("SkillDra").GetComponent<DragonPVEController>().LamChamABS(data);
-                            }
-                        }
-                    }
-                }
-                return;
-            }
-            Transform dra = GetDra(e.data["UpdateDra"]["id"].str);
-            if (dra == null)
-            {
-                debug.Log("dra nulll id: " + e.data["UpdateDra"]["id"].str);
-                return;
-            }
-            DragonPVEController dragonPVEController = dra.GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
-            if (e.data["UpdateDra"]["daylui"])
-            {
-                //debug.Log("day luiii " + e.data["UpdateDra"]["daylui"].ToString());
-                dragonPVEController.SetDayLuiOnline(float.Parse(e.data["UpdateDra"]["daylui"].str));
-            }
-            else if (e.data["UpdateDra"]["hp"])
-            {
-                //  debug.Log("tru hpppp " + e.data["UpdateDra"]["truhp"].ToString());
-                dragonPVEController.SetHpOnline(e.data["UpdateDra"]);
-                //dragonPVEController.hp
+        //                    if (e.data["UpdateDra"]["lamcham"])
+        //                    {
+        //                        float time = float.Parse(e.data["UpdateDra"]["time"].str);
+        //                        //  string lamcham = e.data["UpdateDra"]["lamcham"].str;
+        //                        string effect = e.data["UpdateDra"]["effect"].str;
+        //                        float chia = float.Parse(e.data["UpdateDra"]["chia"].str);
+        //                        string cong = e.data["UpdateDra"]["cong"].str;
+        //                        dataLamCham data = new dataLamCham(time, effect, chia, cong, true);
+        //                        draa.transform.Find("SkillDra").GetComponent<DragonPVEController>().LamChamABS(data);
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        return;
+        //    }
+        //    Transform dra = GetDra(e.data["UpdateDra"]["id"].str);
+        //    if (dra == null)
+        //    {
+        //        debug.Log("dra nulll id: " + e.data["UpdateDra"]["id"].str);
+        //        return;
+        //    }
+        //    DragonPVEController dragonPVEController = dra.GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
+        //    if (e.data["UpdateDra"]["daylui"])
+        //    {
+        //        //debug.Log("day luiii " + e.data["UpdateDra"]["daylui"].ToString());
+        //        dragonPVEController.SetDayLuiOnline(float.Parse(e.data["UpdateDra"]["daylui"].str));
+        //    }
+        //    else if (e.data["UpdateDra"]["hp"])
+        //    {
+        //        //  debug.Log("tru hpppp " + e.data["UpdateDra"]["truhp"].ToString());
+        //        dragonPVEController.SetHpOnline(e.data["UpdateDra"]);
+        //        //dragonPVEController.hp
              
-            //    dragonPVEController.SetHp(float.Parse(e.data["UpdateDra"]["setfillhp"].str));
-            }
-            else if (e.data["UpdateDra"]["lamcham"])
-            {
-                float time = float.Parse(e.data["UpdateDra"]["time"].str);
-              //  string lamcham = e.data["UpdateDra"]["lamcham"].str;
-                string effect = e.data["UpdateDra"]["effect"].str;
-                float chia = float.Parse(e.data["UpdateDra"]["chia"].str);
-                string cong = e.data["UpdateDra"]["cong"].str;
-                dataLamCham data = new dataLamCham(time, effect, chia, cong, true);
-                dragonPVEController.LamChamABS(data);
-            }
-            else if (e.data["UpdateDra"]["hutmau"])
-            {
-                //  debug.Log("tru hpppp " + e.data["UpdateDra"]["truhp"].ToString());
+        //    //    dragonPVEController.SetHp(float.Parse(e.data["UpdateDra"]["setfillhp"].str));
+        //    }
+        //    else if (e.data["UpdateDra"]["lamcham"])
+        //    {
+        //        float time = float.Parse(e.data["UpdateDra"]["time"].str);
+        //      //  string lamcham = e.data["UpdateDra"]["lamcham"].str;
+        //        string effect = e.data["UpdateDra"]["effect"].str;
+        //        float chia = float.Parse(e.data["UpdateDra"]["chia"].str);
+        //        string cong = e.data["UpdateDra"]["cong"].str;
+        //        dataLamCham data = new dataLamCham(time, effect, chia, cong, true);
+        //        dragonPVEController.LamChamABS(data);
+        //    }
+        //    else if (e.data["UpdateDra"]["hutmau"])
+        //    {
+        //        //  debug.Log("tru hpppp " + e.data["UpdateDra"]["truhp"].ToString());
 
-                dragonPVEController.HutMauOnline(float.Parse(e.data["UpdateDra"]["hutmau"].str));
-                //    dragonPVEController.SetHp(float.Parse(e.data["UpdateDra"]["setfillhp"].str));
-            }
-            else if (e.data["UpdateDra"]["hieuungchu"])
-            {
-                //  debug.Log("tru hpppp " + e.data["UpdateDra"]["truhp"].ToString());
+        //        dragonPVEController.HutMauOnline(float.Parse(e.data["UpdateDra"]["hutmau"].str));
+        //        //    dragonPVEController.SetHp(float.Parse(e.data["UpdateDra"]["setfillhp"].str));
+        //    }
+        //    else if (e.data["UpdateDra"]["hieuungchu"])
+        //    {
+        //        //  debug.Log("tru hpppp " + e.data["UpdateDra"]["truhp"].ToString());
 
-                PVEManager.InstantiateHieuUngChu(e.data["UpdateDra"]["hieuungchu"].str,dragonPVEController.transform,2,true);
-                //    dragonPVEController.SetHp(float.Parse(e.data["UpdateDra"]["setfillhp"].str));
-            }
-            else if (e.data["UpdateDra"]["rongdie"])
-            {
-                //  debug.Log("tru hpppp " + e.data["UpdateDra"]["truhp"].ToString());
+        //        PVEManager.InstantiateHieuUngChu(e.data["UpdateDra"]["hieuungchu"].str,dragonPVEController.transform,2,true);
+        //        //    dragonPVEController.SetHp(float.Parse(e.data["UpdateDra"]["setfillhp"].str));
+        //    }
+        //    else if (e.data["UpdateDra"]["rongdie"])
+        //    {
+        //        //  debug.Log("tru hpppp " + e.data["UpdateDra"]["truhp"].ToString());
 
-                dragonPVEController.Died();
-                //    dragonPVEController.SetHp(float.Parse(e.data["UpdateDra"]["setfillhp"].str));
-            }
-            else if (e.data["UpdateDra"]["func"])
-            {
-                debug.Log("UpdateDra func " + e.data["UpdateDra"]["func"].str);
-                dragonPVEController.FuncInvokeOnline(e.data["UpdateDra"]["func"].str,true);
-            }
-        }
-        else if (e.data["KetQua"])
-        {
-         //   if (AllMenu.ins.menu.ContainsKey("infoitem")) AllMenu.ins.menu["infoitem"].SetActive(false);
+        //        dragonPVEController.Died();
+        //        //    dragonPVEController.SetHp(float.Parse(e.data["UpdateDra"]["setfillhp"].str));
+        //    }
+        //    else if (e.data["UpdateDra"]["func"])
+        //    {
+        //        debug.Log("UpdateDra func " + e.data["UpdateDra"]["func"].str);
+        //        dragonPVEController.FuncInvokeOnline(e.data["UpdateDra"]["func"].str,true);
+        //    }
+        //}
+        //else if (e.data["KetQua"])
+        //{
+        // //   if (AllMenu.ins.menu.ContainsKey("infoitem")) AllMenu.ins.menu["infoitem"].SetActive(false);
          
-            VienChinh.vienchinh.OpenPanelWinLose(e.data["KetQua"]["KetQua"].str, e.data["KetQua"]["info"].str);
-            //GiaoDienPVP.ins.menuWin.SetActive(true);
+        //    VienChinh.vienchinh.OpenPanelWinLose(e.data["KetQua"]["KetQua"].str, e.data["KetQua"]["info"].str);
+        //    //GiaoDienPVP.ins.menuWin.SetActive(true);
 
-            //if (e.data["KetQua"].str == "Win") GiaoDienPVP.ins.spriteWin.sprite = GiaoDienPVP.ins.thang;
-            //else GiaoDienPVP.ins.spriteWin.sprite = GiaoDienPVP.ins.thua;
+        //    //if (e.data["KetQua"].str == "Win") GiaoDienPVP.ins.spriteWin.sprite = GiaoDienPVP.ins.thang;
+        //    //else GiaoDienPVP.ins.spriteWin.sprite = GiaoDienPVP.ins.thua;
 
-            //GiaoDienPVP.ins.thongtin.text = e.data["info"].str;
-            //GiaoDienPVP.ins.panelBatdau.transform.GetChild(2).GetComponent<Text>().text = "";
-            //GiaoDienPVP.ins.btnSetting.SetActive(true);
-            //GiaoDienPVP.ins.spriteWin.SetNativeSize();
-            //Invoke("QuayVe", 10f);
-        }
+        //    //GiaoDienPVP.ins.thongtin.text = e.data["info"].str;
+        //    //GiaoDienPVP.ins.panelBatdau.transform.GetChild(2).GetComponent<Text>().text = "";
+        //    //GiaoDienPVP.ins.btnSetting.SetActive(true);
+        //    //GiaoDienPVP.ins.spriteWin.SetNativeSize();
+        //    //Invoke("QuayVe", 10f);
+        //}
     }
 
     private Transform GetDra(string id)

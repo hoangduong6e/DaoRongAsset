@@ -55,11 +55,17 @@ public class PVPManager : MonoBehaviour
             dra.ImgHp.fillAmount = float.Parse(e.data["hp"]["fill"].ToString());
             dra.HienThanhHp();
         }
-        else if (e.data["destroy"])
+        else if (e.data["d"])//destroy
         {
-            Transform tf = DragonsTF[e.data["destroy"]["team"].str][e.data["destroy"]["id"].str];
+            Transform tf = DragonsTF[e.data["d"]["team"].str][e.data["d"]["id"].str];
             Destroy(tf.gameObject);
-            DragonsTF[e.data["destroy"]["team"].str].Remove(e.data["destroy"]["id"].str);
+            DragonsTF[e.data["d"]["team"].str].Remove(e.data["d"]["id"].str);
+        }
+        else if (e.data["c"])
+        {
+            debug.Log("netranhhhh");
+            Transform tf = DragonsTF[e.data["c"]["team"].str][e.data["c"]["id"].str];
+            PVEManager.InstantiateHieuUngChu(e.data["c"]["name"].str,tf.transform.Find("SkillDra")); 
         }
         //else if(e.data["attack"])
         //{

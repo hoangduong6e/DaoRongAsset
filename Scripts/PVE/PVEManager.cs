@@ -747,7 +747,7 @@ public class PVEManager : MonoBehaviour
     //    txt.gameObject.SetActive(true);
     //    EZ_PoolManager.Despawn(txt, destroy);
     //}
-    public static void InstantiateHieuUngChu(string nameeff, Transform tfins, float destroy = 2f, bool setOnline = false)
+    public static void InstantiateHieuUngChu(string nameeff, Transform tfins, float destroy = 2f)
     {
    
         var parentTransform = tfins.transform.parent;
@@ -769,14 +769,14 @@ public class PVEManager : MonoBehaviour
         }
 
         ReplayData.AddHieuUngChu(parentTransform.name, nameeff);
-        if (VienChinh.vienchinh.chedodau == CheDoDau.Online && !setOnline)
-        {
-            JSONObject newjson = new JSONObject();
-            newjson.AddField("id", parentTransform.name);
-            newjson.AddField("hieuungchu", nameeff);
-            DauTruongOnline.ins.AddUpdateData(newjson);
-            return;
-        }
+        //if (VienChinh.vienchinh.chedodau == CheDoDau.Online && !setOnline)
+        //{
+        //    JSONObject newjson = new JSONObject();
+        //    newjson.AddField("id", parentTransform.name);
+        //    newjson.AddField("hieuungchu", nameeff);
+        //    DauTruongOnline.ins.AddUpdateData(newjson);
+        //    return;
+        //}
         if (Setting.cauhinh != CauHinh.CauHinhCao) return;
         Transform obj = Inventory.ins.GetEffect(nameeff).transform;
         Transform txt = EZ_PoolManager.Spawn(obj, tfins.transform.position, Quaternion.identity);
