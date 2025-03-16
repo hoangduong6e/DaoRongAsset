@@ -31,7 +31,7 @@ public class BossXucTu : DragonPVEController
         };
         transform.parent.GetComponent<DraUpdateAnimator>().DragonPVEControllerr = this;
     }
-    public override void Choang(float giay = 0.4F, bool setOnline = false)
+    public override void Choang(float giay = 0.4F)
     {
         // base.Choang(giay);
     }
@@ -51,12 +51,12 @@ public class BossXucTu : DragonPVEController
     {
         // DayLuiDefault();
     }
-    public override void SetHp(float fillhp, bool setonline = false)
+    public override void SetHp(float fillhp)
     {
         //SetHpDefault(fillhp, setonline);
     }
     //  float tongdame = 0;
-    public override void AbsMatMau(float maumat, DragonPVEController cs, bool setonline = false)
+    public override void AbsMatMau(float maumat, DragonPVEController cs)
     {
         //tongdame += maumat; 
         //  UnityEngine.debug.Log(cs.nameobj + " đánh, dame: " + maumat + " tổng dame: " + tongdame);

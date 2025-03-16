@@ -64,29 +64,92 @@ public class PVEManager : MonoBehaviour
     //    return randomvec;
     //}
 
-   private static readonly Dictionary<string, Dictionary<string, Dictionary<DraHeight, Func<Vector3>>>> VecHeight =
-        new Dictionary<string, Dictionary<string, Dictionary<DraHeight, Func<Vector3>>>>
-        {
+    //private static readonly Dictionary<string, Dictionary<string, Dictionary<DraHeight, Func<Vector3>>>> VecHeight =
+    //     new Dictionary<string, Dictionary<string, Dictionary<DraHeight, Func<Vector3>>>>
+    //     {
+    //         {
+    //             "TeamXanh", new Dictionary<string, Dictionary<DraHeight, Func<Vector3>>>
+    //             {
+    //                 {
+    //                     "Idlle", new Dictionary<DraHeight, Func<Vector3>>
+    //                     {
+    //                         { DraHeight.DEFAULT, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-2.3f,-1f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+    //                         { DraHeight.NuTamXuan, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0f,0.5f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+    //                     }
+    //                 },
+    //                 {
+    //                     "Flying", new Dictionary<DraHeight, Func<Vector3>>
+    //                     {
+    //                         { DraHeight.DEFAULT, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0f,0.5f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+    //                         { DraHeight.HacLong, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(2.6f,2.9f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+    //                         { DraHeight.LMX_PH_2DAU, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y +Random.Range(-0.3f,1.2f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+    //                         { DraHeight.RongLua, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0.3f,1f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+    //                         { DraHeight.PH, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0.2f,1.8f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+    //                         { DraHeight._2DAU, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y +Random.Range(-0.5f,0.8f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+    //                         { DraHeight.MaThach, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y +Random.Range(-0.8f,0f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+
+    //                     }
+    //                 }
+    //             }
+    //         },
+    //         {
+    //             "TeamDo", new Dictionary<string, Dictionary<DraHeight, Func<Vector3>>>
+    //             {
+    //                 {
+    //                     "Idlle", new Dictionary<DraHeight, Func<Vector3>>
+    //                     {
+    //                         { DraHeight.DEFAULT, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-2.3f,-1), VienChinh.vienchinh.TruDo.transform.position.z) },
+    //                         { DraHeight.NuTamXuan, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0f,0.5f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+
+    //                     }
+    //                 },
+    //                 {
+    //                     "Flying", new Dictionary<DraHeight, Func<Vector3>>
+    //                     {
+    //                         { DraHeight.DEFAULT, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0f,0.5f), VienChinh.vienchinh.TruDo.transform.position.z) },
+    //                         { DraHeight.HacLong, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(2.6f,2.9f), VienChinh.vienchinh.TruDo.transform.position.z) },
+    //                         { DraHeight.LMX_PH_2DAU, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y +Random.Range(-0.3f,1.2f), VienChinh.vienchinh.TruDo.transform.position.z) },
+    //                         { DraHeight.RongLua, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(1.3f,1.5f), VienChinh.vienchinh.TruDo.transform.position.z) },
+    //                         { DraHeight.PH, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0.2f,1.8f), VienChinh.vienchinh.TruDo.transform.position.z) },
+    //                         { DraHeight._2DAU, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + +Random.Range(-0.5f,0.8f), VienChinh.vienchinh.TruDo.transform.position.z) },
+    //                         { DraHeight.MaThach, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + +Random.Range(-0.8f,0f), VienChinh.vienchinh.TruDo.transform.position.z) },
+
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     };
+
+    public static float XTruTeamXanh = 17.40f;
+    public static float XTruTeamDo = 42.82f;
+    public static readonly Dictionary<Team, float> XTruTeam = new Dictionary<Team, float> {
+        {Team.TeamXanh, XTruTeamXanh },
+        {Team.TeamDo,  XTruTeamDo },
+    };
+
+    private static readonly Dictionary<string, Dictionary<string, Dictionary<DraHeight, Func<Vector3>>>> VecHeight =
+     new Dictionary<string, Dictionary<string, Dictionary<DraHeight, Func<Vector3>>>>
+     {
             {
                 "TeamXanh", new Dictionary<string, Dictionary<DraHeight, Func<Vector3>>>
                 {
                     {
                         "Idlle", new Dictionary<DraHeight, Func<Vector3>>
                         {
-                            { DraHeight.DEFAULT, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-2.3f,-1f), VienChinh.vienchinh.TruXanh.transform.position.z) },
-                            { DraHeight.NuTamXuan, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0f,0.5f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.DEFAULT, () => new Vector3(XTruTeamXanh, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-2.3f,-1f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.NuTamXuan, () => new Vector3(XTruTeamXanh, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0f,0.5f), VienChinh.vienchinh.TruXanh.transform.position.z) },
                         }
                     },
                     {
                         "Flying", new Dictionary<DraHeight, Func<Vector3>>
                         {
-                            { DraHeight.DEFAULT, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0f,0.5f), VienChinh.vienchinh.TruXanh.transform.position.z) },
-                            { DraHeight.HacLong, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(2.6f,2.9f), VienChinh.vienchinh.TruXanh.transform.position.z) },
-                            { DraHeight.LMX_PH_2DAU, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y +Random.Range(-0.3f,1.2f), VienChinh.vienchinh.TruXanh.transform.position.z) },
-                            { DraHeight.RongLua, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0.3f,1f), VienChinh.vienchinh.TruXanh.transform.position.z) },
-                            { DraHeight.PH, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0.2f,1.8f), VienChinh.vienchinh.TruXanh.transform.position.z) },
-                            { DraHeight._2DAU, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y +Random.Range(-0.5f,0.8f), VienChinh.vienchinh.TruXanh.transform.position.z) },
-                            { DraHeight.MaThach, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y +Random.Range(-0.8f,0f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.DEFAULT, () => new Vector3(XTruTeamXanh, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0f,0.5f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.HacLong, () => new Vector3(XTruTeamXanh, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(2.6f,2.9f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.LMX_PH_2DAU, () => new Vector3(XTruTeamXanh, VienChinh.vienchinh.TruXanh.transform.position.y +Random.Range(-0.3f,1.2f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.RongLua, () => new Vector3(XTruTeamXanh, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0.3f,1f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.PH, () => new Vector3(XTruTeamXanh, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0.2f,1.8f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight._2DAU, () => new Vector3(XTruTeamXanh, VienChinh.vienchinh.TruXanh.transform.position.y +Random.Range(-0.5f,0.8f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.MaThach, () => new Vector3(XTruTeamXanh, VienChinh.vienchinh.TruXanh.transform.position.y +Random.Range(-0.8f,0f), VienChinh.vienchinh.TruXanh.transform.position.z) },
 
                         }
                     }
@@ -98,27 +161,27 @@ public class PVEManager : MonoBehaviour
                     {
                         "Idlle", new Dictionary<DraHeight, Func<Vector3>>
                         {
-                            { DraHeight.DEFAULT, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-2.3f,-1), VienChinh.vienchinh.TruDo.transform.position.z) },
-                            { DraHeight.NuTamXuan, () => new Vector3(VienChinh.vienchinh.TruXanh.transform.position.x + 2, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0f,0.5f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.DEFAULT, () => new Vector3(XTruTeamDo, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-2.3f,-1), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.NuTamXuan, () => new Vector3(XTruTeamDo, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0f,0.5f), VienChinh.vienchinh.TruDo.transform.position.z) },
 
                         }
                     },
                     {
                         "Flying", new Dictionary<DraHeight, Func<Vector3>>
                         {
-                            { DraHeight.DEFAULT, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0f,0.5f), VienChinh.vienchinh.TruDo.transform.position.z) },
-                            { DraHeight.HacLong, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(2.6f,2.9f), VienChinh.vienchinh.TruDo.transform.position.z) },
-                            { DraHeight.LMX_PH_2DAU, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y +Random.Range(-0.3f,1.2f), VienChinh.vienchinh.TruDo.transform.position.z) },
-                            { DraHeight.RongLua, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(1.3f,1.5f), VienChinh.vienchinh.TruDo.transform.position.z) },
-                            { DraHeight.PH, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0.2f,1.8f), VienChinh.vienchinh.TruDo.transform.position.z) },
-                            { DraHeight._2DAU, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + +Random.Range(-0.5f,0.8f), VienChinh.vienchinh.TruDo.transform.position.z) },
-                            { DraHeight.MaThach, () => new Vector3(VienChinh.vienchinh.TruDo.transform.position.x - 1.8f, VienChinh.vienchinh.TruXanh.transform.position.y + +Random.Range(-0.8f,0f), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.DEFAULT, () => new Vector3(XTruTeamDo, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0f,0.5f), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.HacLong, () => new Vector3(XTruTeamDo, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(2.6f,2.9f), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.LMX_PH_2DAU, () => new Vector3(XTruTeamDo, VienChinh.vienchinh.TruXanh.transform.position.y +Random.Range(-0.3f,1.2f), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.RongLua, () => new Vector3(XTruTeamDo, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(1.3f,1.5f), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.PH, () => new Vector3(XTruTeamDo, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0.2f,1.8f), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight._2DAU, () => new Vector3(XTruTeamDo, VienChinh.vienchinh.TruXanh.transform.position.y + +Random.Range(-0.5f,0.8f), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.MaThach, () => new Vector3(XTruTeamDo, VienChinh.vienchinh.TruXanh.transform.position.y + +Random.Range(-0.8f,0f), VienChinh.vienchinh.TruDo.transform.position.z) },
 
                         }
                     }
                 }
             }
-        };
+     };
 
     public static void TrieuHoiDra(JSONObject data, string team)
     {
@@ -133,7 +196,10 @@ public class PVEManager : MonoBehaviour
         SetScaleDragon(nameObject, byte.Parse(data["sao"].ToString()), rongtrieuhoi.transform);
    
 
-
+        //if(VienChinh.vienchinh.Teamthis != Team.TeamXanh)
+        //{
+        //    team = team == "TeamXanh" ? "TeamDo" : "TeamXanh";
+        //}    
         DraInstantiate draInstantiate = rongtrieuhoi.GetComponent<DraInstantiate>();
 
 
@@ -278,21 +344,28 @@ public class PVEManager : MonoBehaviour
       
         return rongtrieuhoi;
     }
-    public static void GetUpdateMove(Transform tf, string nameteam)
+    public static void GetUpdateMove(Transform tf, Team team)
     {
         DragonPVEController dragonPVEController = tf.GetComponent<DragonPVEController>();
         Transform parent = tf.parent;
-
+        if (!VienChinh.vienchinh.DanhOnline)
+        {
+            dragonPVEController.ActionAttack += dragonPVEController.ABSAnimatorAttack;
+        }
+            
         // Thêm hành động vào actionUpdate dựa trên team
-        if (nameteam == "TeamXanh")
+        if (team == Team.TeamXanh)
         {
             dragonPVEController.actionUpdate += MoveTeamXanh;
-         //   dragonPVEController.team = Team.TeamXanh;
+            //dragonPVEController.actionUpdate += MoveTeamDo;
+
+            //   dragonPVEController.team = Team.TeamXanh;
         }
         else
         {
             dragonPVEController.actionUpdate += MoveTeamDo;
-           // dragonPVEController.team = Team.TeamDo;
+           // dragonPVEController.actionUpdate += MoveTeamXanh;
+            // dragonPVEController.team = Team.TeamDo;
             if (Setting.cauhinh == CauHinh.CauHinhCao) dragonPVEController.actionUpdate += TruHienRongTeamDo;
         }
 
@@ -303,7 +376,6 @@ public class PVEManager : MonoBehaviour
         }
 
         // Định nghĩa các hành động cần thiết
-     
 
         void MoveTeamXanh()
         {
@@ -322,16 +394,14 @@ public class PVEManager : MonoBehaviour
                 if (!dragonPVEController.DanganimAttack)
                 {
                     dragonPVEController.AnimatorRun();
-                    if (parent.position.x > VienChinh.vienchinh.muctieudo.transform.position.x)
-                    {
-                      //  VienChinh.vienchinh.SetMucTieuTeamDo();//setmuctieuuu
-                       // Debug.Log("SetMucTieuTeamXanhgg");
-                    }
+                    //if (parent.position.x > VienChinh.vienchinh.muctieudo.transform.position.x)
+                    //{
+                    //  //  VienChinh.vienchinh.SetMucTieuTeamDo();//setmuctieuuu
+                    //   // Debug.Log("SetMucTieuTeamXanhgg");
+                    //}
                 }
                 //VienChinh.vienchinh.SetMucTieuTeamXanh();//setmuctieuuu
                // Debug.Log("parent: " + parent.position.x + " muctieudo: " + VienChinh.vienchinh.muctieudo.transform.position.x);
-               
-
             }
             else
             {
@@ -354,18 +424,15 @@ public class PVEManager : MonoBehaviour
                 {
                     dragonPVEController.AnimatorRun();
 
-                    if (parent.position.x < VienChinh.vienchinh.muctieuxanh.transform.position.x)
-                    {
-                       // VienChinh.vienchinh.SetMucTieuTeamXanh();//setmuctieuuu
-                      //  Debug.Log("SetmucTieuTeamDo");
-                    }
+                    //if (parent.position.x < VienChinh.vienchinh.muctieuxanh.transform.position.x)
+                    //{
+                    //   // VienChinh.vienchinh.SetMucTieuTeamXanh();//setmuctieuuu
+                    //  //  Debug.Log("SetmucTieuTeamDo");
+                    //}
 
                   //  Debug.Log("parent: " + parent.position.x + " muctieuxanh: " + VienChinh.vienchinh.muctieuxanh.transform.position.x);
                 }
                 // VienChinh.vienchinh.SetMucTieuTeamDo();//setmuctieuuu
-
-                
-
             }
             else
             {

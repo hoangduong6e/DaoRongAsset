@@ -122,4 +122,8 @@ public class TruVienChinh : MonoBehaviour
         float fillamount = (float)Hp[allmau] / (float)MaxHp[allmau];
         MauTru.fillAmount = fillamount;
     }
+    //private void Update()
+    //{
+    //    debug.Log("tru " + transform.parent.name + " " + transform.position);
+    //}
 }

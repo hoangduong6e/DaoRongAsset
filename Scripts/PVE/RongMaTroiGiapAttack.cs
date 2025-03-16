@@ -51,33 +51,33 @@ public class RongMaTroiGiapAttack : DragonPVEController
         ImgHp.transform.parent.gameObject.SetActive(true);
         delaytatthanhmau();
     }
-    public override void SetHp(float fillhp, bool setonline = false)
+    public override void SetHp(float fillhp)
     {
         if(fillGiap.fillAmount > ImgHp.fillAmount)
         {
             fillGiap.fillAmount = fillhp;
             ImgHp.transform.parent.gameObject.SetActive(true);
         }
-        else SetHpDefault(fillhp,setonline);
+        else SetHpDefault(fillhp);
     }
 
-    public override void AbsMatMau(float maumat, DragonPVEController cs, bool setonline = false)
+    public override void AbsMatMau(float maumat, DragonPVEController cs)
     {
         if (hpgiap > 0)
         {
-            if (VienChinh.vienchinh.chedodau == CheDoDau.Online && !setonline)
-            {
-                JSONObject newjson = new JSONObject();
-                newjson.AddField("id", transform.parent.name);
-                // float fillset = (hpgiap - maumat) / maxhpgiap;
-                double tru = System.Math.Round(hpgiap - maumat, 2);
-                newjson.AddField("hpgiap", tru.ToString());
-                newjson.AddField("hp", "");
-                hpgiap = (float)tru;
-                DauTruongOnline.ins.AddUpdateData(newjson);
+            //if (VienChinh.vienchinh.chedodau == CheDoDau.Online && !setonline)
+            //{
+            //    JSONObject newjson = new JSONObject();
+            //    newjson.AddField("id", transform.parent.name);
+            //    // float fillset = (hpgiap - maumat) / maxhpgiap;
+            //    double tru = System.Math.Round(hpgiap - maumat, 2);
+            //    newjson.AddField("hpgiap", tru.ToString());
+            //    newjson.AddField("hp", "");
+            //    hpgiap = (float)tru;
+            //    DauTruongOnline.ins.AddUpdateData(newjson);
 
-                return;
-            }
+            //    return;
+            //}
 
             if (thongke) ThongKeDame.AddThongKe(new ThongKeDame.CData(team.ToString(), nameobj, idrong, maumat, ThongKeDame.EType.chongchiu));
 
@@ -98,7 +98,7 @@ public class RongMaTroiGiapAttack : DragonPVEController
         }
         else
         {
-            MatMauDefault(maumat, cs, setonline);
+            MatMauDefault(maumat, cs);
         }
     }
 

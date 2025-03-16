@@ -28,7 +28,7 @@ public class QuaiVienChinhNew : DragonPVEController
     //    anim = transform.parent.GetComponent<Animator>();
          nameobj = "";
         transform.parent.GetComponent<DraUpdateAnimator>().DragonPVEControllerr = this;
-        PVEManager.GetUpdateMove(transform, "TeamDo");
+        PVEManager.GetUpdateMove(transform, Team.TeamDo);
 
         actionMoveSkillok += SkillMoveOkk;
         for (int i = 0; i < skillObj.Length; i++)
@@ -52,13 +52,13 @@ public class QuaiVienChinhNew : DragonPVEController
     {
        // DayLuiDefault();
     }
-    public override void SetHp(float fillhp, bool setonline = false)
+    public override void SetHp(float fillhp)
     {
-        SetHpDefault(fillhp, setonline);
+        SetHpDefault(fillhp);
     }
-    public override void AbsMatMau(float maumat, DragonPVEController cs, bool setonline = false)
+    public override void AbsMatMau(float maumat, DragonPVEController cs)
     {
-        MatMauDefault(maumat, cs, setonline);
+        MatMauDefault(maumat, cs);
     }
 
 

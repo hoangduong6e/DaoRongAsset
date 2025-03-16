@@ -26,7 +26,7 @@ public class BossTGAttack : DragonPVEController
     {
         //    anim = transform.parent.GetComponent<Animator>();
         transform.parent.GetComponent<DraUpdateAnimator>().DragonPVEControllerr = this;
-        PVEManager.GetUpdateMove(transform, "TeamDo");
+        PVEManager.GetUpdateMove(transform, Team.TeamDo);
 
         actionMoveSkillok += SkillMoveOkk;
         for (int i = 0; i < skillObj.Length; i++)
@@ -50,12 +50,12 @@ public class BossTGAttack : DragonPVEController
     {
        // DayLuiDefault();
     }
-    public override void SetHp(float fillhp, bool setonline = false)
+    public override void SetHp(float fillhp)
     {
-        SetHpDefault(fillhp, setonline);
+        SetHpDefault(fillhp);
     }
   //  float tongdame = 0;
-    public override void AbsMatMau(float maumat, DragonPVEController cs, bool setonline = false)
+    public override void AbsMatMau(float maumat, DragonPVEController cs)
     {
         //tongdame += maumat; 
         //  UnityEngine.debug.Log(cs.nameobj + " đánh, dame: " + maumat + " tổng dame: " + tongdame);

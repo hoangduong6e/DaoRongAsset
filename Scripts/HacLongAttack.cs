@@ -28,7 +28,7 @@ public partial class HacLongAttack : DragonPVEController
         LoadTimeCDSkill();
         methodMap = new Dictionary<string, Action<object[]>>
          {
-             { "CuongNo", args => CuongNo((bool)args[0]) },
+             { "CuongNo", args => CuongNo() },
              { "HapHuyet", args => HapHuyet((bool)args[0]) },
              { "DoatMenh", args => DoatMenh((bool)args[0]) },
              { "SDDoatMenh", args => SDDoatMenh((bool)args[0]) }
@@ -243,7 +243,7 @@ public partial class HacLongAttack : DragonPVEController
         ImgHp.transform.parent.gameObject.SetActive(true);
         delaytatthanhmau();
     }
-    public override void Choang(float giay = 0.4F, bool setOnline = false)
+    public override void Choang(float giay = 0.4F)
     {
         // base.Choang(giay);
     }
@@ -290,14 +290,14 @@ public partial class HacLongAttack : DragonPVEController
         UpdateBiDong();
         // if (skillObj[6].activeSelf)
     }
-    public override void SetHp(float fillhp, bool setonline = false)
+    public override void SetHp(float fillhp)
     {
-        SetHpDefault(fillhp, setonline);
+        SetHpDefault(fillhp);
     }
-    public override void AbsMatMau(float maumat, DragonPVEController cs, bool setonline = false)
+    public override void AbsMatMau(float maumat, DragonPVEController cs)
     {
         //MatMauDefault(maumat, cs);
-        if (GetHpTru(maumat, cs, setonline) <= 0)
+        if (GetHpTru(maumat, cs) <= 0)
         {
             if (hoisinh < 2)
             {
@@ -428,17 +428,17 @@ public partial class HacLongAttack : DragonPVEController
     {
         BienCuuDefault(time);
     }
-    public void CuongNo(bool setonline = false)
+    public void CuongNo()
     {
-        if (VienChinh.vienchinh.chedodau == CheDoDau.Online && !setonline)
-        {
-            //  debug.Log("set lam chammmmm");
-            JSONObject newjson = new JSONObject();
-            newjson.AddField("id", idrong);
-            newjson.AddField("func", "CuongNo");
-            DauTruongOnline.ins.AddUpdateData(newjson,true);
-            return;
-        }
+        //if (VienChinh.vienchinh.chedodau == CheDoDau.Online)
+        //{
+        //    //  debug.Log("set lam chammmmm");
+        //    JSONObject newjson = new JSONObject();
+        //    newjson.AddField("id", idrong);
+        //    newjson.AddField("func", "CuongNo");
+        //    DauTruongOnline.ins.AddUpdateData(newjson,true);
+        //    return;
+        //}
         battu = true;
        // Debug.Log("Cuồng nộ");
         setAnim = false;

@@ -190,7 +190,7 @@ public class DauTruongOnline : MonoBehaviour
             {
                 //  debug.Log("tru hpppp " + e.data["UpdateDra"]["truhp"].ToString());
 
-                dragonPVEController.Died(true);
+                dragonPVEController.Died();
                 //    dragonPVEController.SetHp(float.Parse(e.data["UpdateDra"]["setfillhp"].str));
             }
             else if (e.data["UpdateDra"]["func"])

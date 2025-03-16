@@ -85,7 +85,7 @@ public class ReplayDra : MonoBehaviour
             dragonPVEController.anim.SetFloat("speedRun", ReplayData.speedReplay);
             dragonPVEController.anim.SetFloat("speedAttack", ReplayData.speedReplay);
         }    
-        if (ReplayData.CheckData(nameobj, "fillhp", i)) dragonPVEController.SetHp(ReplayData.NodeDataPosition[nameobj][i]["fillhp"].AsFloat,false);
+        if (ReplayData.CheckData(nameobj, "fillhp", i)) dragonPVEController.SetHp(ReplayData.NodeDataPosition[nameobj][i]["fillhp"].AsFloat);
         if (ReplayData.CheckData(nameobj, "skill", i))
         {
             if (ReplayData.CheckData(nameobj, "target", i) == false) // không có target là auto đứng đầu

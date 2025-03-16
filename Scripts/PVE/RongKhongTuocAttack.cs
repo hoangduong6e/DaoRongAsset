@@ -20,17 +20,17 @@ public class RongKhongTuocAttack : DragonPVEController
     {
 
     }
-    public override void SetHp(float fillhp, bool setonline = false)
+    public override void SetHp(float fillhp)
     {
-        SetHpDefault(fillhp, setonline);
+        SetHpDefault(fillhp);
     }
-    public override void AbsMatMau(float maumat, DragonPVEController cs, bool setonline = false)
+    public override void AbsMatMau(float maumat, DragonPVEController cs)
     {
         //if (Target.transform.parent.name == "TeamXanh" && VienChinh.vienchinh.chedodau == CheDoDau.SoloKhongTuoc)//nhoxoa
         //{
         //    VienChinh.vienchinh.dameKhongTuoc += maumat;
         //}
-        MatMauDefault(maumat, cs, setonline);
+        MatMauDefault(maumat, cs);
     }
 
 

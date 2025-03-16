@@ -14,7 +14,7 @@ public class BossHnew : DragonPVEController
     {
 
     }
-    public override void Choang(float giay = 0.4F, bool setOnline = false)
+    public override void Choang(float giay = 0.4F)
     {
         // base.Choang(giay);
     }
@@ -23,7 +23,7 @@ public class BossHnew : DragonPVEController
         //    anim = transform.parent.GetComponent<Animator>();
         nameobj = "";
         transform.parent.GetComponent<DraUpdateAnimator>().DragonPVEControllerr = this;
-        PVEManager.GetUpdateMove(transform, "TeamDo");
+        PVEManager.GetUpdateMove(transform, Team.TeamDo);
         if(VienChinh.vienchinh.chedodau == CheDoDau.Halloween)
         {
             int aichon = MenuEventHalloween2024.inss.aiDangChon + 1;
@@ -60,11 +60,11 @@ public class BossHnew : DragonPVEController
     {
         // DayLuiDefault();
     }
-    public override void SetHp(float fillhp, bool setonline = false)
+    public override void SetHp(float fillhp)
     {
-        SetHpDefault(fillhp, setonline);
+        SetHpDefault(fillhp);
     }
-    public override void AbsMatMau(float maumat, DragonPVEController cs, bool setonline = false)
+    public override void AbsMatMau(float maumat, DragonPVEController cs)
     {
         if(VienChinh.vienchinh.chedodau == CheDoDau.BossTG)
         {
@@ -73,7 +73,7 @@ public class BossHnew : DragonPVEController
         }    
         else
         {
-            MatMauDefault(maumat, cs, setonline);
+            MatMauDefault(maumat, cs);
         }
 
 

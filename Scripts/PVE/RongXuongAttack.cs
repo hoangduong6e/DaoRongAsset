@@ -42,39 +42,39 @@ public class RongXuongAttack : DragonPVEController
         if(loaiRong == RongLoai1.XuongMaTroi)
         {
             actionUpdateAnimAttack += AbsUpdateAnimAttackXuongMaTroi;
-            actionMoveSkillok += SkillMoveOkXuongMaTroi;
+            if(!VienChinh.vienchinh.DanhOnline) actionMoveSkillok += SkillMoveOkXuongMaTroi;
         }
         else if (loaiRong == RongLoai1.Rong2Dau)
         {
             actionUpdateAnimAttack += AbsUpdateAnimAttackNguyetLong;
-            actionMoveSkillok += SkillMoveOkHaiDau;
+            if (!VienChinh.vienchinh.DanhOnline) actionMoveSkillok += SkillMoveOkHaiDau;
             hp /= 2;
             Maxhp = hp;
         }
         else if(loaiRong == RongLoai1.RongCay)
         {
             actionUpdateAnimAttack += AbsUpdateAnimAttackRongCay;
-            actionMoveSkillok += SkillMoveOkRongCay;
+            if (!VienChinh.vienchinh.DanhOnline) actionMoveSkillok += SkillMoveOkRongCay;
         }    
         else if(loaiRong == RongLoai1.RongBang)
         {
             actionUpdateAnimAttack += AbsUpdateAnimAttackRongCay;
-            actionMoveSkillok += SkillMoveOkRongBang;
+            if (!VienChinh.vienchinh.DanhOnline) actionMoveSkillok += SkillMoveOkRongBang;
         }
         else if (loaiRong == RongLoai1.RongDat || loaiRong == RongLoai1.RongSam)
         {
             actionUpdateAnimAttack += AbsUpdateAnimAttackRongCay;
-            actionMoveSkillok += SkillMoveOkRongDat;
+            if (!VienChinh.vienchinh.DanhOnline) actionMoveSkillok += SkillMoveOkRongDat;
         }
         else if (loaiRong == RongLoai1.NguyetLong)
         {
             actionUpdateAnimAttack += AbsUpdateAnimAttackNguyetLong;
-            actionMoveSkillok += SkillMoveOkNguyetLong;
+            if (!VienChinh.vienchinh.DanhOnline) actionMoveSkillok += SkillMoveOkNguyetLong;
         }
         else if (loaiRong == RongLoai1.KyLan)
         {
             actionUpdateAnimAttack += AbsUpdateAnimAttackKyLan;
-            actionMoveSkillok += SkillMoveOkKyLan;
+            if (!VienChinh.vienchinh.DanhOnline) actionMoveSkillok += SkillMoveOkKyLan;
         }
         //else if (loaiRong == RongLoai1.RongSam)
         //{
@@ -98,16 +98,16 @@ public class RongXuongAttack : DragonPVEController
         ImgHp.transform.parent.gameObject.SetActive(true);
         delaytatthanhmau();
     }
-    public override void SetHp(float fillhp, bool setonline = false)
+    public override void SetHp(float fillhp)
     {
-        SetHpDefault(fillhp, setonline);
+        SetHpDefault(fillhp);
     }
     private bool hoisinh = true;
-    public override void AbsMatMau(float maumat, DragonPVEController cs, bool setonline = false)
+    public override void AbsMatMau(float maumat, DragonPVEController cs)
     {
         if(loaiRong == RongLoai1.Rong2Dau)
         {
-            if (GetHpTru(maumat, cs, setonline) <= 0)
+            if (GetHpTru(maumat, cs) <= 0)
             {
                 if (hoisinh)
                 {
@@ -122,7 +122,7 @@ public class RongXuongAttack : DragonPVEController
                 }
             }
         }
-        else MatMauDefault(maumat, cs, setonline);
+        else MatMauDefault(maumat, cs);
 
     }
 
@@ -350,23 +350,23 @@ public class RongXuongAttack : DragonPVEController
     }
     private void SkillMoveOkRongDat()
     {
-        //float damee = dame;
-        //if (Random.Range(1, 100) <= _ChiMang)
-        //{
-        //    damee *= 5;
-        //    PVEManager.InstantiateHieuUngChu("chimang", transform);
-        //}
+        float damee = dame;
+        if (Random.Range(1, 100) <= _ChiMang)
+        {
+            damee *= 5;
+            PVEManager.InstantiateHieuUngChu("chimang", transform);
+        }
 
-        //if (Target.name != "trudo" && Target.name != "truxanh")
-        //{
-        //    DragonPVEController dra = Target.GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
-        //    dra.MatMau(damee, this);
-        //  //  dra.LamChamABS(5, "caylamcham");
-        //}
-        //else
-        //{
-        //    KillTru();
-        //}
+        if (Target.name != "trudo" && Target.name != "truxanh")
+        {
+            DragonPVEController dra = Target.GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
+            dra.MatMau(damee, this);
+            //  dra.LamChamABS(5, "caylamcham");
+        }
+        else
+        {
+            KillTru();
+        }
     }
    
     public override void AbsUpdateAnimIdle()

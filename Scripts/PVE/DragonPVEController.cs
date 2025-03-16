@@ -168,8 +168,9 @@ public abstract class DragonPVEController : MonoBehaviour
     public void Startt()
     {
         Transform parent = transform.parent;
-       // if(team == Team.TeamXanh) PVEManager.GetUpdateMove(transform, parent.transform.parent.name);
-          PVEManager.GetUpdateMove(transform, parent.transform.parent.name);
+        // if(team == Team.TeamXanh) PVEManager.GetUpdateMove(transform, parent.transform.parent.name);
+       // parent.transform.position = parent.transform.parent.transform.GetChild(0).transform.position;
+          PVEManager.GetUpdateMove(transform, team);
         skillObj[0].GetComponent<SkillDraController>().skillmoveok += SkillMoveOk;
         
         //     ImgHp = ThanhMau.transform.GetChild(0).GetComponent<Image>();
@@ -190,14 +191,12 @@ public abstract class DragonPVEController : MonoBehaviour
             anim.Play(animplay);
         }
         //  ReplayData.AddStateAnimator(gameObject.name, animplay);
-    }    
+    }
+    public Action ActionAttack;
     public void AnimatorAttack()
     {
-        //anim.Play("Attack");
-        //return;
         ABSAnimatorAttack();
         if (setAnim) anim.Play(animplay);
-        // ReplayData.AddStateAnimator(gameObject.name,animplay);
     }
     public abstract void ABSAnimatorAttack();
 
@@ -262,13 +261,13 @@ public abstract class DragonPVEController : MonoBehaviour
         //ReplayData.AddPositionDragon(transform.parent.name,transform.position);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public void MatMau(float maumat,DragonPVEController cs, bool setonline = false)
+    public void MatMau(float maumat,DragonPVEController cs)
     {
-        if (setonline)
-        {
-            AbsMatMau(maumat, cs, true);
-            return;
-        }
+        //if (setonline)
+        //{
+        //    AbsMatMau(maumat, cs, true);
+        //    return;
+        //}
         if (battu) return;
         if (Random.Range(1, 100) <= netranh)
         {
@@ -278,7 +277,7 @@ public abstract class DragonPVEController : MonoBehaviour
             PVEManager.InstantiateHieuUngChu("netranh", transform);
             return;
         }
-        AbsMatMau(maumat, cs, false);
+        AbsMatMau(maumat, cs);
     }
     //public void MatMauAction1(float maumat, DragonPVEController cs, bool setonline = false)
     //{
@@ -298,15 +297,15 @@ public abstract class DragonPVEController : MonoBehaviour
     //    }
     //    AbsMatMau(maumat, cs, false);
     //}
-    public float GetHpTru(float maumat, DragonPVEController cs,bool setonline = false)
+    public float GetHpTru(float maumat, DragonPVEController cs)
     {
-        string color = (team == Team.TeamXanh) ? "<color=lime>" + team.ToString() + "</color>" : "<color=red>" + team.ToString() + "</color>";
+        //string color = (team == Team.TeamXanh) ? "<color=lime>" + team.ToString() + "</color>" : "<color=red>" + team.ToString() + "</color>";
      
-        if (setonline)
-        {
-            TruMau();
-            return hp;
-        }
+        //if (setonline)
+        //{
+        //    TruMau();
+        //    return hp;
+        //}
         if(thongke)ThongKeDame.AddThongKe(new ThongKeDame.CData(team.ToString(), nameobj,idrong, maumat, ThongKeDame.EType.chongchiu));
         if (cs != null)
         {
@@ -331,24 +330,24 @@ public abstract class DragonPVEController : MonoBehaviour
      //   debug.Log("giáp phần trăm sau khi cộng của " + nameobj + " " + color + " là " + giappt);
         if (giappt > 0) maumat -= maumat / 100 * giappt;
         // if (maumat < 0) maumat = 0;
-       // debug.Log("máu mất " + color + " " + maumat);
-        if (!setonline)
-        {
-            if (VienChinh.vienchinh.chedodau == CheDoDau.Online)
-            {
-                JSONObject newjson = new JSONObject();
-                newjson.AddField("id",idrong);
-                //  float fillset = (hp - maumat) / Maxhp;
-                //   newjson.AddField("sethp", Math.Round(fillset, 2).ToString());
-                double tru = Math.Round(hp - maumat, 2);
-                newjson.AddField("hp", tru.ToString());
-                hp = (float)tru;
-                DauTruongOnline.ins.AddUpdateData(newjson);
+        // debug.Log("máu mất " + color + " " + maumat);
+        //if (!setonline)
+        //{
+        //    if (VienChinh.vienchinh.chedodau == CheDoDau.Online)
+        //    {
+        //        JSONObject newjson = new JSONObject();
+        //        newjson.AddField("id",idrong);
+        //        //  float fillset = (hp - maumat) / Maxhp;
+        //        //   newjson.AddField("sethp", Math.Round(fillset, 2).ToString());
+        //        double tru = Math.Round(hp - maumat, 2);
+        //        newjson.AddField("hp", tru.ToString());
+        //        hp = (float)tru;
+        //        DauTruongOnline.ins.AddUpdateData(newjson);
 
-                return hp;
-            }
-        }
-       // VienChinh.vienchinh.SetMucTieuTeamDo();//setmuctieuuu
+        //        return hp;
+        //    }
+        //}
+        // VienChinh.vienchinh.SetMucTieuTeamDo();//setmuctieuuu
         //VienChinh.vienchinh.SetMucTieuTeamXanh();
 
         //  debug.Log("chedodau "+ VienChinh.vienchinh.chedodau);
@@ -360,39 +359,41 @@ public abstract class DragonPVEController : MonoBehaviour
         //    }    
 
         //}
-        TruMau();
-        void TruMau()
-        {
-           if(cs != null)
-            {
-                if(cs.thongke)
-                {
-                    ThongKeDame.AddThongKe(new ThongKeDame.CData(cs.team.ToString(), cs.nameobj, cs.idrong, maumat, ThongKeDame.EType.dame));
-                }
-            
-            }
-            hp -= maumat;
-            float fillamount = (float)hp / (float)Maxhp;
+        //TruMau();
+        //void TruMau()
+        //{
 
-            ImgHp.fillAmount = fillamount;
-            ReplayData.addHp(transform.parent.name, ImgHp.fillAmount.ToString());
-            //ImgHp.transform.parent.gameObject.SetActive(true);
-            //CancelInvoke();
-            //Invoke("tatthanhmau", 5);
-            HienThanhHp();
+        //}
+
+        if (cs != null)
+        {
+            if (cs.thongke)
+            {
+                ThongKeDame.AddThongKe(new ThongKeDame.CData(cs.team.ToString(), cs.nameobj, cs.idrong, maumat, ThongKeDame.EType.dame));
+            }
+
         }
-      
+        hp -= maumat;
+        float fillamount = (float)hp / (float)Maxhp;
+
+        ImgHp.fillAmount = fillamount;
+        ReplayData.addHp(transform.parent.name, ImgHp.fillAmount.ToString());
+        //ImgHp.transform.parent.gameObject.SetActive(true);
+        //CancelInvoke();
+        //Invoke("tatthanhmau", 5);
+        HienThanhHp();
+
         return hp;
     }
-    public abstract void AbsMatMau(float maumat, DragonPVEController cs, bool setonline = false);
-    public abstract void SetHp(float fillhp,bool setonline);
+    public abstract void AbsMatMau(float maumat, DragonPVEController cs);
+    public abstract void SetHp(float fillhp);
     public abstract void SetHpOnline(JSONObject data);
     protected float hs = 0;
     
-    protected void MatMauDefault(float maumat, DragonPVEController cs, bool setonline = false)
+    protected void MatMauDefault(float maumat, DragonPVEController cs)
     {
         //   debug.LogError("MauMat " + gameObject.transform.parent.name + ": " + maumat);
-        if (GetHpTru(maumat, cs, setonline) <= 0)
+        if (GetHpTru(maumat, cs) <=0)
         {
             float tylehoisinh = VienChinh.vienchinh.tilehoisinh[team];
             if(tylehoisinh > 0)
@@ -412,21 +413,21 @@ public abstract class DragonPVEController : MonoBehaviour
             else Died();
         }
     }
-    protected void SetHpDefault(float fillhp,bool setonline = false)
+    protected void SetHpDefault(float fillhp)
     {
         // float fillamount = (float)hpp / (float)maxhp;
         ImgHp.fillAmount = fillhp;
         ImgHp.transform.parent.gameObject.SetActive(true);
-        if(!setonline)
-        {
-            if (fillhp <= 0)
-            {
-                GameObject dieAnim = Instantiate(Inventory.ins.GetEffect("DieAnim"), transform.position, Quaternion.identity);
-                dieAnim.transform.position = transform.position;
-                Destroy(dieAnim, 0.3f);
-                Destroy(transform.parent.gameObject);
-            }
-        }
+        //if(!setonline)
+        //{
+        //    if (fillhp <= 0)
+        //    {
+        //        GameObject dieAnim = Instantiate(Inventory.ins.GetEffect("DieAnim"), transform.position, Quaternion.identity);
+        //        dieAnim.transform.position = transform.position;
+        //        Destroy(dieAnim, 0.3f);
+        //        Destroy(transform.parent.gameObject);
+        //    }
+        //}
 
         delaytatthanhmau();
     }
@@ -456,15 +457,15 @@ public abstract class DragonPVEController : MonoBehaviour
     {
         
         float conghp = dame * _HutHp / 100;
-        if (VienChinh.vienchinh.chedodau == CheDoDau.Online)
-        {
-            JSONObject newjson = new JSONObject();
-            newjson.AddField("id",idrong);
-            newjson.AddField("hutmau", conghp.ToString());
-            DauTruongOnline.ins.AddUpdateData(newjson);
+        //if (VienChinh.vienchinh.chedodau == CheDoDau.Online)
+        //{
+        //    JSONObject newjson = new JSONObject();
+        //    newjson.AddField("id",idrong);
+        //    newjson.AddField("hutmau", conghp.ToString());
+        //    DauTruongOnline.ins.AddUpdateData(newjson);
 
-            return;
-        }
+        //    return;
+        //}
 
        
         if (conghp <= 0) return;
@@ -486,7 +487,7 @@ public abstract class DragonPVEController : MonoBehaviour
         HienThanhHp();
     }
     private Coroutine hideHpBarCoroutine;
-    private void HienThanhHp()
+    public void HienThanhHp()
     {
         ImgHp.transform.parent.gameObject.SetActive(true);
         if (Setting.cauhinh == CauHinh.CauHinhThap) return;
@@ -638,22 +639,22 @@ public abstract class DragonPVEController : MonoBehaviour
         // return;
         //debug.Log("lam chaammm effect " + effect + " chia " +  chia );
 
-        if (VienChinh.vienchinh.chedodau == CheDoDau.Online && !data.setOnline)
-        {
-          //  debug.Log("set lam chammmmm");
-            JSONObject newjson = new JSONObject();
-            newjson.AddField("id",idrong);
-            newjson.AddField("lamcham", "");
-            newjson.AddField("time", data.time.ToString());
-            newjson.AddField("effect", data.eff);
-            newjson.AddField("chia", data.chia.ToString());
-            newjson.AddField("cong", data.tangtoc);
-            DauTruongOnline.ins.AddUpdateData(newjson,data.set);
-            return;
-        }
-        LamChamOnline(data.time,data.eff,data.chia,data.tangtoc,data.setOnline,data.setSpeedrun,data.setSpeedanim);
+        //if (VienChinh.vienchinh.chedodau == CheDoDau.Online && !data.setOnline)
+        //{
+        //  //  debug.Log("set lam chammmmm");
+        //    JSONObject newjson = new JSONObject();
+        //    newjson.AddField("id",idrong);
+        //    newjson.AddField("lamcham", "");
+        //    newjson.AddField("time", data.time.ToString());
+        //    newjson.AddField("effect", data.eff);
+        //    newjson.AddField("chia", data.chia.ToString());
+        //    newjson.AddField("cong", data.tangtoc);
+        //    DauTruongOnline.ins.AddUpdateData(newjson,data.set);
+        //    return;
+        //}
+        LamChamOnline(data.time,data.eff,data.chia,data.tangtoc,data.setSpeedrun,data.setSpeedanim);
     }
-    public void LamChamOnline(float time, string effect = "", float chia = 2, string cong = "0",bool setOnline = false,bool setSpeedRun = true, bool setSpeedAnim = true)
+    public void LamChamOnline(float time, string effect = "", float chia = 2, string cong = "0",bool setSpeedRun = true, bool setSpeedAnim = true)
     {
       //  if (!setOnline) return;
         ReplayData.AddLamCham(transform.parent.name, time.ToString(), effect, chia.ToString(), cong);
@@ -726,7 +727,7 @@ public abstract class DragonPVEController : MonoBehaviour
     }
     public abstract void LamChamABS(dataLamCham data);
 
-    public virtual void Choang(float giay = 0.4f,bool setOnline = false)
+    public virtual void Choang(float giay = 0.4f)
     {
         //if (VienChinh.vienchinh.chedodau == CheDoDau.Online && !setOnline)
         //{
@@ -782,18 +783,18 @@ public abstract class DragonPVEController : MonoBehaviour
 
         }
     }
-    public void Died(bool setonline = false)
+    public void Died()
     {
         Transform parnent = transform.parent;
-        if (VienChinh.vienchinh.chedodau == CheDoDau.Online && !setonline)
-        {
-            //  debug.Log("set lam chammmmm");
-            JSONObject newjson = new JSONObject();
-            newjson.AddField("id", parnent.name);
-            newjson.AddField("rongdie", "");
-            DauTruongOnline.ins.AddUpdateData(newjson);
-            return;
-        }
+        //if (VienChinh.vienchinh.chedodau == CheDoDau.Online && !setonline)
+        //{
+        //    //  debug.Log("set lam chammmmm");
+        //    JSONObject newjson = new JSONObject();
+        //    newjson.AddField("id", parnent.name);
+        //    newjson.AddField("rongdie", "");
+        //    DauTruongOnline.ins.AddUpdateData(newjson);
+        //    return;
+        //}
       //  string team = transform.parent.transform.parent.name;
      RongChet();
         //   else if (VienChinh.vienchinh.muctieudo.name == id) VienChinh.vienchinh.SetMucTieuTeamXanh();//

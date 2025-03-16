@@ -64,8 +64,8 @@ public class NetworkManager : MonoBehaviour
         socket.On("LoiDai", LoiDai);
         socket.On("updateMoney", UpdateMoney);
         socket.On("Event", Event);
-        socket.On("UpdateTick", UpdateTick);
-        socket.On("PVP", PVP);
+        socket.On("UpdateTick", PVPManager.UpdateTick);
+        socket.On("PVP", PVPManager.PVP);
         hopqua = GameObject.Find("btnQuaOnline").GetComponent<HopQua>();
         //  quatanghangngay = GetComponent<QuaTangHangNgay>();
         thuyen = GetComponent<ThuyenThucAn>();
@@ -118,40 +118,8 @@ public class NetworkManager : MonoBehaviour
         //    CrGame.ins.panelLoadDao.SetActive(false);
         //}
     }
-    void UpdateTick(SocketIOEvent e)
-    {
-      // debug.Log("UpdateTick: " + e.name + " " + e.data);
-        foreach (string team in e.data["p"].keys)
-        {
-             foreach (string id in e.data["p"][team].keys)
-             {
-                Transform tf = PVPManager.DragonsTF[team][id];
-                float x = float.Parse(e.data["p"][team][id].ToString());
-                tf.position = new Vector3(x,tf.transform.position.y,tf.transform.position.z);
-             }
-        }
 
-
-    }
-    void PVP(SocketIOEvent e)
-    {
-         debug.Log("PVP: " + e.name + " " + e.data);
-        if(e.data["anim"])
-        {
-             Transform tf = PVPManager.DragonsTF[e.data["anim"]["team"].str][e.data["anim"]["id"].str];
-
-             Animator anim = tf.GetComponent<Animator>();
-            anim.Play(e.data["anim"]["anim"].str);
-          
-        }
-        //else if(e.data["attack"])
-        //{
-        //     Transform tf = PVPManager.DragonsTF[e.data["attack"]["team"].str][e.data["attack"]["id"].str];
-        //    debug.Log(tf.name + " attack");
-        //    DragonPVEController dra = tf.transform.Find("SkillDra").GetComponent<DragonPVEController>();
-        //    dra.AnimatorAttack();
-        //}
-    }
+   
     void Event(SocketIOEvent e)
     {
         debug.Log("[SocketIO] Open received: " + e.name + " " + e.data);
@@ -421,11 +389,12 @@ public class NetworkManager : MonoBehaviour
             StartCoroutine(delayfriend());
             IEnumerator delayfriend()
             {
+                vienchinh.DanhOnline = true;
                 int count = e.data["danhloidai"]["doihinhfriend"].Count;
                 CrGame.ins.menulogin.SetActive(false);
                 GiaoDienPVP.ins.transform.Find("btnTrieuHoiNhanh").gameObject.SetActive(true);
                 // AudioManager.SetSoundBg("");
-                vienchinh.StartCoroutine(vienchinh.delayGame("nhacloidai"));
+                vienchinh.StartCoroutine(vienchinh.delayGame("nhacloidai",Team.TeamDo));
                 //yield return new WaitForSeconds(3.5f);
                 //for (int i = 0; i < count; i++)
                 //{

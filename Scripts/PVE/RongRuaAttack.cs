@@ -24,7 +24,7 @@ public class RongRuaAttack : DragonPVEController
     {
 
     }
-    public override void Choang(float giay = 0.4F, bool setOnline = false)
+    public override void Choang(float giay = 0.4F)
     {
         // base.Choang(giay);
     }
@@ -94,14 +94,14 @@ public class RongRuaAttack : DragonPVEController
         ImgHp.transform.parent.gameObject.SetActive(true);
         delaytatthanhmau();
     }
-    public override void SetHp(float fillhp, bool setonline = false)
+    public override void SetHp(float fillhp)
     {
-        SetHpDefault(fillhp, setonline);
+        SetHpDefault(fillhp);
     }
     private bool hoisinh = true;
-    public override void AbsMatMau(float maumat, DragonPVEController cs, bool setonline = false)
+    public override void AbsMatMau(float maumat, DragonPVEController cs)
     {
-        MatMauDefault(maumat, cs, setonline);
+        MatMauDefault(maumat, cs);
 
     }
 

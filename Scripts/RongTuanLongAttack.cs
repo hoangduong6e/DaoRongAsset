@@ -33,9 +33,9 @@ public class RongTuanLongAttack : DragonPVEController
     {
 
     }
-    public override void SetHp(float fillhp,bool setonline = false)
+    public override void SetHp(float fillhp)
     {
-        SetHpDefault(fillhp, setonline);
+        SetHpDefault(fillhp);
     }
     public override void SetHpOnline(JSONObject data)
     {
@@ -44,9 +44,9 @@ public class RongTuanLongAttack : DragonPVEController
         ImgHp.transform.parent.gameObject.SetActive(true);
         delaytatthanhmau();
     }
-    public override void AbsMatMau(float maumat, DragonPVEController cs, bool setonline = false)
+    public override void AbsMatMau(float maumat, DragonPVEController cs)
     {
-        MatMauDefault(maumat, cs, setonline);
+        MatMauDefault(maumat, cs);
     }
     public override void LamChamABS(dataLamCham data)
     {

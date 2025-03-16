@@ -61,6 +61,7 @@ public class VienChinh : MonoBehaviour
     public static VienChinh vienchinh;
     public CheDoDau chedodau;
 
+    public Team Teamthis;
 
     public Dictionary<Team, byte> tilehoisinh = new Dictionary<Team, byte>() {
         {Team.TeamXanh, 0 },
@@ -82,6 +83,7 @@ public class VienChinh : MonoBehaviour
         {Team.TeamDo, 0 },
     };
 
+    public bool DanhOnline = false;
     //public JSONClass ThongKeDame = new JSONClass();
 
     //public void AddThongKeDame(string id, string nameobjrong,byte saorong,float damee)
@@ -322,8 +324,43 @@ public class VienChinh : MonoBehaviour
     {
         transform.GetChild(0).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Inventory.LoadSprite(nameBG);
     }
-    public IEnumerator delayGame(string sound = "nhacpvp")
+    public IEnumerator delayGame(string sound = "nhacpvp",Team teamthis = Team.TeamXanh)
     {
+        Transform Obj = transform.GetChild(0).transform.GetChild(1);
+        Vector3 scale = Obj.transform.localScale;
+        if (teamthis == Team.TeamDo) scale.x = -1;
+        else scale.x = 1;
+        Obj.transform.localScale = scale;
+        Transform teamxanh = Obj.transform.GetChild(0);
+        Transform teamDo = Obj.transform.GetChild(1);
+        if (scale.x == 1)
+        {
+             teamxanh.name = "TeamXanh";
+             teamDo.name = "TeamDo";
+            TeamXanh = teamxanh.gameObject;
+            TeamDo = teamDo.gameObject;
+
+            PVPManager.XTeam = new()
+            {
+               { "b", PVEManager.XTruTeamXanh },
+               { "r",  PVEManager.XTruTeamDo }
+            };
+        }
+        else
+        {
+            PVPManager.XTeam = new()
+            {
+               { "b", PVEManager.XTruTeamDo },
+               { "r",  PVEManager.XTruTeamXanh }
+            };
+            teamxanh.name = "TeamDo";
+             teamDo.name = "TeamXanh";
+            TeamXanh = teamDo.gameObject;
+            TeamDo = teamxanh.gameObject;
+        }
+
+
+        Teamthis = teamthis;
         ThongKeDame.ResetThongKe();
         GameObject menutuido = AllMenu.ins.transform.Find("menuTuiDo").gameObject;
         if (menutuido.activeSelf) menutuido.SetActive(false);
@@ -398,6 +435,8 @@ public class VienChinh : MonoBehaviour
         }
         ThongKeDame.SetEnableThongKe();
         GiaoDienPVP.ins.panelBatdau.SetActive(false);
+
+      
     }
     public void Thang()
     {
@@ -1059,7 +1098,12 @@ public class VienChinh : MonoBehaviour
         //    }
         //}    
 
-        if (EventSystem.current.currentSelectedGameObject == null)
+        //if (Input.GetKeyUp(KeyCode.Z))
+        //{
+        //    debug.Log("hoán đổi team");
+            
+        //}    
+            if (EventSystem.current.currentSelectedGameObject == null)
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -1866,7 +1910,7 @@ public class VienChinh : MonoBehaviour
         }
         private static void XanhTrieuHoi(SocketIOEvent e)
         {
-            PVEManager.TrieuHoiDra(e.data["xanhtrieuhoi"], "TeamXanh");
+            PVEManager.TrieuHoiDra(e.data["xanhtrieuhoi"], vienchinh.Teamthis.ToString());
             if (e.data["truhuyentinh"])
             {
                 Inventory.ins.AddItem("HuyenTinh", -int.Parse(e.data["truhuyentinh"].ToString()));
@@ -1875,7 +1919,7 @@ public class VienChinh : MonoBehaviour
         }
         private static void DoTrieuHoi(SocketIOEvent e)
         {
-            PVEManager.TrieuHoiDra(e.data["dotrieuhoi"], "TeamDo");
+            PVEManager.TrieuHoiDra(e.data["dotrieuhoi"], vienchinh.Teamthis == Team.TeamXanh? "TeamDo":"TeamXanh");
         }
     }    
 }

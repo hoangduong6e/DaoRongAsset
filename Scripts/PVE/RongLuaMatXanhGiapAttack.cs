@@ -39,20 +39,20 @@ public class RongLuaMatXanhGiapAttack : DragonPVEController
         ImgHp.transform.parent.gameObject.SetActive(true);
         delaytatthanhmau();
     }
-    public override void SetHp(float fillhp, bool setonline = false)
+    public override void SetHp(float fillhp)
     {
         if (fillGiap.fillAmount > ImgHp.fillAmount)
         {
             fillGiap.fillAmount = fillhp;
             ImgHp.transform.parent.gameObject.SetActive(true);
         }
-        else SetHpDefault(fillhp,setonline);
+        else SetHpDefault(fillhp);
     }
-    public override void AbsMatMau(float maumat, DragonPVEController cs, bool setonline = false)
+    public override void AbsMatMau(float maumat, DragonPVEController cs)
     {
         if (hpgiap > 0)
         {
-            if (VienChinh.vienchinh.chedodau == CheDoDau.Online && !setonline)
+            if (VienChinh.vienchinh.chedodau == CheDoDau.Online)
             {
                 JSONObject newjson = new JSONObject();
                 newjson.AddField("id", transform.parent.name);
@@ -75,7 +75,7 @@ public class RongLuaMatXanhGiapAttack : DragonPVEController
         }
         else
         {
-            MatMauDefault(maumat, cs, setonline);
+            MatMauDefault(maumat, cs);
         }
     }
     public override void DayLuiABS()

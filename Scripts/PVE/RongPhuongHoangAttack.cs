@@ -28,14 +28,14 @@ public class RongPhuongHoangAttack : DragonPVEController
     {
 
     }
-    public override void SetHp(float fillhp, bool setonline = false)
+    public override void SetHp(float fillhp)
     {
-        SetHpDefault(fillhp, setonline);
+        SetHpDefault(fillhp);
     }
-    public override void AbsMatMau(float maumat, DragonPVEController cs, bool setonline = false)
+    public override void AbsMatMau(float maumat, DragonPVEController cs)
     {
         //MatMauDefault(maumat, cs);
-        if(GetHpTru(maumat,cs, setonline) <= 0)
+        if(GetHpTru(maumat,cs) <= 0)
         {
             if (hoisinh)
             { 
