@@ -1,9 +1,11 @@
-using SocketIO;
+﻿using SocketIO;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 public class PVPManager : MonoBehaviour
 {
@@ -91,6 +93,8 @@ public class PVPManager : MonoBehaviour
                 dra.enabled = false;
                 dra.AnimWin();
             }
+            if (e.data["kq"]["teamwin"].str == "b") Win();
+            else Lose();
         }
         //else if(e.data["attack"])
         //{
@@ -99,5 +103,27 @@ public class PVPManager : MonoBehaviour
         //    DragonPVEController dra = tf.transform.Find("SkillDra").GetComponent<DragonPVEController>();
         //    dra.AnimatorAttack();
         //}
+    }
+    public static void Win()
+    {
+        GiaoDienPVP.ins.spriteWin.sprite = GiaoDienPVP.ins.thang;
+        GiaoDienPVP.ins.spriteWin.SetNativeSize();
+        GiaoDienPVP.ins.thongtin.text = "Bạn đã đánh bại đối thủ!";
+        CrGame.ins.SetPanelThangCap(true);
+        CrGame.ins.txtThangCap.text = "";
+        GiaoDienPVP.ins.menuWin.SetActive(true);
+        VienChinh.vienchinh.OffThangCap();
+        GiaoDienPVP.ins.panelBatdau.transform.GetChild(2).GetComponent<Text>().text = "";
+    }
+    public static void Lose()
+    {
+        GiaoDienPVP.ins.menuWin.SetActive(true);
+        GiaoDienPVP.ins.spriteWin.sprite = GiaoDienPVP.ins.thua;
+       // if (tb != "") GiaoDienPVP.ins.thongtin.text = tb;
+        //else
+        GiaoDienPVP.ins.thongtin.text = "Bạn đã bị đánh bại";
+        GiaoDienPVP.ins.panelBatdau.transform.GetChild(2).GetComponent<Text>().text = "";
+        GiaoDienPVP.ins.btnSetting.SetActive(true);
+        GiaoDienPVP.ins.spriteWin.SetNativeSize();
     }
 }
