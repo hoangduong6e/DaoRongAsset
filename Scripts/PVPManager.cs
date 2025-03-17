@@ -1,4 +1,5 @@
 using SocketIO;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -16,6 +17,12 @@ public class PVPManager : MonoBehaviour
      {
         { "b", PVEManager.XTruTeamXanh },//teamxanh
         { "r",  PVEManager.XTruTeamDo }//teamdo
+     };
+
+    public static Dictionary<string, TruVienChinh> TruTeam = new()
+     {
+        { "b", VienChinh.vienchinh.TruXanh.GetComponent<TruVienChinh>() },//teamxanh
+        { "r",   VienChinh.vienchinh.TruDo.GetComponent<TruVienChinh>() }//teamdo
      };
 
     public static void AddDragonTF(string team, string id, Transform tf)
@@ -66,6 +73,24 @@ public class PVPManager : MonoBehaviour
             debug.Log("netranhhhh");
             Transform tf = DragonsTF[e.data["c"]["team"].str][e.data["c"]["id"].str];
             PVEManager.InstantiateHieuUngChu(e.data["c"]["name"].str,tf.transform.Find("SkillDra")); 
+        }
+        else if (e.data["hptru"])
+        {
+            TruVienChinh tru = TruTeam[e.data["hptru"]["team"].str];
+            tru.MauTru.sprite = tru.spriteMau[int.Parse(e.data["hptru"]["allmau"].ToString())];
+            tru.MauTru.sprite = tru.spriteMau[int.Parse(e.data["hptru"]["allmau"].ToString())];
+
+            float fillamount = float.Parse(e.data["hptru"]["fill"].ToString());
+            tru.MauTru.fillAmount = fillamount;
+        }
+        else if (e.data["kq"])
+        {
+            foreach (KeyValuePair<string, Transform> i in DragonsTF[e.data["kq"]["teamwin"].str])
+            {
+                DragonPVEController dra = i.Value.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+                dra.enabled = false;
+                dra.AnimWin();
+            }
         }
         //else if(e.data["attack"])
         //{

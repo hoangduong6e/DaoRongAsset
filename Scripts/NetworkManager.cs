@@ -394,8 +394,8 @@ public class NetworkManager : MonoBehaviour
                 CrGame.ins.menulogin.SetActive(false);
                 GiaoDienPVP.ins.transform.Find("btnTrieuHoiNhanh").gameObject.SetActive(true);
                 // AudioManager.SetSoundBg("");
-                vienchinh.StartCoroutine(vienchinh.delayGame("nhacloidai",Team.TeamDo));
-               // vienchinh.StartCoroutine(vienchinh.delayGame("nhacloidai",Team.TeamXanh));
+                //vienchinh.StartCoroutine(vienchinh.delayGame("nhacloidai",Team.TeamDo));
+                vienchinh.StartCoroutine(vienchinh.delayGame("nhacloidai",Team.TeamXanh));
                 //yield return new WaitForSeconds(3.5f);
                 //for (int i = 0; i < count; i++)
                 //{

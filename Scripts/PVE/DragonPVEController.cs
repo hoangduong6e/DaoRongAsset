@@ -200,18 +200,18 @@ public abstract class DragonPVEController : MonoBehaviour
     }
     public abstract void ABSAnimatorAttack();
 
-    int testidle = 0;
-    int testattack = 0;
+    //int testidle = 0;
+    //int testattack = 0;
 
     public void UpdateAnimIdle()
     {
         //   debug.Log("UpdateAnimIdle " + gameObject.name);
 
-        if (team == Team.TeamXanh)
-        {
-            testidle++;
-            debug.Log(idrong + " idlle: " + testidle);
-        }
+        //if (team == Team.TeamXanh)
+        //{
+        //    testidle++;
+        //    debug.Log(idrong + " idlle: " + testidle);
+        //}
 
         stateAnimIdle += 1;
         if (stateAnimIdle >= maxStateIdle)
@@ -225,11 +225,11 @@ public abstract class DragonPVEController : MonoBehaviour
     public abstract void AbsUpdateAnimIdle();
     public void UpdateAnimAttack()
     {
-        if(team == Team.TeamXanh)
-        {
-            testattack++;
-            debug.Log(idrong + " attack: " + testattack);
-        }    
+        //if(team == Team.TeamXanh)
+        //{
+        //    testattack++;
+        //    debug.Log(idrong + " attack: " + testattack);
+        //}    
     
 
         //  debug.Log("UpdateAnimAttack " + gameObject.name);

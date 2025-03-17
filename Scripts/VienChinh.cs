@@ -345,6 +345,12 @@ public class VienChinh : MonoBehaviour
                { "b", PVEManager.XTruTeamXanh },
                { "r",  PVEManager.XTruTeamDo }
             };
+
+            //PVPManager.TruTeam = new()
+            //{
+            //   { "b", TruXanh.GetComponent<TruVienChinh>() },
+            //   { "r", TruDo.GetComponent<TruVienChinh>() }
+            //};
         }
         else
         {
@@ -357,6 +363,12 @@ public class VienChinh : MonoBehaviour
              teamDo.name = "TeamXanh";
             TeamXanh = teamDo.gameObject;
             TeamDo = teamxanh.gameObject;
+
+            //PVPManager.TruTeam = new()
+            //{
+            //   { "b", TruDo.GetComponent<TruVienChinh>() },
+            //   { "r", TruXanh.GetComponent<TruVienChinh>() }
+            //};
         }
 
 
