@@ -122,6 +122,8 @@ public class PVEManager : MonoBehaviour
 
     public static float XTruTeamXanh = 17.40f;
     public static float XTruTeamDo = 42.82f;
+
+     public static float YTruTeamXanh = -1.70f;
     public static readonly Dictionary<Team, float> XTruTeam = new Dictionary<Team, float> {
         {Team.TeamXanh, XTruTeamXanh },
         {Team.TeamDo,  XTruTeamDo },
@@ -136,20 +138,20 @@ public class PVEManager : MonoBehaviour
                     {
                         "Idlle", new Dictionary<DraHeight, Func<Vector3>>
                         {
-                            { DraHeight.DEFAULT, () => new Vector3(XTruTeamXanh, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-2.3f,-1f), VienChinh.vienchinh.TruXanh.transform.position.z) },
-                            { DraHeight.NuTamXuan, () => new Vector3(XTruTeamXanh, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0f,0.5f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.DEFAULT, () => new Vector3(XTruTeamXanh, YTruTeamXanh + Random.Range(-2.3f,-1f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.NuTamXuan, () => new Vector3(XTruTeamXanh, YTruTeamXanh + Random.Range(0f,0.5f), VienChinh.vienchinh.TruXanh.transform.position.z) },
                         }
                     },
                     {
                         "Flying", new Dictionary<DraHeight, Func<Vector3>>
                         {
-                            { DraHeight.DEFAULT, () => new Vector3(XTruTeamXanh, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0f,0.5f), VienChinh.vienchinh.TruXanh.transform.position.z) },
-                            { DraHeight.HacLong, () => new Vector3(XTruTeamXanh, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(2.6f,2.9f), VienChinh.vienchinh.TruXanh.transform.position.z) },
-                            { DraHeight.LMX_PH_2DAU, () => new Vector3(XTruTeamXanh, VienChinh.vienchinh.TruXanh.transform.position.y +Random.Range(-0.3f,1.2f), VienChinh.vienchinh.TruXanh.transform.position.z) },
-                            { DraHeight.RongLua, () => new Vector3(XTruTeamXanh, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0.3f,1f), VienChinh.vienchinh.TruXanh.transform.position.z) },
-                            { DraHeight.PH, () => new Vector3(XTruTeamXanh, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0.2f,1.8f), VienChinh.vienchinh.TruXanh.transform.position.z) },
-                            { DraHeight._2DAU, () => new Vector3(XTruTeamXanh, VienChinh.vienchinh.TruXanh.transform.position.y +Random.Range(-0.5f,0.8f), VienChinh.vienchinh.TruXanh.transform.position.z) },
-                            { DraHeight.MaThach, () => new Vector3(XTruTeamXanh, VienChinh.vienchinh.TruXanh.transform.position.y +Random.Range(-0.8f,0f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.DEFAULT, () => new Vector3(XTruTeamXanh, YTruTeamXanh + Random.Range(0f,0.5f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.HacLong, () => new Vector3(XTruTeamXanh, YTruTeamXanh + Random.Range(2.6f,2.9f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.LMX_PH_2DAU, () => new Vector3(XTruTeamXanh, YTruTeamXanh +Random.Range(-0.3f,1.2f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.RongLua, () => new Vector3(XTruTeamXanh, YTruTeamXanh + Random.Range(0.3f,1f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.PH, () => new Vector3(XTruTeamXanh, YTruTeamXanh + Random.Range(0.2f,1.8f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight._2DAU, () => new Vector3(XTruTeamXanh, YTruTeamXanh +Random.Range(-0.5f,0.8f), VienChinh.vienchinh.TruXanh.transform.position.z) },
+                            { DraHeight.MaThach, () => new Vector3(XTruTeamXanh, YTruTeamXanh +Random.Range(-0.8f,0f), VienChinh.vienchinh.TruXanh.transform.position.z) },
 
                         }
                     }
@@ -161,21 +163,21 @@ public class PVEManager : MonoBehaviour
                     {
                         "Idlle", new Dictionary<DraHeight, Func<Vector3>>
                         {
-                            { DraHeight.DEFAULT, () => new Vector3(XTruTeamDo, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(-2.3f,-1), VienChinh.vienchinh.TruDo.transform.position.z) },
-                            { DraHeight.NuTamXuan, () => new Vector3(XTruTeamDo, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0f,0.5f), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.DEFAULT, () => new Vector3(XTruTeamDo, YTruTeamXanh + Random.Range(-2.3f,-1), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.NuTamXuan, () => new Vector3(XTruTeamDo, YTruTeamXanh + Random.Range(0f,0.5f), VienChinh.vienchinh.TruDo.transform.position.z) },
 
                         }
                     },
                     {
                         "Flying", new Dictionary<DraHeight, Func<Vector3>>
                         {
-                            { DraHeight.DEFAULT, () => new Vector3(XTruTeamDo, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0f,0.5f), VienChinh.vienchinh.TruDo.transform.position.z) },
-                            { DraHeight.HacLong, () => new Vector3(XTruTeamDo, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(2.6f,2.9f), VienChinh.vienchinh.TruDo.transform.position.z) },
-                            { DraHeight.LMX_PH_2DAU, () => new Vector3(XTruTeamDo, VienChinh.vienchinh.TruXanh.transform.position.y +Random.Range(-0.3f,1.2f), VienChinh.vienchinh.TruDo.transform.position.z) },
-                            { DraHeight.RongLua, () => new Vector3(XTruTeamDo, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(1.3f,1.5f), VienChinh.vienchinh.TruDo.transform.position.z) },
-                            { DraHeight.PH, () => new Vector3(XTruTeamDo, VienChinh.vienchinh.TruXanh.transform.position.y + Random.Range(0.2f,1.8f), VienChinh.vienchinh.TruDo.transform.position.z) },
-                            { DraHeight._2DAU, () => new Vector3(XTruTeamDo, VienChinh.vienchinh.TruXanh.transform.position.y + +Random.Range(-0.5f,0.8f), VienChinh.vienchinh.TruDo.transform.position.z) },
-                            { DraHeight.MaThach, () => new Vector3(XTruTeamDo, VienChinh.vienchinh.TruXanh.transform.position.y + +Random.Range(-0.8f,0f), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.DEFAULT, () => new Vector3(XTruTeamDo, YTruTeamXanh + Random.Range(0f,0.5f), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.HacLong, () => new Vector3(XTruTeamDo, YTruTeamXanh + Random.Range(2.6f,2.9f), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.LMX_PH_2DAU, () => new Vector3(XTruTeamDo, YTruTeamXanh +Random.Range(-0.3f,1.2f), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.RongLua, () => new Vector3(XTruTeamDo, YTruTeamXanh + Random.Range(1.3f,1.5f), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.PH, () => new Vector3(XTruTeamDo, YTruTeamXanh + Random.Range(0.2f,1.8f), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight._2DAU, () => new Vector3(XTruTeamDo, YTruTeamXanh + +Random.Range(-0.5f,0.8f), VienChinh.vienchinh.TruDo.transform.position.z) },
+                            { DraHeight.MaThach, () => new Vector3(XTruTeamDo, YTruTeamXanh + +Random.Range(-0.8f,0f), VienChinh.vienchinh.TruDo.transform.position.z) },
 
                         }
                     }
@@ -183,9 +185,9 @@ public class PVEManager : MonoBehaviour
             }
      };
 
-    public static void TrieuHoiDra(JSONObject data, string team)
+    public static void TrieuHoiDra(JSONObject data, string team, Vector3 randomvec = new Vector3())
     {
-        GTrieuHoiDra(data, team);
+        GTrieuHoiDra(data, team,randomvec);
     }
    public static GameObject GTrieuHoiDra(JSONObject data, string team, Vector3 randomvec = new Vector3())
     {

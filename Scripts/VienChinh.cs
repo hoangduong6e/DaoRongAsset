@@ -1922,7 +1922,14 @@ public class VienChinh : MonoBehaviour
         }
         private static void XanhTrieuHoi(SocketIOEvent e)
         {
-            PVEManager.TrieuHoiDra(e.data["xanhtrieuhoi"], vienchinh.Teamthis.ToString());
+            Vector3 vector3 = new Vector3();
+            vector3.z = vienchinh.TruXanh.transform.position.z;
+            if(e.data["vector2"])
+            {
+                vector3.x = float.Parse(e.data["vector2"]["x"].ToString());
+                vector3.y = float.Parse(e.data["vector2"]["y"].ToString());
+            }
+            PVEManager.TrieuHoiDra(e.data["xanhtrieuhoi"], vienchinh.Teamthis.ToString(),vector3);
             if (e.data["truhuyentinh"])
             {
                 Inventory.ins.AddItem("HuyenTinh", -int.Parse(e.data["truhuyentinh"].ToString()));
@@ -1931,7 +1938,14 @@ public class VienChinh : MonoBehaviour
         }
         private static void DoTrieuHoi(SocketIOEvent e)
         {
-            PVEManager.TrieuHoiDra(e.data["dotrieuhoi"], vienchinh.Teamthis == Team.TeamXanh? "TeamDo":"TeamXanh");
+            Vector3 vector3 = new Vector3();
+            vector3.z = vienchinh.TruDo.transform.position.z;
+             if(e.data["vector2"])
+            {
+                vector3.x = float.Parse(e.data["vector2"]["x"].ToString());
+                vector3.y = float.Parse(e.data["vector2"]["y"].ToString());
+            }
+            PVEManager.TrieuHoiDra(e.data["dotrieuhoi"], vienchinh.Teamthis == Team.TeamXanh? "TeamDo":"TeamXanh",vector3);
         }
     }    
 }
