@@ -13,7 +13,7 @@ public class RongPhuongHoangAttack : DragonPVEController
     }
     public override void AbsStart()
     {
-        skillObj[1].GetComponent<SkillDraController>().skillmoveok += SkillMoveOk;
+        if (!VienChinh.vienchinh.DanhOnline) skillObj[1].GetComponent<SkillDraController>().skillmoveok += SkillMoveOk;
         //   Transform parent = transform.parent;
         //   parent.transform.position = new Vector3(transform.position.x, transform.position.y + 3);
     }

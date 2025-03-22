@@ -548,6 +548,36 @@ public class PVEManager : MonoBehaviour
     //    return dradungtruoc;
     //}
 
+    //public static List<Transform> GetDraDungTruoc(Transform team, Vector2 phamvi) // không có giới hạn rồng
+    //{
+    //    List<Transform> dradungtruoc = new List<Transform>();
+    //    Transform dungdau = null;
+    //    if (team.name == "TeamXanh")
+    //    {
+    //        dungdau = VienChinh.vienchinh.muctieudo.transform;
+
+    //    }
+    //    else
+    //    {
+    //        dungdau = VienChinh.vienchinh.muctieuxanh.transform;
+    //    }
+    //    dradungtruoc.Add(dungdau);
+    //    for (int i = 1; i < team.transform.childCount; i++)
+    //    {
+    //        if (Mathf.Abs(dungdau.transform.position.x - team.transform.GetChild(i).transform.position.x) <= phamvi.x &&
+    //            Mathf.Abs(dungdau.transform.position.y - team.transform.GetChild(i).transform.position.y) <= phamvi.y)
+    //        {
+    //            if (dradungtruoc.Contains(team.transform.GetChild(i)) == false)
+    //            {
+    //                dradungtruoc.Add(team.transform.GetChild(i));
+    //            }
+    //        }
+    //    }
+    //    return dradungtruoc;
+    //}
+
+
+
     public static List<Transform> GetDraDungTruoc(byte sodra, Transform team, Vector2 phamvi)
     {
         List<Transform> dradungtruoc = new List<Transform>();
@@ -597,33 +627,6 @@ public class PVEManager : MonoBehaviour
      //   Debug.Log("Count dra đứng trước " + team.ToString() + " là:" + dradungtruoc.Count);
         return dradungtruoc;
     }
-    //public static List<Transform> GetDraDungTruoc(Transform team, Vector2 phamvi) // không có giới hạn rồng
-    //{
-    //    List<Transform> dradungtruoc = new List<Transform>();
-    //    Transform dungdau = null;
-    //    if (team.name == "TeamXanh")
-    //    {
-    //        dungdau = VienChinh.vienchinh.muctieudo.transform;
-
-    //    }
-    //    else
-    //    {
-    //        dungdau = VienChinh.vienchinh.muctieuxanh.transform;
-    //    }
-    //    dradungtruoc.Add(dungdau);
-    //    for (int i = 1; i < team.transform.childCount; i++)
-    //    {
-    //        if (Mathf.Abs(dungdau.transform.position.x - team.transform.GetChild(i).transform.position.x) <= phamvi.x &&
-    //            Mathf.Abs(dungdau.transform.position.y - team.transform.GetChild(i).transform.position.y) <= phamvi.y)
-    //        {
-    //            if (dradungtruoc.Contains(team.transform.GetChild(i)) == false)
-    //            {
-    //                dradungtruoc.Add(team.transform.GetChild(i));
-    //            }
-    //        }
-    //    }
-    //    return dradungtruoc;
-    //}
 
     public static List<Transform> GetDraDungTruoc(Transform team, Vector2 phamvi)
     {

@@ -72,9 +72,18 @@ public class PVPManager : MonoBehaviour
         }
         else if (e.data["c"])
         {
-            debug.Log("netranhhhh");
+            //debug.Log("netranhhhh");
             Transform tf = DragonsTF[e.data["c"]["team"].str][e.data["c"]["id"].str];
             PVEManager.InstantiateHieuUngChu(e.data["c"]["name"].str,tf.transform.Find("SkillDra")); 
+        }
+        else if (e.data["pos"])
+        {
+            //debug.Log("netranhhhh");
+            string team = e.data["pos"]["team"].str;
+            string id = e.data["pos"]["id"].str;
+            Transform tf = DragonsTF[team][e.data["pos"]["id"].str];
+            float x = VienChinh.vienchinh.Teamthis == Team.TeamXanh ? XTeam[team] + float.Parse(e.data["pos"][team][id].ToString()) : XTeam[team] - float.Parse(e.data["pos"][team][id].ToString());
+            tf.position = new Vector3(x, tf.transform.position.y, tf.transform.position.z);
         }
         else if (e.data["hptru"])
         {

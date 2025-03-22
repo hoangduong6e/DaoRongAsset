@@ -171,7 +171,7 @@ public abstract class DragonPVEController : MonoBehaviour
         // if(team == Team.TeamXanh) PVEManager.GetUpdateMove(transform, parent.transform.parent.name);
        // parent.transform.position = parent.transform.parent.transform.GetChild(0).transform.position;
           PVEManager.GetUpdateMove(transform, team);
-        skillObj[0].GetComponent<SkillDraController>().skillmoveok += SkillMoveOk;
+        if (!VienChinh.vienchinh.DanhOnline) skillObj[0].GetComponent<SkillDraController>().skillmoveok += SkillMoveOk;
         
         //     ImgHp = ThanhMau.transform.GetChild(0).GetComponent<Image>();
         //  tamdanhxa += Random.Range(0, 2);
@@ -590,17 +590,17 @@ public abstract class DragonPVEController : MonoBehaviour
         {
             random = Random.Range(1, 4);
         }
-        if (VienChinh.vienchinh.chedodau == CheDoDau.Online)
-        {
-            JSONObject newjson = new JSONObject();
-            newjson.AddField("id",idrong);
-            newjson.AddField("daylui", random.ToString());
-            // debug.Log("add daylui " + newjson.ToString());
-            DauTruongOnline.ins.AddUpdateData(newjson);
-            duocdaylui();
+        //if (VienChinh.vienchinh.chedodau == CheDoDau.Online)
+        //{
+        //    JSONObject newjson = new JSONObject();
+        //    newjson.AddField("id",idrong);
+        //    newjson.AddField("daylui", random.ToString());
+        //    // debug.Log("add daylui " + newjson.ToString());
+        //    DauTruongOnline.ins.AddUpdateData(newjson);
+        //    duocdaylui();
 
-            return;
-        }
+        //    return;
+        //}
 
         
         Transform dra = transform.parent;
