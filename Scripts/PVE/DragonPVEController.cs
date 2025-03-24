@@ -428,7 +428,13 @@ public abstract class DragonPVEController : MonoBehaviour
         //        Destroy(transform.parent.gameObject);
         //    }
         //}
-
+        if (fillhp <= 0)
+        {
+            GameObject dieAnim = Instantiate(Inventory.ins.GetEffect("DieAnim"), transform.position, Quaternion.identity);
+            dieAnim.transform.position = transform.position;
+            Destroy(dieAnim, 0.3f);
+            Destroy(transform.parent.gameObject);
+        }
         delaytatthanhmau();
     }
     protected void delaytatthanhmau()
@@ -652,6 +658,7 @@ public abstract class DragonPVEController : MonoBehaviour
         //    DauTruongOnline.ins.AddUpdateData(newjson,data.set);
         //    return;
         //}
+        debug.Log("Làm chậm eff: " + data.eff);
         LamChamOnline(data.time,data.eff,data.chia,data.tangtoc,data.setSpeedrun,data.setSpeedanim);
     }
     public void LamChamOnline(float time, string effect = "", float chia = 2, string cong = "0",bool setSpeedRun = true, bool setSpeedAnim = true)

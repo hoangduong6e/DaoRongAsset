@@ -94,6 +94,13 @@ public class PVPManager : MonoBehaviour
             float fillamount = float.Parse(e.data["hptru"]["fill"].ToString());
             tru.MauTru.fillAmount = fillamount;
         }
+        else if (e.data["lc"])//lam cham
+        {
+            //debug.Log("netranhhhh");
+            Transform tf = DragonsTF[e.data["lc"]["team"].str][e.data["lc"]["id"].str];
+            DragonPVEController dra = tf.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+            dra.LamChamABS(new dataLamCham(float.Parse(e.data["lc"]["time"].str), e.data["lc"]["eff"].str, float.Parse(e.data["lc"]["chia"].str), e.data["lc"]["cong"].str, false,false,bool.Parse(e.data["lc"]["setSpeedRun"].ToString()), bool.Parse(e.data["lc"]["setSpeedAnim"].ToString())));
+        }
         else if (e.data["kq"])
         {
             foreach (KeyValuePair<string, Transform> i in DragonsTF[e.data["kq"]["teamwin"].str])

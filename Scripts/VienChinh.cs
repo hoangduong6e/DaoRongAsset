@@ -1489,27 +1489,28 @@ public class VienChinh : MonoBehaviour
         }
         return objskill;
     }
-    public void HieuUngSkill(string nameSkill,float dame,float level, bool setOnline = false,string team = "TeamDo")
+    public void HieuUngSkill(string nameSkill,float dame,float level,string team = "TeamDo")
     {
         //  giaodienPvp.transform.GetChild(3).gameObject.SetActive(true);
-        if (vienchinh.chedodau == CheDoDau.Online)
-        {
-            if (!setOnline)
-            {
-                JSONObject newjsonn = new JSONObject();
-                newjsonn.AddField("hieuungskill", nameSkill);
-                newjsonn.AddField("dame", dame.ToString());
-                newjsonn.AddField("level", level.ToString());
-                newjsonn.AddField("team", DauTruongOnline.namedoithu);
-                DauTruongOnline.ins.AddUpdateData(newjsonn, true);
+        //if (vienchinh.chedodau == CheDoDau.Online)
+        //{
+        //    if (!setOnline)
+        //    {
+        //        JSONObject newjsonn = new JSONObject();
+        //        newjsonn.AddField("hieuungskill", nameSkill);
+        //        newjsonn.AddField("dame", dame.ToString());
+        //        newjsonn.AddField("level", level.ToString());
+        //        newjsonn.AddField("team", DauTruongOnline.namedoithu);
+        //        DauTruongOnline.ins.AddUpdateData(newjsonn, true);
               
-            }
-           // if (nameSkill == "SkillBienCuu" || nameSkill == "SkillCuongLoan") return;
-        }
+        //    }
+        //   // if (nameSkill == "SkillBienCuu" || nameSkill == "SkillCuongLoan") return;
+        //}
       //  debug.Log("xong1");
 
         GameObject hieuungg = InstantiateHieuUngSkill(nameSkill,team);
         // debug.Log("xong2");
+        if (DanhOnline) return;
 
         if (nameSkill == "SkillSamNo")
         {
@@ -1540,7 +1541,7 @@ public class VienChinh : MonoBehaviour
         {
          
         }
-        else if (nameSkill == "SkillDienKienTuThan" && !setOnline)
+        else if (nameSkill == "SkillDienKienTuThan")
         {
             debug.Log("su dung DienKienTuThan");
             string[] randomthebai = new string [0];

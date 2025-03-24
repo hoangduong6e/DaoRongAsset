@@ -1040,6 +1040,7 @@ public class NetworkManager : MonoBehaviour
             vienchinh.timeskill[index] = float.Parse(CatDauNgoacKep(e.data["useskill"]["time"].ToString()));
             vienchinh.HieuUngSkill("Skill" + CatDauNgoacKep(e.data["useskill"]["nameskill"].ToString()), float.Parse(CatDauNgoacKep(e.data["useskill"]["satthuong"].ToString())), float.Parse(CatDauNgoacKep(e.data["useskill"]["level"].ToString())));
 
+           // if (vienchinh.DanhOnline) return;
             if (nameskill == "SamNo")
             {
                 vienchinh.HienIconSkill(float.Parse(CatDauNgoacKep(e.data["useskill"]["timeskill"].ToString())), "Xanh", "iconSamNoXanh");
@@ -1098,54 +1099,14 @@ public class NetworkManager : MonoBehaviour
                     }
                 }
                 int socuubien = 0;
-                bool send = false;
-                if (vienchinh.chedodau == CheDoDau.Online)
-                {
-                    send = true;
-                }
-
-                JSONObject newjson = new JSONObject();
-                if (send)
-                {
-                    newjson.AddField("listdra", new JSONObject());
-                    newjson.AddField("biencuu", "");
-                    newjson.AddField("time", time.ToString());
-                }
 
                 for (int i = 1; i < socuu + 1; i++)
                 {
                     //  int random = UnityEngine.Random.Range(1,TeamDo.transform.childCount-1);
-                    if (vienchinh.TeamDo.transform.childCount < i)
-                    {
-                        //  debug.Log("so cuu bien " + socuubien);
-                        if (send) DauTruongOnline.ins.AddUpdateData(newjson, true);
-                        return;
-                    }
-
-                    if (send)
-                    {
-                        newjson["listdra"].Add(vienchinh.TeamDo.transform.GetChild(i).name);
-                    }
-                    else
-                    {
-                        vienchinh.SetBienCuuOnline(vienchinh.TeamDo.transform.GetChild(i).transform, time);
-                        socuubien += 1;
-                        //if (TeamDo.transform.GetChild(i).transform.Find("BienCuu") == null)
-                        //{
-                        //    TeamDo.transform.GetChild(i).transform.Find("SkillDra").GetComponent<DragonPVEController>().BienCuuABS(time);
-                        //    socuubien += 1;
-                        //}
-                        //else
-                        //{
-                        //    GameObject hieuung = TeamDo.transform.GetChild(i).transform.Find("BienCuu").gameObject;
-                        //    hieuung.GetComponent<BienCuu>().time = time;
-                        //    hieuung.SetActive(true);
-                        //    socuubien += 1;
-                        //}
-                    }
+                    vienchinh.SetBienCuuOnline(vienchinh.TeamDo.transform.GetChild(i).transform, time);
+                    socuubien += 1;
 
                 }
-                if (send) DauTruongOnline.ins.AddUpdateData(newjson, true);
 
             }
             else if (nameskill == "CuongLoan")
