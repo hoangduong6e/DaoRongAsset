@@ -124,7 +124,7 @@ public class PVEManager : MonoBehaviour
     public static float XTruTeamDo = 42.82f;
 
      public static float YTruTeamXanh = -1.70f;
-    public static readonly Dictionary<Team, float> XTruTeam = new Dictionary<Team, float> {
+    public static Dictionary<Team, float> XTruTeam = new Dictionary<Team, float> {
         {Team.TeamXanh, XTruTeamXanh },
         {Team.TeamDo,  XTruTeamDo },
     };
@@ -196,12 +196,12 @@ public class PVEManager : MonoBehaviour
         // GameObject hieuung = Instantiate(vienchinh.HieuUngTrieuHoi, new Vector3(randomvec.x, 6, randomvec.z), Quaternion.identity) as GameObject;
         GameObject rongtrieuhoi = Instantiate(Inventory.GetObjRong(nameObject + "2"),Vector3.zero, Quaternion.identity);
         SetScaleDragon(nameObject, byte.Parse(data["sao"].ToString()), rongtrieuhoi.transform);
-   
 
-        //if(VienChinh.vienchinh.Teamthis != Team.TeamXanh)
+        //string _team = "";
+        //if (VienChinh.vienchinh.Teamthis != Team.TeamXanh)
         //{
-        //    team = team == "TeamXanh" ? "TeamDo" : "TeamXanh";
-        //}    
+        //    _team = team == "TeamXanh" ? "TeamDo" : "TeamXanh";
+        //}
         DraInstantiate draInstantiate = rongtrieuhoi.GetComponent<DraInstantiate>();
 
 
@@ -215,7 +215,16 @@ public class PVEManager : MonoBehaviour
         //child0.transform.localScale = vec1;
         //child1.transform.localScale = vec2;
 
-        if (randomvec == default) randomvec = VecHeight[team][draInstantiate.Idlle][draInstantiate.draheight]();//GetRandomTFtrieuHoi(team, draInstantiate.Idlle,draInstantiate.draheight);
+        if (randomvec == default)
+        {
+            randomvec = VecHeight[team][draInstantiate.Idlle][draInstantiate.draheight]();//GetRandomTFtrieuHoi(team, draInstantiate.Idlle,draInstantiate.draheight);
+            //randomvec.x = 0;
+        } 
+        else if(VienChinh.vienchinh.Teamthis != Team.TeamXanh)
+        {
+            randomvec.x = PVPManager.XTeam[team == "TeamXanh"?"r":"b"];
+        }
+            
         rongtrieuhoi.transform.position = randomvec;
         /// rongtrieuhoi.transform.position = draInstantiate.PositionPVERandom(team);
         //debug.Log("rong3");

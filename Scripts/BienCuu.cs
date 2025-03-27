@@ -91,6 +91,7 @@ public class BienCuu : MonoBehaviour
         }
         chiso.speed = maxspeed;
         chiso.maxspeed = maxspeed;
+        chiso.tamdanhxa = tamxa;
         Destroy(gameObject);
     
     }

@@ -74,7 +74,7 @@ public class PVPManager : MonoBehaviour
         {
             //debug.Log("netranhhhh");
             Transform tf = DragonsTF[e.data["c"]["team"].str][e.data["c"]["id"].str];
-            PVEManager.InstantiateHieuUngChu(e.data["c"]["name"].str,tf.transform.Find("SkillDra")); 
+            PVEManager.InstantiateHieuUngChu(e.data["c"]["name"].str, tf.transform.Find("SkillDra"));
         }
         else if (e.data["pos"])
         {
@@ -99,7 +99,23 @@ public class PVPManager : MonoBehaviour
             //debug.Log("netranhhhh");
             Transform tf = DragonsTF[e.data["lc"]["team"].str][e.data["lc"]["id"].str];
             DragonPVEController dra = tf.transform.Find("SkillDra").GetComponent<DragonPVEController>();
-            dra.LamChamABS(new dataLamCham(float.Parse(e.data["lc"]["time"].str), e.data["lc"]["eff"].str, float.Parse(e.data["lc"]["chia"].str), e.data["lc"]["cong"].str, false,false,bool.Parse(e.data["lc"]["setSpeedRun"].ToString()), bool.Parse(e.data["lc"]["setSpeedAnim"].ToString())));
+            dra.LamChamABS(new dataLamCham(float.Parse(e.data["lc"]["time"].str), e.data["lc"]["eff"].str, float.Parse(e.data["lc"]["chia"].str), e.data["lc"]["cong"].str, false, false, bool.Parse(e.data["lc"]["setSpeedRun"].ToString()), bool.Parse(e.data["lc"]["setSpeedAnim"].ToString())));
+        }
+        else if (e.data["lst"])
+        {
+            if (e.data["bc"])//bien cuu
+            {
+                for (int i = 0; i < e.data["lst"]["all"].Count; i++)
+                {
+                    Transform tf = DragonsTF[e.data["lst"]["team"].str][e.data["lst"]["all"][i].str];
+                    DragonPVEController dra = tf.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+                    dra.BienCuuABS(float.Parse(e.data["lst"]["time"].str));
+                }
+            }
+            //else if (e.data["db"])// đặt bom
+            //{
+
+            //}
         }
         else if (e.data["kq"])
         {

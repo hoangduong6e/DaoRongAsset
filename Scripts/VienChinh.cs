@@ -345,7 +345,7 @@ public class VienChinh : MonoBehaviour
                { "b", PVEManager.XTruTeamXanh },
                { "r",  PVEManager.XTruTeamDo }
             };
-
+            
             //PVPManager.TruTeam = new()
             //{
             //   { "b", TruXanh.GetComponent<TruVienChinh>() },
@@ -359,6 +359,7 @@ public class VienChinh : MonoBehaviour
                { "b", PVEManager.XTruTeamDo },
                { "r",  PVEManager.XTruTeamXanh }
             };
+        
             teamxanh.name = "TeamDo";
              teamDo.name = "TeamXanh";
             TeamXanh = teamDo.gameObject;

@@ -394,8 +394,8 @@ public class NetworkManager : MonoBehaviour
                 CrGame.ins.menulogin.SetActive(false);
                 GiaoDienPVP.ins.transform.Find("btnTrieuHoiNhanh").gameObject.SetActive(true);
                 // AudioManager.SetSoundBg("");
-                //vienchinh.StartCoroutine(vienchinh.delayGame("nhacloidai",Team.TeamDo));
-                vienchinh.StartCoroutine(vienchinh.delayGame("nhacloidai",Team.TeamXanh));
+                vienchinh.StartCoroutine(vienchinh.delayGame("nhacloidai",Team.TeamDo));
+                //vienchinh.StartCoroutine(vienchinh.delayGame("nhacloidai",Team.TeamXanh));
                 //yield return new WaitForSeconds(3.5f);
                 //for (int i = 0; i < count; i++)
                 //{
@@ -1079,6 +1079,7 @@ public class NetworkManager : MonoBehaviour
             }
             else if (nameskill == "BienCuu")
             {
+                if (vienchinh.DanhOnline) return;
                 if (vienchinh.chedodau == CheDoDau.BossTG) return;
                 float level = float.Parse(CatDauNgoacKep(e.data["useskill"]["level"].ToString()));
 
