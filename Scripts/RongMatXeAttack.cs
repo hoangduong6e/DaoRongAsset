@@ -124,13 +124,23 @@ public class RongMatXeAttack : DragonPVEController
         }
         
     }
+    byte randomidlle = 0;
     public override void AbsUpdateAnimIdle()
     {
         if(stateAnimIdle == 0)// nếu mới reset
         {
-            animplayIdle = (Random.Range(0, 100) >= 50) ? "Idlle" : "Idlle2";
+            if (randomidlle < 2)
+            {
+                animplayIdle = "Idlle";
+                randomidlle += 1;
+            }
+            else if (randomidlle >= 2)
+            {
+                animplayIdle = "Idlle2";
+                randomidlle = 0;
+            }    
         }
-    }
+    } 
     public override void ABSAnimWin()
     {
         animplay = "Win";
@@ -148,6 +158,7 @@ public class RongMatXeAttack : DragonPVEController
     }
     public override void SkillMoveOk()
     {
+        if (VienChinh.vienchinh.DanhOnline) return;
         float damee = dame;
         if (Random.Range(1, 100) <= _ChiMang)
         {

@@ -389,21 +389,25 @@ public class NetworkManager : MonoBehaviour
             StartCoroutine(delayfriend());
             IEnumerator delayfriend()
             {
-                vienchinh.DanhOnline = true;
+                //vienchinh.DanhOnline = false;
                 int count = e.data["danhloidai"]["doihinhfriend"].Count;
                 CrGame.ins.menulogin.SetActive(false);
                 GiaoDienPVP.ins.transform.Find("btnTrieuHoiNhanh").gameObject.SetActive(true);
                 // AudioManager.SetSoundBg("");
-                vienchinh.StartCoroutine(vienchinh.delayGame("nhacloidai",Team.TeamDo));
-                //vienchinh.StartCoroutine(vienchinh.delayGame("nhacloidai",Team.TeamXanh));
-                //yield return new WaitForSeconds(3.5f);
-                //for (int i = 0; i < count; i++)
-                //{
-                //    PVEManager.TrieuHoiDra(e.data["danhloidai"]["doihinhfriend"][i], "TeamDo");
+                //vienchinh.StartCoroutine(vienchinh.delayGame("nhacloidai",Team.TeamDo));
+                vienchinh.StartCoroutine(vienchinh.delayGame("nhacloidai",Team.TeamXanh));
+                if(!vienchinh.DanhOnline)
+                {
+                    yield return new WaitForSeconds(3.5f);
+                    for (int i = 0; i < count; i++)
+                    {
+                        PVEManager.TrieuHoiDra(e.data["danhloidai"]["doihinhfriend"][i], vienchinh.Teamthis == Team.TeamXanh? "TeamDo": "TeamXanh");
 
-                    yield return new WaitForSeconds(0.1f);
+                        yield return new WaitForSeconds(0.1f);
 
-                //}
+                    }
+                }
+            
             }
         }
         if (e.data["danhthuthach"])

@@ -1924,12 +1924,12 @@ public class VienChinh : MonoBehaviour
         }
         private static void XanhTrieuHoi(SocketIOEvent e)
         {
-            Vector3 vector3 = new Vector3();
-            vector3.z = vienchinh.TruXanh.transform.position.z;
+            Vector3 vector3 = default;
             if(e.data["vector2"])
             {
                 vector3.x = float.Parse(e.data["vector2"]["x"].ToString());
                 vector3.y = float.Parse(e.data["vector2"]["y"].ToString());
+                vector3.z = vienchinh.TruXanh.transform.position.z;
             }
             PVEManager.TrieuHoiDra(e.data["xanhtrieuhoi"], vienchinh.Teamthis.ToString(),vector3);
             if (e.data["truhuyentinh"])
@@ -1940,12 +1940,12 @@ public class VienChinh : MonoBehaviour
         }
         private static void DoTrieuHoi(SocketIOEvent e)
         {
-            Vector3 vector3 = new Vector3();
-            vector3.z = vienchinh.TruDo.transform.position.z;
+            Vector3 vector3 = default;
              if(e.data["vector2"])
             {
                 vector3.x = float.Parse(e.data["vector2"]["x"].ToString());
                 vector3.y = float.Parse(e.data["vector2"]["y"].ToString());
+                vector3.z = vienchinh.TruDo.transform.position.z;
             }
             PVEManager.TrieuHoiDra(e.data["dotrieuhoi"], vienchinh.Teamthis == Team.TeamXanh? "TeamDo":"TeamXanh",vector3);
         }
