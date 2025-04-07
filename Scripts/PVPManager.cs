@@ -46,95 +46,137 @@ public class PVPManager : MonoBehaviour
             }
         }
     }
-    public static void PVP(SocketIOEvent e)
+    public class HandleSocket
     {
-        debug.Log("PVP: " + e.name + " " + e.data);
-        if (e.data["anim"])
+        private static Dictionary<string, Action<JSONObject>> eventhandle = new Dictionary<string, Action<JSONObject>>
         {
-            Transform tf = DragonsTF[e.data["anim"]["team"].str][e.data["anim"]["id"].str];
-
-            Animator anim = tf.GetComponent<Animator>();
-            anim.Play(e.data["anim"]["anim"].str);
-
-        }
-        else if (e.data["hp"])
+            {"anim",Anim},
+            {"hp",Hp},
+            {"d",Destroyy},
+            {"c",HieuUngChu},
+            {"pos",Pos},
+            {"lc",LamCham},
+            {"lst",ListRong },
+            {"hptru",HpTru },
+            {"kq",KetQua },
+            //{"xanhtrieuhoi",XanhTrieuHoi},
+            //{"dotrieuhoi",DoTrieuHoi},
+        };
+        public static void ParseData(JSONObject e)
         {
-            Transform tf = DragonsTF[e.data["hp"]["team"].str][e.data["hp"]["id"].str];
-            DragonPVEController dra = tf.transform.Find("SkillDra").GetComponent<DragonPVEController>();
-            dra.ImgHp.fillAmount = float.Parse(e.data["hp"]["fill"].ToString());
-            dra.HienThanhHp();
-        }
-        else if (e.data["d"])//destroy
-        {
-            Transform tf = DragonsTF[e.data["d"]["team"].str][e.data["d"]["id"].str];
-            Destroy(tf.gameObject);
-            DragonsTF[e.data["d"]["team"].str].Remove(e.data["d"]["id"].str);
-        }
-        else if (e.data["c"])
-        {
-            //debug.Log("netranhhhh");
-            Transform tf = DragonsTF[e.data["c"]["team"].str][e.data["c"]["id"].str];
-            PVEManager.InstantiateHieuUngChu(e.data["c"]["name"].str, tf.transform.Find("SkillDra"));
-        }
-        else if (e.data["pos"])
-        {
-            //debug.Log("netranhhhh");
-            string team = e.data["pos"]["team"].str;
-            string id = e.data["pos"]["id"].str;
-            Transform tf = DragonsTF[team][e.data["pos"]["id"].str];
-            float x = VienChinh.vienchinh.Teamthis == Team.TeamXanh ? XTeam[team] + float.Parse(e.data["pos"][team][id].ToString()) : XTeam[team] - float.Parse(e.data["pos"][team][id].ToString());
-            tf.position = new Vector3(x, tf.transform.position.y, tf.transform.position.z);
-        }
-        else if (e.data["hptru"])
-        {
-            TruVienChinh tru = TruTeam[e.data["hptru"]["team"].str];
-            tru.MauTru.sprite = tru.spriteMau[int.Parse(e.data["hptru"]["allmau"].ToString())];
-            tru.MauTru.sprite = tru.spriteMau[int.Parse(e.data["hptru"]["allmau"].ToString())];
-
-            float fillamount = float.Parse(e.data["hptru"]["fill"].ToString());
-            tru.MauTru.fillAmount = fillamount;
-        }
-        else if (e.data["lc"])//lam cham
-        {
-            //debug.Log("netranhhhh");
-            Transform tf = DragonsTF[e.data["lc"]["team"].str][e.data["lc"]["id"].str];
-            DragonPVEController dra = tf.transform.Find("SkillDra").GetComponent<DragonPVEController>();
-            dra.LamChamABS(new dataLamCham(float.Parse(e.data["lc"]["time"].str), e.data["lc"]["eff"].str, float.Parse(e.data["lc"]["chia"].str), e.data["lc"]["cong"].str, false, false, bool.Parse(e.data["lc"]["setSpeedRun"].ToString()), bool.Parse(e.data["lc"]["setSpeedAnim"].ToString())));
-        }
-        else if (e.data["lst"])
-        {
-            if (e.data["bc"])//bien cuu
+            foreach (var key in e.keys)
             {
-                for (int i = 0; i < e.data["lst"]["all"].Count; i++)
+                if (eventhandle.ContainsKey(key))
                 {
-                    Transform tf = DragonsTF[e.data["lst"]["team"].str][e.data["lst"]["all"][i].str];
-                    DragonPVEController dra = tf.transform.Find("SkillDra").GetComponent<DragonPVEController>();
-                    dra.BienCuuABS(float.Parse(e.data["lst"]["time"].str));
+                    Debug.Log($"[Socket] Key: {key}, Data: {e[key]}");
+                    eventhandle[key](e[key]);
+                }
+                else
+                {
+                    Debug.LogWarning($"[Socket] Không có event handle cho key: {key}");
                 }
             }
-            //else if (e.data["db"])// đặt bom
-            //{
-
-            //}
         }
-        else if (e.data["kq"])
+
+        public static void Anim(JSONObject data)
         {
-            foreach (KeyValuePair<string, Transform> i in DragonsTF[e.data["kq"]["teamwin"].str])
+            Transform tf = DragonsTF[data["team"].str][data["id"].str];
+
+            Animator anim = tf.GetComponent<Animator>();
+            anim.Play(data["anim"].str);
+        }
+        public static void Hp(JSONObject data)
+        {
+            Transform tf = DragonsTF[data["team"].str][data["id"].str];
+            DragonPVEController dra = tf.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+            dra.ImgHp.fillAmount = float.Parse(data["fill"].ToString());
+            dra.HienThanhHp();
+        }
+        public static void Destroyy(JSONObject data)
+        {
+            Transform tf = DragonsTF[data["team"].str][data["id"].str];
+            Destroy(tf.gameObject);
+            DragonsTF[data["team"].str].Remove(data["id"].str);
+        }
+        public static void HieuUngChu(JSONObject data)
+        {
+            Transform tf = DragonsTF[data["team"].str][data["id"].str];
+            PVEManager.InstantiateHieuUngChu(data["name"].str, tf.transform.Find("SkillDra"));
+        }
+        public static void Pos(JSONObject data)
+        {
+            string team = data["team"].str;
+            string id = data["id"].str;
+            Transform tf = DragonsTF[team][data["id"].str];
+            float x = VienChinh.vienchinh.Teamthis == Team.TeamXanh ? XTeam[team] + float.Parse(data[team][id].ToString()) : XTeam[team] - float.Parse(data[team][id].ToString());
+            tf.position = new Vector3(x, tf.transform.position.y, tf.transform.position.z);
+        }
+        public static void HpTru(JSONObject data)
+        {
+            TruVienChinh tru = TruTeam[data["team"].str];
+            tru.MauTru.sprite = tru.spriteMau[int.Parse(data["allmau"].ToString())];
+
+            float fillamount = float.Parse(data["fill"].ToString());
+            tru.MauTru.fillAmount = fillamount;
+        }
+        public static void LamCham(JSONObject data)
+        {
+            Transform tf = DragonsTF[data["team"].str][data["id"].str];
+            DragonPVEController dra = tf.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+            dra.LamChamABS(new dataLamCham(float.Parse(data["time"].str), data["eff"].str, float.Parse(data["chia"].str), data["cong"].str, false, false, bool.Parse(data["setSpeedRun"].ToString()), bool.Parse(data["setSpeedAnim"].ToString())));
+        }
+        public static void ListRong(JSONObject data)
+        {
+            if (data["bc"])//bien cuu
+            {
+                for (int i = 0; i < data["all"].Count; i++)
+                {
+                    Transform tf = DragonsTF[data["team"].str][data["all"][i].str];
+                    DragonPVEController dra = tf.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+                    dra.BienCuuABS(float.Parse(data["time"].str));
+                }
+            }
+            else if (data["ph"])//pos và hp
+            {
+                //debug.Log("đầy lùi trừ máu");
+                for (int i = 0; i < data["all"].Count; i++)
+                {
+                    string id = data["all"][i]["id"].str;
+                    string team = data["team"].str;
+                    float fill = float.Parse(data["all"][i]["fill"].ToString());
+                  //  debug.Log("id là: " + id + " team là: " + team + " fill là:" + fill);
+                    // debug.Log("fill là pos: " + float.Parse(data["all"][i]["pos"].ToString()));
+                  //  debug.Log("name là: " + DragonsTF[team][id].name);
+                    Transform tf = DragonsTF[team][id];
+                    DragonPVEController dra = tf.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+                   // debug.Log("fill là: " + dra.ImgHp.fillAmount);
+                    float x = VienChinh.vienchinh.Teamthis == Team.TeamXanh ? XTeam[team] + float.Parse(data["all"][i]["pos"].ToString()) : XTeam[team] - float.Parse(data["all"][i]["pos"].ToString());
+                    tf.position = new Vector3(x, tf.transform.position.y, tf.transform.position.z);
+            
+
+                    dra.ImgHp.fillAmount = fill;
+                  
+                    dra.HienThanhHp();
+
+                }
+            }
+        }
+        public static void KetQua(JSONObject data)
+        {
+            foreach (KeyValuePair<string, Transform> i in DragonsTF[data["teamwin"].str])
             {
                 DragonPVEController dra = i.Value.transform.Find("SkillDra").GetComponent<DragonPVEController>();
                 dra.enabled = false;
                 dra.AnimWin();
             }
-            if (e.data["kq"]["teamwin"].str == "b") Win();
+            if (data["teamwin"].str == "b") Win();
             else Lose();
         }
-        //else if(e.data["attack"])
-        //{
-        //     Transform tf = PVPManager.DragonsTF[e.data["attack"]["team"].str][e.data["attack"]["id"].str];
-        //    debug.Log(tf.name + " attack");
-        //    DragonPVEController dra = tf.transform.Find("SkillDra").GetComponent<DragonPVEController>();
-        //    dra.AnimatorAttack();
-        //}
+    }
+    public static void PVP(SocketIOEvent e)
+    {
+        debug.Log("PVP: " + e.name + " " + e.data);
+        HandleSocket.ParseData(e.data);
     }
     public static void Win()
     {
@@ -158,4 +200,7 @@ public class PVPManager : MonoBehaviour
         GiaoDienPVP.ins.btnSetting.SetActive(true);
         GiaoDienPVP.ins.spriteWin.SetNativeSize();
     }
+
+
+
 }
