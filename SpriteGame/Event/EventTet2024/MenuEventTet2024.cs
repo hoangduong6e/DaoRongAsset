@@ -37,7 +37,7 @@ public class MenuEventTet2024 : EventManager
         if (json["data"]["nhankilan"].AsBool) GiaoDienCayMai.transform.Find("KyLan9Sao").gameObject.SetActive(false);
         btnHopQua.transform.SetParent(trencung.transform);
 
-        if (CrGame.ins.NgayDem == "Ngay") transform.GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("GameData/EventTet2024/BanNgay");
+        if (CrGame.ins.NgayDem == ENgayDem.Ngay) transform.GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("GameData/EventTet2024/BanNgay");
         else transform.GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("GameData/EventTet2024/BanDem");
 
         txtTimeEvent.text = json["txtTimeEvent"];

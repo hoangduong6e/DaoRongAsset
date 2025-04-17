@@ -35,7 +35,7 @@ public class SkillRongLuaMatXanh : MonoBehaviour
                     float dame = chiso.dame;
                     if (nameRong == "RongLuaMatXanhSapphire")
                     {
-                        if (crgame.NgayDem == "Dem")
+                        if (crgame.NgayDem == ENgayDem.Dem)
                         {
                             debug.Log("Sapphire Ban đêm + 50% sức đánh");
                             dame += dame / 2; //Cộng 50% sức đánh

@@ -34,7 +34,7 @@ public class GiaoDienTuoiCay : MonoBehaviour
       //  LoadMocQua(json);
 
         Image imgBg = transform.GetChild(0).GetComponent<Image>();
-        if (CrGame.ins.NgayDem == "Ngay") imgBg.sprite = Resources.Load<Sprite>("GameData/EventTet2024/BGBanNgay");
+        if (CrGame.ins.NgayDem == ENgayDem.Ngay) imgBg.sprite = Resources.Load<Sprite>("GameData/EventTet2024/BGBanNgay");
         else imgBg.sprite = Resources.Load<Sprite>("GameData/EventTet2024/BGBanDem");
         // AudioManager.SetSoundBg("GameData/EventTet2023/nhacnentet", true);
         menuTuoiCay = transform.GetChild(0).gameObject;

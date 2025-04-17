@@ -37,7 +37,7 @@ public class MenuEventNoel2023 : EventManager
         mapMiny = imgMap.transform.position.y - imgMap.bounds.size.y / 2f;
         MapMaxY = imgMap.transform.position.y + imgMap.bounds.size.y / 2f;
       //  imgMap.sprite = GetSprite("BGDem");
-        if (CrGame.ins.NgayDem != "Ngay")
+        if (CrGame.ins.NgayDem != ENgayDem.Dem)
         {
             imgMap.sprite = GetSprite("BGDem");
         }    

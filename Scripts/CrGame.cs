@@ -10,6 +10,11 @@ using System.Globalization;
 using System.Threading;
 using System;
 using XLua;
+
+public enum ENgayDem
+{
+    Ngay,Dem
+}
 [LuaCallCSharp]
 public class CrGame : MonoBehaviour
 {
@@ -20,8 +25,9 @@ public class CrGame : MonoBehaviour
     public string nameCongtrinh; public GameObject VungCongTrinh;
     public Text txtVang, txtKimCuong,txtDanhVong;
     public GameObject MenuMoDao, panelLoadDao, tuithucAn; public byte DangODao = 1;
-    public string ServerName, NgayDem = "Ngay"; ThuyenThucAn thuyen; public Transform TfrongInfo;
+    public string ServerName; ThuyenThucAn thuyen; public Transform TfrongInfo;
     public Image ngaydem;
+    public ENgayDem NgayDem = ENgayDem.Ngay;
     public Image Bg;//public GameObject HieuungNgoiSao;
     public GameObject giaodien;
     public byte[] leveldao; public GameObject menuInfoDao; public Image khungAvatar;
@@ -114,20 +120,20 @@ public class CrGame : MonoBehaviour
         if (timeOfDayGreeting.Hour >= 6 && timeOfDayGreeting.Hour < 16)
         {
             ngaydem.color = new Color(1, 1, 1, 0);
-            NgayDem = "Ngay";
+            NgayDem = ENgayDem.Ngay;
         }
         else if (timeOfDayGreeting.Hour >= 16 && timeOfDayGreeting.Hour < 18 || timeOfDayGreeting.Hour >= 5 && timeOfDayGreeting.Hour < 6)
         {
             // debug.Log("Buổi Trưa");
             ngaydem.color = new Color(1, 1, 1, 0.3745098f);
             Bg.sprite = Inventory.LoadSprite("BanNgayBG");
-            NgayDem = "Ngay";
+            NgayDem = ENgayDem.Ngay;
         }
         else
         {
             ngaydem.color = new Color(1, 1, 1, 1);
             Bg.sprite = Inventory.LoadSprite("BanDemBG");
-            NgayDem = "Dem";
+            NgayDem = ENgayDem.Dem;
             GameObject.FindGameObjectWithTag("MainCamera").transform.Find("DomDom").gameObject.SetActive(true);
             //for (int i = 0; i < Random.Range(15, 30); i++)
             //{

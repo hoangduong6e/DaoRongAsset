@@ -28,7 +28,7 @@ public class SkillRongPhuongHoang : MonoBehaviour
             {
                 ChiSo chisodich;
                 float dame = chiso.dame;
-                if (CrGame.ins.NgayDem == "Ngay")
+                if (CrGame.ins.NgayDem == ENgayDem.Dem)
                 {
                     debug.Log("Phượng hoàng ban ngày + 50% sức đánh");
                     dame += dame / 2; //Cộng 50% sức đánh

@@ -95,7 +95,7 @@ public class RongLuaMatXanhGiapAttack : DragonPVEController
             DragonPVEController chisodich = Target.GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
             if (nameobj == "RongLuaMatXanhSapphire")
             {
-                if (CrGame.ins.NgayDem == "Dem")
+                if (CrGame.ins.NgayDem == ENgayDem.Dem)
                 {
                     debug.Log("Sapphire Ban đêm + 50% sức đánh");
                     damee += damee / 2; //Cộng 50% sức đánh

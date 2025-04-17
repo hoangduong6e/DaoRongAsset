@@ -389,7 +389,7 @@ public class NetworkManager : MonoBehaviour
             StartCoroutine(delayfriend());
             IEnumerator delayfriend()
             {
-                vienchinh.DanhOnline = false;
+                vienchinh.DanhOnline = true;
                 int count = e.data["danhloidai"]["doihinhfriend"].Count;
                 CrGame.ins.menulogin.SetActive(false);
                 GiaoDienPVP.ins.transform.Find("btnTrieuHoiNhanh").gameObject.SetActive(true);

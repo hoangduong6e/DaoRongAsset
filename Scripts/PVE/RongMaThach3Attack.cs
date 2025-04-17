@@ -108,7 +108,7 @@ public class RongMaThach3Attack : DragonPVEController
     {
         List<Transform> ronggan = new List<Transform>(PVEManager.GetDraDungTruoc(10, Target.transform.parent.transform, new Vector2(6, 6)));
         float damee = dame;
-        if (CrGame.ins.NgayDem == "Dem")
+        if (CrGame.ins.NgayDem == ENgayDem.Dem)
         {
             damee *= 1.5f; //Cộng 50% sức đánh
         }

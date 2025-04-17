@@ -56,7 +56,7 @@ public class RongPhuongHoangAttack : DragonPVEController
         if (Target == null) return;
         List<Transform> ronggan = new List<Transform>(PVEManager.GetDraDungTruoc(3, Target.transform.parent.transform, new Vector2(5, 5)));
         float damee = dame;
-        if (CrGame.ins.NgayDem == "Ngay")
+        if (CrGame.ins.NgayDem == ENgayDem.Ngay)
         {
       //      debug.Log("Phượng hoàng ban ngày + 50% sức đánh");
             damee *= 1.5f; //Cộng 50% sức đánh
