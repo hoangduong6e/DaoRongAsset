@@ -511,6 +511,11 @@ public abstract class DragonPVEController : MonoBehaviour
         ImgHp.transform.parent.gameObject.SetActive(false);
     }
     public abstract void SkillMoveOk();
+    //public class DataParseDra
+    //{
+    //    public string nameobj;
+    //    public float hp, speed, dame, huthp, netranh, chimang, giapso;
+    //}    
     public void ParseData(JSONObject data)
     {
         //    debug.Log("Parse data " + data);

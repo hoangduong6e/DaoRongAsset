@@ -1052,8 +1052,8 @@ public static string http = "https";
         {
             s = str;
         }
-#if UNITY_EDITOR || LoadSceneAssetBundle
-//#if !UNITY_EDITOR
+//#if UNITY_EDITOR || LoadSceneAssetBundle
+#if !UNITY_EDITOR
         Application.backgroundLoadingPriority = UnityEngine.ThreadPriority.High;
         AssetBundle Asset = null;
         // Tải AssetBundle

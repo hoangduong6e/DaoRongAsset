@@ -14,8 +14,12 @@ public class RongLuaMatXanhAttack : DragonPVEController
     public override void AbsStart()
     {
         debug.Log("AbsStart");
-        if (LoaiRong == "RongLuaMatXanh") actionSkillMoveOk = SkillMoveOkRongLuaMatXanh;
-        else actionSkillMoveOk = SkillMoveOkRongLua;
+        if (!VienChinh.vienchinh.DanhOnline)
+        {
+            if (LoaiRong == "RongLuaMatXanh") actionSkillMoveOk = SkillMoveOkRongLuaMatXanh;
+            else actionSkillMoveOk = SkillMoveOkRongLua;
+        }    
+    
      //   Transform parent = transform.parent;
      //   parent.transform.position = new Vector3(transform.position.x, transform.position.y + 3);
 

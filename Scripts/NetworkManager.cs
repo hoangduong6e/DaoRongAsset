@@ -13,6 +13,7 @@ using System.IO;
 using System;
 using XLua;
 using Random = UnityEngine.Random;
+using System.Threading;
 
 [SerializeField]
 public class postSend
@@ -33,8 +34,9 @@ public class NetworkManager : MonoBehaviour
     [HideInInspector] public Friend friend; [HideInInspector] public LoiDai loidai;//QuaTangHangNgay quatanghangngay;
     public GameObject menuLoiDai; [HideInInspector] public int LevelNhaAp = 0;
     public NhiemVu Nhiemvu;//public DauTruongOnline dautruong;
-    public delegate void CallbackServerResult(JSONNode json);
     public static NetworkManager ins;
+
+    //private SendRequest sendRequest;
     private void Awake()
     {
         ins = this;
@@ -43,6 +45,7 @@ public class NetworkManager : MonoBehaviour
     void Start()
     {
         ins = this;
+       // sendRequest = new SendRequest();
         friend = GetComponent<Friend>();
         socket = go.GetComponent<SocketIOComponent>();
         socket.On("duocthuhoach", DcThuHoach);
@@ -61,7 +64,7 @@ public class NetworkManager : MonoBehaviour
         socket.On("Info", Info);
         socket.On("Friend", Friend);
         socket.On("VienChinh", Vienchinh);
-        socket.On("LoiDai", LoiDai);
+       // socket.On("LoiDai", LoiDai);
         socket.On("updateMoney", UpdateMoney);
         socket.On("Event", Event);
         socket.On("UpdateTick", PVPManager.UpdateTick);
@@ -75,13 +78,20 @@ public class NetworkManager : MonoBehaviour
     public static bool isSend = true;
 
     public int solanrequest = 0;
-    public void SendServer(JSONClass dataa, CallbackServerResult call, bool setisSend = false)
+
+
+    //public void SendServer(JSONClass data, Action<JSONNode> callback, bool useAltEvent = false, float timeout = 10f)
+    //{
+    //    sendRequest.SendServer(data, callback, useAltEvent, timeout);
+    //}
+
+    public void SendServer(JSONClass dataa, Action<JSONNode> callback, bool setisSend = false)
     {
         socket.EmitWithJSONClass(!setisSend ? "SendRequest" : "SendRequest2", dataa, (response) =>
         {
             //  stopwatch.Stop(); // Dừng đếm thời gian khi nhận được phản hồi
             debug.Log("Server response: " + response.ToString());
-            call(response[0]);
+            callback(response[0]);
             //  isSend = true;
             //  debug.Log("Time phản hồi new: " + stopwatch.ElapsedMilliseconds + " ms");
             CrGame.ins.panelLoadDao.SetActive(false);
@@ -102,23 +112,6 @@ public class NetworkManager : MonoBehaviour
         });
 
     }
-    IEnumerator StartSend()
-    {
-        isSend = false;
-        yield return new WaitForSeconds(3);
-        if (!isSend)
-        {
-            CrGame.ins.panelLoadDao.SetActive(true);
-        }
-        //yield return new WaitForSeconds(20);
-        //if (!isSend)
-        //{
-        //    StopAllCoroutines();
-        //    CrGame.ins.OnThongBaoNhanh("Kết nối mạng không ổn định!");
-        //    CrGame.ins.panelLoadDao.SetActive(false);
-        //}
-    }
-
    
     void Event(SocketIOEvent e)
     {
@@ -307,273 +300,273 @@ public class NetworkManager : MonoBehaviour
         }
         ////////////////////////
     }
-    void LoiDai(SocketIOEvent e)
-    {
-        if (e.data["usertop"])
-        {
-            if (!loidai.gameObject.activeSelf) return;
-            StartCoroutine(delay());
-            IEnumerator delay()
-            {
-                int limit = 0;
-                if (e.data["usertop"]["usertop"].Count < 11)
-                {
-                    limit = 11 - e.data["usertop"]["usertop"].Count;
-                }
-                loidai.txtSoluotFree.text = CatDauNgoacKep(e.data["usertop"]["soluotdauloidai"].ToString());
-                menuLoiDai.SetActive(true);
-                CrGame.ins.menulogin.SetActive(false);
-                AudioManager.SetSoundBg("nhacnen1");
-                //   debug.Log(e.data["usertop"]["usertop"]);
-                for (int i = 0; i < e.data["usertop"]["usertop"].Count; i++)
-                {
-                    if (menuLoiDai.activeSelf)
-                    {
-                        if (e.data["usertop"]["usertop"][i]["tenhienthi"])
-                        {
-                            string tenhienthi = CatDauNgoacKep(e.data["usertop"]["usertop"][i]["tenhienthi"].ToString());
-                            string idfb = CatDauNgoacKep(e.data["usertop"]["usertop"][i]["idfb"].ToString());
-                            string top = e.data["usertop"]["usertop"][i]["top"].ToString();
-                            if (i == 0)
-                            {
-                                loidai.CreateUserTop(0, tenhienthi, top, idfb, CatDauNgoacKep(e.data["usertop"]["usertop"][i]["chientuong"].ToString()), byte.Parse(e.data["usertop"]["usertop"][i]["sao"].ToString()));
-                            }
-                            else
-                            {
-                                loidai.CreateUserTop(limit, tenhienthi, top, idfb, CatDauNgoacKep(e.data["usertop"]["usertop"][i]["chientuong"].ToString()), byte.Parse(e.data["usertop"]["usertop"][i]["sao"].ToString()));
-                            }
-                            limit += 1;
-                            yield return new WaitForSeconds(0.2f);
-                        }
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-        if (e.data["danhloidai"])
-        {
-            ReplayData.Record = bool.Parse(GamIns.CatDauNgoacKep(e.data["Record"].ToString()));
-            ReplayData.ResetReplayData();
-            CrGame.ins.giaodien.SetActive(false);
-            vienchinh.chedodau = CheDoDau.LoiDai;
-            Image Progress = CrGame.ins.menulogin.transform.GetChild(0).GetComponent<Image>();
-            Text txtProgress = Progress.transform.GetChild(0).GetComponent<Text>();
-            GiaoDienPVP giaoDien = AllMenu.ins.GetCreateMenu("GiaoDienPVP").GetComponent<GiaoDienPVP>();
-            giaoDien.btnSetting.SetActive(false);
-            //   giaoDien.time = 0;
-            // debug.Log("ok 1");
-            for (int i = 0; i < e.data["danhloidai"]["doihinh"].Count; i++)
-            {
-                string[] id = e.data["danhloidai"]["doihinh"][i]["id"].ToString().Split('"');
-                string[] nameObject = e.data["danhloidai"]["doihinh"][i]["nameobject"].ToString().Split('"');
-                giaoDien.AddItemRongDanh(nameObject[1], id[1], int.Parse(e.data["danhloidai"]["doihinh"][i]["sao"].ToString()), int.Parse(e.data["danhloidai"]["doihinh"][i]["tienhoa"].ToString()), i);
-                //  debug.Log("AddItemRongDanh " + i);
-            }
-            //   debug.Log("ok 1");
-            GiaoDienPVP.ins.LoadSkill(e.data["danhloidai"]["skill"]);
-            /// debug.Log("ok 2");
-            if (CatDauNgoacKep(e.data["danhloidai"]["icontoclenh"].ToString()) == "true") vienchinh.HienIconSkill(999, "Xanh", "iconTocLenhXanh");
-            if (CatDauNgoacKep(e.data["danhloidai"]["iconcovip"].ToString()) == "true") vienchinh.HienIconSkill(999, "Xanh", "iconCoVipXanh");
-            if (CatDauNgoacKep(e.data["danhloidai"]["iconhoathanlong"].ToString()) == "true") vienchinh.HienIconSkill(999, "Xanh", "iconHoaThanLongXanh");
-            if (CatDauNgoacKep(e.data["danhloidai"]["iconNuiThanBi"].ToString()) == "true") vienchinh.HienIconSkill(999, "Xanh", "iconNuiThanBiXanh");
+    //void LoiDai(SocketIOEvent e)
+    //{
+    //    //if (e.data["usertop"])
+    //    //{
+    //    //    if (!loidai.gameObject.activeSelf) return;
+    //    //    StartCoroutine(delay());
+    //    //    IEnumerator delay()
+    //    //    {
+    //    //        int limit = 0;
+    //    //        if (e.data["usertop"]["usertop"].Count < 11)
+    //    //        {
+    //    //            limit = 11 - e.data["usertop"]["usertop"].Count;
+    //    //        }
+    //    //        loidai.txtSoluotFree.text = CatDauNgoacKep(e.data["usertop"]["soluotdauloidai"].ToString());
+    //    //        menuLoiDai.SetActive(true);
+    //    //        CrGame.ins.menulogin.SetActive(false);
+    //    //        AudioManager.SetSoundBg("nhacnen1");
+    //    //        //   debug.Log(e.data["usertop"]["usertop"]);
+    //    //        for (int i = 0; i < e.data["usertop"]["usertop"].Count; i++)
+    //    //        {
+    //    //            if (menuLoiDai.activeSelf)
+    //    //            {
+    //    //                if (e.data["usertop"]["usertop"][i]["tenhienthi"])
+    //    //                {
+    //    //                    string tenhienthi = CatDauNgoacKep(e.data["usertop"]["usertop"][i]["tenhienthi"].ToString());
+    //    //                    string idfb = CatDauNgoacKep(e.data["usertop"]["usertop"][i]["idfb"].ToString());
+    //    //                    string top = e.data["usertop"]["usertop"][i]["top"].ToString();
+    //    //                    if (i == 0)
+    //    //                    {
+    //    //                        loidai.CreateUserTop(0, tenhienthi, top, idfb, CatDauNgoacKep(e.data["usertop"]["usertop"][i]["chientuong"].ToString()), byte.Parse(e.data["usertop"]["usertop"][i]["sao"].ToString()));
+    //    //                    }
+    //    //                    else
+    //    //                    {
+    //    //                        loidai.CreateUserTop(limit, tenhienthi, top, idfb, CatDauNgoacKep(e.data["usertop"]["usertop"][i]["chientuong"].ToString()), byte.Parse(e.data["usertop"]["usertop"][i]["sao"].ToString()));
+    //    //                    }
+    //    //                    limit += 1;
+    //    //                    yield return new WaitForSeconds(0.2f);
+    //    //                }
+    //    //            }
+    //    //            else
+    //    //            {
+    //    //                break;
+    //    //            }
+    //    //        }
+    //    //    }
+    //    //}
+    //    //if (e.data["danhloidai"])
+    //    //{
+    //        //ReplayData.Record = bool.Parse(GamIns.CatDauNgoacKep(e.data["Record"].ToString()));
+    //        //ReplayData.ResetReplayData();
+    //        //CrGame.ins.giaodien.SetActive(false);
+    //        //vienchinh.chedodau = CheDoDau.LoiDai;
+    //        //Image Progress = CrGame.ins.menulogin.transform.GetChild(0).GetComponent<Image>();
+    //        //Text txtProgress = Progress.transform.GetChild(0).GetComponent<Text>();
+    //        //GiaoDienPVP giaoDien = AllMenu.ins.GetCreateMenu("GiaoDienPVP").GetComponent<GiaoDienPVP>();
+    //        //giaoDien.btnSetting.SetActive(false);
+    //        ////   giaoDien.time = 0;
+    //        //// debug.Log("ok 1");
+    //        //for (int i = 0; i < e.data["danhloidai"]["doihinh"].Count; i++)
+    //        //{
+    //        //    string[] id = e.data["danhloidai"]["doihinh"][i]["id"].ToString().Split('"');
+    //        //    string[] nameObject = e.data["danhloidai"]["doihinh"][i]["nameobject"].ToString().Split('"');
+    //        //    giaoDien.AddItemRongDanh(nameObject[1], id[1], int.Parse(e.data["danhloidai"]["doihinh"][i]["sao"].ToString()), int.Parse(e.data["danhloidai"]["doihinh"][i]["tienhoa"].ToString()), i);
+    //        //    //  debug.Log("AddItemRongDanh " + i);
+    //        //}
+    //        ////   debug.Log("ok 1");
+    //        //GiaoDienPVP.ins.LoadSkill(e.data["danhloidai"]["skill"]);
+    //        ///// debug.Log("ok 2");
+    //        //if (CatDauNgoacKep(e.data["danhloidai"]["icontoclenh"].ToString()) == "true") vienchinh.HienIconSkill(999, "Xanh", "iconTocLenhXanh");
+    //        //if (CatDauNgoacKep(e.data["danhloidai"]["iconcovip"].ToString()) == "true") vienchinh.HienIconSkill(999, "Xanh", "iconCoVipXanh");
+    //        //if (CatDauNgoacKep(e.data["danhloidai"]["iconhoathanlong"].ToString()) == "true") vienchinh.HienIconSkill(999, "Xanh", "iconHoaThanLongXanh");
+    //        //if (CatDauNgoacKep(e.data["danhloidai"]["iconNuiThanBi"].ToString()) == "true") vienchinh.HienIconSkill(999, "Xanh", "iconNuiThanBiXanh");
 
-            if (CatDauNgoacKep(e.data["danhloidai"]["icontoclenhfriend"].ToString()) == "true") vienchinh.HienIconSkill(999, "Do", "iconTocLenhDo");
-            if (CatDauNgoacKep(e.data["danhloidai"]["iconcovipfriend"].ToString()) == "true") vienchinh.HienIconSkill(999, "Do", "iconCoVipDo");
-            if (CatDauNgoacKep(e.data["danhloidai"]["iconhoathanlongfriend"].ToString()) == "true") vienchinh.HienIconSkill(999, "Do", "iconHoaThanLongDo");
-            if (CatDauNgoacKep(e.data["danhloidai"]["iconNuiThanBifriend"].ToString()) == "true") vienchinh.HienIconSkill(999, "Do", "iconNuiThanBiDo");
-            //  RuntimeAnimatorController[] AnimFriend = new RuntimeAnimatorController[e.data["danhloidai"]["doihinhfriend"].Count];
-            // debug.Log("ok 3");
-            StartCoroutine(delayfriend());
-            IEnumerator delayfriend()
-            {
-                vienchinh.DanhOnline = true;
-                int count = e.data["danhloidai"]["doihinhfriend"].Count;
-                CrGame.ins.menulogin.SetActive(false);
-                GiaoDienPVP.ins.transform.Find("btnTrieuHoiNhanh").gameObject.SetActive(true);
-                // AudioManager.SetSoundBg("");
-                //vienchinh.StartCoroutine(vienchinh.delayGame("nhacloidai",Team.TeamDo));
-                vienchinh.StartCoroutine(vienchinh.delayGame("nhacloidai",Team.TeamXanh));
-                if(!vienchinh.DanhOnline)
-                {
-                    yield return new WaitForSeconds(3.5f);
-                    for (int i = 0; i < count; i++)
-                    {
-                        PVEManager.TrieuHoiDra(e.data["danhloidai"]["doihinhfriend"][i], vienchinh.Teamthis == Team.TeamXanh? "TeamDo": "TeamXanh");
+    //        //if (CatDauNgoacKep(e.data["danhloidai"]["icontoclenhfriend"].ToString()) == "true") vienchinh.HienIconSkill(999, "Do", "iconTocLenhDo");
+    //        //if (CatDauNgoacKep(e.data["danhloidai"]["iconcovipfriend"].ToString()) == "true") vienchinh.HienIconSkill(999, "Do", "iconCoVipDo");
+    //        //if (CatDauNgoacKep(e.data["danhloidai"]["iconhoathanlongfriend"].ToString()) == "true") vienchinh.HienIconSkill(999, "Do", "iconHoaThanLongDo");
+    //        //if (CatDauNgoacKep(e.data["danhloidai"]["iconNuiThanBifriend"].ToString()) == "true") vienchinh.HienIconSkill(999, "Do", "iconNuiThanBiDo");
+    //        ////  RuntimeAnimatorController[] AnimFriend = new RuntimeAnimatorController[e.data["danhloidai"]["doihinhfriend"].Count];
+    //        //// debug.Log("ok 3");
+    //        //StartCoroutine(delayfriend());
+    //        //IEnumerator delayfriend()
+    //        //{
+    //        //    vienchinh.DanhOnline = true;
+    //        //    int count = e.data["danhloidai"]["doihinhfriend"].Count;
+    //        //    CrGame.ins.menulogin.SetActive(false);
+    //        //    GiaoDienPVP.ins.transform.Find("btnTrieuHoiNhanh").gameObject.SetActive(true);
+    //        //    // AudioManager.SetSoundBg("");
+    //        //    //vienchinh.StartCoroutine(vienchinh.delayGame("nhacloidai",Team.TeamDo));
+    //        //    vienchinh.StartCoroutine(vienchinh.delayGame("nhacloidai",Team.TeamXanh));
+    //        //    if(!vienchinh.DanhOnline)
+    //        //    {
+    //        //        yield return new WaitForSeconds(3.5f);
+    //        //        for (int i = 0; i < count; i++)
+    //        //        {
+    //        //            PVEManager.TrieuHoiDra(e.data["danhloidai"]["doihinhfriend"][i], vienchinh.Teamthis == Team.TeamXanh? "TeamDo": "TeamXanh");
 
-                        yield return new WaitForSeconds(0.1f);
+    //        //            yield return new WaitForSeconds(0.1f);
 
-                    }
-                }
+    //        //        }
+    //        //    }
             
-            }
-        }
-        if (e.data["danhthuthach"])
-        {
-            //    Image Progress = CrGame.ins.menulogin.transform.GetChild(0).GetComponent<Image>();
-            //   Text txtProgress = Progress.transform.GetChild(0).GetComponent<Text>();
+    //        //}
+    //    //}
+    //    //if (e.data["danhthuthach"])
+    //    //{
+    //    //    //    Image Progress = CrGame.ins.menulogin.transform.GetChild(0).GetComponent<Image>();
+    //    //    //   Text txtProgress = Progress.transform.GetChild(0).GetComponent<Text>();
 
-            GiaoDienPVP.ins.SoDoihinh = 0;
-            GiaoDienPVP.ins.maxtime = 60;
-            GiaoDienPVP.ins.TxtTime.GetComponent<timePvp>().enabled = true;
-            //  txtProgress.text = "0%";
-            //  Progress.fillAmount = 0 / (float)100;
-            for (int i = 0; i < e.data["danhthuthach"]["doihinh"].Count; i++)
-            {
-                string[] id = e.data["danhthuthach"]["doihinh"][i]["id"].ToString().Split('"');
-                string[] nameObject = e.data["danhthuthach"]["doihinh"][i]["nameobject"].ToString().Split('"');
-                GiaoDienPVP.ins.AddItemRongDanh(nameObject[1], id[1], int.Parse(e.data["danhthuthach"]["doihinh"][i]["sao"].ToString()), int.Parse(e.data["danhthuthach"]["doihinh"][i]["tienhoa"].ToString()), i);
-                // inventory.LoadRongCoBan(nameObject[1]);
-            }
-            //     debug.Log(e.data["danhthuthach"]);
-            TruVienChinh trux = vienchinh.TruXanh.GetComponent<TruVienChinh>();
-            trux.allmau = 1;
-            TruVienChinh trud = vienchinh.TruDo.GetComponent<TruVienChinh>(); trud.allmau = 1;
-            for (int i = 0; i < trux.Hp.Length; i++)
-            {
-                trux.Hp[i] = 1;
-                trud.Hp[i] = 1;
-            }
-            GiaoDienPVP.ins.LoadSkill(e.data["danhthuthach"]["skill"]);
-            vienchinh.HienIconSkill(200, "Do", "icon" + CatDauNgoacKep(e.data["skilldich"].ToString()) + "Do");
-            vienchinh.HienIconSkill(200, "Xanh", "icon" + CatDauNgoacKep(e.data["skillchon"].ToString()) + "Xanh");
-            vienchinh.nameskillthuthach = CatDauNgoacKep(e.data["skillchon"].ToString());
-            vienchinh.nameskillthuthachdich = CatDauNgoacKep(e.data["skilldich"].ToString());
+    //    //    GiaoDienPVP.ins.SoDoihinh = 0;
+    //    //    GiaoDienPVP.ins.maxtime = 60;
+    //    //    GiaoDienPVP.ins.TxtTime.GetComponent<timePvp>().enabled = true;
+    //    //    //  txtProgress.text = "0%";
+    //    //    //  Progress.fillAmount = 0 / (float)100;
+    //    //    for (int i = 0; i < e.data["danhthuthach"]["doihinh"].Count; i++)
+    //    //    {
+    //    //        string[] id = e.data["danhthuthach"]["doihinh"][i]["id"].ToString().Split('"');
+    //    //        string[] nameObject = e.data["danhthuthach"]["doihinh"][i]["nameobject"].ToString().Split('"');
+    //    //        GiaoDienPVP.ins.AddItemRongDanh(nameObject[1], id[1], int.Parse(e.data["danhthuthach"]["doihinh"][i]["sao"].ToString()), int.Parse(e.data["danhthuthach"]["doihinh"][i]["tienhoa"].ToString()), i);
+    //    //        // inventory.LoadRongCoBan(nameObject[1]);
+    //    //    }
+    //    //    //     debug.Log(e.data["danhthuthach"]);
+    //    //    TruVienChinh trux = vienchinh.TruXanh.GetComponent<TruVienChinh>();
+    //    //    trux.allmau = 1;
+    //    //    TruVienChinh trud = vienchinh.TruDo.GetComponent<TruVienChinh>(); trud.allmau = 1;
+    //    //    for (int i = 0; i < trux.Hp.Length; i++)
+    //    //    {
+    //    //        trux.Hp[i] = 1;
+    //    //        trud.Hp[i] = 1;
+    //    //    }
+    //    //    GiaoDienPVP.ins.LoadSkill(e.data["danhthuthach"]["skill"]);
+    //    //    vienchinh.HienIconSkill(200, "Do", "icon" + CatDauNgoacKep(e.data["skilldich"].ToString()) + "Do");
+    //    //    vienchinh.HienIconSkill(200, "Xanh", "icon" + CatDauNgoacKep(e.data["skillchon"].ToString()) + "Xanh");
+    //    //    vienchinh.nameskillthuthach = CatDauNgoacKep(e.data["skillchon"].ToString());
+    //    //    vienchinh.nameskillthuthachdich = CatDauNgoacKep(e.data["skilldich"].ToString());
 
-            StartCoroutine(delayfriend());
-            IEnumerator delayfriend()
-            {
-                int count = e.data["danhthuthach"]["doihinhfriend"].Count;
-                CrGame.ins.menulogin.SetActive(false);
-                vienchinh.chedodau = CheDoDau.ThuThach;
-                vienchinh.enabled = true;
-                ReplayData.Record = false;
-                vienchinh.StartCoroutine(vienchinh.delayGame());
-                yield return new WaitForSeconds(3.5f);
-                for (int i = 0; i < count; i++)
-                {
-                    PVEManager.TrieuHoiDra(e.data["danhthuthach"]["doihinhfriend"][i], "TeamDo");
+    //    //    StartCoroutine(delayfriend());
+    //    //    IEnumerator delayfriend()
+    //    //    {
+    //    //        int count = e.data["danhthuthach"]["doihinhfriend"].Count;
+    //    //        CrGame.ins.menulogin.SetActive(false);
+    //    //        vienchinh.chedodau = CheDoDau.ThuThach;
+    //    //        vienchinh.enabled = true;
+    //    //        ReplayData.Record = false;
+    //    //        vienchinh.StartCoroutine(vienchinh.delayGame());
+    //    //        yield return new WaitForSeconds(3.5f);
+    //    //        for (int i = 0; i < count; i++)
+    //    //        {
+    //    //            PVEManager.TrieuHoiDra(e.data["danhthuthach"]["doihinhfriend"][i], "TeamDo");
 
 
-                    yield return new WaitForSeconds(0.1f);
+    //    //            yield return new WaitForSeconds(0.1f);
 
-                }
-            }
-        }
-        //if (e.data["SoloKhongTuoc"])
-        //{
-        //   // debug.Log(e.data);
-        //    if (CatDauNgoacKep(e.data["status"].ToString()) == "ok")
-        //    {
-        //        CrGame.ins.menulogin.SetActive(true);
-        //        MenuEventVuonHoaThangTu vuonhoa = AllMenu.ins.menu["MenuEventVuonHoaThangTu"].GetComponent<MenuEventVuonHoaThangTu>();
-        //        vuonhoa.VeNha();
-        //        vienchinh.dameKhongTuoc = 0;
-        //        GiaoDienPVP gdpvp = AllMenu.ins.GetCreateMenu("GiaoDienPVP").GetComponent<GiaoDienPVP>();
-        //        // Image Progress = CrGame.ins.menulogin.transform.GetChild(0).GetComponent<Image>();
-        //        //    Text txtProgress = Progress.transform.GetChild(0).GetComponent<Text>();
-        //        gdpvp.maxtime = 60;
-        //        gdpvp.SoDoihinh = 0;
-        //        CrGame.ins.panelLoadDao.SetActive(false);
-        //       // CrGame.ins.allmenu.menu["MenuEventVuonHoaThangTu"].GetComponent<MenuEventVuonHoaThangTu>().VeNha();
-        //        for (int i = 0; i < e.data["SoloKhongTuoc"]["doihinh"].Count; i++)
-        //        {
-        //            string[] id = e.data["SoloKhongTuoc"]["doihinh"][i]["id"].ToString().Split('"');
-        //            string[] nameObject = e.data["SoloKhongTuoc"]["doihinh"][i]["nameobject"].ToString().Split('"');
-        //            gdpvp.AddItemRongDanh(nameObject[1], id[1], int.Parse(e.data["SoloKhongTuoc"]["doihinh"][i]["sao"].ToString()), int.Parse(e.data["SoloKhongTuoc"]["doihinh"][i]["tienhoa"].ToString()), i);
-        //        }
-        //        gdpvp.LoadSkill(e.data["SoloKhongTuoc"]["skill"]);
-        //        if (CatDauNgoacKep(e.data["SoloKhongTuoc"]["icontoclenh"].ToString()) == "true") vienchinh.HienIconSkill(999, "Xanh", "iconTocLenhXanh");
-        //        if (CatDauNgoacKep(e.data["SoloKhongTuoc"]["iconcovip"].ToString()) == "true") vienchinh.HienIconSkill(999, "Xanh", "iconCoVipXanh");
-        //        if (CatDauNgoacKep(e.data["SoloKhongTuoc"]["iconhoathanlong"].ToString()) == "true") vienchinh.HienIconSkill(999, "Xanh", "iconHoaThanLongXanh");
+    //    //        }
+    //    //    }
+    //    //}
+    //    //if (e.data["SoloKhongTuoc"])
+    //    //{
+    //    //   // debug.Log(e.data);
+    //    //    if (CatDauNgoacKep(e.data["status"].ToString()) == "ok")
+    //    //    {
+    //    //        CrGame.ins.menulogin.SetActive(true);
+    //    //        MenuEventVuonHoaThangTu vuonhoa = AllMenu.ins.menu["MenuEventVuonHoaThangTu"].GetComponent<MenuEventVuonHoaThangTu>();
+    //    //        vuonhoa.VeNha();
+    //    //        vienchinh.dameKhongTuoc = 0;
+    //    //        GiaoDienPVP gdpvp = AllMenu.ins.GetCreateMenu("GiaoDienPVP").GetComponent<GiaoDienPVP>();
+    //    //        // Image Progress = CrGame.ins.menulogin.transform.GetChild(0).GetComponent<Image>();
+    //    //        //    Text txtProgress = Progress.transform.GetChild(0).GetComponent<Text>();
+    //    //        gdpvp.maxtime = 60;
+    //    //        gdpvp.SoDoihinh = 0;
+    //    //        CrGame.ins.panelLoadDao.SetActive(false);
+    //    //       // CrGame.ins.allmenu.menu["MenuEventVuonHoaThangTu"].GetComponent<MenuEventVuonHoaThangTu>().VeNha();
+    //    //        for (int i = 0; i < e.data["SoloKhongTuoc"]["doihinh"].Count; i++)
+    //    //        {
+    //    //            string[] id = e.data["SoloKhongTuoc"]["doihinh"][i]["id"].ToString().Split('"');
+    //    //            string[] nameObject = e.data["SoloKhongTuoc"]["doihinh"][i]["nameobject"].ToString().Split('"');
+    //    //            gdpvp.AddItemRongDanh(nameObject[1], id[1], int.Parse(e.data["SoloKhongTuoc"]["doihinh"][i]["sao"].ToString()), int.Parse(e.data["SoloKhongTuoc"]["doihinh"][i]["tienhoa"].ToString()), i);
+    //    //        }
+    //    //        gdpvp.LoadSkill(e.data["SoloKhongTuoc"]["skill"]);
+    //    //        if (CatDauNgoacKep(e.data["SoloKhongTuoc"]["icontoclenh"].ToString()) == "true") vienchinh.HienIconSkill(999, "Xanh", "iconTocLenhXanh");
+    //    //        if (CatDauNgoacKep(e.data["SoloKhongTuoc"]["iconcovip"].ToString()) == "true") vienchinh.HienIconSkill(999, "Xanh", "iconCoVipXanh");
+    //    //        if (CatDauNgoacKep(e.data["SoloKhongTuoc"]["iconhoathanlong"].ToString()) == "true") vienchinh.HienIconSkill(999, "Xanh", "iconHoaThanLongXanh");
 
-        //        if (CatDauNgoacKep(e.data["SoloKhongTuoc"]["icontoclenhfriend"].ToString()) == "true") vienchinh.HienIconSkill(999, "Do", "iconTocLenhDo");
-        //        if (CatDauNgoacKep(e.data["SoloKhongTuoc"]["iconhoathanlongfriend"].ToString()) == "true") vienchinh.HienIconSkill(999, "Do", "iconHoaThanLongDo");
-        //     //   RuntimeAnimatorController[] AnimFriend = new RuntimeAnimatorController[e.data["SoloKhongTuoc"]["doihinhfriend"].Count];
-        //        StartCoroutine(delayfriend());
-        //        IEnumerator delayfriend()
-        //        {
-        //            int count = e.data["SoloKhongTuoc"]["doihinhfriend"].Count;
-        //            CrGame.ins.menulogin.SetActive(false);
-        //            vienchinh.chedodau = CheDoDau.SoloKhongTuoc;
-        //            vienchinh.enabled = true;
+    //    //        if (CatDauNgoacKep(e.data["SoloKhongTuoc"]["icontoclenhfriend"].ToString()) == "true") vienchinh.HienIconSkill(999, "Do", "iconTocLenhDo");
+    //    //        if (CatDauNgoacKep(e.data["SoloKhongTuoc"]["iconhoathanlongfriend"].ToString()) == "true") vienchinh.HienIconSkill(999, "Do", "iconHoaThanLongDo");
+    //    //     //   RuntimeAnimatorController[] AnimFriend = new RuntimeAnimatorController[e.data["SoloKhongTuoc"]["doihinhfriend"].Count];
+    //    //        StartCoroutine(delayfriend());
+    //    //        IEnumerator delayfriend()
+    //    //        {
+    //    //            int count = e.data["SoloKhongTuoc"]["doihinhfriend"].Count;
+    //    //            CrGame.ins.menulogin.SetActive(false);
+    //    //            vienchinh.chedodau = CheDoDau.SoloKhongTuoc;
+    //    //            vienchinh.enabled = true;
 
-        //            vienchinh.StartCoroutine(vienchinh.delayGame());
-        //            yield return new WaitForSeconds(3.5f);
-        //            PVEManager.TrieuHoiDra(e.data["SoloKhongTuoc"]["doihinhfriend"][0], "TeamDo");
-        //            debug.Log(e.data["SoloKhongTuoc"]["doihinhfriend"][0]);
-        //            yield return new WaitUntil(()=>vienchinh.TeamDo.transform.childCount > 1);
-        //            yield return new WaitForSeconds(0.5f);
-        //            debug.Log("Tăng scale khổng tước lên 1.5");
-        //            //DragonPVEController khongtuoc = vienchinh.TeamDo.transform.GetChild(1).GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
-        //            //Vector3 vec = khongtuoc.transform.parent.transform.localScale;
-        //            //vec = new Vector3(vec.x * 1.3f, vec.y * 1.3f);
-        //            //khongtuoc.transform.parent.localScale = vec;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        CrGame.ins.panelLoadDao.SetActive(false);
-        //        CrGame.ins.OnThongBaoNhanh(CatDauNgoacKep(e.data["status"].ToString()),2);
-        //    }
-        //}
-        //if (e.data["DoTrieuHoi"])
-        //{
-        //    string[] nameitem = e.data["DoTrieuHoi"]["nameitem"].ToString().Split('"');
-        //    string[] namerong = e.data["DoTrieuHoi"]["namerong"].ToString().Split('"');
-        //    string[] nameObject = e.data["DoTrieuHoi"]["nameobject"].ToString().Split('"');
-        //    string[] id = e.data["DoTrieuHoi"]["id"].ToString().Split('"');
-        //    Vector3 randomvec = new Vector3(vienchinh.TruDo.transform.position.x + Random.Range(0, 5), vienchinh.TruXanh.transform.position.y + Random.Range(-1, -3f), vienchinh.TruDo.transform.position.z);
-        //    GameObject hieuung = Instantiate(vienchinh.HieuUngTrieuHoi, new Vector3(randomvec.x, 6, randomvec.z), Quaternion.identity) as GameObject;
-        //    StartCoroutine(hieuungtrieuhoi());
-        //    IEnumerator hieuungtrieuhoi()
-        //    {
-        //        yield return new WaitForSeconds(0.4f);
-        //        GameObject rongtrieuhoi = Instantiate(inventory.ObjectRong(nameObject[1]), randomvec, Quaternion.identity) as GameObject;
-        //        Animator anim = rongtrieuhoi.GetComponent<Animator>();
-        //        if (anim.runtimeAnimatorController == null)
-        //        {
-        //            rongtrieuhoi.GetComponent<Animator>().runtimeAnimatorController = inventory.LoadAnimatorRongCoBan(nameObject[1]);//SGResources.Load<RuntimeAnimatorController>( nameObject[1]);
-        //        }
-        //        rongtrieuhoi.name = "name-" + CatDauNgoacKep(e.data["DoTrieuHoi"]["id"].ToString());
-        //        DragonController dra = rongtrieuhoi.GetComponent<DragonController>();
-        //        dra.tienhoa = byte.Parse(e.data["DoTrieuHoi"]["tienhoa"].ToString());
-        //        GameObject TeamDo = vienchinh.TeamDo;
-        //        rongtrieuhoi.transform.SetParent(TeamDo.transform, true);
-        //        rongtrieuhoi.transform.SetSiblingIndex(TeamDo.transform.childCount - 1);
-        //        Destroy(dra);
-        //        ChiSo chiso = rongtrieuhoi.GetComponent<ChiSo>();
-        //        for (int i = 0; i < 1; i++)
-        //        {
-        //            if (rongtrieuhoi.GetComponent<RongLuaAttack>())
-        //            {
-        //                RongLuaAttack dratancong = rongtrieuhoi.GetComponent<RongLuaAttack>();
-        //                dratancong.enabled = true; break;
-        //            }
-        //            if (rongtrieuhoi.GetComponent<RongDatAttack>())
-        //            {
-        //                RongDatAttack dratancong = rongtrieuhoi.GetComponent<RongDatAttack>();
-        //                dratancong.enabled = true; break;
-        //            }
-        //        }
-        //        //Destroy(rongtrieuhoi.GetComponent<Rigidbody2D>());
-        //        chiso.vienchinh = vienchinh;
-        //        chiso.hp = float.Parse(e.data["DoTrieuHoi"]["chiso"]["hp"].ToString());
-        //        chiso.Maxhp = float.Parse(e.data["DoTrieuHoi"]["chiso"]["hp"].ToString());
-        //        dra.speed = float.Parse(e.data["DoTrieuHoi"]["chiso"]["tocchay"].ToString());
-        //        dra.tienhoa = byte.Parse(e.data["DoTrieuHoi"]["tienhoa"].ToString());
-        //        chiso.dame = float.Parse(e.data["DoTrieuHoi"]["chiso"]["sucdanh"].ToString());
+    //    //            vienchinh.StartCoroutine(vienchinh.delayGame());
+    //    //            yield return new WaitForSeconds(3.5f);
+    //    //            PVEManager.TrieuHoiDra(e.data["SoloKhongTuoc"]["doihinhfriend"][0], "TeamDo");
+    //    //            debug.Log(e.data["SoloKhongTuoc"]["doihinhfriend"][0]);
+    //    //            yield return new WaitUntil(()=>vienchinh.TeamDo.transform.childCount > 1);
+    //    //            yield return new WaitForSeconds(0.5f);
+    //    //            debug.Log("Tăng scale khổng tước lên 1.5");
+    //    //            //DragonPVEController khongtuoc = vienchinh.TeamDo.transform.GetChild(1).GetComponent<DraUpdateAnimator>().DragonPVEControllerr;
+    //    //            //Vector3 vec = khongtuoc.transform.parent.transform.localScale;
+    //    //            //vec = new Vector3(vec.x * 1.3f, vec.y * 1.3f);
+    //    //            //khongtuoc.transform.parent.localScale = vec;
+    //    //        }
+    //    //    }
+    //    //    else
+    //    //    {
+    //    //        CrGame.ins.panelLoadDao.SetActive(false);
+    //    //        CrGame.ins.OnThongBaoNhanh(CatDauNgoacKep(e.data["status"].ToString()),2);
+    //    //    }
+    //    //}
+    //    //if (e.data["DoTrieuHoi"])
+    //    //{
+    //    //    string[] nameitem = e.data["DoTrieuHoi"]["nameitem"].ToString().Split('"');
+    //    //    string[] namerong = e.data["DoTrieuHoi"]["namerong"].ToString().Split('"');
+    //    //    string[] nameObject = e.data["DoTrieuHoi"]["nameobject"].ToString().Split('"');
+    //    //    string[] id = e.data["DoTrieuHoi"]["id"].ToString().Split('"');
+    //    //    Vector3 randomvec = new Vector3(vienchinh.TruDo.transform.position.x + Random.Range(0, 5), vienchinh.TruXanh.transform.position.y + Random.Range(-1, -3f), vienchinh.TruDo.transform.position.z);
+    //    //    GameObject hieuung = Instantiate(vienchinh.HieuUngTrieuHoi, new Vector3(randomvec.x, 6, randomvec.z), Quaternion.identity) as GameObject;
+    //    //    StartCoroutine(hieuungtrieuhoi());
+    //    //    IEnumerator hieuungtrieuhoi()
+    //    //    {
+    //    //        yield return new WaitForSeconds(0.4f);
+    //    //        GameObject rongtrieuhoi = Instantiate(inventory.ObjectRong(nameObject[1]), randomvec, Quaternion.identity) as GameObject;
+    //    //        Animator anim = rongtrieuhoi.GetComponent<Animator>();
+    //    //        if (anim.runtimeAnimatorController == null)
+    //    //        {
+    //    //            rongtrieuhoi.GetComponent<Animator>().runtimeAnimatorController = inventory.LoadAnimatorRongCoBan(nameObject[1]);//SGResources.Load<RuntimeAnimatorController>( nameObject[1]);
+    //    //        }
+    //    //        rongtrieuhoi.name = "name-" + CatDauNgoacKep(e.data["DoTrieuHoi"]["id"].ToString());
+    //    //        DragonController dra = rongtrieuhoi.GetComponent<DragonController>();
+    //    //        dra.tienhoa = byte.Parse(e.data["DoTrieuHoi"]["tienhoa"].ToString());
+    //    //        GameObject TeamDo = vienchinh.TeamDo;
+    //    //        rongtrieuhoi.transform.SetParent(TeamDo.transform, true);
+    //    //        rongtrieuhoi.transform.SetSiblingIndex(TeamDo.transform.childCount - 1);
+    //    //        Destroy(dra);
+    //    //        ChiSo chiso = rongtrieuhoi.GetComponent<ChiSo>();
+    //    //        for (int i = 0; i < 1; i++)
+    //    //        {
+    //    //            if (rongtrieuhoi.GetComponent<RongLuaAttack>())
+    //    //            {
+    //    //                RongLuaAttack dratancong = rongtrieuhoi.GetComponent<RongLuaAttack>();
+    //    //                dratancong.enabled = true; break;
+    //    //            }
+    //    //            if (rongtrieuhoi.GetComponent<RongDatAttack>())
+    //    //            {
+    //    //                RongDatAttack dratancong = rongtrieuhoi.GetComponent<RongDatAttack>();
+    //    //                dratancong.enabled = true; break;
+    //    //            }
+    //    //        }
+    //    //        //Destroy(rongtrieuhoi.GetComponent<Rigidbody2D>());
+    //    //        chiso.vienchinh = vienchinh;
+    //    //        chiso.hp = float.Parse(e.data["DoTrieuHoi"]["chiso"]["hp"].ToString());
+    //    //        chiso.Maxhp = float.Parse(e.data["DoTrieuHoi"]["chiso"]["hp"].ToString());
+    //    //        dra.speed = float.Parse(e.data["DoTrieuHoi"]["chiso"]["tocchay"].ToString());
+    //    //        dra.tienhoa = byte.Parse(e.data["DoTrieuHoi"]["tienhoa"].ToString());
+    //    //        chiso.dame = float.Parse(e.data["DoTrieuHoi"]["chiso"]["sucdanh"].ToString());
 
-        //        Destroy(hieuung);
-        //     //   debug.Log(int.Parse(e.data["DoTrieuHoi"]["tienhoa"].ToString()));
-        //       // anim.SetInteger("TienHoa", int.Parse(e.data["DoTrieuHoi"]["tienhoa"].ToString()));
-        //        rongtrieuhoi.SetActive(true);
-        //        anim.SetInteger("TienHoa", int.Parse(e.data["DoTrieuHoi"]["tienhoa"].ToString()));
-        //    }
-        //}
-    }
+    //    //        Destroy(hieuung);
+    //    //     //   debug.Log(int.Parse(e.data["DoTrieuHoi"]["tienhoa"].ToString()));
+    //    //       // anim.SetInteger("TienHoa", int.Parse(e.data["DoTrieuHoi"]["tienhoa"].ToString()));
+    //    //        rongtrieuhoi.SetActive(true);
+    //    //        anim.SetInteger("TienHoa", int.Parse(e.data["DoTrieuHoi"]["tienhoa"].ToString()));
+    //    //    }
+    //    //}
+    //}
     void Vienchinh(SocketIOEvent e)
     {
         VienChinh.HandleSocket.ParseData(e);

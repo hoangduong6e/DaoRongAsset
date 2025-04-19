@@ -810,6 +810,7 @@ public class VienChinh : MonoBehaviour
         {
             AllMenu.ins.menu["GiaoDienPVP"].SetActive(false);
             net.menuLoiDai.SetActive(true);
+            crgame.LoadLoiDai();
             transform.GetChild(0).gameObject.SetActive(false);
             reset();
         }

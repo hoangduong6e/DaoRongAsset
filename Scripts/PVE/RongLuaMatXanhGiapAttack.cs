@@ -1,14 +1,21 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class RongLuaMatXanhGiapAttack : DragonPVEController
 {
 
     private byte danh = 1;
     public Image fillGiap;
+
+    private Action skillmoveok;
     protected override void ABSAwake()
     {
-
+        if (!VienChinh.vienchinh.DanhOnline)
+        {
+            skillmoveok = sKILLmOVE;
+        }
     }
     public override void AbsStart()
     {
@@ -41,7 +48,7 @@ public class RongLuaMatXanhGiapAttack : DragonPVEController
     }
     public override void SetHp(float fillhp)
     {
-        if (fillGiap.fillAmount > ImgHp.fillAmount)
+        if (fillGiap.fillAmount > 0)
         {
             fillGiap.fillAmount = fillhp;
             ImgHp.transform.parent.gameObject.SetActive(true);
@@ -52,25 +59,25 @@ public class RongLuaMatXanhGiapAttack : DragonPVEController
     {
         if (hpgiap > 0)
         {
-            if (VienChinh.vienchinh.chedodau == CheDoDau.Online)
-            {
-                JSONObject newjson = new JSONObject();
-                newjson.AddField("id", transform.parent.name);
-                // float fillset = (hpgiap - maumat) / maxhpgiap;
-                double tru = System.Math.Round(hpgiap - maumat, 2);
-                newjson.AddField("hpgiap", tru.ToString());
-                newjson.AddField("hp","");
-                hpgiap = (float)tru;
-                DauTruongOnline.ins.AddUpdateData(newjson);
+            //if (VienChinh.vienchinh.chedodau == CheDoDau.Online)
+            //{
+            //    JSONObject newjson = new JSONObject();
+            //    newjson.AddField("id", transform.parent.name);
+            //    // float fillset = (hpgiap - maumat) / maxhpgiap;
+            //    double tru = System.Math.Round(hpgiap - maumat, 2);
+            //    newjson.AddField("hpgiap", tru.ToString());
+            //    newjson.AddField("hp","");
+            //    hpgiap = (float)tru;
+            //    DauTruongOnline.ins.AddUpdateData(newjson);
 
-                return;
-            }
+            //    return;
+           // }
 
             hpgiap -= maumat;
             float fillamount = (float)hpgiap / (float)maxhpgiap;
             fillGiap.fillAmount = fillamount;
 
-            ReplayData.addHp(transform.parent.name, fillGiap.fillAmount.ToString());
+            ReplayData.addHp(idrong, fillGiap.fillAmount.ToString());
             ImgHp.transform.parent.gameObject.SetActive(true);
         }
         else
@@ -87,6 +94,11 @@ public class RongLuaMatXanhGiapAttack : DragonPVEController
         LamChamDefault(data);
     }
     public override void SkillMoveOk()
+    {
+        skillmoveok?.Invoke();
+    }
+
+    private void sKILLmOVE()
     {
         //List<Transform> ronggan = new List<Transform>(PVEManager.GetDraDungTruoc(3, Target.transform.parent.transform, new Vector2(3, 2)));
         float damee = dame;
@@ -121,7 +133,6 @@ public class RongLuaMatXanhGiapAttack : DragonPVEController
             KillTru();
         }
         //gameObject.SetActive(false);
-
     }
     public override void ABSAnimatorRun()
     {

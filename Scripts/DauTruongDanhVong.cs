@@ -386,7 +386,9 @@ public class DauTruongDanhVong : MonoBehaviour
                     timplayer.SetActive(false);
                     transform.GetChild(3).gameObject.SetActive(true);
                     yield return new WaitForSeconds(1.1f);
-                    NetworkManager.ins.socket.Emit("DanhDauTruongThuThach", JSONObject.CreateStringObject(""));
+                    //NetworkManager.ins.socket.Emit("DanhDauTruongThuThach", JSONObject.CreateStringObject(""));
+
+                    DanhDauTruongThuThach(json);
                     // gameObject.SetActive(false);
                     //  CrGame.ins.menulogin.SetActive(true);
                     VienChinh.vienchinh.enabled = true;
@@ -401,7 +403,59 @@ public class DauTruongDanhVong : MonoBehaviour
             }
         }
     }
+    public void DanhDauTruongThuThach(JSONNode data)
+    {
+        VienChinh.vienchinh.DanhOnline = false;
+        AllMenu.ins.GetCreateMenu("GiaoDienPVP");
+        GiaoDienPVP.ins.SoDoihinh = 0;
+        GiaoDienPVP.ins.maxtime = 60;
+        GiaoDienPVP.ins.TxtTime.GetComponent<timePvp>().enabled = true;
+        //  txtProgress.text = "0%";
+        //  Progress.fillAmount = 0 / (float)100;
+        for (int i = 0; i < data["danhthuthach"]["doihinh"].Count; i++)
+        {
+            string id = data["danhthuthach"]["doihinh"][i]["id"].AsString;
+            string nameObject = data["danhthuthach"]["doihinh"][i]["nameobject"].AsString;
+            GiaoDienPVP.ins.AddItemRongDanh(nameObject, id, data["danhthuthach"]["doihinh"][i]["sao"].AsInt, data["danhthuthach"]["doihinh"][i]["tienhoa"].AsInt, i);
+            // inventory.LoadRongCoBan(nameObject[1]);
+        }
+        //     debug.Log(e.data["danhthuthach"]);
+        TruVienChinh trux = VienChinh.vienchinh.TruXanh.GetComponent<TruVienChinh>();
+        trux.allmau = 1;
+        TruVienChinh trud = VienChinh.vienchinh.TruDo.GetComponent<TruVienChinh>(); trud.allmau = 1;
+        for (int i = 0; i < trux.Hp.Length; i++)
+        {
+            trux.Hp[i] = 1;
+            trud.Hp[i] = 1;
+        }
+        GiaoDienPVP.ins.LoadSkill(data["danhthuthach"]["skill"]);
+        VienChinh.vienchinh.HienIconSkill(200, "Do", "icon" + data["skilldich"].AsString + "Do");
+        VienChinh.vienchinh.HienIconSkill(200, "Xanh", "icon" + data["skillchon"].AsString + "Xanh");
+        VienChinh.vienchinh.nameskillthuthach = data["skillchon"].AsString;
+        VienChinh.vienchinh.nameskillthuthachdich = data["skilldich"].AsString;
 
+        VienChinh.vienchinh.StartCoroutine(delayfriend());
+        IEnumerator delayfriend()
+        {
+            int count = data["danhthuthach"]["doihinhfriend"].Count;
+            CrGame.ins.menulogin.SetActive(false);
+            VienChinh.vienchinh.chedodau = CheDoDau.ThuThach;
+            VienChinh.vienchinh.enabled = true;
+            ReplayData.Record = false;
+            VienChinh.vienchinh.StartCoroutine(VienChinh.vienchinh.delayGame());
+            yield return new WaitForSeconds(3.5f);
+            for (int i = 0; i < count; i++)
+            {
+                JSONObject json = LoiDai.ParseChiSoRongNode(data["danhthuthach"]["doihinhfriend"][i]);
+                //debug.Log("rong dich " + i + ": " + json);
+                PVEManager.TrieuHoiDra(json, "TeamDo");
+
+
+                yield return new WaitForSeconds(0.1f);
+
+            }
+        }
+    }    
     public void VeNha()
     {
 

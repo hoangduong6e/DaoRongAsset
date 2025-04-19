@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleJSON;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
@@ -209,6 +210,28 @@ public class GiaoDienPVP : MonoBehaviour
                 imgskill.sprite = Inventory.LoadSprite(GamIns.CatDauNgoacKep(json[i]["nameskill"].ToString())); imgskill.SetNativeSize();
                 OSkill.transform.GetChild(1).GetChild(i).transform.GetChild(1).GetComponent<Image>().sprite = imgskill.sprite;
                OSkill.transform.GetChild(1).transform.GetChild(i).transform.GetChild(0).GetComponent<Text>().text = GamIns.CatDauNgoacKep(json[i]["level"].ToString());
+            }
+        }
+        else
+        {
+            OSkill.SetActive(false);
+        }
+    }
+
+    public void LoadSkill(JSONNode json)
+    {
+        // debug.Log("jsonnnn :" + json);
+        if (json.Count > 0)
+        {
+            OSkill.SetActive(true);
+            for (int i = 0; i < json.Count; i++)
+            {
+                OSkill.transform.GetChild(1).transform.GetChild(i).gameObject.SetActive(true);
+                OSkill.transform.GetChild(1).transform.GetChild(i).gameObject.name = GamIns.CatDauNgoacKep(json[i]["nameskill"].AsString);
+                Image imgskill = OSkill.transform.GetChild(1).transform.GetChild(i).GetComponent<Image>();
+                imgskill.sprite = Inventory.LoadSprite(json[i]["nameskill"].AsString); imgskill.SetNativeSize();
+                OSkill.transform.GetChild(1).GetChild(i).transform.GetChild(1).GetComponent<Image>().sprite = imgskill.sprite;
+                OSkill.transform.GetChild(1).transform.GetChild(i).transform.GetChild(0).GetComponent<Text>().text = json[i]["level"].AsString;
             }
         }
         else

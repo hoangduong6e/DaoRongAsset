@@ -189,12 +189,13 @@ public class PVEManager : MonoBehaviour
     {
         GTrieuHoiDra(data, team,randomvec);
     }
-   public static GameObject GTrieuHoiDra(JSONObject data, string team, Vector3 randomvec = new Vector3())
+    public static GameObject GTrieuHoiDra(JSONObject data, string team, Vector3 randomvec = new Vector3())
     {
+        debug.Log("trieu hoi rong " + data);
         string nameObject = data["nameobject"].str;
         //  debug.Log("rong1");
         // GameObject hieuung = Instantiate(vienchinh.HieuUngTrieuHoi, new Vector3(randomvec.x, 6, randomvec.z), Quaternion.identity) as GameObject;
-        GameObject rongtrieuhoi = Instantiate(Inventory.GetObjRong(nameObject + "2"),Vector3.zero, Quaternion.identity);
+        GameObject rongtrieuhoi = Instantiate(Inventory.GetObjRong(nameObject + "2"), Vector3.zero, Quaternion.identity);
         SetScaleDragon(nameObject, byte.Parse(data["sao"].ToString()), rongtrieuhoi.transform);
 
         //string _team = "";
@@ -219,12 +220,12 @@ public class PVEManager : MonoBehaviour
         {
             randomvec = VecHeight[team][draInstantiate.Idlle][draInstantiate.draheight]();//GetRandomTFtrieuHoi(team, draInstantiate.Idlle,draInstantiate.draheight);
             //randomvec.x = 0;
-        } 
-        else if(VienChinh.vienchinh.Teamthis != Team.TeamXanh)
-        {
-            randomvec.x = PVPManager.XTeam[team == "TeamXanh"?"r":"b"];
         }
-            
+        else if (VienChinh.vienchinh.Teamthis != Team.TeamXanh)
+        {
+            randomvec.x = PVPManager.XTeam[team == "TeamXanh" ? "r" : "b"];
+        }
+
         rongtrieuhoi.transform.position = randomvec;
         /// rongtrieuhoi.transform.position = draInstantiate.PositionPVERandom(team);
         //debug.Log("rong3");
@@ -276,8 +277,17 @@ public class PVEManager : MonoBehaviour
         //else draInstantiate.DraInsPVE(data);
 
         /////
-          draInstantiate.DraInsOnline(data, id);
-          PVPManager.AddDragonTF(teamonl,id,rongtrieuhoi.transform);
+        ///
+        if (VienChinh.vienchinh.DanhOnline)
+        {
+            draInstantiate.DraInsOnline(data, id);
+            PVPManager.AddDragonTF(teamonl, id, rongtrieuhoi.transform);
+        }
+        else
+        {
+            draInstantiate.DraInsPVE(data);
+        }
+    
         /////
         if (ReplayData.Record)
         {

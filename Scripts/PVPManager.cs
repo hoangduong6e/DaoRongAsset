@@ -51,6 +51,7 @@ public class PVPManager : MonoBehaviour
         private static Dictionary<string, Action<JSONObject>> eventhandle = new Dictionary<string, Action<JSONObject>>
         {
             {"anim",Anim},
+            {"hpg",HpGiap},
             {"hp",Hp},
             {"d",Destroyy},
             {"c",HieuUngChu},
@@ -90,6 +91,16 @@ public class PVPManager : MonoBehaviour
             Transform tf = DragonsTF[data["team"].str][data["id"].str];
             DragonPVEController dra = tf.transform.Find("SkillDra").GetComponent<DragonPVEController>();
             dra.ImgHp.fillAmount = float.Parse(data["fill"].ToString());
+            //dra.SetHp(float.Parse(data["fill"].ToString()));
+            dra.HienThanhHp();
+        }
+        public static void HpGiap(JSONObject data)
+        {
+            Transform tf = DragonsTF[data["team"].str][data["id"].str];
+            DragonPVEController dra = tf.transform.Find("SkillDra").GetComponent<DragonPVEController>();
+            dra.ImgHp.transform.GetChild(1).GetComponent<Image>().fillAmount = float.Parse(data["fill"].ToString());
+            //dra.SetHp(float.Parse(data["fill"].ToString()));
+            
             dra.HienThanhHp();
         }
         public static void Destroyy(JSONObject data)

@@ -196,6 +196,70 @@ public class CrGame : MonoBehaviour
     //{
 
     //}
+    public void LoadLoiDai()
+    {
+        panelLoadDao.SetActive(true);
+        JSONClass datasend = new JSONClass();
+        datasend["class"] = "Main";
+        datasend["method"] = "getUserLoiDai";
+        NetworkManager.ins.SendServer(datasend, Ok);
+        void Ok(JSONNode json)
+        {
+            panelLoadDao.SetActive(false);
+            debug.Log(json.ToString());
+            if (json["status"].AsString == "0")
+            {
+                AllMenu.ins.transform.Find("PanelLoiDai").gameObject.SetActive(true);
+                AllMenu.ins.transform.Find("menuDau").gameObject.SetActive(false);
+                if (!NetworkManager.ins.loidai.gameObject.activeSelf) return;
+                StartCoroutine(delay());
+                IEnumerator delay()
+                {
+                    int limit = 0;
+                    if (json["usertop"]["usertop"].Count < 11)
+                    {
+                        limit = 11 - json["usertop"]["usertop"].Count;
+                    }
+                    NetworkManager.ins.loidai.txtSoluotFree.text = json["usertop"]["soluotdauloidai"].AsString;
+                    NetworkManager.ins.menuLoiDai.SetActive(true);
+                    CrGame.ins.menulogin.SetActive(false);
+                    AudioManager.SetSoundBg("nhacnen1");
+                    //   debug.Log(json["usertop"]["usertop"]);
+                    for (int i = 0; i < json["usertop"]["usertop"].Count; i++)
+                    {
+                        if (NetworkManager.ins.menuLoiDai.activeSelf)
+                        {
+                            debug.Log(i + " " + json["usertop"]["usertop"][i].ToString());
+                            if (json["usertop"]["usertop"][i]["tenhienthi"].ToString() != "")
+                            {
+                                string tenhienthi = json["usertop"]["usertop"][i]["tenhienthi"].AsString;
+                                string idfb = json["usertop"]["usertop"][i]["idfb"].AsString;
+                                string top = json["usertop"]["usertop"][i]["top"].AsString;
+                                if (i == 0)
+                                {
+                                    NetworkManager.ins.loidai.CreateUserTop(0, tenhienthi, top, idfb, json["usertop"]["usertop"][i]["chientuong"].AsString, json["usertop"]["usertop"][i]["sao"].AsByte);
+                                }
+                                else
+                                {
+                                    NetworkManager.ins.loidai.CreateUserTop(limit, tenhienthi, top, idfb, json["usertop"]["usertop"][i]["chientuong"].AsString, json["usertop"]["usertop"][i]["sao"].AsByte);
+                                }
+                                limit += 1;
+                                yield return new WaitForSeconds(0.2f);
+                            }
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                CrGame.ins.OnThongBaoNhanh(json["message"].AsString);
+            }
+        }
+    }    
     private void Update()
     {
         //if (Input.GetKeyUp(KeyCode.Space))
